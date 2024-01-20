@@ -1,0 +1,10 @@
+{
+    "extends": [
+        "next",
+        "prettier"
+    ],
+    "plugins": [
+        "prettier"
+    ],
+    "rules": {}
+}
