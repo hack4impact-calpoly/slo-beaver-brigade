@@ -24,6 +24,8 @@ The SLO Beaver Brigade team consists of {#} Cal Poly students. Over the course o
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead
 - [Vasanth Pugalenthi](https://www.linkedin.com/) - Tech Lead
 - [Sohini Pillay](https://www.linkedin.com/) - Software Developer
+- [Sameer Paykel](https://www.linkedin.com/in/sameerpaykel/) - Software Developer
+- [Logan Costello](www.linkedin.com/in/logancostello) - Software Developer
 
 ## Getting Started And Contributing
 
