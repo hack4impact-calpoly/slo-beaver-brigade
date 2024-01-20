@@ -1,6 +1,6 @@
 # SLO Beaver Brigade
 
-{One sentence description of the project}
+Just a cool little beaver project.
 
 ## Table of Contents
 
