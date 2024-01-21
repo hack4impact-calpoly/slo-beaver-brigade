@@ -28,6 +28,7 @@ The SLO Beaver Brigade team consists of {#} Cal Poly students. Over the course o
 - [Sameer Paykel](https://www.linkedin.com/in/sameerpaykel/) - Software Developer
 - [HanYu Wu](https://www.linkedin.com/) - Software Developer
 - [Logan Costello](www.linkedin.com/in/logancostello) - Software Developer
+- [Noah Giboney](www.linkedin.com/in/noahgiboney) - Software Developer
 
 ## Getting Started And Contributing
 
