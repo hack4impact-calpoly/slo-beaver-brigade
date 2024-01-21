@@ -1,0 +1,17 @@
+.sidebar {
+    width: 200px;
+    height: 100%;
+    border-right: 1px solid black;
+    text-align: center;
+}
+
+.adminOptions {
+    text-align: center;
+}
+
+.adminOptions ul{
+    list-style: none;
+    text-decoration: none;
+    border: 1px solid red;
+} 
+
