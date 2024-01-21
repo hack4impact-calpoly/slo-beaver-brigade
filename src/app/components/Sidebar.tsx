@@ -4,9 +4,12 @@ import Link from "next/link"
 
 const Sidebar = () => {
 
+    // returns the current route that user is on, null if user is on the root (admin page.tsx)
+    const segement = useSelectedLayoutSegment()
+    
     const sideBarOptions = [
-        {name: "Dashboard", href: "/admin"},
-        {name: "Events", href: "/events"}
+        {name: "Dashboard", href: "/admin", current: !segement ? true : false},
+        {name: "Events", href: "/events", current: `/${segement}` === "/events" ? true: false}
     ]
 
     return (
