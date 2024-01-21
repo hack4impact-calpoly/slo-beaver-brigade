@@ -10,19 +10,23 @@ const Sidebar = () => {
   // can add more options here for admin
   const sideBarOptions = [
     { name: "Dashboard", href: "/admin", current: !segement ? true : false },
-    { name: "Events", href: "/admin/events", current: `/${segement}` === "/events" ? true : false},
+    {
+      name: "Events",
+      href: "/admin/events",
+      current: `/${segement}` === "/events" ? true : false,
+    },
   ];
 
   return (
     <div className={style.sidebar}>
-      <div>
-        <h2>Admin</h2>
-      </div>
+      <h1>Admin</h1>
       <div className={style.adminOptions}>
         <ul>
           {sideBarOptions.map((option) => (
             <li key={option.name}>
-              <Link href={option.href}>{option.name}</Link>
+              <Link href={option.href}>
+                <p>{option.name}</p>
+              </Link>
             </li>
           ))}
         </ul>
