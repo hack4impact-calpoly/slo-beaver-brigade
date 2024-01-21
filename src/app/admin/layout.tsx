@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Sidebar from "@components/Sidebar";
 
 type Props = {
     children: ReactNode;
@@ -8,7 +9,7 @@ const layout = (props: Props) => {
     return (
       <div>
         <div>
-            Sidebar
+            <Sidebar/>
         </div>
         <main>
             {props.children}
