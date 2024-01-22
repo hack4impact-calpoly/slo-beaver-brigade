@@ -1,92 +1,99 @@
+/* common style for collapsed and non-callapsed */
 .sidebar {
-    display: flex;
-    flex-direction: column;
-    width: 225px;
-    height: 100vh;
-    text-align: center;
-    transition: width 0.3s;
-    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.collapsedSidebar {
-    width: 50px;
-    margin: 1px;
-    padding: 0px; 
-}
-
-.collapsedSidebar .option {
-    padding: 0px;
-}
-
-.collapsedSidebar .option p{
-    padding-left: 0px;
+  width: 225px;
+  height: 100vh;
+  text-align: center;
+  transition: width 0.3s;
+  box-shadow: 5px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar h1 {
-    padding: 20px 50px;
+  padding: 20px 50px;
 }
 
 .adminOptions ul {
-    padding-inline-start: 0;
-    text-align: left;
+  padding-inline-start: 0;
+  text-align: left;
 }
 
 .adminOptions li {
-    list-style: none;
+  list-style: none;
 }
 
-.adminOptions ul li a{
-    color: black;
-    text-decoration: none;
-    
+.adminOptions ul li a {
+  color: black;
+  text-decoration: none;
+}
+
+.adminOptions ul li:hover {
+  background-color: #f0f0f0;
 }
 
 .adminOptions p {
-    font-size: 2vh;
-    text-align: center;
-    padding-top: 7px;
-    padding-left: 5px;
+  font-size: 1.5vh;
+  text-align: center;
+  padding-top: 9px;
+  padding-left: 15px;
 }
 
-.option {
-    font-size: 1.7vh;
-    padding: 10px;
-    font-weight: bold;
-    text-decoration: none;
-    margin: 25px 10px 25px;
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: row;
-    transition: color 0.3s; /* Add color transition */
+/* when slider is collapsed */
+.collapsedSidebar {
+  width: 55px;
+  margin: 1px;
+  padding: 0px;
 }
-  
-  .option::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black; 
-    z-index: -1;
-    transform: scaleY(0);
-    transform-origin: 0 0; 
-    transition: transform 0.5s cubic-bezier(0.5, 1.6, 0.4, 0.7);
-    border-radius: 10px;
-  }
-  
-  .option:hover::before {
-    transform: scaleY(1);
-  }
-  
-  .option:hover {
-    color: white; 
-  }
+
+.collapsedSidebar .option {
+  padding: 20px 0;
+}
+
+.collapsedSidebar .option p {
+  padding-left: 0px;
+}
+
+.collapsedSidebar .toggleButton {
+  text-align: center;
+}
+
+.collapsedSidebar .toggleButton {
+  margin-left: 0;
+}
+
+/* option button */
+.option {
+  padding: 10px;
+  margin: 0 10px;
+  padding: 30px 0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  transition: color 0.3s;
+}
+
+.currentOption {
+  background-color: #f0f0f0;
+}
 
 .toggleButton {
-    cursor: pointer;
-    padding: 10px;
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 80%;
+  text-align: right;
+  cursor: pointer;
+}
+
+/* mobile view */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 50vw;
     text-align: center;
-    font-size: 1vh;
   }
+
+  .collapsedSidebar {
+    width: 40px;
+    overflow: hidden;
+    height: 60px;
+    box-shadow: 0px 0 0px rgba(0, 0, 0, 0.1);
+  }
+}
