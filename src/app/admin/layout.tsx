@@ -14,7 +14,7 @@ const Layout = (props: Props) => {
     <div className={montserrat.className}>
       <div className={style.adminDash}>
         <div>
-          <Sidebar/>
+          <Sidebar />
         </div>
         <main className={style.mainContainer}>{props.children}</main>
       </div>
