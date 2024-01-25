@@ -2,7 +2,7 @@
 import { useSelectedLayoutSegment } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import style from "@styles/adminStyle/sidebar.module.css";
+import style from "@styles/admin/sidebar.module.css";
 import {
   Bars3Icon,
   XMarkIcon,
@@ -16,6 +16,10 @@ const Sidebar = () => {
 
   // useState for determining if slider is collapased
   const [isCollapsed, setCollapsed] = useState(false);
+
+  const toggleSlider = () => {
+    setCollapsed(!isCollapsed);
+  };
 
   // can add more options here for admin
   const sideBarOptions = [
@@ -32,10 +36,6 @@ const Sidebar = () => {
       current: `/${segement}` === "/events" ? true : false,
     },
   ];
-
-  const toggleSlider = () => {
-    setCollapsed(!isCollapsed);
-  };
 
   return (
     <div
