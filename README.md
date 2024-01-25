@@ -1,6 +1,6 @@
 # SLO Beaver Brigade
 
-{One sentence description of the project}
+Just a cool little beaver project.
 
 ## Table of Contents
 
@@ -20,11 +20,16 @@
 The SLO Beaver Brigade team consists of {#} Cal Poly students. Over the course of about 9 months, we worked as a team to deploy this web application. The team members are listed below:
 
 - [Tyler Kim](https://www.linkedin.com/) - Project Manager
-- [First Last](https://www.linkedin.com/) - Designer
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead
 - [Vasanth Pugalenthi](https://www.linkedin.com/) - Tech Lead
 - [Jason Jelincic](https://www.linkedin.com/in/jasonjelincic/) - Software Developer
-- [First Last](https://www.linkedin.com/) - Software Developer
+- [Shuya Yanase](https://www.linkedin.com/) - Software Developer
+- [Ella Hagen](https://www.linkedin.com/) - Software Developer
+- [Sohini Pillay](https://www.linkedin.com/) - Software Developer
+- [Sameer Paykel](https://www.linkedin.com/in/sameerpaykel/) - Software Developer
+- [HanYu Wu](https://www.linkedin.com/) - Software Developer
+- [Logan Costello](www.linkedin.com/in/logancostello) - Software Developer
+- [Noah Giboney](https://www.linkedin.com/in/noah-giboney-896847261/) - Software Developer
 
 ## Getting Started And Contributing
 
