@@ -1,0 +1,104 @@
+/* common style for collapsed and non-callapsed */
+.sidebar {
+  width: 225px;
+  height: 100vh;
+  text-align: center;
+  transition: width 0.3s;
+  box-shadow: 5px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h1 {
+  padding: 20px 50px;
+}
+
+.adminOptions ul {
+  padding-inline-start: 0;
+  text-align: left;
+}
+
+.adminOptions li {
+  list-style: none;
+}
+
+.adminOptions ul li a {
+  color: black;
+  text-decoration: none;
+}
+
+.adminOptions ul li:hover {
+  background-color: #f0f0f0;
+}
+
+.adminOptions p {
+  font-size: 1.5vh;
+  text-align: center;
+  padding-top: 9px;
+  padding-left: 15px;
+}
+
+/* when slider is collapsed */
+.collapsedSidebar {
+  width: 55px;
+  margin: 1px;
+  padding: 0px;
+}
+
+.collapsedSidebar .option {
+  padding: 20px 0;
+}
+
+.collapsedSidebar .option p {
+  padding-left: 0px;
+}
+
+.collapsedSidebar .toggleButton {
+  text-align: center;
+}
+
+.collapsedSidebar .toggleButton {
+  margin-left: 0;
+}
+
+/* option button */
+.option {
+  padding: 10px;
+  margin: 0 10px;
+  padding: 30px 0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  transition: color 0.3s;
+}
+
+.option:hover {
+  font-weight: bold;
+}
+
+.currentOption {
+  background-color: #f0f0f0;
+}
+
+.toggleButton {
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 80%;
+  text-align: right;
+  cursor: pointer;
+}
+
+/* mobile view */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 45vw;
+    text-align: center;
+  }
+
+  .collapsedSidebar {
+    width: 40px;
+    padding-left: 10px;
+    overflow: hidden;
+    height: 60px;
+    box-shadow: 0px 0 0px rgba(0, 0, 0, 0.1);
+  }
+}
