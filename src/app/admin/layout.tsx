@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { Love_Ya_Like_A_Sister, Montserrat } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import Sidebar from "@components/Sidebar";
-import style from "@styles/adminStyle/layout.module.css";
+import style from "@styles/admin/layout.module.css";
 
 type Props = {
   children: ReactNode;
@@ -9,12 +9,12 @@ type Props = {
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
 
-const layout = (props: Props) => {
+const Layout = (props: Props) => {
   return (
     <div className={montserrat.className}>
       <div className={style.adminDash}>
         <div>
-          <Sidebar />
+          <Sidebar/>
         </div>
         <main className={style.mainContainer}>{props.children}</main>
       </div>
@@ -22,4 +22,4 @@ const layout = (props: Props) => {
   );
 };
 
-export default layout;
+export default Layout;
