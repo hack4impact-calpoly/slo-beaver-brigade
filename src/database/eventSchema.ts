@@ -7,6 +7,7 @@ export type IEvent = {
     wheelchairAccessible: boolean;
     spanishSpeakingAccommodation: boolean;
     date: Date;
+    volunteerEvent: boolean;
     attendeeIds: string[];
 };
 
@@ -17,6 +18,7 @@ const eventSchema = new Schema<IEvent>({
     wheelchairAccessible: { type: Boolean, required: true },
     spanishSpeakingAccommodation: { type: Boolean, required: true },
     date: { type: Date, required: true },
+    volunteerEvent: {type: Boolean, required: true},
     attendeeIds: { type: [String], required: true, default: [] },
 });
 
