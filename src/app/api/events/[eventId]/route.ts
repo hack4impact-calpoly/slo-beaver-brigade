@@ -4,18 +4,18 @@ import Event from "@database/eventSchema";
 
 type IParams = {
   params: {
-    eventName: string
+    eventId: string
   }
 }
 
 export async function GET(req: NextRequest, { params }: IParams) {
   await connectDB() // function from db.ts before
-  const { eventName } = params // another destructure
+  const { eventId } = params // another destructure
 
    try {
-        const event = await Event.findOne({ eventName }).orFail()
+        const event = await Event.findOne({ eventId }).orFail()
         return NextResponse.json(event)
     } catch (err) {
-        return NextResponse.json('Event not found: ' + {eventName} , { status: 404 })
+        return NextResponse.json('Event not found: ' + { eventId } , { status: 404 })
     }
 }
