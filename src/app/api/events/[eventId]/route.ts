@@ -16,6 +16,6 @@ export async function GET(req: NextRequest, { params }: IParams) {
         const event = await Event.findOne({ eventName }).orFail()
         return NextResponse.json(event)
     } catch (err) {
-        return NextResponse.json('Blog not found: ' + {eventName} , { status: 404 })
+        return NextResponse.json('Event not found: ' + {eventName} , { status: 404 })
     }
 }
