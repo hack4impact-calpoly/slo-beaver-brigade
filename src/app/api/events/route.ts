@@ -8,9 +8,9 @@ export async function GET() {
 
 	try {
 			// query for all blogs and sort by date
-	    const blogs = await Event.find().sort({ date: -1 }).orFail()
+	    const events = await Event.find().sort({ date: -1 }).orFail()
 			// send a response as the blogs as the message
-	    return blogs
+	    return events
 	} catch (err) {
     console.log(`error: ${err}`)
 	  return null
