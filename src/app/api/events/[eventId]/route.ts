@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-// import { Event } from "@models/event";
+import Event from "@database/eventSchema";
 
 type IParams = {
   params: {
