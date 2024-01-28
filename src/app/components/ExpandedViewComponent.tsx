@@ -50,7 +50,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
 
   return (
     <Center>
-      <Box borderWidth="1px" borderRadius="lg" width="40%" bg="lightblue">
+      <Box borderWidth="1px" borderRadius="lg" bg="lightblue">
         {/* Title Section */}
         <Box mb={1} bg="lightblue" p={2} borderRadius="md">
           <Flex align="center" justify="space-between">
