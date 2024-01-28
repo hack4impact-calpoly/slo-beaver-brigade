@@ -7,13 +7,11 @@ import listPlugin from "@fullcalendar/list"
 import {IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/calendar.module.css"
 import styled from 'styled-components'
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 
-export const StyleWrapper = styled.div
-`
-  .fc td {
-    background: red;
-  }
-`
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css'; // needs additional webpack config!
+
 
 export default function Calendar () {
   
@@ -21,11 +19,11 @@ export default function Calendar () {
         <div>
             <div className={style.wrapper}>
                 <FullCalendar
-                    plugins={[ dayGridPlugin, ineractionPlugin, timeGridPlugin ]}
+                    plugins={[ dayGridPlugin, ineractionPlugin, timeGridPlugin, bootstrap5Plugin ]}
                     headerToolbar={{
-                        left: 'prev, next today',
+                        left: 'prev,next today',
                         center: 'title',
-                        right: 'dayGridMonth, timeGridWeek'
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
                     }}
                     events={{}}
                     nowIndicator={true}
@@ -38,9 +36,8 @@ export default function Calendar () {
                     // eventClick={}
                     initialView="dayGridMonth"
                     contentHeight = "600px"
+                    themeSystem='bootstrap5'
                     
-                    
-
                     />
             </div>
             

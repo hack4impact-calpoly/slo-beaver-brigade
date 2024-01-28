@@ -10,7 +10,7 @@ export default function Events() {
     return (
         <body className={style.page}>
             <header className={style.header}>
-                <h1>Calendar</h1>
+                <h1>Event Calendar</h1>
             </header>
             <main>
                 <div>
