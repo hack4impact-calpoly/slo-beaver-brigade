@@ -86,31 +86,33 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
             </Text>
 
             <Flex
-  direction={{ base: 'column', md: 'row' }}
-  alignItems={{ base: 'center', md: 'flex-start' }}
-  mt={4}
-  justifyContent={{ base: 'center', md: 'space-evenly' }}
-  flexWrap="wrap"
->
-  <Button
-    onClick={onOpen}
-    bg="lightblue"
-    fontSize="md"
-    mb={{ base: 2, md: 5 }}
-    flexBasis={{ base: '100%', md: 'auto' }}
-  >
-    <strong>Sign Up As Guest</strong>
-  </Button>
-  <Button
-    onClick={onOpen}
-    bg="lightblue"
-    fontSize="md"
-    ml={{ base: 0, md: 2 }}
-    flexBasis={{ base: '100%', md: 'auto' }}
-  >
-    <strong>Continue With An Account</strong>
-  </Button>
-</Flex>
+              direction={{ base: 'column', md: 'row' }}
+              alignItems={{ base: 'center', md: 'flex-start' }}
+              mt={4}
+              justifyContent={{ base: 'center', md: 'space-evenly' }}
+              flexWrap="wrap"
+            >
+              <Button
+                onClick={onOpen}
+                bg="lightblue"
+                fontSize={{ base: 'xl', md: 'md' }}
+                mb={{ base: 2, md: 5 }}
+                p={{ base: '2', md: '2' }}
+                flexBasis={{ base: '100%', md: 'auto' }}
+              >
+                <strong>Sign Up As Guest</strong>
+              </Button>
+              <Button
+                onClick={onOpen}
+                bg="lightblue"
+                fontSize={{ base: 'xl', md: 'md' }}
+                ml={{ base: 0, md: 2 }}
+                p={{ base: '2', md: '2' }}
+                flexBasis={{ base: '100%', md: 'auto' }}
+              >
+                <strong>Continue With An Account</strong>
+              </Button>
+            </Flex>
 
 
 
