@@ -1,4 +1,6 @@
 import { Button } from "@styles/Button";
+import React from "react";
+
 export default function Home() {
   return (
     <main>
