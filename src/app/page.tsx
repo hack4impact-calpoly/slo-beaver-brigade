@@ -1,4 +1,3 @@
-import YourParentComponent from "@components/YourParentComponent";
 import { Button } from "@styles/Button";
 import React from "react";
 import YourParentComponent from "@components/YourParentComponent";
