@@ -4,7 +4,7 @@ import User, { IUser } from "@database/userSchema";
 
 // get endpoint to return array of all users
 /**
- * @returns {allUsers: User[]}
+ * @returns {allUsers: User[]} - array of all users in db
  */
 export async function GET() {
   try {
@@ -18,8 +18,8 @@ export async function GET() {
 
 // put endpoint to upload user to mongoDB
 /**
- * @param {object} data
- * @return {object}
+ * @param {object} data - user object to put in db
+ * @return {object} - object that was uploaded to db
  */
 export async function PUT(data: IUser) {
   try {
