@@ -1,12 +1,75 @@
-.colorBar{
-    width: 100%;
-    height: 20%;
-    background-color: #a3caee;
-}
+@import '../fonts/fonts.css';
 
 .main{
-	width: 90%;
-	height: 80%
+    margin-top: 2.5%;
+    margin-left: auto;
+    margin-right: auto;
+	width: 80vw;
+	height: 100vh;
+    background-color: white;
+    border-radius: 25px;
+    font-family: 'Mulish';
+    font-weight: bolder;
+    font-size: 20px;
+    z-index: 10;
 }
 
-    
+.topColor{
+    height: 15%;
+    background-color: #a3caee;
+    border-radius: 25px 25px 0px 0px
+}
+
+.formBody{
+    margin-left: 30%;
+    margin-right: 30%;
+    text-align: center;
+}
+
+
+.form{
+    margin-top: 10%;
+}
+
+.input{
+    width: 75%;
+    margin: 4%;
+    padding: 1.5%;
+    font-size: 20px;
+    font-family: 'Mulish';
+    font-weight: lighter;
+    border-radius:  7px;
+    border: none;
+    outline: 1px solid lightgrey;
+    resize: none;
+}
+
+.halfInput{
+    width: 32%;
+    margin: 4%;
+    padding: 1.5%;
+    font-size: 20px;
+    font-family: 'Mulish';
+    font-weight: lighter;
+    border-radius:  7px;
+    border: none;
+    outline: 1px solid lightgrey;
+}
+
+.button{
+    width: 50%;
+    margin: 4%;
+    padding: 1.5%;
+    font-size: 20px;
+    font-family: 'Mulish';
+    font-weight: bold;
+    border-radius:  7px;
+    border: none;
+    outline: 1px solid black;
+    resize: none;
+    background-color: #a3caee;
+
+}
+.button:hover{
+    background-color: #8db9e2
+}

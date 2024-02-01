@@ -5,7 +5,6 @@ export default function Home() {
     <main>
       <h1>SLO Beaver Brigade</h1>
       <Button>Nice Button</Button>
-      <CreateAccount></CreateAccount>
     </main>
   );
 }
