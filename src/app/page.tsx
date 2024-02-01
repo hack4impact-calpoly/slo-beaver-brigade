@@ -1,12 +1,15 @@
+'use client'
+
 import { Button } from "@styles/Button";
-import CreateEvent from "@components/CreateEvent";
+import { ChakraProvider } from '@chakra-ui/react'
 
 export default function Home() {
   return (
-    <main>
-      <h1>SLO Beaver Brigade</h1>
-      <Button>Nice Button</Button>
-      <CreateEvent></CreateEvent>
-    </main>
+    <ChakraProvider>
+      <main>
+        <h1>SLO Beaver Brigade</h1>
+        <Button>Nice Button</Button>
+      </main>    
+    </ChakraProvider>
   );
 }
