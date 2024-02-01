@@ -18,43 +18,42 @@ export async function GET() {
 
 // POST request for adding user
 export async function POST(req: NextRequest) {
-    try {
-      await connectDB();
-  
-      // convert the readable stream to JSON
-      const bodyText = await new Response(req.body).text();
-      const body = JSON.parse(bodyText);
-      const { email, password } = body;
-  
-      // make sure user has username and password
-      if (!email || !password) {
-        return NextResponse.json(
-          { error: 'Email and password are required' },
-          { status: 400 }
-        );
-      }
-      
-      // check if user already exsists
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return NextResponse.json(
-          { error: 'User already exists' },
-          { status: 409 }
-        );
-      }
-  
-      const newUser = new User({ email, password });
-      await newUser.save();
-  
+  try {
+    await connectDB();
+
+    // convert the readable stream to JSON
+    const bodyText = await new Response(req.body).text();
+    const body = JSON.parse(bodyText);
+    const { email, password } = body;
+
+    // make sure user has username and password
+    if (!email || !password) {
       return NextResponse.json(
-        { message: 'User created successfully', user: newUser },
-        { status: 201 }
-      );
-    } catch (error) {
-      return NextResponse.json(
-        { error: (error as Error).message },
-        { status: 500 }
+        { error: "Email and password are required" },
+        { status: 400 }
       );
     }
+
+    // check if user already exsists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "User already exists" },
+        { status: 409 }
+      );
+    }
+
+    const newUser = new User({ email, password });
+    await newUser.save();
+
+    return NextResponse.json(
+      { message: "User created successfully", user: newUser },
+      { status: 201 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    );
   }
-  
+}
