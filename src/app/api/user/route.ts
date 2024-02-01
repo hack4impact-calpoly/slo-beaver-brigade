@@ -1,8 +1,8 @@
 import connectDB from "@database/db";
 import { NextResponse, NextRequest } from "next/server";
-import User, { IUser } from "@database/userSchema";
+import User from "@database/userSchema";
 
-// GER request for getting all users
+// GET request for getting all users
 export async function GET() {
   try {
     await connectDB();
