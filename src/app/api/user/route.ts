@@ -21,29 +21,8 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
-    // convert the readable stream to JSON
-    const bodyText = await new Response(req.body).text();
-    const body = JSON.parse(bodyText);
-    const { email, password } = body;
-
-    // make sure user has username and password
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password are required" },
-        { status: 400 }
-      );
-    }
-
-    // check if user already exsists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "User already exists" },
-        { status: 409 }
-      );
-    }
-
-    const newUser = new User({ email, password });
+    // create an empty user
+    const newUser = new User({});
     await newUser.save();
 
     return NextResponse.json(
