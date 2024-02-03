@@ -39,3 +39,31 @@
     font-weight: lighter;
     font-style: normal; 
 }
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./static/Inter-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal; 
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./static/Inter-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal; 
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./static/Inter-ExtraBold.otf') format('opentype');
+    font-weight: bolder;
+    font-style: normal; 
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./static/Inter-Light.otf') format('opentype');
+    font-weight: lighter;
+    font-style: normal; 
+}
