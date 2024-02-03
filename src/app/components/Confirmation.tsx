@@ -5,9 +5,7 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
   useDisclosure,
-  Button,
 } from "@chakra-ui/react";
 import { Button as H4IButton } from "@styles/Button";
 import React from "react";
@@ -33,8 +31,6 @@ interface Props {
                 Green for positive, red for negative. (Ex: True: Create, Edit, Send. False: Delete)
 */
             
-
-
 const Confirmation = ({ buttonName, title, message, isPositive }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
@@ -57,7 +53,7 @@ const Confirmation = ({ buttonName, title, message, isPositive }: Props) => {
             <AlertDialogBody>{message}</AlertDialogBody>
 
             <AlertDialogFooter>
-              <H4IButton ref={cancelRef} onClick={onClose} color="slategray"> 
+              <H4IButton ref={cancelRef} onClick={onClose} color="slategray">
                 Cancel
               </H4IButton>
               <H4IButton onClick={onClose} color={isPositive ? "forestgreen" : "crimson"} >
