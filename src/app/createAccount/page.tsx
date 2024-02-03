@@ -3,6 +3,7 @@ import styles from './CreateAccount.module.css'
 import React, { useState } from 'react';
 import checkmarkImage from '/docs/images/checkmark.png'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function CreateAccount() {
     const [isSubmitted, setSubmitted] = useState(false);
@@ -52,7 +53,9 @@ const AccountCreated = () => {
                 <div className={styles.successText}>SUCCESS</div>
                 <div className={styles.successExplanation}>Your account has been created</div>
                 <div className={styles.buttonContainer}>
+                    <Link href = "/">
                     <button className={styles.returnToCalendar}>Return to calendar</button>
+                    </Link>
                 </div>
             </div>
         </div>
