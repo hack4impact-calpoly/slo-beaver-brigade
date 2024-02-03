@@ -17,14 +17,26 @@ Things to include in the schema
 
 import mongoose, { Schema } from "mongoose";
 
+type User = {
+    email: string;
+    firstName: string;
+    lastName: string;
+    age: number;
+    gender: number;
+    role: ["user", "admin"];
+    digitalWaiver: Schema.Types.ObjectId | null;
+    eventsAttended: [Schema.Types.ObjectId];
+};
+
 const UserSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ['user', 'admin'], required: true },
-  eventsAttended: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
-  volunteerEventsAttended: [{ type: Schema.Types.ObjectId, ref: 'VolunteerEvent' }],
-  age: { type: Number, required: true },
-  gender: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    age: { type: Number, required: true },
+    gender: { type: String, required: true },
+    role: { type: String, enum: ["user", "admin"], required: true },
+    digitalWaiver: { type: Schema.Types.ObjectId, required: false },
+    eventsAttended: [{ type: Schema.Types.ObjectId, ref: "Event" }],
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);
