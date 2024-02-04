@@ -7,24 +7,21 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    // id from url
+    // extract id from the URL
     const url = new URL(req.url);
-    const pathSegments = url.pathname.split('/');
-    const userID = pathSegments[pathSegments.findIndex(segment => segment === 'users') + 1];
-
-    // ensure userID is not empty
-    if (!userID) {
-      return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
-    }
+    const pathSegments = url.pathname.split("/");
+    const userIDIndex =
+      pathSegments.findIndex((segment) => segment === "user") + 1;
+    const userID = pathSegments[userIDIndex];
 
     const user = await User.findById(userID);
 
-    // check if user exists
+    // Check if user exists
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    return NextResponse.json({ user }, { status: 200 }); 
-    
+
+    return NextResponse.json({ user });
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },
@@ -32,6 +29,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-
-

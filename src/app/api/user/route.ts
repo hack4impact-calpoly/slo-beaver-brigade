@@ -18,33 +18,33 @@ export async function GET() {
 
 // POST request for adding user
 export async function POST(req: NextRequest) {
-    try {
-      await connectDB();
-  
-      // convert the readable stream to JSON
-      const bodyText = await new Response(req.body).text();
-      const body = JSON.parse(bodyText);
-      const { email, role, age, gender, eventsAttended, firstName, lastName } = body;
-  
-      // create a new user
-      const newUser = new User({
-        email,
-        role,
-        age,
-        gender,
-        eventsAttended,
-        firstName,
-        lastName,
-        digitalWaiver: null
-      });
-  
-      await newUser.save();
-      return NextResponse.json({ newUser });
+  try {
+    await connectDB();
 
-    } catch (error) {
-        return NextResponse.json(
-            { error: (error as Error).message },
-            { status: 500 }
-          );
-    }
+    // convert the readable stream to JSON
+    const bodyText = await new Response(req.body).text();
+    const body = JSON.parse(bodyText);
+    const { email, role, age, gender, eventsAttended, firstName, lastName } =
+      body;
+
+    // create a new user
+    const newUser = new User({
+      email,
+      role,
+      age,
+      gender,
+      eventsAttended,
+      firstName,
+      lastName,
+      digitalWaiver: null,
+    });
+
+    await newUser.save();
+    return NextResponse.json({ newUser });
+  } catch (error) {
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    );
   }
+}
