@@ -123,10 +123,6 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
                 <strong>Continue With An Account</strong>
               </Button>
             </Flex>
-
-
-
-
             {/* Modal */}
             <Modal
               isOpen={isOpen}
