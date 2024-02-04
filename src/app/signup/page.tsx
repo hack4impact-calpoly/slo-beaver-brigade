@@ -12,10 +12,21 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import styles from './page.module.css'
+import checkmarkImage from '/docs/images/checkmark.png'
+import Image from 'next/image'
+
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitted, setSubmitted] = useState(false);
 
+  const handleSubmit = () => {
+      // If the form submission is successful, setSubmitted(true);
+      // This should also handle the backend submission later.
+      //for the frontend, it'll just have the successful submission screen popup
+      setSubmitted(true);
+  };
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
@@ -73,11 +84,32 @@ export default function SignUp() {
             />
         </FormControl>
         <FormControl mb={4}>
-          <Button bg="#a3caf0" width="full">
+          <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
             Create Account
           </Button>
         </FormControl>
       </Box>
+      <div>
+            {isSubmitted && <AccountCreated/>}
+        </div>
     </>
   );
+}
+
+ //When return to calendar is clicked it should reroute to the calendar
+const AccountCreated = () => {
+    return(
+        <div className = {styles.successWindow}>
+            <div className={styles.totalAccountCreated}>
+                <Image className={styles.checkmark} src={checkmarkImage} alt="checkmark"/>
+                <div className={styles.successText}>SUCCESS</div>
+                <div className={styles.successExplanation}>Your account has been created</div>
+                <div className={styles.buttonContainer}>
+                    <NextLink href = "/">
+                    <button className={styles.returnToCalendar}>Return to calendar</button>
+                    </NextLink>
+                </div>
+            </div>
+        </div>
+    )
 }
