@@ -26,7 +26,6 @@ interface EventExpandedViewProps {
     endTime: Date;
     location: string;
     description: string;
-    weekDay: string;
     numVolunteers: number;
     numVolunteersNeeded: number;
   };
@@ -48,6 +47,13 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
       onOpen();
     }
   };
+
+  const formattedDate = eventDetails.date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   const formattedStartTime = eventDetails.startTime.toLocaleTimeString('en-US', {
     hour: 'numeric',
@@ -82,7 +88,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
           <Box bg="white" p={4}>
             <Flex align="center" justify="space-between">
               <Text>
-                <strong>{eventDetails.weekDay}, {eventDetails.date.toLocaleString('en-US', { month: 'long' })} from {formattedStartTime} - {formattedEndTime}</strong>
+                <strong>{formattedDate} from {formattedStartTime} - {formattedEndTime}</strong>
               </Text>
               <Flex>
                 <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
