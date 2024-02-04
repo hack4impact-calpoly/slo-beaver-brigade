@@ -1,31 +1,27 @@
 import connectDB from "@database/db";
-import { NextRequest, NextResponse } from "next/server";
 import User from "@database/userSchema";
 
 // Dynamic GET request to get user by ID
-export async function GET(req: NextRequest) {
+export async function GET(
+  request: Request,
+  { params }: { params: { userId: string } }
+) {
   try {
     await connectDB();
 
-    // extract id from the URL
-    const url = new URL(req.url);
-    const pathSegments = url.pathname.split("/");
-    const userIDIndex =
-      pathSegments.findIndex((segment) => segment === "user") + 1;
-    const userID = pathSegments[userIDIndex];
+    // grab id from param
+    const id = params.userId;
 
-    const user = await User.findById(userID);
+    // search for user in db
+    const user = await User.findById(id);
 
-    // Check if user exists
+    // check if user exists
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ user });
+    return Response.json({ user });
   } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 500 }
-    );
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }
