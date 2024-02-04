@@ -49,6 +49,18 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
     }
   };
 
+  const formattedStartTime = eventDetails.startTime.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+
+  const formattedEndTime = eventDetails.endTime.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+
   return (
     <Center>
       <Box borderWidth="1px" borderRadius="lg" bg="lightblue" m={{ base: '2', md: '0' }}
@@ -70,15 +82,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
           <Box bg="white" p={4}>
             <Flex align="center" justify="space-between">
               <Text>
-                <strong>{eventDetails.weekDay}, {eventDetails.date.toLocaleString('en-US', { month: 'long' })} from {eventDetails.startTime.toLocaleTimeString('en-US', {
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  hour12: true,
-                })} - {eventDetails.endTime.toLocaleTimeString('en-US', {
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  hour12: true,
-                })}</strong>
+                <strong>{eventDetails.weekDay}, {eventDetails.date.toLocaleString('en-US', { month: 'long' })} from {formattedStartTime} - {formattedEndTime}</strong>
               </Text>
               <Flex>
                 <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
