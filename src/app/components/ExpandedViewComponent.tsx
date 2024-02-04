@@ -21,8 +21,9 @@ import { EditIcon, DeleteIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/ico
 interface EventExpandedViewProps {
   eventDetails: {
     name: string;
-    date: string;
-    time: string;
+    date: Date;
+    startTime: Date;
+    endTime: Date;
     location: string;
     description: string;
     weekDay: string;
@@ -50,7 +51,8 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
 
   return (
     <Center>
-      <Box borderWidth="1px" borderRadius="lg" bg="lightblue">
+      <Box borderWidth="1px" borderRadius="lg" bg="lightblue" m={{ base: '2', md: '0' }} onClick={() => setShowExpandedView(!showExpandedView)}
+        cursor="pointer">
         {/* Title Section */}
         <Box mb={1} bg="lightblue" p={2} borderRadius="md">
           <Flex align="center" justify="space-between">
@@ -68,7 +70,15 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
           <Box bg="white" p={4}>
             <Flex align="center" justify="space-between">
               <Text>
-                <strong>{eventDetails.weekDay}, {eventDetails.date} from {eventDetails.time}</strong>
+                <strong>{eventDetails.weekDay}, {eventDetails.date.toLocaleString('en-US', { month: 'long' })} from {eventDetails.startTime.toLocaleTimeString('en-US', {
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: true,
+                })} - {eventDetails.endTime.toLocaleTimeString('en-US', {
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: true,
+                })}</strong>
               </Text>
               <Flex>
                 <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
