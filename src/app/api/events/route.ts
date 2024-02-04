@@ -1,20 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-import Event from "@database/eventSchema";
+import Event, { IEvent } from "@database/eventSchema";
 
 
 export async function GET() {
-  await connectDB() // function from db.ts before
+  await connectDB() // connect to db
 
 	try {
-			// query for all blogs and sort by date
+			// query for all events and sort by date
 	    const events = await Event.find().sort({ date: -1 }).orFail()
-			// send a response as the blogs as the message
-	    return events
+			// returns all events in json format or errors
+	    return NextResponse.json(events, { status: 200 });
 	} catch (err) {
-    console.log(`error: ${err}`)
-	  return null
+    return NextResponse.json("Failed to fetch events: " + err, { status: 400 });
 	}
+}
+
+export async function POST(req: NextRequest) {
+  await connectDB() // connect to db
+
+  //strip Event data from req json
+  const { eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, date, volunteerEvent, attendeeIds }: IEvent = await req.json()
+  
+  //create new event or return error
+  try {
+    const newEvent = new Event({ eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, date, volunteerEvent, attendeeIds })
+    await newEvent.save()
+    return NextResponse.json("Event added successfully\n" + {newEvent}, { status: 200 });
+  } catch (err) {
+    return NextResponse.json("Event not added: " + err, { status: 400 });
+  }
 }
 
 
