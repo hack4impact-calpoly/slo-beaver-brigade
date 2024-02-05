@@ -1,0 +1,68 @@
+@import '../fonts/fonts.css';
+
+.totalAccountCreated{
+    position: absolute;
+    top: 7%;
+    left: 37%;
+    z-index: 20;
+    background-color: white;
+    width: 26%;
+    height: 45%;
+    border-radius: 20px;
+}
+
+.successWindow{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    z-index: 19;
+    width: 100vw;
+    height: 110vh;
+    background-color: rgba(59, 57, 57, 0.325)
+}
+
+.checkmark{
+    max-width: 44%;
+    height: auto;
+    margin-left: 28%;
+    margin-top: 5%;
+}
+
+.successText{
+    text-align: center;
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 20px;
+    margin: 5%;
+}
+
+.successExplanation{
+    text-align: center;
+    font-family: 'Inter';
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.buttonContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 5%;
+}
+
+.returnToCalendar{
+    background-color: #5773c7;
+    font-family: 'Inter';
+    font-weight: normal;
+    color: white;
+    font-size: 15px;
+    border-radius:  10px;
+    border: none;
+    padding: 3% 12% 3% 12%;
+    white-space: nowrap;
+}
+
+.returnToCalendar:hover{
+    background-color: #455da7;
+}
