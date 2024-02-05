@@ -70,9 +70,9 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
   return (
     <Center>
       <Box borderWidth="1px" borderRadius="lg" bg="lightblue" m={{ base: '2', md: '0' }}
-        cursor="pointer">
+        >
         {/* Title Section */}
-        <Box mb={1} bg="lightblue" p={2} borderRadius="md" onClick={() => setShowExpandedView(!showExpandedView)}>
+        <Box cursor="pointer" mb={1} bg="lightblue" p={2} borderRadius="md" onClick={() => setShowExpandedView(!showExpandedView)}>
           <Flex align="center" justify="space-between">
             <Text fontWeight="bold" fontSize="2xl">{eventDetails.name}</Text>
             <Flex>
