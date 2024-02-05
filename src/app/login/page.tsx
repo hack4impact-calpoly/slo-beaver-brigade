@@ -61,7 +61,7 @@ export default function Login() {
           </Button>
         </FormControl>
         <Box textAlign="center">
-          <NextLink href="/signup">
+          <NextLink href="/signup" passHref>
             <ChakraLink fontSize="sm">Create new account</ChakraLink>
           </NextLink>
         </Box>
