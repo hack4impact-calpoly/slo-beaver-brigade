@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export type IEvent = {
     eventName: string;
     location: string;
+    description: string;
     wheelchairAccessible: boolean;
     spanishSpeakingAccommodation: boolean;
     startTime: Date;
@@ -16,6 +17,7 @@ export type IEvent = {
 const eventSchema = new Schema<IEvent>({
     eventName: { type: String, required: true },
     location: { type: String, required: true },
+    description: { type: String, required: true },
     wheelchairAccessible: { type: Boolean, required: true },
     spanishSpeakingAccommodation: { type: Boolean, required: true },
     startTime: { type: Date, required: true },
