@@ -8,6 +8,8 @@ import {
   XMarkIcon,
   HomeIcon,
   CalendarDaysIcon,
+  UserIcon,
+  HandRaisedIcon
 } from "@heroicons/react/16/solid";
 
 const Sidebar = () => {
@@ -35,11 +37,24 @@ const Sidebar = () => {
       icon: <CalendarDaysIcon style={{ width: "35px", height: "35px" }} />,
       current: `/${segement}` === "/events" ? true : false,
     },
+    {
+      name: "Volunteer",
+      href: "/admin/volunteer",
+      icon: <HandRaisedIcon style={{ width: "35px", height: "35px" }} />,
+      current: `/${segement}` === "/volunteer" ? true : false, 
+    },
+    {
+      name: "Profile",
+      href: "/admin/profile",
+      icon: <UserIcon style={{ width: "35px", height: "35px" }} />,
+      current: `/${segement}` === "/profile" ? true : false, 
+    },
   ];
 
   return (
     <div
       className={`${style.sidebar} ${isCollapsed ? style.collapsedSidebar : ""}`}
+      style={{ backgroundColor: "#5DADE2"}}
     >
       <div className={style.toggleButton} onClick={toggleSlider}>
         {isCollapsed ? (
@@ -57,7 +72,7 @@ const Sidebar = () => {
               className={`${option.current ? style.currentOption : ""}`}
             >
               <Link href={option.href}>
-                <div className={style.option}>
+                <div className={style.option} >
                   {option.icon}
                   <p>{isCollapsed ? "" : option.name}</p>
                 </div>
