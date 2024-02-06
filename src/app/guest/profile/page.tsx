@@ -1,7 +1,7 @@
 const dashboard = () => {
     return (
       <div>
-        <h2>Profile Admin Page</h2>
+        <h2>Profile Guest Page</h2>
       </div>
     );
   };

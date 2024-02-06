@@ -1,7 +1,7 @@
 const dashboard = () => {
     return (
       <div>
-        <h2>Volunteer Admin Page</h2>
+        <h2>Volunteer Guest Page</h2>
       </div>
     );
   };

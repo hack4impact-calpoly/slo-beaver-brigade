@@ -8,6 +8,8 @@ import {
   XMarkIcon,
   HomeIcon,
   CalendarDaysIcon,
+  UserIcon,
+  HandRaisedIcon
 } from "@heroicons/react/16/solid";
 
 const Sidebar = () => {
@@ -24,18 +26,29 @@ const Sidebar = () => {
   // can add more options here for admin
   const sideBarOptions = [
     {
-      name: "Dashboard",
-      href: "/admin",
+      name: "Home",
+      href: "/guest",
       icon: <HomeIcon style={{ width: "35px", height: "35px" }} />,
       current: !segement ? true : false,
     },
     {
       name: "Events",
-      href: "/admin/events",
+      href: "/guest/events",
       icon: <CalendarDaysIcon style={{ width: "35px", height: "35px" }} />,
       current: `/${segement}` === "/events" ? true : false,
     },
-    
+    {
+      name: "Volunteer",
+      href: "/guest/volunteer",
+      icon: <HandRaisedIcon style={{ width: "35px", height: "35px" }} />,
+      current: `/${segement}` === "/volunteer" ? true : false, 
+    },
+    {
+      name: "Profile",
+      href: "/guest/profile",
+      icon: <UserIcon style={{ width: "35px", height: "35px" }} />,
+      current: `/${segement}` === "/profile" ? true : false, 
+    },
   ];
 
   return (
@@ -50,7 +63,6 @@ const Sidebar = () => {
           <XMarkIcon style={{ width: "35px", height: "35px" }} />
         )}
       </div>
-      <h1>{isCollapsed ? "" : "Admin"}</h1>
       <div className={style.adminOptions}>
         <ul>
           {sideBarOptions.map((option) => (
