@@ -10,7 +10,7 @@ export default function Home() {
     <main>
       <h1>SLO Beaver Brigade</h1>
       <Button>Nice Button</Button>
-      <CreateEditEvent create={true}></CreateEditEvent>
+      <CreateEditEvent create={false}></CreateEditEvent>
       <NextLink href="/login">
         <Button>Login</Button>
       </NextLink>
