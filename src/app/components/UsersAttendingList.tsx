@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import style from '@styles/admin/userList.module.css'
 
