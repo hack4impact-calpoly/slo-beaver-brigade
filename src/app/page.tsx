@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@styles/Button";
-import { ChakraProvider } from "@chakra-ui/react";
 import CreateEditEvent from "@components/CreateEditEvent";
 import NextLink from "next/link";
 

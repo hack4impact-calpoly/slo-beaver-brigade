@@ -23,10 +23,17 @@ type User = {
     lastName: string;
     age: number;
     gender: string;
-    role: "user" | "admin";
-    digitalWaiver: Schema.Types.ObjectId | null;
+    role: "user" | "supervisor" | "admin";
     eventsAttended: [Schema.Types.ObjectId];
+    digitalWaiver: Schema.Types.ObjectId | null;
+    groupId: number | null;
 };
+
+enum Role {
+    "user",
+    "supervisor",
+    "admin",
+}
 
 const UserSchema = new Schema<User>({
     email: { type: String, required: true, unique: true },
@@ -34,13 +41,19 @@ const UserSchema = new Schema<User>({
     lastName: { type: String, required: true },
     age: { type: Number, required: true },
     gender: { type: String, required: true },
-    role: { type: String, enum: ["user", "admin"], required: true },
-    digitalWaiver: { type: Schema.Types.ObjectId, required: false },
+    role: {
+        type: String,
+        enum: Role,
+        default: "user",
+        required: true,
+    },
     eventsAttended: {
         type: [Schema.Types.ObjectId],
         required: true,
         default: [],
     },
+    groupId: { type: Number, required: false },
+    digitalWaiver: { type: Schema.Types.ObjectId, required: false },
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);
