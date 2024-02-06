@@ -17,7 +17,13 @@ Things to include in the schema
 
 import mongoose, { Schema } from "mongoose";
 
-type User = {
+enum Role {
+    "user",
+    "supervisor",
+    "admin",
+}
+
+export type IUser = {
     email: string;
     firstName: string;
     lastName: string;
@@ -29,13 +35,7 @@ type User = {
     groupId: number | null;
 };
 
-enum Role {
-    "user",
-    "supervisor",
-    "admin",
-}
-
-const UserSchema = new Schema<User>({
+const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
