@@ -16,7 +16,7 @@ const Sidebar = () => {
   // returns the current route that user is on, null if user is on the root (admin page.tsx)
   const segement = useSelectedLayoutSegment();
 
-  // useState for determining if slider is collapased
+  // useState 1ining if slider is collapased
   const [isCollapsed, setCollapsed] = useState(false);
 
   const toggleSlider = () => {
