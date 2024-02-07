@@ -50,7 +50,7 @@
 }
 
 .currentOption {
-  background-color: #f0f0f0;
+  background-color: #3498db;
 }
 
 .toggleButton {
@@ -95,16 +95,7 @@
 
 /* mobile view */
 @media (max-width: 768px) {
-  .sidebar {
-    width: 45vw;
-    text-align: center;
-  }
-
   .collapsedSidebar {
-    width: 40px;
-    padding-left: 10px;
-    overflow: hidden;
-    height: 60px;
     box-shadow: 0px 0 0px rgba(0, 0, 0, 0.1);
   }
 }
