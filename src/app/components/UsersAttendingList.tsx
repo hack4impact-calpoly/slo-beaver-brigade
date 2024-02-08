@@ -4,6 +4,21 @@ import style from '@styles/admin/userList.module.css'
 import {
   XMarkIcon
 } from "@heroicons/react/16/solid";
+import {IUser} from '@database/userSchema'
+import mongoose from "mongoose"
+import test from "node:test";
+
+type TestUserParams = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  age: number;
+  gender: string;
+  role: "user" | "supervisor" | "admin";
+  eventsAttendedCount: number; // Number of mock event IDs to generate
+  groupId?: number | null;
+  digitalWaiver?: boolean; // Use boolean to indicate if a digitalWaiver ID should be generated
+};
 
 export default function UserAttendingList() {
   const [list, setList] = useState(false);
@@ -18,20 +33,65 @@ export default function UserAttendingList() {
     document.body.classList.remove('activeList')
   }
   
+  const testList = [
+    {
+      id : 11233333,
+      name:"John",
+      email : "noahgiboney.comdfsafdasfsdafasdf",
+    },
+    {
+      id : 13213,
+      name:"Bill",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1231213,
+      name:"Mike",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 15555,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1111121,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 15523155,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1521555,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    }
+  ]
+
   return (
     <>
       <button onClick={toggleList} className={style.toggleButton}>
-        Attendees
+       {testList.length} Attendees
       </button>
 
       {list && (
         <div className={style.list}>
           <div onClick={toggleList} className={style.overlay}></div>
           <div className={style.listContent}>
-            <h2>Attendees</h2>
-            <p>
-              User list here
-            </p>
+          <h2>Event Name Attendees</h2>
+            {testList.map(( user, index) => (
+              <li key={user.id}>
+                <div className={style.listItem}>
+                <span className={style.userName}>{index + 1}. {user.name}</span>
+                <span className={style.userEmail}>{user.email}</span>
+              </div>
+                </li>
+            )
+
+            )}
             <button className={style.closeList} onClick={toggleList}>
               <XMarkIcon style={{ width: "20px", height: "20px" }} />
             </button>
