@@ -17,30 +17,43 @@ Things to include in the schema
 
 import mongoose, { Schema } from "mongoose";
 
-type User = {
+enum Role {
+    "user",
+    "supervisor",
+    "admin",
+}
+
+export type IUser = {
     email: string;
     firstName: string;
     lastName: string;
     age: number;
     gender: string;
-    role: "user" | "admin";
-    digitalWaiver: Schema.Types.ObjectId | null;
+    role: "user" | "supervisor" | "admin";
     eventsAttended: [Schema.Types.ObjectId];
+    digitalWaiver: Schema.Types.ObjectId | null;
+    groupId: number | null;
 };
 
-const UserSchema = new Schema<User>({
+const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     age: { type: Number, required: true },
     gender: { type: String, required: true },
-    role: { type: String, enum: ["user", "admin"], required: true },
-    digitalWaiver: { type: Schema.Types.ObjectId, required: false },
+    role: {
+        type: String,
+        enum: Role,
+        default: "user",
+        required: true,
+    },
     eventsAttended: {
         type: [Schema.Types.ObjectId],
         required: true,
         default: [],
     },
+    groupId: { type: Number, required: false },
+    digitalWaiver: { type: Schema.Types.ObjectId, required: false },
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);
