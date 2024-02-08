@@ -5,16 +5,33 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import ineractionPlugin, {Draggable, DropArg} from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from "@fullcalendar/list"
-import {IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/calendar.module.css"
-import styled from 'styled-components'
+import { Schema } from "mongoose";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-
 import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-icons/font/bootstrap-icons.css'; // needs additional webpack config!
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
+//FullCalendar Schema
+export type FCEvent = {
+    title: string;
+    location: string;
+    description: string;
+    wheelchairAccessible: boolean;
+    spanishSpeakingAccommodation: boolean;
+    start: Date;
+    end: Date;
+    startTime: Date;
+    endTime: Date;
+    backgroundColor: string;
+    borderColor: string;
+    textColor: string;
+    volunteerEvent: boolean;
+    groupsAllowed: number[];
+    attendeeIds: Schema.Types.ObjectId[];
+};
 
 
-export default function Calendar (props : {events : []}) {
+export default function Calendar (props : {events : FCEvent[]}) {
   
     return (
         <div>
@@ -38,6 +55,7 @@ export default function Calendar (props : {events : []}) {
                     initialView="dayGridMonth"
                     contentHeight = "600px"
                     themeSystem='bootstrap5'
+                    eventDisplay='block'
                     
                     />
             </div>
