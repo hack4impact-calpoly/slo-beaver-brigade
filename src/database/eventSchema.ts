@@ -1,27 +1,33 @@
-
 import mongoose, { Schema } from "mongoose";
 
 export type IEvent = {
     eventName: string;
+    location: string;
     description: string;
     wheelchairAccessible: boolean;
     spanishSpeakingAccommodation: boolean;
-    date: Date;
+    startTime: Date;
+    endTime: Date;
     volunteerEvent: boolean;
-    attendeeIds: string[];
+    groupsAllowed: number[];
+    attendeeIds: Schema.Types.ObjectId[];
 };
 
-// Mongoose schema 
+// Mongoose schema
 const eventSchema = new Schema<IEvent>({
     eventName: { type: String, required: true },
+    location: { type: String, required: true },
     description: { type: String, required: true },
     wheelchairAccessible: { type: Boolean, required: true },
     spanishSpeakingAccommodation: { type: Boolean, required: true },
-    date: { type: Date, required: true },
-    volunteerEvent: {type: Boolean, required: true},
-    attendeeIds: { type: [String], required: true, default: [] },
+    startTime: { type: Date, required: true },
+    endTime: { type: Date, required: true },
+    volunteerEvent: { type: Boolean, required: true },
+    groupsAllowed: { type: [Number], required: false },
+    attendeeIds: { type: [Schema.Types.ObjectId], required: true, default: [] },
 });
 
-const Event = mongoose.models['events'] || mongoose.model('events', eventSchema);
+const Event =
+    mongoose.models["events"] || mongoose.model("events", eventSchema);
 
 export default Event;
