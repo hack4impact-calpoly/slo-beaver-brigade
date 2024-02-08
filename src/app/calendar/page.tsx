@@ -1,11 +1,12 @@
 import React from 'react'
-import Calendar from '@components/Calendar'
+import Calendar,{FCEvent} from '@components/Calendar'
+import {IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/eventpage.module.css"
 
 
 
-
 export default async function Events() {
+  //gets events from api endpoint
   async function getEvents() {
     const res = await fetch(`http://localhost:3000/api/events`,
     {
@@ -18,9 +19,33 @@ export default async function Events() {
     return null
   }
 
-  const events = await getEvents();
-  const clientEvents = JSON.parse(JSON.stringify(events))
+  //converts an event into a FullCalendar event
+  function Calendarify(event : IEvent) {
+    //convert events into plain object before passing into client component
+    const calEvent = JSON.parse(JSON.stringify(event));
 
+    calEvent.title = event.eventName;
+    delete calEvent.eventName;
+    calEvent.start = event.startTime;
+    calEvent.end = event.endTime;
+
+    if(event.eventName == "Beaver Walk"){
+      calEvent.backgroundColor = "#8A6240"
+      calEvent.borderColor = "#4D2D18"
+      calEvent.textColor = "#fff"
+    }
+    else{
+      calEvent.backgroundColor = "#0077b6"
+      calEvent.borderColor = "#03045e"
+      calEvent.textColor = "#fff"
+    }
+
+    return calEvent
+  }
+
+  const events = await getEvents();
+  const calEvent = events.map(Calendarify)
+  console.log(calEvent)
 
 
   return (
@@ -30,7 +55,7 @@ export default async function Events() {
         </header>
         <main>
             <div>
-                <Calendar events={clientEvents}
+                <Calendar events={calEvent}
                 />
             </div>
         </main>
