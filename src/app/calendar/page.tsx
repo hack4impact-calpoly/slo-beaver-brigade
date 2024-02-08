@@ -1,4 +1,3 @@
-'use client'
 import React from 'react'
 import Calendar from '@components/Calendar'
 import style from "@styles/calendar/eventpage.module.css"
@@ -7,6 +6,8 @@ import style from "@styles/calendar/eventpage.module.css"
 
 
 export default function Events() {
+    
+
     return (
         <div className={style.page}>
             <header className={style.header}>
@@ -18,8 +19,6 @@ export default function Events() {
                     />
                 </div>
             </main>
-            
-            
         </div>
     )
 }
