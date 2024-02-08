@@ -14,7 +14,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css'; // needs additional webpack config!
 
 
-export default function Calendar (props : {}) {
+export default function Calendar (props : {events : []}) {
   
     return (
         <div>
@@ -26,7 +26,7 @@ export default function Calendar (props : {}) {
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay'
                     }}
-                    events={{}}
+                    events={props.events}
                     nowIndicator={true}
                     editable={true}
                     droppable={true}
