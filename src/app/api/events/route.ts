@@ -9,7 +9,6 @@ export async function GET() {
 	try {
 			// query for all events and sort by date
 	    const events = await Event.find().sort({ date: -1 }).orFail()
-      console.log(events)
 			// returns all events in json format or errors
 	    return NextResponse.json(events, { status: 200 });
 	} catch (err) {
