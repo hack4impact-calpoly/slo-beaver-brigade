@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid' 
@@ -13,7 +14,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css'; // needs additional webpack config!
 
 
-export default function Calendar () {
+export default function Calendar (props : {}) {
   
     return (
         <div>
