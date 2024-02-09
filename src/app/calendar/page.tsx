@@ -5,6 +5,7 @@ import style from "@styles/calendar/eventpage.module.css"
 
 
 
+
 export default async function Events() {
   //gets events from api endpoint
   async function getEvents() {
@@ -55,7 +56,7 @@ export default async function Events() {
         </header>
         <main>
             <div>
-                <Calendar events={calEvent}
+                <Calendar events={calEvent} admin={false}
                 />
             </div>
         </main>
