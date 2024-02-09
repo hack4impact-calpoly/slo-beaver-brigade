@@ -79,7 +79,7 @@ export default function Calendar (props : {events : FCEvent[], admin: Boolean}) 
                     initialView="dayGridMonth"
                     contentHeight = "650px"
                     themeSystem='bootstrap5'
-                    eventDisplay='block'
+                    eventDisplay='block'    
                     
                     />
             </div>
