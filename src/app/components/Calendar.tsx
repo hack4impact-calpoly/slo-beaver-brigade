@@ -10,7 +10,6 @@ import { Schema } from "mongoose";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import CreateEditEvent from '@components/CreateEditEvent'
 
 //FullCalendar Schema
 export type FCEvent = {
@@ -78,13 +77,12 @@ export default function Calendar (props : {events : FCEvent[], admin: Boolean}) 
                     // drop={}
                     // eventClick={}
                     initialView="dayGridMonth"
-                    contentHeight = "600px"
+                    contentHeight = "650px"
                     themeSystem='bootstrap5'
                     eventDisplay='block'
                     
                     />
             </div>
-            
         </div>
     )
   
