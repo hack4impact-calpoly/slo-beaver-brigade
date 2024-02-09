@@ -40,16 +40,16 @@ export default function Calendar (props : {events : FCEvent[], admin: Boolean}) 
          buttonType.myCustomButton = {
                 text: 'Add Event',
                 click: function() {
-                    alert('clicked the custom button!');
+                    alert('Add Events!');
                 },
-                hint: "Sign Up Button"
+                hint: "Add Event Button"
             }
     }
     else {
         buttonType.myCustomButton = {
             text: 'Sign Up',
             click: function() {
-                alert('clicked the custom button!');
+                alert('Sign Up!');
             },
             hint: "Sign Up Button"
         }
