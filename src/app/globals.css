@@ -3,6 +3,11 @@
 }
 
 :root{
+    .fc-myCustomButton-button
+    {
+        background-color: #355E3b !important;
+    }
+
     @media (max-width: 767.98px) {
         .fc .fc-toolbar.fc-header-toolbar {
             display: block;
