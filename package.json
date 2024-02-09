@@ -1,6 +1,7 @@
 {
   "name": "nextjs-app-template",
   "version": "0.1.0",
+  "engines": { "node":  "18.17.1"},
   "private": true,
   "scripts": {
     "dev": "next lint --fix && next dev",
