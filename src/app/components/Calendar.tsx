@@ -10,6 +10,7 @@ import { Schema } from "mongoose";
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import CreateEditEvent from '@components/CreateEditEvent'
 
 //FullCalendar Schema
 export type FCEvent = {
@@ -31,17 +32,40 @@ export type FCEvent = {
 };
 
 
-export default function Calendar (props : {events : FCEvent[]}) {
+export default function Calendar (props : {events : FCEvent[], admin: Boolean}) {
+
+    const buttonType = {myCustomButton:{}}
+
+    if (props.admin){
+         buttonType.myCustomButton = {
+                text: 'Add Event',
+                click: function() {
+                    alert('clicked the custom button!');
+                },
+                hint: "Sign Up Button"
+            }
+    }
+    else {
+        buttonType.myCustomButton = {
+            text: 'Sign Up',
+            click: function() {
+                alert('clicked the custom button!');
+            },
+            hint: "Sign Up Button"
+        }
+    }
+
   
     return (
         <div>
             <div className={style.wrapper}>
                 <FullCalendar
+                    customButtons={buttonType}
                     plugins={[ dayGridPlugin, ineractionPlugin, timeGridPlugin, bootstrap5Plugin ]}
                     headerToolbar={{
                         left: 'prev,next today',
                         center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        right: 'myCustomButton dayGridMonth,timeGridWeek'
                     }}
                     events={props.events}
                     nowIndicator={true}
@@ -49,6 +73,7 @@ export default function Calendar (props : {events : FCEvent[]}) {
                     droppable={true}
                     selectable={true}
                     selectMirror={true}
+                    
                     // dateClick={{}}
                     // drop={}
                     // eventClick={}
