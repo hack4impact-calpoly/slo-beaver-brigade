@@ -1,27 +1,23 @@
 import React from 'react'
-import Calendar,{FCEvent} from '@components/Calendar'
+import Calendar from '@components/Calendar'
 import {IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/eventpage.module.css"
 
+//gets events from api endpoint
+export async function getEvents() {
+  const res = await fetch(`http://localhost:3000/api/events`,
+  {
+    cache:"no-store"
+  });
 
-
-
-export default async function Events() {
-  //gets events from api endpoint
-  async function getEvents() {
-    const res = await fetch(`http://localhost:3000/api/events`,
-    {
-      cache:"no-store"
-    });
-  
-    if(res.ok){
-      return res.json()
-    }
-    return null
+  if(res.ok){
+    return res.json()
   }
+  return null
+}
 
   //converts an event into a FullCalendar event
-  function Calendarify(event : IEvent) {
+  export function Calendarify(event : IEvent) {
     //convert events into plain object before passing into client component
     const calEvent = JSON.parse(JSON.stringify(event));
 
@@ -44,10 +40,9 @@ export default async function Events() {
     return calEvent
   }
 
+export default async function Events() {
   const events = await getEvents();
   const calEvent = events.map(Calendarify)
-  console.log(calEvent)
-
 
   return (
     <div className={style.page}>
