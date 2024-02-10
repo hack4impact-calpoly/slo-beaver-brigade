@@ -8,9 +8,8 @@ body.activeList {
     margin: 100px auto 0; 
     font-size: 18px; 
     cursor: pointer; 
-    background-color: #007bff; 
-    color: white; 
-    border: none; 
+    background-color: #f7f7f7;
+    border: 1px solid black; 
     border-radius: 5px; 
 }
 
@@ -77,4 +76,12 @@ body.activeList {
     color: #555; 
     font-style: italic; 
     font-size: 0.9em; 
+  }
+
+  .viewText {
+    display: block; 
+    text-transform: lowercase; 
+    font-size: 0.75em;
+    color: #666; 
+    line-height: 1; 
   }

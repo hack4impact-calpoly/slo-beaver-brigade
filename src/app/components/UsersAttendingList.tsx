@@ -74,7 +74,8 @@ export default function UserAttendingList() {
   return (
     <>
       <button onClick={toggleList} className={style.toggleButton}>
-       {testList.length} Attendees
+       <span>{testList.length} Attendees</span><br/>
+       <span className={style.viewText}>view</span>
       </button>
 
       {list && (
