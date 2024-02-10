@@ -27,11 +27,12 @@ const CreateEditEvent = ({create}: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <>
-      <Button onClick={onOpen}>
+      {/* <Button onClick={onOpen}>
         <>
             {create ? "Create " : "Edit "} Event
+
         </>     
-      </Button>
+      </Button> */}
 
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />

@@ -38,3 +38,7 @@ next-env.d.ts
 
 # requirements
 requirements.txt
+
+# amplify
+.amplify
+amplifyconfiguration*
