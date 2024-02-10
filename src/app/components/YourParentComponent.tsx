@@ -16,7 +16,6 @@ const YourParentComponent: React.FC = () => {
     endTime: endTime,
     location: 'East Main Street',
     description: 'This is a sample event description.',
-    weekDay: 'Wednesday',
     numVolunteers: 18,
     numVolunteersNeeded: 20,
   };
