@@ -17,18 +17,10 @@ import {
   Stack
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/icons';
+import { IEvent } from '@database/eventSchema';
 
 interface EventExpandedViewProps {
-  eventDetails: {
-    name: string;
-    date: Date;
-    startTime: Date;
-    endTime: Date;
-    location: string;
-    description: string;
-    numVolunteers: number;
-    numVolunteersNeeded: number;
-  };
+  eventDetails: IEvent;
 }
 
 const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) => {
@@ -48,7 +40,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
     }
   };
 
-  const formattedDate = eventDetails.date.toLocaleDateString('en-US', {
+  const formattedDate = eventDetails.startTime.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -74,7 +66,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
         {/* Title Section */}
         <Box mb={1} bg="lightblue" p={2} borderRadius="md" onClick={() => setShowExpandedView(!showExpandedView)}>
           <Flex align="center" justify="space-between">
-            <Text fontWeight="bold" fontSize="2xl">{eventDetails.name}</Text>
+            <Text fontWeight="bold" fontSize="2xl">{eventDetails.eventName}</Text>
             <Flex>
               <Button onClick={() => setShowExpandedView(!showExpandedView)} variant="link" >
                 {showExpandedView ? <CloseIcon /> : <ChevronDownIcon/>}
@@ -99,7 +91,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
               <strong>{eventDetails.location}</strong>
             </Text>
             <Text mb={8}>
-              <strong>{eventDetails.numVolunteers}/{eventDetails.numVolunteersNeeded} Participants</strong>
+              <strong>{eventDetails.groupsAllowed}/{eventDetails.groupsAllowed} Participants</strong>
             </Text>
             <Text mb={12}>
               {eventDetails.description}
@@ -141,7 +133,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
             >
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>{eventDetails.name}</ModalHeader>
+                <ModalHeader>{eventDetails.eventName}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                   <Text>{eventDetails.description}</Text>
