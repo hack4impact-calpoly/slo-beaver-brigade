@@ -1,3 +1,16 @@
 * {
     margin: 0px;
 }
+
+:root{
+    @media (max-width: 767.98px) {
+        .fc .fc-toolbar.fc-header-toolbar {
+            display: block;
+            text-align: center;
+        }
+    
+        .fc-header-toolbar .fc-toolbar-chunk {
+            display: block;
+        }
+    }
+}
