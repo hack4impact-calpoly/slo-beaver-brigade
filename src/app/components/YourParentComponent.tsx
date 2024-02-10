@@ -1,6 +1,7 @@
 // src/app/components/YourParentComponent.tsx
 import React from 'react';
 import EventExpandedView from './ExpandedViewComponent';
+import { IEvent } from '@database/eventSchema';
 
 const YourParentComponent: React.FC = () => {
   const startTime = new Date();
@@ -9,15 +10,17 @@ const YourParentComponent: React.FC = () => {
   const endTime = new Date();
   endTime.setHours(12, 0, 0); // Set hours, minutes, and seconds for 12 pm
 
-  const eventDetails = {
-    name: 'Watery Walk',
-    date: new Date('2022-12-12'),
-    startTime: startTime,
-    endTime: endTime,
+  const eventDetails: IEvent = {
+    eventName: 'Watery Walk',
     location: 'East Main Street',
     description: 'This is a sample event description.',
-    numVolunteers: 18,
-    numVolunteersNeeded: 20,
+    wheelchairAccessible: true,
+    spanishSpeakingAccommodation: false,
+    startTime: startTime,
+    endTime: endTime,
+    volunteerEvent: true,
+    groupsAllowed: [1, 2, 3],
+    attendeeIds: [], // array of Schema.Types.ObjectId
   };
 
   return <EventExpandedView eventDetails={eventDetails} />;
