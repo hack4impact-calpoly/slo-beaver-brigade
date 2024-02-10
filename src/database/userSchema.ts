@@ -25,6 +25,7 @@ enum Role {
 
 export type IUser = {
     email: string;
+    phoneNumber: string;
     firstName: string;
     lastName: string;
     age: number;
@@ -37,6 +38,7 @@ export type IUser = {
 
 const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true },
+    phoneNumber: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     age: { type: Number, required: true },
