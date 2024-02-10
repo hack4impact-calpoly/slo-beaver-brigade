@@ -4,21 +4,6 @@ import style from '@styles/admin/userList.module.css'
 import {
   XMarkIcon
 } from "@heroicons/react/16/solid";
-import {IUser} from '@database/userSchema'
-import mongoose from "mongoose"
-import test from "node:test";
-
-type TestUserParams = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-  gender: string;
-  role: "user" | "supervisor" | "admin";
-  eventsAttendedCount: number; // Number of mock event IDs to generate
-  groupId?: number | null;
-  digitalWaiver?: boolean; // Use boolean to indicate if a digitalWaiver ID should be generated
-};
 
 export default function UserAttendingList() {
   const [list, setList] = useState(false);
@@ -38,6 +23,66 @@ export default function UserAttendingList() {
       id : 11233333,
       name:"John",
       email : "noahgiboney.comdfsafdasfsdafasdf",
+    },
+    {
+      id : 13213,
+      name:"Bill",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1231213,
+      name:"Mike",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 15555,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1111121,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 15523155,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1521555,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 13213,
+      name:"Bill",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1231213,
+      name:"Mike",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 15555,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1111121,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 15523155,
+      name:"Jorge",
+      email : "noahgiboney.com",
+    },
+    {
+      id : 1521555,
+      name:"Jorge",
+      email : "noahgiboney.com",
     },
     {
       id : 13213,

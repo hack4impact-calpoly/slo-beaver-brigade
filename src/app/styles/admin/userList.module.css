@@ -8,9 +8,13 @@ body.activeList {
     margin: 100px auto 0; 
     font-size: 18px; 
     cursor: pointer; 
-    background-color: #f7f7f7;
+    background-color: white;
     border: 1px solid black; 
-    border-radius: 5px; 
+}
+
+.toggleButton:hover {
+    background-color: #f7f7f7;
+    transform: scale(1.005);
 }
 
 .list {
@@ -29,6 +33,8 @@ body.activeList {
 }
 
 .listContent {
+    overflow: auto;
+    height: 50vh;
     position: fixed;
     top: 50%;
     left: 50%;
