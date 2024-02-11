@@ -34,6 +34,7 @@ const CreateEditEvent = ({ create, showModal, setShowModal }: Props) => {
       {/* <Button onClick={onOpen}>
         <>
             {create ? "Create " : "Edit "} Event
+
         </>     
       </Button> */}
 

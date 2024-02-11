@@ -3,6 +3,7 @@
 import { Button } from "@styles/Button";
 import CreateEditEvent from "@components/CreateEditEvent";
 import NextLink from "next/link";
+import YourParentComponent from "@components/YourParentComponent";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <NextLink href="/login">
         <Button>Login</Button>
       </NextLink>
+      <YourParentComponent />
     </main>
   );
 }

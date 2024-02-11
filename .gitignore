@@ -26,6 +26,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+/.env
 .env
 
 # vercel
@@ -37,3 +38,7 @@ next-env.d.ts
 
 # requirements
 requirements.txt
+
+# amplify
+.amplify
+amplifyconfiguration*
