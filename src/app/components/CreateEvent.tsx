@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@styles/Button";
 
+<<<<<<< HEAD:src/app/components/CreateEditEvent.tsx
 interface Props {
   create: boolean;
   showModal: boolean;
@@ -29,20 +30,28 @@ const CreateEditEvent = ({ create, showModal, setShowModal }: Props) => {
   // const { isOpen, onOpen, onClose } = useDisclosure();
   const onClose = () => setShowModal(false)
   
+=======
+
+    
+const CreateEvent = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+>>>>>>> 606873f (fix: separated CreateEditEvent into two components):src/app/components/CreateEvent.tsx
   return (
     <>
-      {/* <Button onClick={onOpen}>
-        <>
-            {create ? "Create " : "Edit "} Event
-
-        </>     
-      </Button> */}
+      <Button onClick={onOpen}>
+            Create Event
+      </Button>
 
       <Modal isOpen={showModal} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
+<<<<<<< HEAD:src/app/components/CreateEditEvent.tsx
           <ModalHeader bg="#a3caf0" fontWeight="bold" position="relative">
             <>{create ? "Create " : "Edit "} Event</>
+=======
+          <ModalHeader bg='#a3caf0' fontWeight='bold' position='relative'>
+              Create Event
+>>>>>>> 606873f (fix: separated CreateEditEvent into two components):src/app/components/CreateEvent.tsx
           </ModalHeader>
           <ModalCloseButton size="l" />
 
@@ -97,7 +106,11 @@ const CreateEditEvent = ({ create, showModal, setShowModal }: Props) => {
           <ModalFooter>
             <Button onClick={onClose}>Close</Button>
             <Button>
+<<<<<<< HEAD:src/app/components/CreateEditEvent.tsx
               <>{create ? "Create" : "Save"}</>
+=======
+                Create
+>>>>>>> 606873f (fix: separated CreateEditEvent into two components):src/app/components/CreateEvent.tsx
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -106,4 +119,8 @@ const CreateEditEvent = ({ create, showModal, setShowModal }: Props) => {
   );
 };
 
+<<<<<<< HEAD:src/app/components/CreateEditEvent.tsx
 export default CreateEditEvent;
+=======
+export default CreateEvent
+>>>>>>> 606873f (fix: separated CreateEditEvent into two components):src/app/components/CreateEvent.tsx
