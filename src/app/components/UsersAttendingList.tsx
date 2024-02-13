@@ -2,8 +2,14 @@
 import React, { useState } from "react";
 import style from "@styles/admin/userList.module.css";
 import { XMarkIcon } from "@heroicons/react/16/solid";
+import {IEvent} from '@database/eventSchema'
+import {IUser} from '@database/userSchema'
 
-export default function UserAttendingList() {
+type UserListProps = {
+  event: IEvent
+}
+
+export default function UserAttendingList({event}: UserListProps) {
   const [list, setList] = useState(false);
 
   const toggleList = () => {
@@ -15,40 +21,7 @@ export default function UserAttendingList() {
   } else {
     document.body.classList.remove("activeList");
   }
-
-  const testList = [
-    {
-      id: 11233333,
-      name: "John",
-      email: "noahgiboney.comdfsafdasfsdafasdf",
-      phone: "555-0101",
-    },
-    {
-      id: 13213,
-      name: "Bill",
-      email: "noahgiboney.com",
-      phone: "555-0202",
-    },
-    {
-      id: 1231213,
-      name: "Mike",
-      email: "noahgiboney.com",
-      phone: "555-0303",
-    },
-    {
-      id: 15555,
-      name: "Jorge",
-      email: "noahgiboney.com",
-      phone: "555-0404",
-    },
-    {
-      id: 1111121,
-      name: "Jorge",
-      email: "noahgiboney.com",
-      phone: "555-0505",
-    },
-  ];
-
+  
   return (
     <>
       <button onClick={toggleList} className={style.toggleButton}>
