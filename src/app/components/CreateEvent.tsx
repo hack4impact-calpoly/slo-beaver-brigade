@@ -16,31 +16,21 @@ import {
     } from '@chakra-ui/react'
 import { Button } from '@styles/Button'
 
-interface Props {
-    create: boolean;
-  }  
 
-/* if create var is True, it will be a Create Event component, 
-    otherwise it will be Edit Event Component */
     
-const CreateEditEvent = ({create}: Props) => {
+const CreateEvent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <>
-      {/* <Button onClick={onOpen}>
-        <>
-            {create ? "Create " : "Edit "} Event
-
-        </>     
-      </Button> */}
+      <Button onClick={onOpen}>
+            Create Event
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader bg='#a3caf0' fontWeight='bold' position='relative'>
-            <>
-                {create ? "Create " : "Edit "} Event
-            </>
+              Create Event
           </ModalHeader>
           <ModalCloseButton size='l'/>    
 
@@ -74,9 +64,7 @@ const CreateEditEvent = ({create}: Props) => {
               Close
             </Button>
             <Button>
-                <>
-                    {create ? "Create" : "Save"}
-                </>
+                Create
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -85,4 +73,4 @@ const CreateEditEvent = ({create}: Props) => {
   )
 }
 
-export default CreateEditEvent
+export default CreateEvent
