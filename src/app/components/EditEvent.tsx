@@ -42,6 +42,10 @@ const CreateEvent = () => {
                     <Input placeholder="Select Date" size="md" type="date" color='grey'/>
                 </Stack>
                 <Stack spacing={0}>
+                    <FormLabel color='grey' fontWeight='bold'>Event Time</FormLabel>
+                    <Input placeholder="Select Time" size="md" type="time" color='grey'/>
+                </Stack>
+                <Stack spacing={0}>
                     <FormLabel color='grey' fontWeight='bold'>Event Description</FormLabel>
                     <Textarea placeholder='Event Description' />
                 </Stack>
