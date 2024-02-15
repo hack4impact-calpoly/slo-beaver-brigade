@@ -9,7 +9,7 @@ export type IEvent = {
     startTime: Date;
     endTime: Date;
     volunteerEvent: boolean;
-    groupsAllowed: Schema.Types.ObjectId[];
+    groupsAllowed: Schema.Types.ObjectId[] | null;
     attendeeIds: Schema.Types.ObjectId[];
 };
 
@@ -23,6 +23,7 @@ const eventSchema = new Schema<IEvent>({
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     volunteerEvent: { type: Boolean, required: true },
+    groupsAllowed: { type: [Schema.Types.ObjectId], required: false },
     groupsAllowed: { type: [Schema.Types.ObjectId], required: false },
     attendeeIds: { type: [Schema.Types.ObjectId], required: true, default: [] },
 });
