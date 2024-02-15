@@ -1,47 +1,95 @@
-import React from 'react'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid' 
-import ineractionPlugin, {Draggable, DropArg} from '@fullcalendar/interaction'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import listPlugin from "@fullcalendar/list"
-import {IEvent} from '@database/eventSchema'
-import style from "@styles/calendar/calendar.module.css"
-import styled from 'styled-components'
-import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+"use client";
+import React, { useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import ineractionPlugin, {
+  Draggable,
+  DropArg,
+} from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+import style from "@styles/calendar/calendar.module.css";
+import { Schema } from "mongoose";
+import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import CreateEditEvent from "./CreateEditEvent";
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-icons/font/bootstrap-icons.css'; // needs additional webpack config!
+//FullCalendar Schema
+export type FCEvent = {
+  title: string;
+  location: string;
+  description: string;
+  wheelchairAccessible: boolean;
+  spanishSpeakingAccommodation: boolean;
+  start: Date;
+  end: Date;
+  startTime: Date;
+  endTime: Date;
+  backgroundColor: string;
+  borderColor: string;
+  textColor: string;
+  volunteerEvent: boolean;
+  groupsAllowed: number[];
+  attendeeIds: Schema.Types.ObjectId[];
+};
 
+export default function Calendar(props: { events: FCEvent[]; admin: Boolean }) {
+  const buttonType = { myCustomButton: {} };
+  const [showModal, setShowModal] = useState(false);
 
-export default function Calendar () {
-  
-    return (
-        <div>
-            <div className={style.wrapper}>
-                <FullCalendar
-                    plugins={[ dayGridPlugin, ineractionPlugin, timeGridPlugin, bootstrap5Plugin ]}
-                    headerToolbar={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    }}
-                    events={{}}
-                    nowIndicator={true}
-                    editable={true}
-                    droppable={true}
-                    selectable={true}
-                    selectMirror={true}
-                    // dateClick={{}}
-                    // drop={}
-                    // eventClick={}
-                    initialView="dayGridMonth"
-                    contentHeight = "600px"
-                    themeSystem='bootstrap5'
-                    
-                    />
-            </div>
-            
-        </div>
-    )
-  
+  if (props.admin) {
+    buttonType.myCustomButton = {
+      text: "Add Event",
+      click: function () {
+        setShowModal(true);
+       
+      },
+      hint: "Add Event Button",
+    };
+  } else {
+    buttonType.myCustomButton = {
+      text: "Sign Up",
+      click: function () {
+        alert("Sign Up!");
+      },
+      hint: "Sign Up Button",
+    };
+  }
+
+  return (
+    <div>
+      <div className={style.wrapper}>
+        <CreateEditEvent create={false} showModal={showModal} setShowModal={setShowModal}></CreateEditEvent>
+        <FullCalendar
+          customButtons={buttonType}
+          plugins={[
+            dayGridPlugin,
+            ineractionPlugin,
+            timeGridPlugin,
+            bootstrap5Plugin,
+            listPlugin
+          ]}
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "myCustomButton dayGridMonth,listMonth",
+          }}
+          events={props.events}
+          nowIndicator={true}
+          editable={true}
+          droppable={true}
+          selectable={true}
+          selectMirror={true}
+          // dateClick={{}}
+          // drop={}
+          // eventClick={}
+          initialView="dayGridMonth"
+          contentHeight="650px"
+          themeSystem="bootstrap5"
+          eventDisplay="block"
+        />
+      </div>
+    </div>
+  );
 }
