@@ -13,12 +13,7 @@ import {
   Switch,
   Stack,
   FormControl,
-  FormLabel,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper
+  FormLabel
 } from '@chakra-ui/react'
 import { Button } from '@styles/Button'
 import React, {useState} from 'react';
@@ -33,7 +28,10 @@ const CreateEvent = () => {
   const [end, setEnd] = useState('')
   const [desc, setDesc] = useState('')
   const [type, setType] = useState('')
-  const [grps, setGrps] = useState(0)
+  const [vol, setVol] = useState(false)
+  const [myGrp, setMyGrp] = useState(false)
+  const [wc, setWC] = useState(false)
+  const [span, setSpan] = useState(false)
 
   const handleNameChange = (e: any) => setName(e.target.value)
   const handleLocationChange = (e: any) => setLoc(e.target.value)
@@ -42,7 +40,15 @@ const CreateEvent = () => {
   const handleEndChange = (e: any) => setEnd(e.target.value)
   const handleDescChange = (e: any) => setDesc(e.target.value)
   const handleTypeChange = (e: any) => setType(e.target.value)
-  const handleGrpsChange = (e: any) => setGrps(e)
+  const handleVolChange = () => {
+    setVol(!vol)
+    if(vol) {
+        setMyGrp(false)
+    }
+}
+  const handleMyGrp = () => setMyGrp(!myGrp)
+  const handleWCChange = () => setWC(!wc)
+  const handleSpanChange = () => setSpan(!span)
 
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -54,7 +60,10 @@ const CreateEvent = () => {
     setEnd('')
     setDesc('')
     setType('')
-    setGrps(0)
+    setVol(false)
+    setMyGrp(false)
+    setWC(false)
+    setSpan(false)    
     setIsSubmitted(false)
     onClose()
   }
@@ -129,24 +138,13 @@ const CreateEvent = () => {
                 </FormControl>
               </Stack>
 
-              <Stack spacing={0}>
-                <FormControl isInvalid={grps === 0 && isSubmitted}>
-                  <FormLabel color='grey' fontWeight='bold'>Number of Groups Allowed</FormLabel>
-                  <NumberInput allowMouseWheel step={5} value={grps} onChange={handleGrpsChange}>
-                    <NumberInputField />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
-                </FormControl>
-              </Stack>
+              <Switch fontWeight='bold' color='grey' isChecked={vol} onChange={handleVolChange}>Volunteer Event</Switch>
 
-              <Switch fontWeight='bold' color='grey'>Volunteer Event</Switch>
-
-              <Switch fontWeight='bold' color='grey'>Wheelchair Accessibility</Switch>
-
-              <Switch fontWeight='bold' color='grey'>Spanish Speaking Accommodations</Switch>
+              <Switch fontWeight='bold' color='grey' isDisabled={!vol} isFocusable={!vol} isChecked={myGrp} onChange={handleMyGrp}>Only My Group Allowed</Switch>
+  
+              <Switch fontWeight='bold' color='grey' isChecked={wc} onChange={handleWCChange}>Wheelchair Accessibility</Switch>
+  
+              <Switch fontWeight='bold' color='grey' isChecked={span} onChange={handleSpanChange}>Spanish Speaking Accommodations</Switch>
 
             </Stack>
           </ModalBody>
