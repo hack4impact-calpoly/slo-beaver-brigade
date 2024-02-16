@@ -1,9 +1,10 @@
 .adminDash {
-  display: flex;
+    display: flex;
 }
 
 .mainContainer {
-  width: 100%;
-  text-align: center;
-  height: 100vh;
+    padding-top: 50px;
+    width: 100%;
+    text-align: center;
+    height: 100vh;
 }
