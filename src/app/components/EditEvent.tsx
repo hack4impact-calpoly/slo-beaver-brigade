@@ -70,8 +70,35 @@ import {
       onClose()
     }
 
-    function getDate(x:Date): string {return x.toISOString().substring(0, 10)}
-    function getTime(x:Date): string {return x.toISOString().substring(11, 16)}
+    function getDate(x:Date): string {
+        let localeDate: string = x.toLocaleDateString('en-Us')
+        let localeDateParts = localeDate.split('/')
+        let y: string = localeDateParts[2]
+        let m: string = localeDateParts[0]
+        let d: string = localeDateParts[1]
+        if (m.length == 1) {m = '0'.concat(m)}
+        if (d.length == 1) {d = '0'.concat(d)}
+        return y.concat('-', m, '-', d)
+    }
+
+    function getTime(x:Date): string {
+        let time: string = x.toLocaleTimeString()
+        let timeParts: string[] = time.split(':')
+        let h: string = timeParts[0]
+        let m: string = timeParts[1]
+        let amPM: string = timeParts[2].split(' ')[1]
+
+        if (h.localeCompare('12') == 0 && amPM.localeCompare('AM') == 0) {
+            h = (parseInt(h) - 12).toString() 
+        }
+        if (amPM.localeCompare('PM') == 0 && h.localeCompare('12') != 0) {
+            h = (parseInt(h) + 12).toString()
+        }
+        if (h.length == 1) {
+            h = '0'.concat(h)
+        }
+        return h.concat(':', m)
+    }
   
     function HandleSubmit() {setIsSubmitted(true)}
   
