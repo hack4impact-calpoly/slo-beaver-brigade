@@ -60,7 +60,7 @@ export default function Calendar(props: { events: FCEvent[]; admin: Boolean }) {
   return (
     <div>
       <div className={style.wrapper}>
-        <CreateEditEvent create={false} showModal={showModal} setShowModal={setShowModal}></CreateEditEvent>
+        <CreateEditEvent create={true} showModal={showModal} setShowModal={setShowModal}></CreateEditEvent>
         <FullCalendar
           customButtons={buttonType}
           plugins={[

@@ -90,9 +90,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
             <Text>
               <strong>{eventDetails.location}</strong>
             </Text>
-            <Text mb={8}>
-              <strong>{eventDetails.groupsAllowed}/{eventDetails.groupsAllowed} Participants</strong>
-            </Text>
+      
             <Text mb={12}>
               {eventDetails.description}
             </Text>
