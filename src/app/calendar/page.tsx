@@ -20,11 +20,11 @@ export async function getEvents() {
   export function Calendarify(event : IEvent) {
     //convert events into plain object before passing into client component
     const calEvent = JSON.parse(JSON.stringify(event));
-
     calEvent.title = event.eventName;
     delete calEvent.eventName;
     calEvent.start = event.startTime;
     calEvent.end = event.endTime;
+    calEvent.id = event._id;
 
     if(event.eventName == "Beaver Walk"){
       calEvent.backgroundColor = "#8A6240"
@@ -41,11 +41,13 @@ export async function getEvents() {
   }
 
 export default async function Events() {
-  let calEvent = [];
+  let calEvent = []; //full calendar specific calendar object
   const events = await getEvents();
   if(events){
     calEvent = events.map(Calendarify)
   }
+  //Ievent object to pass into calendar component
+  const dbEvent = JSON.parse(JSON.stringify(events));
    
 
   return (
@@ -55,7 +57,7 @@ export default async function Events() {
         </header>
         <main>
             <div>
-                <Calendar events={calEvent} admin={false}
+                <Calendar events={calEvent} admin={false} dbevents={dbEvent}
                 />
             </div>
         </main>
