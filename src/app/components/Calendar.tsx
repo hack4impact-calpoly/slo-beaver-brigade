@@ -14,9 +14,11 @@ import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import CreateEditEvent from "./CreateEditEvent";
+import EventExpandedView from "./ExpandedViewComponent";
 
 //FullCalendar Schema
 export type FCEvent = {
+  id: string;
   title: string;
   location: string;
   description: string;
@@ -34,16 +36,22 @@ export type FCEvent = {
   attendeeIds: Schema.Types.ObjectId[];
 };
 
-export default function Calendar(props: { events: FCEvent[] | []; admin: Boolean }) {
+export default function Calendar(props: {
+  events: FCEvent[] | [];
+  admin: Boolean;
+}) {
   const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);
+  const [showEvent, setShowEvent] = useState(false);
+  const [getEvents, setEvents] = useState([]);
+
+  
 
   if (props.admin) {
     buttonType.myCustomButton = {
       text: "Add Event",
       click: function () {
         setShowModal(true);
-       
       },
       hint: "Add Event Button",
     };
@@ -60,7 +68,11 @@ export default function Calendar(props: { events: FCEvent[] | []; admin: Boolean
   return (
     <div>
       <div className={style.wrapper}>
-        <CreateEditEvent create={true} showModal={showModal} setShowModal={setShowModal}></CreateEditEvent>
+        <CreateEditEvent
+          create={true}
+          showModal={showModal}
+          setShowModal={setShowModal}
+        ></CreateEditEvent>
         <FullCalendar
           customButtons={buttonType}
           plugins={[
@@ -68,7 +80,7 @@ export default function Calendar(props: { events: FCEvent[] | []; admin: Boolean
             ineractionPlugin,
             timeGridPlugin,
             bootstrap5Plugin,
-            listPlugin
+            listPlugin,
           ]}
           headerToolbar={{
             left: "prev,next today",
@@ -83,7 +95,12 @@ export default function Calendar(props: { events: FCEvent[] | []; admin: Boolean
           selectMirror={true}
           // dateClick={{}}
           // drop={}
-          // eventClick={}
+          eventClick={function (info) {
+            setShowEvent(true);
+            let clickedEvent = props.events.filter(
+              (event) => (event.id === info.event.id)
+            )
+          }}
           initialView="dayGridMonth"
           contentHeight="650px"
           themeSystem="bootstrap5"
