@@ -21,13 +21,20 @@ import { IEvent } from '@database/eventSchema';
 
 interface EventExpandedViewProps {
   eventDetails: IEvent;
+  showExpandedView: boolean;
+  setShowExpandedView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) => {
+const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails,showExpandedView,setShowExpandedView }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showExpandedView, setShowExpandedView] = useState(false);
+  //const [showExpandedView, setShowExpandedView] = useState(false);
 
+  
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  function closeExpandedView() {
+    setShowExpandedView(false);
+  }
 
   const toggleModal = () => {
     if (isOpen) {
@@ -40,20 +47,20 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
     }
   };
 
-  const formattedDate = eventDetails.startTime.toLocaleDateString('en-US', {
+  const formattedDate = new Date(eventDetails.startTime).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
 
-  const formattedStartTime = eventDetails.startTime.toLocaleTimeString('en-US', {
+  const formattedStartTime = new Date(eventDetails.startTime).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,
   });
 
-  const formattedEndTime = eventDetails.endTime.toLocaleTimeString('en-US', {
+  const formattedEndTime = new Date(eventDetails.endTime).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,
@@ -64,7 +71,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
       <Box borderWidth="1px" borderRadius="lg" bg="lightblue" m={{ base: '2', md: '0' }}
         >
         {/* Title Section */}
-        <Box cursor="pointer" mb={1} bg="lightblue" p={2} borderRadius="md" onClick={() => setShowExpandedView(!showExpandedView)}>
+        {/* <Box cursor="pointer" mb={1} bg="lightblue" p={2} borderRadius="md" onClick={() => setShowExpandedView(!showExpandedView)}>
           <Flex align="center" justify="space-between">
             <Text fontWeight="bold" fontSize="2xl">{eventDetails.eventName}</Text>
             <Flex>
@@ -73,7 +80,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
               </Button>
             </Flex>
           </Flex>
-        </Box>
+        </Box> */}
 
         {/* Content Section */}
         {showExpandedView && (
@@ -84,7 +91,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
               </Text>
               <Flex>
                 <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
-                <Button onClick={onClose} variant="link" leftIcon={<DeleteIcon />}></Button>
+                <Button onClick={closeExpandedView} variant="link" leftIcon={<DeleteIcon />}></Button>
               </Flex>
             </Flex>
             <Text>
