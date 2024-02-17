@@ -5,8 +5,11 @@ import { Calendarify, getEvents } from 'app/calendar/page';
 
 
 export default async function dashboard(){
+  let calEvent = [];
   const events = await getEvents();
-  const calEvent = events.map(Calendarify)
+  if(events){
+    calEvent = events.map(Calendarify)
+  }
 
   return (
     <div className={style.page}>

@@ -41,8 +41,12 @@ export async function getEvents() {
   }
 
 export default async function Events() {
+  let calEvent = [];
   const events = await getEvents();
-  const calEvent = events.map(Calendarify)
+  if(events){
+    calEvent = events.map(Calendarify)
+  }
+   
 
   return (
     <div className={style.page}>

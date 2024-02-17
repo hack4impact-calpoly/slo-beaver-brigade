@@ -34,7 +34,7 @@ export type FCEvent = {
   attendeeIds: Schema.Types.ObjectId[];
 };
 
-export default function Calendar(props: { events: FCEvent[]; admin: Boolean }) {
+export default function Calendar(props: { events: FCEvent[] | []; admin: Boolean }) {
   const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);
 
