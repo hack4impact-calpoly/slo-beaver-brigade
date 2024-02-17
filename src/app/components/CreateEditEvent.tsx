@@ -28,6 +28,24 @@ interface Props {
 const CreateEditEvent = ({ create, showModal, setShowModal }: Props) => {
   // const { isOpen, onOpen, onClose } = useDisclosure();
   const onClose = () => setShowModal(false)
+
+  const handleDelete = async () => {
+    try {
+      // DELETE request to api
+      const response = await fetch('http://localhost:3000/api/events', {
+        method: 'DELETE',
+        // placeholder for more headers if needed
+      });
+      if (response.ok) {
+        // i could put a success message here if y'all want
+        onClose();
+      } else {
+        console.error('Failed to delete event:', response.statusText);
+      }
+    } catch (error) {
+      console.error('An error occurred while deleting event:', error);
+    }
+  };
   
   return (
     <>
