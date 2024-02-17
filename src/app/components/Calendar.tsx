@@ -15,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import CreateEditEvent from "./CreateEditEvent";
 import EventExpandedView from "./ExpandedViewComponent";
+import { IEvent } from "@database/eventSchema";
 
 //FullCalendar Schema
 export type FCEvent = {
@@ -39,13 +40,25 @@ export type FCEvent = {
 export default function Calendar(props: {
   events: FCEvent[] | [];
   admin: Boolean;
+  dbevents: IEvent[];
 }) {
+  const placeHolderEvent = {
+    _id: "",
+    eventName: "",
+    location: "",
+    description: "",
+    wheelchairAccessible: false,
+    spanishSpeakingAccommodation: false,
+    startTime: new Date("2024-02-17T17:30:00.000+00:00"),
+    endTime: new Date("2024-02-17T17:30:00.000+00:00"),
+    volunteerEvent: false,
+    groupsAllowed: [],
+    attendeeIds: [],
+  };
   const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);
-  const [showEvent, setShowEvent] = useState(false);
-  const [getEvents, setEvents] = useState([]);
-
-  
+  const [showExpandedView, setShowExpandedView] = useState(false);
+  const [getEvent, setEvent] = useState<IEvent>(placeHolderEvent);
 
   if (props.admin) {
     buttonType.myCustomButton = {
@@ -65,6 +78,7 @@ export default function Calendar(props: {
     };
   }
 
+  console.log(getEvent);
   return (
     <div>
       <div className={style.wrapper}>
@@ -73,6 +87,11 @@ export default function Calendar(props: {
           showModal={showModal}
           setShowModal={setShowModal}
         ></CreateEditEvent>
+        <EventExpandedView
+          eventDetails={getEvent}
+          showExpandedView={showExpandedView}
+          setShowExpandedView={setShowExpandedView}
+        ></EventExpandedView>
         <FullCalendar
           customButtons={buttonType}
           plugins={[
@@ -96,10 +115,12 @@ export default function Calendar(props: {
           // dateClick={{}}
           // drop={}
           eventClick={function (info) {
-            setShowEvent(true);
-            let clickedEvent = props.events.filter(
-              (event) => (event.id === info.event.id)
-            )
+            let clickedEvent = props.dbevents.filter(
+              (event) => event._id == info.event.id
+            )[0];
+
+            setEvent(clickedEvent);
+            setShowExpandedView(true);
           }}
           initialView="dayGridMonth"
           contentHeight="650px"
