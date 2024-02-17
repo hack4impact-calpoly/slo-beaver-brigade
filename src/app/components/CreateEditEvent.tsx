@@ -1,19 +1,17 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Input,
-  Textarea,
-  Select,
-  Switch,
-  Stack,
-  FormLabel,
-} from "@chakra-ui/react";
+import { Modal, 
+  ModalOverlay, 
+  ModalContent, 
+  ModalHeader, 
+  ModalFooter, 
+  ModalBody, 
+  ModalCloseButton, 
+  useDisclosure, 
+  Input, 
+  Textarea, 
+  Select, 
+  Switch, 
+  Stack, 
+  FormLabel } from "@chakra-ui/react";
 import { Button } from "@styles/Button";
 
 interface Props {
@@ -37,7 +35,7 @@ const CreateEditEvent = ({ create, showModal, setShowModal }: Props) => {
         // placeholder for more headers if needed
       });
       if (response.ok) {
-        // i could put a success message here if y'all want
+        // setShowSuccessMessage(true);
         onClose();
       } else {
         console.error('Failed to delete event:', response.statusText);
@@ -113,13 +111,25 @@ const CreateEditEvent = ({ create, showModal, setShowModal }: Props) => {
           </ModalBody>
 
           <ModalFooter>
+            {/* Button for deleting event */}
+            {!create && (
+              <Button onClick={handleDelete} mr={2} colorScheme="red">
+                Delete
+              </Button>
+            )}
+            {/* Button for closing the modal */}
             <Button onClick={onClose}>Close</Button>
-            <Button>
-              <>{create ? "Create" : "Save"}</>
-            </Button>
+            {/* Button for saving or creating event */}
+            <Button>{create ? "Create" : "Save"}</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
+      {/* Success message */}
+      {/* showSuccessMessage && (
+        <div>
+          Event deleted successfully!
+        </div>
+      )*/}
     </>
   );
 };
