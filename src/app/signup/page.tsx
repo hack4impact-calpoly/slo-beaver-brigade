@@ -59,7 +59,7 @@ export default function SignUp() {
       // change the UI to our pending section.
       setPendingVerification(true);
     } catch (err) {
-      console.error(err);
+      console.error(JSON.stringify(err, null, 2));
     }
 
       //setSubmitted(true);
