@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import style from "@styles/dashboard/events.module.css";
+import ExpandedViewComponent from '@components/ExpandedViewComponent'
 
 interface IEvent {
   _id: string;
@@ -12,8 +13,8 @@ interface IEvent {
   startTime: Date;
   endTime: Date;
   volunteerEvent: boolean;
-  groupsAllowed: string[];
-  attendeeIds: string[];
+  groupsAllowed: [];
+  attendeeIds: [];
 }
 
 const EventList = () => {
@@ -27,7 +28,12 @@ const EventList = () => {
         throw new Error("Failed to fetch events");
       }
       const data = await response.json();
-      setEvents(data);
+      const eventsWithDateObjects = data.map((event: IEvent) => ({
+        ...event,
+        startTime: new Date(event.startTime),
+        endTime: new Date(event.endTime),
+      }));
+      setEvents(eventsWithDateObjects);
     } catch (error) {
       console.log(error);
     }
@@ -50,22 +56,7 @@ const EventList = () => {
       <ul className={style.eventsList}>
         {upcomingEvents.map((event) => (
           <li key={event._id} className={style.eventItem}>
-            <h3 className={style.eventTitle}>{event.eventName}</h3>
-            <p className={style.eventLocation}>Location: {event.location}</p>
-            <p className={style.eventDescription}>{event.description}</p>
-            <p className={style.eventTime}>
-              Start Time: {new Date(event.startTime).toLocaleString()}
-              <br/> End Time: {new Date(event.endTime).toLocaleString()}
-            </p>
-            <p className={style.eventAccessibility}>
-              Wheelchair Accessible: {event.wheelchairAccessible ? "Yes" : "No"}
-              <br />
-              Spanish Speaking Accommodation:{" "}
-              {event.spanishSpeakingAccommodation ? "Yes" : "No"}
-            </p>
-            <p className={style.eventType}>
-              Volunteer Event: {event.volunteerEvent ? "Yes" : "No"}
-            </p>
+            <ExpandedViewComponent eventDetails={event}/>
           </li>
         ))}
       </ul>
