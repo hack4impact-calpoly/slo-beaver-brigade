@@ -10,6 +10,8 @@ import {
   getDay,
   getDaysInMonth,
   isToday,
+  isSameMonth,
+  eachDayOfInterval,
 } from "date-fns";
 import "../styles/userdashboard/DashboardCalendar.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
@@ -32,32 +34,44 @@ const DashboardCalendar: React.FC = () => {
     const firstDayOfWeek = getDay(startOfMonth(selectedDate));
     const daysFromPrevMonth = Array.from(
       { length: firstDayOfWeek },
-      (_, index) => 0
+      (_, index) => subDays(endOfMonth(subMonths(selectedDate, 1)), firstDayOfWeek - index)
     );
-
+    
     // Calculate the days of the current month
     const daysInMonth = Array.from(
       { length: getDaysInMonth(selectedDate) },
       (_, index) => index + 1
     );
 
+    
+
     return [...daysFromPrevMonth, ...daysInMonth];
   };
 
   const renderDays = () => {
-    const days = getDateArr(selectedDate);
-
-    return days.map((day, index) => (
+    const start = startOfMonth(selectedDate);
+    const end = endOfMonth(selectedDate);
+    const days = eachDayOfInterval({ start, end });
+    const firstDayOfWeek = getDay(start);
+  
+    // Calculate the number of days from the previous month to display
+    const daysFromPrevMonth = Array.from(
+      { length: firstDayOfWeek },
+      (_, index) => subDays(start, firstDayOfWeek - index)
+    );
+  
+    return [...daysFromPrevMonth, ...days].map((day) => (
       <button
-        key={index}
+        key={day.toString()}
         className={`date${isToday(day) ? " current-day" : ""}${
-          day === 0 ? " faded" : ""
+          !isSameMonth(day, selectedDate) ? " faded" : ""
         }`}
       >
-        {day === 0 ? "" : day}
+        {format(day, "d")}
       </button>
     ));
   };
+  
 
   return (
     <div className="datepicker">
