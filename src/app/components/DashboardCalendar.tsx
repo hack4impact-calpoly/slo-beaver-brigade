@@ -59,8 +59,21 @@ const DashboardCalendar: React.FC = () => {
       { length: firstDayOfWeek },
       (_, index) => subDays(start, firstDayOfWeek - index)
     );
+
+    // Calculate the days of the current month
+    const daysInMonth = Array.from(
+      { length: getDaysInMonth(selectedDate) },
+      (_, index) => index + 1
+    );
+    
+    // Calculate the number of days from the next month to display
+    const remainingDays = 7 - (firstDayOfWeek + daysInMonth.length) % 7;
+    const daysFromNextMonth = Array.from(
+      { length: remainingDays },
+      (_, index) => addDays(startOfMonth(addMonths(selectedDate, 1)), index)
+    );
   
-    return [...daysFromPrevMonth, ...days].map((day) => (
+    return [...daysFromPrevMonth, ...days, ...daysFromNextMonth].map((day) => (
       <button
         key={day.toString()}
         className={`date${isToday(day) ? " current-day" : ""}${
