@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import style from "@styles/dashboard/events.module.css";
-import ExpandedViewComponent from '@components/ExpandedViewComponent'
+import ExpandedViewComponent from "@components/ExpandedViewComponent";
 
 interface IEvent {
   _id: string;
@@ -56,7 +56,11 @@ const EventList = () => {
       <ul className={style.eventsList}>
         {upcomingEvents.map((event) => (
           <li key={event._id} className={style.eventItem}>
-            <ExpandedViewComponent eventDetails={event}/>
+            <div className={style.expandedViewWrapper}>
+              <div className={style.component}>
+                <ExpandedViewComponent eventDetails={event} />
+              </div>
+            </div>
           </li>
         ))}
       </ul>
