@@ -33,7 +33,7 @@ export type IUser = {
     role: "user" | "supervisor" | "admin";
     eventsAttended: [Schema.Types.ObjectId];
     digitalWaiver: Schema.Types.ObjectId | null;
-    groupId: number | null;
+    groupId: Schema.Types.ObjectId | null;
 };
 
 const UserSchema = new Schema<IUser>({
@@ -54,7 +54,7 @@ const UserSchema = new Schema<IUser>({
         required: true,
         default: [],
     },
-    groupId: { type: Number, required: false },
+    groupId: { type: Schema.Types.ObjectId, required: false },
     digitalWaiver: { type: Schema.Types.ObjectId, required: false },
 });
 

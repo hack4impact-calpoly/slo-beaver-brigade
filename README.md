@@ -22,14 +22,16 @@ The SLO Beaver Brigade team consists of {#} Cal Poly students. Over the course o
 - [Tyler Kim](https://www.linkedin.com/) - Project Manager
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead
 - [Vasanth Pugalenthi](https://www.linkedin.com/) - Tech Lead
+- [HanYu Wu](https://www.linkedin.com/) - Software Developer
 - [Jason Jelincic](https://www.linkedin.com/in/jasonjelincic/) - Software Developer
-- [Shuya Yanase](https://www.linkedin.com/) - Software Developer
 - [Ella Hagen](https://www.linkedin.com/) - Software Developer
+- [HanYu Wu](https://www.linkedin.com/) - Software Developer
 - [Sohini Pillay](https://www.linkedin.com/) - Software Developer
 - [Sameer Paykel](https://www.linkedin.com/in/sameerpaykel/) - Software Developer
 - [HanYu Wu](https://www.linkedin.com/) - Software Developer
 - [Logan Costello](www.linkedin.com/in/logancostello) - Software Developer
 - [Noah Giboney](https://www.linkedin.com/in/noah-giboney-896847261/) - Software Developer
+- [Shawn Gill](https://www.linkedin.com/in/shawngill404/) - Software Developer
 
 ## Getting Started And Contributing
 
