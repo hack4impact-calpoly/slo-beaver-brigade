@@ -41,18 +41,29 @@ const EventList = () => {
   return (
     //map over events to list upcoming events
     <div className={style.mainContainer}>
-      <h2>Upcoming Events</h2>
-      <ul className={style.eventsList}>
-        {events.map((event) => (
-          <li key={event._id} className={style.eventItem}>
-            <h3 className={style.eventTitle}>{event.eventName}</h3>
-            <p className={style.eventLocation}>Location: {event.location}</p>
-            <p className={style.eventDescription}>Description: {event.description}</p>
-            <p className={style.eventTime}>Start Time: {new Date(event.startTime).toLocaleString()}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+  <h2>Upcoming Events</h2>
+  <ul className={style.eventsList}>
+    {events.map((event) => (
+      <li key={event._id} className={style.eventItem}>
+        <h3 className={style.eventTitle}>{event.eventName}</h3>
+        <p className={style.eventLocation}>Location: {event.location}</p>
+        <p className={style.eventDescription}>{event.description}</p>
+        <p className={style.eventTime}>
+          Start Time: {new Date(event.startTime).toLocaleString()}
+          <br /> End Time: {new Date(event.endTime).toLocaleString()}
+        </p>
+        <p className={style.eventAccessibility}>
+          Wheelchair Accessible: {event.wheelchairAccessible ? 'Yes' : 'No'}
+          <br />
+          Spanish Speaking Accommodation: {event.spanishSpeakingAccommodation ? 'Yes' : 'No'}
+        </p>
+        <p className={style.eventType}>
+          Volunteer Event: {event.volunteerEvent ? 'Yes' : 'No'}
+        </p>
+      </li>
+    ))}
+  </ul>
+</div>
   );
 };
 

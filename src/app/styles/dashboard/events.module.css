@@ -1,15 +1,15 @@
-.mainContainer h2 {
+    .mainContainer h2 {
     font-size: 2rem;
     padding-bottom: 50px;
-}
-
-.eventsList {
+  }
+  
+  .eventsList {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 20px; 
+    gap: 30px; 
     align-items: center;
   }
   
@@ -30,18 +30,15 @@
   
   .eventTitle {
     font-size: 1.25rem; 
-    color: #333333; 
     padding: 15px 20px; 
     background: #3498db; 
     color: #ffffff;
     margin: 0; 
   }
   
-  .eventDescription, .eventLocation, .eventTime {
+  .eventDescription, .eventLocation, .eventTime, .eventAccessibility, .eventType, .eventGroups, .eventAttendees {
     padding: 10px 20px; 
-    border-top: 1px solid #f0f0f0; 
     margin: 0; 
-    color: #555; 
     font-size: 0.9rem; 
   }
   
@@ -51,5 +48,19 @@
   
   .eventDescription {
     border-top: none;
+  }
+  
+  .eventAccessibility, .eventType, .eventGroups, .eventAttendees {
+    border-top: 1px solid #f0f0f0; 
+  }
+
+  .eventAccessibility, .eventType {
+    font-style: italic;
+    background-color: #ecf0f1;
+  }
+  
+  .eventGroups, .eventAttendees {
+    background-color: #ecf0f1;
+    font-weight: bold;
   }
   
