@@ -16,7 +16,7 @@ interface IEvent {
   attendeeIds: string[];
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
 
   // get events from api endpoint
@@ -40,8 +40,8 @@ const Dashboard: React.FC = () => {
 
   return (
     //map over events to list upcoming events
-    <div>
-      <h2>Event Guest Page</h2>
+    <div className={style.mainContainer}>
+      <h2>Upcoming Events</h2>
       <ul className={style.eventsList}>
         {events.map((event) => (
           <li key={event._id} className={style.eventItem}>

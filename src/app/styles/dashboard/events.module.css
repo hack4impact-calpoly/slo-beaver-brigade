@@ -1,24 +1,55 @@
+.mainContainer h2 {
+    font-size: 2rem;
+    padding-bottom: 50px;
+}
+
 .eventsList {
     list-style: none;
+    margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    align-items: center;
   }
   
   .eventItem {
-    border: 1px solid #ccc;
-    margin-bottom: 16px;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    border: none;
+    width: 80%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    overflow: hidden; 
+    background-color: #ffffff; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+  }
+  
+  .eventItem:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); 
   }
   
   .eventTitle {
-    margin: 0 0 10px 0;
-    color: #333;
+    font-size: 1.25rem; 
+    color: #333333; 
+    padding: 15px 20px; 
+    background: #3498db; 
+    color: #ffffff;
+    margin: 0; 
   }
   
-  .eventDescription,
-  .eventLocation,
-  .eventTime {
-    margin: 5px 0;
-    color: #666;
+  .eventDescription, .eventLocation, .eventTime {
+    padding: 10px 20px; 
+    border-top: 1px solid #f0f0f0; 
+    margin: 0; 
+    color: #555; 
+    font-size: 0.9rem; 
   }
+  
+  .eventLocation, .eventTime {
+    background-color: #f9f9f9; 
+  }
+  
+  .eventDescription {
+    border-top: none;
+  }
+  
