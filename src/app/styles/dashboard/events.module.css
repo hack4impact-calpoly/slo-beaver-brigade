@@ -1,66 +1,79 @@
-    .mainContainer h2 {
-    font-size: 2rem;
-    padding-bottom: 50px;
-  }
-  
-  .eventsList {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 30px; 
-    align-items: center;
-  }
-  
-  .eventItem {
-    border: none;
-    width: 80%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    border-radius: 8px; 
-    overflow: hidden; 
-    background-color: #ffffff; 
-    transition: transform 0.2s ease, box-shadow 0.2s ease; 
-  }
-  
-  .eventItem:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); 
-  }
-  
-  .eventTitle {
-    font-size: 1.25rem; 
-    padding: 15px 20px; 
-    background: #3498db; 
-    color: #ffffff;
-    margin: 0; 
-  }
-  
-  .eventDescription, .eventLocation, .eventTime, .eventAccessibility, .eventType, .eventGroups, .eventAttendees {
-    padding: 10px 20px; 
-    margin: 0; 
-    font-size: 0.9rem; 
-  }
-  
-  .eventLocation, .eventTime {
-    background-color: #f9f9f9; 
-  }
-  
-  .eventDescription {
-    border-top: none;
-  }
-  
-  .eventAccessibility, .eventType, .eventGroups, .eventAttendees {
-    border-top: 1px solid #f0f0f0; 
-  }
+.mainContainer h2 {
+  font-size: 2rem;
+  padding-bottom: 50px;
+}
 
-  .eventAccessibility, .eventType {
-    font-style: italic;
-    background-color: #ecf0f1;
-  }
-  
-  .eventGroups, .eventAttendees {
-    background-color: #ecf0f1;
-    font-weight: bold;
-  }
-  
+.eventsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+.eventItem {
+  border: none;
+  width: 80%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.eventItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.eventTitle {
+  font-size: 1.25rem;
+  padding: 15px 20px;
+  background: #3498db;
+  color: #ffffff;
+  margin: 0;
+}
+
+.eventDescription,
+.eventLocation,
+.eventTime,
+.eventAccessibility,
+.eventType,
+.eventGroups,
+.eventAttendees {
+  padding: 10px 20px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.eventLocation,
+.eventTime {
+  background-color: #f9f9f9;
+}
+
+.eventDescription {
+  border-top: none;
+}
+
+.eventAccessibility,
+.eventType,
+.eventGroups,
+.eventAttendees {
+  border-top: 1px solid #f0f0f0;
+}
+
+.eventAccessibility,
+.eventType {
+  font-style: italic;
+  background-color: #ecf0f1;
+}
+
+.eventGroups,
+.eventAttendees {
+  background-color: #ecf0f1;
+  font-weight: bold;
+}
