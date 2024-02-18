@@ -38,12 +38,15 @@ const EventList = () => {
     fetchEvents();
   }, []);
 
+  // filter all events to upcoming events
+  const upcomingEvents = events.filter(event => new Date(event.startTime) > new Date());
+
   return (
     //map over events to list upcoming events
     <div className={style.mainContainer}>
   <h2>Upcoming Events</h2>
   <ul className={style.eventsList}>
-    {events.map((event) => (
+    {upcomingEvents.map((event) => (
       <li key={event._id} className={style.eventItem}>
         <h3 className={style.eventTitle}>{event.eventName}</h3>
         <p className={style.eventLocation}>Location: {event.location}</p>
