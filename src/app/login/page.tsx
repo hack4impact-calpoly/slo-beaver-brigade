@@ -13,8 +13,7 @@ import {
 import NextLink from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSignIn } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import { set } from "mongoose";
+import { useRouter, useSearchParams} from 'next/navigation';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +21,8 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams()
+  const redirect_url = searchParams.get('redirect_url')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,8 +49,15 @@ export default function Login() {
       if (completeSignIn.status === 'complete') {
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
+        
         // Redirect the user to a post sign-in route
-        router.push('/');
+        if (redirect_url){
+            router.push(redirect_url);
+        }
+        else{
+            // Redirect the user to a post sign-in route
+            router.push('/');
+        }
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
