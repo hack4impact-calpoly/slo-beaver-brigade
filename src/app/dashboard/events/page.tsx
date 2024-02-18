@@ -16,7 +16,7 @@ interface IEvent {
   attendeeIds: string[];
 }
 
-const Dashboard = () => {
+const EventList = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
 
   // get events from api endpoint
@@ -56,4 +56,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default EventList;
