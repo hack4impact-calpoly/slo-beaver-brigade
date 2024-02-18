@@ -1,0 +1,24 @@
+.eventsList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .eventItem {
+    border: 1px solid #ccc;
+    margin-bottom: 16px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .eventTitle {
+    margin: 0 0 10px 0;
+    color: #333;
+  }
+  
+  .eventDescription,
+  .eventLocation,
+  .eventTime {
+    margin: 5px 0;
+    color: #666;
+  }
