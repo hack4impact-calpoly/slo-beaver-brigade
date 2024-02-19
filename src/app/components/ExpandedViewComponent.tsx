@@ -1,39 +1,37 @@
-"use client";
-import React, { useRef, useState } from 'react';
 import {
-  Button,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
   ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   useDisclosure,
-  Box,
-  Center,
-  Text,
+  Stack,
+  FormLabel,
   Flex,
-  Stack
-} from '@chakra-ui/react';
-import { EditIcon, DeleteIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import { IEvent } from '@database/eventSchema';
+  Button,
+  Spacer,
+  Text
+  
+} from "@chakra-ui/react";
+import React, { useRef, useState } from 'react';
+import { IEvent } from "@database/eventSchema";
+import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 
-interface EventExpandedViewProps {
+interface Props {
   eventDetails: IEvent;
-  showExpandedView: boolean;
-  setShowExpandedView: React.Dispatch<React.SetStateAction<boolean>>;
+  showModal: boolean;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails,showExpandedView,setShowExpandedView }) => {
+const ExpandedTest = ({ eventDetails, showModal, setShowModal }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  //const [showExpandedView, setShowExpandedView] = useState(false);
 
-  
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
 
   function closeExpandedView() {
-    setShowExpandedView(false);
+    setShowModal(false);
   }
 
   const toggleModal = () => {
@@ -46,6 +44,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails,show
       onOpen();
     }
   };
+
 
   const formattedDate = new Date(eventDetails.startTime).toLocaleDateString('en-US', {
     weekday: 'long',
@@ -65,96 +64,101 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails,show
     minute: 'numeric',
     hour12: true,
   });
-
+  
   return (
-    <Center>
-      <Box borderWidth="1px" borderRadius="lg" bg="lightblue" m={{ base: '2', md: '0' }}
-        >
-        {/* Title Section */}
-        {/* <Box cursor="pointer" mb={1} bg="lightblue" p={2} borderRadius="md" onClick={() => setShowExpandedView(!showExpandedView)}>
-          <Flex align="center" justify="space-between">
-            <Text fontWeight="bold" fontSize="2xl">{eventDetails.eventName}</Text>
-            <Flex>
-              <Button onClick={() => setShowExpandedView(!showExpandedView)} variant="link" >
-                {showExpandedView ? <CloseIcon /> : <ChevronDownIcon/>}
-              </Button>
-            </Flex>
-          </Flex>
-        </Box> */}
-
-        {/* Content Section */}
-        {showExpandedView && (
-          <Box bg="white" p={4}>
-            <Flex align="center" justify="space-between">
-              <Text>
-                <strong>{formattedDate} from {formattedStartTime} - {formattedEndTime}</strong>
-              </Text>
-              <Flex>
-                <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
-                <Button onClick={closeExpandedView} variant="link" leftIcon={<DeleteIcon />}></Button>
+  <>
+  <Modal isOpen={showModal} onClose={closeExpandedView} size="xl" isCentered>
+      <ModalOverlay />
+      <ModalContent>
+          <ModalHeader bg="#a3caf0" fontWeight="bold" position="relative">
+              <Flex justify={"right"}>
+                  <>{eventDetails.eventName}</>
+                  <Spacer/>
+                  <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
+                  <Button onClick={closeExpandedView} variant="link" leftIcon={<DeleteIcon />}></Button>
               </Flex>
-            </Flex>
-            <Text>
-              <strong>{eventDetails.location}</strong>
-            </Text>
-      
-            <Text mb={12}>
-              {eventDetails.description}
-            </Text>
+          </ModalHeader>
 
-            <Flex
-              direction={{ base: 'column', md: 'row' }}
-              alignItems={{ base: 'center', md: 'flex-start' }}
-              mt={4}
-              justifyContent={{ base: 'center', md: 'space-evenly' }}
-              flexWrap="wrap"
-            >
-              <Button
-                onClick={onOpen}
-                bg="lightblue"
-                fontSize={{ base: 'xl', md: 'md' }}
-                mb={{ base: 2, md: 5 }}
-                p={{ base: '2', md: '2' }}
-                flexBasis={{ base: '100%', md: 'auto' }}
-              >
-                <strong>Sign Up As Guest</strong>
-              </Button>
-              <Button
-                onClick={onOpen}
-                bg="lightblue"
-                fontSize={{ base: 'xl', md: 'md' }}
-                ml={{ base: 0, md: 2 }}
-                p={{ base: '2', md: '2' }}
-                flexBasis={{ base: '100%', md: 'auto' }}
-              >
-                <strong>Continue With An Account</strong>
-              </Button>
-            </Flex>
-            {/* Modal */}
-            <Modal
-              isOpen={isOpen}
-              onClose={toggleModal}
-              initialFocusRef={triggerButtonRef}
-            >
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>{eventDetails.eventName}</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Text>{eventDetails.description}</Text>
-                </ModalBody>
-                <ModalFooter>
-                  <Button colorScheme="blue" onClick={onClose}>
-                    Close
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          </Box>
-        )}
-      </Box>
-    </Center>
+          <ModalBody>
+              <Stack spacing={3}>
+                  <Stack spacing={0}>
+                      <FormLabel color="grey" fontWeight="bold">
+                          Time:
+                      </FormLabel>
+                      <Text>
+                          <strong>{formattedDate} from {formattedStartTime} - {formattedEndTime}</strong>
+                      </Text>
+                  </Stack>
+                  <Stack spacing={0}>
+                      <FormLabel color="grey" fontWeight="bold">
+                          Location:
+                      </FormLabel>
+                      <Text>
+                          <strong>{eventDetails.location}</strong>
+                      </Text>
+                  </Stack>
+                  <Stack spacing={0}>
+                      <FormLabel color="grey" fontWeight="bold">
+                          Description:
+                      </FormLabel>
+                      <Text mb={12}>
+                          {eventDetails.description}
+                      </Text>
+                  </Stack>
+                  <Flex
+                      direction={{ base: 'column', md: 'row' }}
+                      alignItems={{ base: 'center', md: 'flex-start' }}
+                      justifyContent={{ base: 'center', md: 'space-evenly' }}
+                      flexWrap="wrap"
+                  >
+                      <Button
+                          onClick={onOpen}
+                          bg="lightblue"
+                          fontSize={{ base: 'xl', md: 'md' }}
+                          mb={{ base: 2, md: 5 }}
+                          p={{ base: '2', md: '2' }}
+                          flexBasis={{ base: '100%', md: 'auto' }}
+                      >
+                          <strong>Sign Up As Guest</strong>
+                      </Button>
+                      <Button
+                          onClick={onOpen}
+                          bg="lightblue"
+                          fontSize={{ base: 'xl', md: 'md' }}
+                          ml={{ base: 0, md: 2 }}
+                          p={{ base: '2', md: '2' }}
+                          flexBasis={{ base: '100%', md: 'auto' }}
+                      >
+                          <strong>Continue With An Account</strong>
+                      </Button>
+                  </Flex>
+              </Stack>
+          </ModalBody>
+      </ModalContent>
+  </Modal>
+  <Modal
+      isOpen={isOpen}
+      onClose={toggleModal}
+      initialFocusRef={triggerButtonRef}
+      isCentered
+  >
+      <ModalOverlay />
+      <ModalContent>
+      <ModalHeader>{eventDetails.eventName}</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+          <Text>{eventDetails.description}</Text>
+      </ModalBody>
+      <ModalFooter>
+          <Button colorScheme="blue" onClick={onClose}>
+          Close
+          </Button>
+      </ModalFooter>
+      </ModalContent>
+  </Modal>
+
+  </>
   );
 };
 
-export default EventExpandedView;
+export default ExpandedTest;
