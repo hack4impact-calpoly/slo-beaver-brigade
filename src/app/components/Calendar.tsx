@@ -78,7 +78,6 @@ export default function Calendar(props: {
     };
   }
 
-  console.log(getEvent);
   return (
     <div>
       <div className={style.wrapper}>
@@ -89,8 +88,8 @@ export default function Calendar(props: {
         ></CreateEditEvent>
         <EventExpandedView
           eventDetails={getEvent}
-          showExpandedView={showExpandedView}
-          setShowExpandedView={setShowExpandedView}
+          showModal={showExpandedView}
+          setShowModal={setShowExpandedView}
         ></EventExpandedView>
         <FullCalendar
           customButtons={buttonType}
