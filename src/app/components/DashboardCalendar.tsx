@@ -67,11 +67,15 @@ const DashboardCalendar: React.FC = () => {
     );
     
     // Calculate the number of days from the next month to display
-    const remainingDays = 7 - (firstDayOfWeek + daysInMonth.length) % 7;
-    const daysFromNextMonth = Array.from(
-      { length: remainingDays },
-      (_, index) => addDays(startOfMonth(addMonths(selectedDate, 1)), index)
-    );
+    const remainingDays = 42 - (firstDayOfWeek + daysInMonth.length);
+    let daysFromNextMonth = [];
+
+    if (remainingDays > 0) {
+      daysFromNextMonth = Array.from(
+        { length: remainingDays },
+        (_, index) => addDays(startOfMonth(addMonths(selectedDate, 1)), index)
+      );
+    }
   
     return [...daysFromPrevMonth, ...days, ...daysFromNextMonth].map((day) => (
       <button
@@ -87,6 +91,7 @@ const DashboardCalendar: React.FC = () => {
   
 
   return (
+    <div className="calendar-wrapper">
     <div className="datepicker">
       <div className="datepicker-top">
         <div className="month-selector">
@@ -112,6 +117,7 @@ const DashboardCalendar: React.FC = () => {
         {renderDays()}
       </div>
     </div>
+  </div>
   );
 };
 
