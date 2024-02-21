@@ -79,10 +79,6 @@ const CreateEvent = () => {
       <Modal isOpen={isOpen} onClose={HandleClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
-<<<<<<< HEAD:src/app/components/CreateEditEvent.tsx
-          <ModalHeader bg="#a3caf0" fontWeight="bold" position="relative">
-            <>{create ? "Create " : "Edit "} Event</>
-=======
           <ModalHeader bg='#a3caf0' fontWeight='bold' position='relative'>
             Create Event
           </ModalHeader>
@@ -155,7 +151,6 @@ const CreateEvent = () => {
             </Button>
             <Button onClick={HandleSubmit}>
                 Create
->>>>>>> 606873f (fix: separated CreateEditEvent into two components):src/app/components/CreateEvent.tsx
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -164,7 +159,4 @@ const CreateEvent = () => {
   );
 };
 
-<<<<<<< HEAD:src/app/components/CreateEditEvent.tsx
-export default CreateEditEvent;
-=======
 export default CreateEvent
