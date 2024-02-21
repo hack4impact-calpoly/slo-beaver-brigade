@@ -4,6 +4,8 @@ export default authMiddleware({
     publicRoutes: [
         "/",
         "/admin",
+        "/admin/events",
+        "/calendar",
         "/dashboard",
         "/login",
         "/signup",
