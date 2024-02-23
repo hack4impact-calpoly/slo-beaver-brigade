@@ -12,7 +12,6 @@ export async function getEvents() {
     // returns all events in json format or errors
       return events;
    } catch (err) {
-      console.log("failed to fetch")
       return [];
    }
  }
@@ -43,7 +42,6 @@ export async function getEvents() {
 
 export default async function Events() {
   const events = await getEvents();
-
   let calEvent = events.map(Calendarify)
   
   //Ievent object to pass into calendar component
