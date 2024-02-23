@@ -2,10 +2,7 @@
 import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import ineractionPlugin, {
-  Draggable,
-  DropArg,
-} from "@fullcalendar/interaction";
+import ineractionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import style from "@styles/calendar/calendar.module.css";
