@@ -19,7 +19,7 @@ const YourParentComponent: React.FC = () => {
     startTime: startTime,
     endTime: endTime,
     volunteerEvent: true,
-    groupsAllowed: [1, 2, 3],
+    groupsAllowed: [],
     attendeeIds: [], // array of Schema.Types.ObjectId
   };
 
