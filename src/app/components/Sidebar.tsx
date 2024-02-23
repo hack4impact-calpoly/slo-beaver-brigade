@@ -35,6 +35,12 @@ const Sidebar = () => {
       icon: <CalendarDaysIcon style={{ width: "35px", height: "35px" }} />,
       current: `/${segement}` === "/events" ? true : false,
     },
+    {
+      name: "Event Preview",
+      href: "/admin/eventPreview",
+      icon: <CalendarDaysIcon style={{ width: "35px", height: "35px" }} />,
+      current: `/${segement}` === "/events" ? true : false,
+    },
     
   ];
 

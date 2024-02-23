@@ -1,0 +1,44 @@
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 200px;
+}
+
+.cardContainer {
+    width: 80%;
+    justify-content: center;
+}
+
+.eventsList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; 
+    padding: 0;
+    list-style: none;
+    margin: 20px 0;
+  }
+  
+  @media (max-width: 768px) {
+    .eventsList {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .eventsList {
+      grid-template-columns: 1fr; 
+    }
+  }
+
+  .searchBar {
+    padding: 5px 10px 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
