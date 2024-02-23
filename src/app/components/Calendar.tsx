@@ -13,7 +13,7 @@ import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import CreateEditEvent from "./CreateEditEvent";
+import CreateEvent from "./CreateEvent";
 import EventExpandedView from "./ExpandedViewComponent";
 import { IEvent } from "@database/eventSchema";
 
@@ -81,11 +81,10 @@ export default function Calendar(props: {
   return (
     <div>
       <div className={style.wrapper}>
-        <CreateEditEvent
-          create={true}
+        <CreateEvent
           showModal={showModal}
           setShowModal={setShowModal}
-        ></CreateEditEvent>
+        ></CreateEvent>
         <EventExpandedView
           eventDetails={getEvent}
           showModal={showExpandedView}
@@ -122,7 +121,7 @@ export default function Calendar(props: {
             setShowExpandedView(true);
           }}
           initialView="dayGridMonth"
-          contentHeight="650px"
+          contentHeight="600px"
           themeSystem="bootstrap5"
           eventDisplay="block"
         />
