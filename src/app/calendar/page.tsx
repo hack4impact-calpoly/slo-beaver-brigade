@@ -2,7 +2,7 @@ import React from 'react'
 import Calendar from '@components/Calendar'
 import Event,{IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/eventpage.module.css"
-import connectDB from "@database/db";
+import connectDB from '@database/db'
 
 export async function getEvents() {
   await connectDB() // connect to db
