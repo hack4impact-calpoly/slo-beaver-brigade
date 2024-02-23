@@ -2,14 +2,17 @@ import React from 'react'
 import Calendar from '@components/Calendar'
 import Event,{IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/eventpage.module.css"
+import connectDB from "@database/db";
 
 export async function getEvents() {
+  await connectDB() // connect to db
   try {
     // query for all events and sort by date
     const events = await Event.find().sort({ date: -1 }).orFail()
     // returns all events in json format or errors
       return events;
    } catch (err) {
+      console.log("failed to fetch")
       return [];
    }
  }
@@ -40,7 +43,6 @@ export async function getEvents() {
 
 export default async function Events() {
   const events = await getEvents();
-  console.log(events)
 
   let calEvent = events.map(Calendarify)
   
