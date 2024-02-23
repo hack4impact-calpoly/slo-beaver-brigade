@@ -42,3 +42,9 @@ requirements.txt
 # amplify
 .amplify
 amplifyconfiguration*
+
+# sst
+.sst
+
+# open-next
+.open-next
