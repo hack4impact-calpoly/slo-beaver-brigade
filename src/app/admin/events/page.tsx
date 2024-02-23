@@ -5,15 +5,24 @@ import { Calendarify, getEvents } from 'app/calendar/page';
 
 
 export default async function dashboard(){
-  let calEvent = [];
   const events = await getEvents();
-  if(events){
-    calEvent = events.map(Calendarify)
+
+  if (events == null) {
+    return (
+      <div className={style.page}>
+          <header className={style.header}>
+              <h1>Event Calendar</h1>
+          </header>
+          <main>
+              <div>
+                  <h1>There are no events to display</h1>
+              </div>
+          </main>
+      </div>
+    )
   }
-
-  //Ievent object to pass into calendar component
+  const calEvent = events.map(Calendarify)
   const dbEvent = JSON.parse(JSON.stringify(events));
-
 
   return (
     <div className={style.page}>
