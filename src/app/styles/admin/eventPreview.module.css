@@ -1,67 +1,29 @@
-.mainContainer {
-  max-width: 90%;
-  margin: 20px auto;
-  padding: 20px;
-  background: #ffffff;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+.eventCard {
+  background-color: #fff; /* Light background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  padding: 20px; /* Spacing inside the card */
+  margin-bottom: 20px; /* Space between cards when listed */
+  transition: transform 0.3s ease; /* Smooth transition for hover effect */
 }
 
-.mainContainer h2 {
-  font-size: 4vh;
-  color: #34495e;
-  margin-bottom: 30px;
-  text-align: center;
+.eventCard h3 {
+  color: #333; 
+  margin-top: 0; 
 }
 
-.eventsList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.eventCard p {
+  color: #666; 
+  line-height: 1.5; 
+  margin: 10px 0;
 }
 
-.eventItem {
-  border-bottom: 1px solid #eaecef;
-  padding: 25px 0;
-  margin-bottom: 25px;
-  transition: background-color 0.3s ease;
+.eventCard p strong {
+  color: #333; /* Make labels darker for contrast */
 }
 
-.eventItem:last-child {
-  border-bottom: none;
-}
-
-.expandedViewWrapper {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition:
-    box-shadow 0.3s ease,
-    transform 0.2s ease-out;
-}
-
-@media (max-width: 768px) {
-  .mainContainer {
-    padding: 15px;
-  }
-
-  .expandedViewWrapper {
-    padding: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .mainContainer h2 {
-    font-size: 2rem;
-  }
-
-  .eventItem {
-    padding: 15px 5px;
-  }
-
-  .expandedViewWrapper {
-    padding: 10px;
-    border-radius: 5px;
-  }
+/* Hover effect to lift the card */
+.eventCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
