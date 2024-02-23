@@ -8,7 +8,7 @@ import listPlugin from "@fullcalendar/list";
 import style from "@styles/calendar/calendar.module.css";
 import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
-import "bootstrap/dist/css/bootstrap.css";
+import "@styles/calendar/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import CreateEvent from "./CreateEvent";
 import EventExpandedView from "./ExpandedViewComponent";
