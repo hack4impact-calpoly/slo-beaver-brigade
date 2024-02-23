@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import style from "@styles/dashboard/events.module.css";
+import style from "@styles/admin/eventPreview.module.css";
 import ExpandedViewComponent from "@components/ExpandedViewComponent";
 
 interface IEvent {
@@ -17,7 +17,7 @@ interface IEvent {
   attendeeIds: [];
 }
 
-const EventList = () => {
+const EventPreview = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
 
   // get events from api endpoint
@@ -68,4 +68,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default EventPreview;
