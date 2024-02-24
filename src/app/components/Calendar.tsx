@@ -13,7 +13,6 @@ import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import CreateEditEvent from "./CreateEditEvent";
 
 //FullCalendar Schema
 export type FCEvent = {
@@ -60,7 +59,6 @@ export default function Calendar(props: { events: FCEvent[]; admin: Boolean }) {
   return (
     <div>
       <div className={style.wrapper}>
-        <CreateEditEvent create={true} showModal={showModal} setShowModal={setShowModal}></CreateEditEvent>
         <FullCalendar
           customButtons={buttonType}
           plugins={[
