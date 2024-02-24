@@ -80,7 +80,7 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
           <Box bg="white" p={4}>
             <Flex align="center" justify="space-between">
               <Text>
-                <strong>{formattedDate} from {formattedStartTime} - {formattedEndTime}</strong>
+                <strong>{formattedDate}</strong>
               </Text>
               <Flex>
                 <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
@@ -90,8 +90,11 @@ const EventExpandedView: React.FC<EventExpandedViewProps> = ({ eventDetails }) =
             <Text>
               <strong>{eventDetails.location}</strong>
             </Text>
+            <Text>
+                {formattedStartTime} - {formattedEndTime}
+            </Text>
       
-            <Text mb={12}>
+            <Text paddingTop={10} mb={12}>
               {eventDetails.description}
             </Text>
 
