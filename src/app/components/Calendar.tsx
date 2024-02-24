@@ -10,7 +10,7 @@ import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "@styles/calendar/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import CreateEvent from "./CreateEvent";
+import CreateEvent from "./StandaloneCreateEvent";
 import EventExpandedView from "./ExpandedViewComponent";
 import { IEvent } from "@database/eventSchema";
 
