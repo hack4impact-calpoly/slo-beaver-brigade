@@ -16,6 +16,7 @@ export default function Home() {
       </NextLink>
       < SignOutButton />
       <YourParentComponent />
+      
     </main>
   );
 }
