@@ -38,8 +38,9 @@ export async function POST(req: NextRequest) {
             digitalWaiver: null,
         });
 
-        await newUser.save();
-        return NextResponse.json({ newUser });
+        const savedUser = await newUser.save();
+
+        return NextResponse.json({ savedUser });
     } catch (error) {
         return NextResponse.json(
             { error: (error as Error).message },
