@@ -1,19 +1,23 @@
 import React from 'react'
 import Calendar from '@components/Calendar'
-import {IEvent} from '@database/eventSchema'
+import Event, {IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/eventpage.module.css"
+import connectDB from '@database/db'
 
 //gets events from api endpoint
 export async function getEvents() {
-  const res = await fetch(`http://localhost:3000/api/events`,
-  {
-    cache:"no-store"
-  });
-
-  if(res.ok){
-    return res.json()
-  }
-  return null
+    await connectDB();
+    try {
+        // query for all events and sort by date
+        console.log("Getting events");
+        const events = await Event.find().orFail()
+        // returns all events in json format or errors
+        return events;
+        } 
+    catch (err) {
+        console.log("Error getting events: ", err);
+        return [];
+    }
 }
 
   //converts an event into a FullCalendar event

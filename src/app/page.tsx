@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@styles/Button";
-import CreateEditEvent from "@components/CreateEditEvent";
 import NextLink from "next/link";
 import YourParentComponent from "@components/YourParentComponent";
 import { SignOutButton } from "@clerk/nextjs";

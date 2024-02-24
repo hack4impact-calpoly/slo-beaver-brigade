@@ -9,7 +9,7 @@ export type IEvent = {
     startTime: Date;
     endTime: Date;
     volunteerEvent: boolean;
-    groupsAllowed: Schema.Types.ObjectId[];
+    groupsAllowed: Schema.Types.ObjectId[] | null;
     attendeeIds: Schema.Types.ObjectId[];
 };
 
