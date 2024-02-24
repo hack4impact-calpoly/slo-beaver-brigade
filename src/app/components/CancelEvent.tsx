@@ -24,8 +24,8 @@ const CancelEvent = ({ event, onDelete }) => {
 
     const handleCancel = async () => {
         try {
-            // note for fetch: not sure where to fetch from
-            await fetch(`backend/api/events/${event.id}`, {
+            // note for fetch: not sure where to fetch from, hope this works
+            await fetch(`@api/events/${event.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
