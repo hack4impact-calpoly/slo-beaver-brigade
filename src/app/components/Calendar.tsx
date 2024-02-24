@@ -11,7 +11,7 @@ import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "@styles/calendar/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import CreateEvent from "./StandaloneCreateEvent";
-import EventExpandedView from "./ExpandedViewComponent";
+import EventExpandedView from "./StandaloneExpandedViewComponent";
 import { IEvent } from "@database/eventSchema";
 
 //FullCalendar Schema
