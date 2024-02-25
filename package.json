@@ -26,6 +26,7 @@
     "@fullcalendar/react": "^6.1.10",
     "@fullcalendar/timegrid": "^6.1.10",
     "@heroicons/react": "^2.1.1",
+    "aws4": "^1.12.0",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.3",
     "framer-motion": "^11.0.3",

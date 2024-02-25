@@ -14,14 +14,13 @@
 
 .eventCard h2 {
   color: #2b2b34;
-  font-size: 2vh;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
 .eventCard h3 {
-  color: #2b2b34;
-  font-weight: 275;
-  font-size: 1.2vh;
+  font-size: 0.7rem;
+  font-weight: 500;
 }
 
 .eventCard:hover {
@@ -50,6 +49,16 @@
   flex-direction: column;
   gap: 20px;
   justify-content: space-between;
+}
+
+@media (max-width: 1200px) {  
+  .eventCard h2 {
+    font-size: 1rem; 
+  }
+  
+  .eventCard h3 {
+    font-size: 0.6rem;
+  }
 }
 
 @media (max-width: 768px) {
