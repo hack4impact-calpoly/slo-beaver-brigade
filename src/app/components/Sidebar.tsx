@@ -36,18 +36,17 @@ const Sidebar = () => {
       current: `/${segement}` === "/events" ? true : false,
     },
     {
-      name: "Event Preview",
-      href: "/admin/eventPreview",
+      name: "Calendar",
+      href: "/admin/calendar",
       icon: <CalendarDaysIcon style={{ width: "35px", height: "35px" }} />,
       current: `/${segement}` === "/events" ? true : false,
     },
-    
   ];
 
   return (
     <div
       className={`${style.sidebar} ${isCollapsed ? style.collapsedSidebar : ""}`}
-      style={{ backgroundColor: "#5DADE2"}}
+      style={{ backgroundColor: "#5DADE2" }}
     >
       <div className={style.toggleButton} onClick={toggleSlider}>
         {isCollapsed ? (
@@ -65,7 +64,7 @@ const Sidebar = () => {
               className={`${option.current ? style.currentOption : ""}`}
             >
               <Link href={option.href}>
-                <div className={style.option} >
+                <div className={style.option}>
                   {option.icon}
                   <p>{isCollapsed ? "" : option.name}</p>
                 </div>
