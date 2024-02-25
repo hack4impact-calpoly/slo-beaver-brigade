@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import style from "@styles/admin/eventPreview.module.css";
 import { IEvent } from "@database/eventSchema";
 import Image from "next/image";
@@ -9,7 +9,31 @@ interface EventPreviewProps {
 }
 
 const EventPreviewComponent: React.FC<EventPreviewProps> = ({ event }) => {
-  // formats date wihtout leading zeros month/day
+  const [groupName, setGroupName] = useState<string>("SLO Beaver Brigade");
+
+  // get group name based on groupsAllowed array, if empty = slo beaver bridage
+  useEffect(() => {
+    const fetchGroupName = async () => {
+      if (event.groupsAllowed && event.groupsAllowed.length > 0) {
+        try {
+          const res = await fetch(`/api/groups/${event.groupsAllowed[0]}`);
+          if (res.ok) {
+            const data = await res.json();
+            setGroupName(data.group.group_name);
+            console.log(data.group.group_name);
+          } else {
+            console.error("Error fetching group name:", res.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching group name:", error);
+        }
+      }
+    };
+
+    fetchGroupName();
+  }, [event.groupsAllowed]);
+
+  // formats date without leading zeros month/day
   const formatDate = (date: Date | string): string => {
     const options: Intl.DateTimeFormatOptions = {
       month: "numeric",
@@ -40,8 +64,11 @@ const EventPreviewComponent: React.FC<EventPreviewProps> = ({ event }) => {
     return `${formattedStartTime} - ${formattedEndTime}`;
   };
 
+  // blue color for outside group
+  const cardColor = groupName === "SLO Beaver Brigade" ? "#e7dabf" : "#5CB8AF";
+
   return (
-    <div className={style.eventCard}>
+    <div className={style.eventCard} style={{ backgroundColor: cardColor }}>
       <div className={style.imageContainer}>
         <div className={style.imageWrapper}>
           <Image
@@ -55,11 +82,7 @@ const EventPreviewComponent: React.FC<EventPreviewProps> = ({ event }) => {
       <div className={style.infoContainer}>
         <div>
           <h2>{event.eventName}</h2>
-          <h3>
-            {event.groupsAllowed?.length === 0
-              ? "SLO Beaver Brigade"
-              : getgroups()}
-          </h3>
+          <h3>{groupName ? groupName : "SLO Beaver Brigade"}</h3>
         </div>
         <div>
           <h2>{formatDate(event.startTime)}</h2>
