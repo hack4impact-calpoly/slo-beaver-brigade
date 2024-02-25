@@ -51,11 +51,11 @@
   justify-content: space-between;
 }
 
-@media (max-width: 1200px) {  
+@media (max-width: 1200px) {
   .eventCard h2 {
-    font-size: 1rem; 
+    font-size: 1rem;
   }
-  
+
   .eventCard h3 {
     font-size: 0.6rem;
   }
