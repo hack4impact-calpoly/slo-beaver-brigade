@@ -18,7 +18,15 @@ import {
 import { Button } from '@styles/Button'
 import React, {useState} from 'react';
 
-const CreateEvent = () => {
+interface Props {
+  showModal: boolean;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CreateEvent = (Props : {
+  showModal: boolean,
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure() // button open/close
 
   const [name, setName] = useState('') 
@@ -66,17 +74,15 @@ const CreateEvent = () => {
     setSpan(false)    
     setIsSubmitted(false)
     onClose()
+    Props.setShowModal(false)
   }
 
   function HandleSubmit() {setIsSubmitted(true)}
 
   return (
     <>
-      <Button onClick={onOpen}>
-        Create Event
-      </Button>
 
-      <Modal isOpen={isOpen} onClose={HandleClose} size='xl'>
+      <Modal isOpen={Props.showModal} onClose={HandleClose} size='xl' isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader bg='#a3caf0' fontWeight='bold' position='relative'>

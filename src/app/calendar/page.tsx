@@ -1,34 +1,30 @@
 import React from 'react'
 import Calendar from '@components/Calendar'
-import Event, {IEvent} from '@database/eventSchema'
+import Event,{IEvent} from '@database/eventSchema'
 import style from "@styles/calendar/eventpage.module.css"
 import connectDB from '@database/db'
 
-//gets events from api endpoint
 export async function getEvents() {
-    await connectDB();
-    try {
-        // query for all events and sort by date
-        console.log("Getting events");
-        const events = await Event.find().orFail()
-        // returns all events in json format or errors
-        return events;
-        } 
-    catch (err) {
-        console.log("Error getting events: ", err);
-        return [];
-    }
-}
+  await connectDB() // connect to db
+  try {
+    // query for all events and sort by date
+    const events = await Event.find().sort({ date: -1 }).orFail()
+    // returns all events in json format or errors
+      return events;
+   } catch (err) {
+      return [];
+   }
+ }
 
   //converts an event into a FullCalendar event
   export function Calendarify(event : IEvent) {
     //convert events into plain object before passing into client component
     const calEvent = JSON.parse(JSON.stringify(event));
-
     calEvent.title = event.eventName;
     delete calEvent.eventName;
     calEvent.start = event.startTime;
     calEvent.end = event.endTime;
+    calEvent.id = event._id;
 
     if(event.eventName == "Beaver Walk"){
       calEvent.backgroundColor = "#8A6240"
@@ -46,7 +42,11 @@ export async function getEvents() {
 
 export default async function Events() {
   const events = await getEvents();
-  const calEvent = events.map(Calendarify)
+  let calEvent = events.map(Calendarify)
+  
+  //Ievent object to pass into calendar component
+  const dbEvent = JSON.parse(JSON.stringify(events));
+   
 
   return (
     <div className={style.page}>
@@ -55,7 +55,7 @@ export default async function Events() {
         </header>
         <main>
             <div>
-                <Calendar events={calEvent} admin={false}
+                <Calendar events={calEvent} admin={false} dbevents={dbEvent}
                 />
             </div>
         </main>
