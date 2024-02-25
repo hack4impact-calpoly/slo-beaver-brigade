@@ -20,6 +20,7 @@ interface IEvent {
   groupId: string | null;
 }
 
+
 const EventPreview = () => {
   // states
   const [events, setEvents] = useState<IEvent[]>([]);
