@@ -1,0 +1,29 @@
+.mainContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.tableContainer {
+  width: 80%;
+  font-weight: bold;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.viewDetails {
+  color: darkgray;
+  text-decoration: underline;
+}
+
+.searchBar {
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  padding: 5px 40px;
+  border: 1.5px solid #337774;
+  border-radius: 10px;
+}
