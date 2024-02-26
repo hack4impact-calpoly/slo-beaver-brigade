@@ -78,9 +78,11 @@ const CreateEvent = () => {
       startTime: new Date(`${date}T${start}`),
       endTime: new Date(`${date}T${end}`),
       volunteerEvent: vol,
-      groupsAllowed: myGrp, // check on this
+      groupsAllowed: myGrp ? [] : null,
       attendeeIds: [],
     };
+
+    console.log("New Event Data:", eventData);
 
     fetch("/api/events", {
       method: "POST",
@@ -97,7 +99,7 @@ const CreateEvent = () => {
         HandleClose();
       })
       .catch((error) => {
-        console.error("Error creating event:", error);
+        console.error("Error creating event:", error.message);
       });
   }
 
