@@ -1,10 +1,19 @@
 "use client";
-import { Table, Thead, Tbody, Tr, Th, Td, Box, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Table,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Box,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import style from "@styles/admin/users.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import beaverLogo from '/docs/images/beaver-logo.svg';
+import beaverLogo from "/docs/images/beaver-logo.svg";
+import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
 interface IUser {
   _id: string;
@@ -21,12 +30,14 @@ interface IUser {
 }
 
 const UserList = () => {
+  //states
   const [users, setUsers] = useState<IUser[]>([]);
-  const [sortOrder, setSortOrder] = useState("earliest");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("firstName");
 
   const tablePadding = useBreakpointValue({ base: "0", md: "4" });
 
+  // fetch users from route
   const fetchUsers = async () => {
     try {
       const response = await fetch("/api/user");
@@ -44,36 +55,78 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
+  // filter user list based on settings
+  const filteredUsers = users
+    .filter((user) =>
+      (
+        user.firstName.toLowerCase() +
+        " " +
+        user.lastName.toLowerCase()
+      ).includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "firstName") {
+        return a.firstName.localeCompare(b.firstName);
+      } else {
+        return a.lastName.localeCompare(b.lastName);
+      }
+    });
+
   return (
     <div className={style.mainContainer}>
       <div className={style.tableContainer}>
         <div className={style.buttonContainer}>
+
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className={style.sortSelect}
+            className={style.filter}
           >
-            <option value="earliest">Earliest First</option>
-            <option value="latest">Latest First</option>
+            <option value="firstName">First Name</option>
+            <option value="lastName">Last Name</option>
           </select>
-          <input
-            type="text"
-            placeholder="Search for user"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={style.searchBar}
-          />
+
+          <div className={style.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search for user"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={style.searchBar}
+            />
+            <MagnifyingGlassIcon
+              style={{
+                width: "20px",
+                height: "20px",
+                position: "absolute",
+                margin: "auto",
+                top: 0,
+                bottom: 0,
+                right: "10px",
+              }}
+            />
+          </div>
         </div>
         <Box overflowX="auto">
           <Table variant="striped" size="sm">
             <Tbody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <Tr key={user._id}>
-                  <Td><Image src={beaverLogo} alt="profile picture" width="50" height="30" style={{ minWidth: '50px' }}/></Td>
-                  <Td padding={tablePadding}>{`${user.firstName} ${user.lastName}`}</Td>
+                  <Td>
+                    <Image
+                      src={beaverLogo}
+                      alt="profile picture"
+                      width="50"
+                      height="30"
+                      style={{ minWidth: "50px" }}
+                    />
+                  </Td>
+                  <Td
+                    padding={tablePadding}
+                  >{`${user.firstName} ${user.lastName}`}</Td>
                   <Td padding={tablePadding}>{user.email}</Td>
                   <Td>
-                  <Link href={""} className={style.viewDetails}>
+                    <Link href={""} className={style.viewDetails}>
                       View Details
                     </Link>
                   </Td>

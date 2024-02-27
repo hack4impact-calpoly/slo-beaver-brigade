@@ -20,10 +20,29 @@
 }
 
 .searchBar {
-  text-align: center;
   font-weight: bold;
   color: black;
-  padding: 5px 40px;
+  padding: 5px 20px 5px 70px; 
   border: 1.5px solid #337774;
   border-radius: 10px;
+  width: 100%; 
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  width: fit-content; 
+}
+
+.filter {
+  background-color: #f0f0f0; 
+  border: 1px solid #ccc; 
+  border-radius: 4px;
+  font-weight: bold;
+
+}
+
+.filter:focus {
+  outline: none; 
+  border-color: #337774;
 }
