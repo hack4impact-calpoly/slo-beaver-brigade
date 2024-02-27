@@ -77,6 +77,7 @@ const UserList = () => {
       <div className={style.tableContainer}>
         <div className={style.buttonContainer}>
 
+          <div className={style.innerButtons}>
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
@@ -85,6 +86,8 @@ const UserList = () => {
             <option value="firstName">First Name</option>
             <option value="lastName">Last Name</option>
           </select>
+          <button className={style.yellowButton}>Export To CSV</button> {}
+          </div>
 
           <div className={style.searchWrapper}>
             <input
