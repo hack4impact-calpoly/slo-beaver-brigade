@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 import Providers from "./Providers";
 
@@ -14,12 +15,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <Providers>
-            {children}
-        </Providers>
-        </body>
-    </html>
+      <html lang="en">
+        <body>
+          <Providers>
+              {children}
+          </Providers>
+          </body>
+      </html>
   );
 }
