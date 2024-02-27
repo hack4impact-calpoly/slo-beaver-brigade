@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export type IEvent = {
+    _id: string;
     eventName: string;
     location: string;
     description: string;
@@ -9,12 +10,13 @@ export type IEvent = {
     startTime: Date;
     endTime: Date;
     volunteerEvent: boolean;
-    groupsAllowed: Schema.Types.ObjectId[];
+    groupsAllowed: Schema.Types.ObjectId[] | null;
     attendeeIds: Schema.Types.ObjectId[];
 };
 
 // Mongoose schema
 const eventSchema = new Schema<IEvent>({
+    _id: { type: String, required: true },
     eventName: { type: String, required: true },
     location: { type: String, required: true },
     description: { type: String, required: true },
