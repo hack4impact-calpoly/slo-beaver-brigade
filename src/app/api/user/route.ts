@@ -25,24 +25,28 @@ export async function POST(req: NextRequest) {
         // convert the readable stream to JSON
         const bodyText = await new Response(req.body).text();
         const body: IUser = JSON.parse(bodyText);
-        const { email, firstName, lastName, age, role, gender } = body;
+        console.log(body);
+        const { email, phoneNumber, role, age, gender, firstName, lastName, eventsAttended, groupId, digitalWaiver } = body;
 
         // create a new user
         const newUser = new User({
             email,
+            phoneNumber,
             role,
             age,
             gender,
             firstName,
             lastName,
-            digitalWaiver: null,
+            eventsAttended,
+            groupId,
+            digitalWaiver,
         });
 
         await newUser.save();
         return NextResponse.json({ newUser });
     } catch (error) {
         return NextResponse.json(
-            { error: (error as Error).message },
+            { error: "Here\n" + (error as Error).message },
             { status: 500 }
         );
     }

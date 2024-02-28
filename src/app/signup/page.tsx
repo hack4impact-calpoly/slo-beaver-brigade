@@ -16,7 +16,7 @@ import styles from './page.module.css'
 import checkmarkImage from '/docs/images/checkmark.png'
 import Image from 'next/image'
 import { useSignUp } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 export default function SignUp() {
@@ -33,6 +33,8 @@ export default function SignUp() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams()
+  const redirect_url = searchParams.get('redirect_url')
 
   const handleSubmit = async (e: React.FormEvent) => {
       // If the form submission is successful, setSubmitted(true);
@@ -83,8 +85,39 @@ export default function SignUp() {
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === 'complete') {
+        try {
+            //creates data object from form data
+          const data = {
+            'email': email || "",
+            'phoneNumber': phone || "",
+            'role': "user",
+            'age':  null,
+            'gender': null,
+            'firstName': firstName || "",
+            'lastName': lastName || "",
+            'eventsAttended': [],
+            'groupId': null,
+            'digitalWaiver': null
+          };
+          // create a new user
+          await fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+        } catch (error) {
+          console.error('here');
+          console.error('Error:', error);
+        }
+
         await setActive({ session: completeSignUp.createdSessionId });
-        router.push('/');
+          // Redirect the user to a post sign-up route
+        if (redirect_url){
+          router.push(redirect_url);
+        } else {
+            // Redirect the user to a post sign-in route
+            router.push('/');
+        }
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
