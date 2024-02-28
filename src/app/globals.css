@@ -4,7 +4,7 @@
 
 :root {
   .fc-myCustomButton-button {
-    background-color: #355e3b !important;
+    background-color: #3498db !important;
   }
 
   @media (max-width: 1090px) {
