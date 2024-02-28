@@ -85,19 +85,15 @@ export default function SignUp() {
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === 'complete') {
+
         try {
             //creates data object from form data
           const data = {
             'email': email || "",
             'phoneNumber': phone || "",
             'role': "user",
-            'age':  null,
-            'gender': null,
             'firstName': firstName || "",
             'lastName': lastName || "",
-            'eventsAttended': [],
-            'groupId': null,
-            'digitalWaiver': null
           };
           // create a new user
           await fetch('/api/user', {
@@ -106,9 +102,10 @@ export default function SignUp() {
             body: JSON.stringify(data),
           });
         } catch (error) {
-          console.error('here');
-          console.error('Error:', error);
+          console.log('here');
+          console.log('Error:', error);
         }
+        console.log('test post api call complete')
 
         await setActive({ session: completeSignUp.createdSessionId });
           // Redirect the user to a post sign-up route

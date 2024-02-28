@@ -25,11 +25,14 @@ export async function POST(req: NextRequest) {
         // convert the readable stream to JSON
         const bodyText = await new Response(req.body).text();
         const body: IUser = JSON.parse(bodyText);
-        console.log(body);
-        const { email, phoneNumber, role, age, gender, firstName, lastName, eventsAttended, groupId, digitalWaiver } = body;
+        const { email, phoneNumber, role, firstName, lastName} = body;
+
+        const age = body.age || -1;
+        const gender = body.gender || 'unknown';
+        const eventsAttended: IEvent[] = [];
 
         // create a new user
-        const newUser = new User({
+        const user = await User.create({
             email,
             phoneNumber,
             role,
@@ -38,16 +41,15 @@ export async function POST(req: NextRequest) {
             firstName,
             lastName,
             eventsAttended,
-            groupId,
-            digitalWaiver,
         });
+        console.log(user);
 
-        const savedUser = await newUser.save();
-
-        return NextResponse.json({ savedUser });
+        return NextResponse.json(
+            'Successfully created new user',
+            { status: 200 });
     } catch (error) {
         return NextResponse.json(
-            { error: "Here\n" + (error as Error).message },
+            'Failed to create user',
             { status: 500 }
         );
     }
