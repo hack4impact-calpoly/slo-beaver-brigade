@@ -24,6 +24,8 @@ export default function SignUp() {
   const [isSubmitted, setSubmitted] = useState(false);
   const { isLoaded, signUp, setActive } = useSignUp();
   const [email, setEmail] = useState('');
+  const [age, setAge] = useState(-1);
+  const [gender, setGender] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
@@ -92,8 +94,11 @@ export default function SignUp() {
             'email': email || "",
             'phoneNumber': phone || "",
             'role': "user",
+            'gender': gender,
+            'age': age,
             'firstName': firstName || "",
             'lastName': lastName || "",
+            'groupId': '319238289382',
           };
           // create a new user
           await fetch('/api/user', {
@@ -195,6 +200,24 @@ export default function SignUp() {
                 variant="filled" 
                 onChange={(e) => setPhone(e.target.value)}
                 required={true}/>
+            </FormControl>
+            <FormControl mb={4} isRequired>
+              <FormLabel>Age</FormLabel>
+                <Input 
+                    type="number" 
+                    placeholder="Age" 
+                    variant="filled" 
+                    onChange={(e) => setAge(parseInt(e.target.value))}
+                />
+            </FormControl>
+            <FormControl mb={4} isRequired>
+              <FormLabel>Gender</FormLabel>
+              <Input 
+                type="text" 
+                placeholder="Gender" 
+                variant="filled" 
+                onChange={(e) => setGender(e.target.value)}
+              />
             </FormControl>
             <FormControl mb={4} isRequired>
               <FormLabel>Zipcode</FormLabel>
