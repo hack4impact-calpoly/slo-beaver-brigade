@@ -15,11 +15,14 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styles from './page.module.css'
 import checkmarkImage from '/docs/images/checkmark.png'
 import Image from 'next/image'
-import { useSignUp } from '@clerk/nextjs';
+import { auth, useSignUp, useUser } from '@clerk/nextjs';
+import { getAuth, clerkClient } from '@clerk/nextjs/server';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { get } from "http";
 
 
 export default function SignUp() {
+  const { isSignedIn, user } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -40,11 +43,35 @@ export default function SignUp() {
 
   // Create a new user post request to mongoDB
   const createUser = async (data: any) => {
-    await fetch('/api/user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    try {
+      const res = await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      // If the user is created, update the user metadata in Clerk
+      if (res.ok) {
+        // Get the user's ID from the response
+        const responseData = await res.json();
+        const dbId = responseData._id;
+        try {
+          // Get the user's ID from the clerk session
+          const { userId } : { userId: string | null } = auth();
+          const params = { externalId: dbId };
+          if (userId) {
+            // Update the user's id in Clerk
+            await clerkClient.users.updateUser(userId, params);
+          }
+        } catch (error) {
+          console.log('Failed to update user id in Clerk: ', error);
+        }
+      } else {
+        console.log('Failed to create user');
+      }
+    } catch (error) {
+      console.log('Failed to create user: ', error);
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

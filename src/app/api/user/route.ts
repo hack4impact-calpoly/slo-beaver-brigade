@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
             ...body,
         });
         const savedUser = await newUser.save();
-
-        return NextResponse.json({ savedUser });
+        
+        return NextResponse.json({ _id: savedUser._id }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
             { error: (error as Error).message },
