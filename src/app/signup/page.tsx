@@ -36,6 +36,15 @@ export default function SignUp() {
   const searchParams = useSearchParams()
   const redirect_url = searchParams.get('redirect_url')
 
+  // Create a new user post request to mongoDB
+  const createUser = async (data: any) => {
+    await fetch('/api/user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
       // If the form submission is successful, setSubmitted(true);
       // This should also handle the backend submission later.
@@ -47,24 +56,36 @@ export default function SignUp() {
       return;
     }
 
+    //checks for empty fields
     if (!firstName || !lastName || !email || !password || !phone || !zipcode) {
       alert('Please fill out all fields.');
       return;
     }
 
     try {
-      await signUp.create({emailAddress: email, password, firstName, lastName, unsafeMetadata: {phone, zipcode, interestQuestions}});
+      //create a clerk user
+      await signUp.create({
+        emailAddress: email, 
+        password, 
+        firstName, 
+        lastName, 
+        unsafeMetadata: {
+          phone, 
+          zipcode, 
+          interestQuestions
+        }
+      });
 
       // send the email.
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
 
       // change the UI to our pending section.
       setPendingVerification(true);
+
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
     }
 
-      //setSubmitted(true);
   };
 
   // Verify User Email Code
@@ -87,7 +108,8 @@ export default function SignUp() {
       if (completeSignUp.status === 'complete') {
 
         try {
-            //creates data object from form data
+          
+          //creates data object from form data
           const data = {
             'email': email || "",
             'phoneNumber': phone || "",
@@ -95,20 +117,17 @@ export default function SignUp() {
             'firstName': firstName || "",
             'lastName': lastName || "",
           };
-          // create a new user
-          await fetch('/api/user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          });
+
+          // passes data to createUser function
+          createUser(data);
+
         } catch (error) {
-          console.log('here');
+          // Handle the error
           console.log('Error:', error);
         }
-        console.log('test post api call complete')
 
         await setActive({ session: completeSignUp.createdSessionId });
-          // Redirect the user to a post sign-up route
+        // Redirect the user to a post sign-up route
         if (redirect_url){
           router.push(redirect_url);
         } else {

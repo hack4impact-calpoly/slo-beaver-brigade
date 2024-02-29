@@ -36,6 +36,9 @@ export type IUser = {
     groupId: Schema.Types.ObjectId | null;
 };
 
+//groupId and digitalWaiver seem to require a schema
+//currently there is no schema for them so I am leaving them as null for now
+//can groupId just be a string and digitalWaiver be a boolean?
 const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
