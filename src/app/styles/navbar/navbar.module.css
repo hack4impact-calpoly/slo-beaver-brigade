@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-body {
+.body {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
@@ -20,45 +20,47 @@ body {
   height: 60px;
   background-color: #2b2b33;
   position: relative;
+  z-index: 9999;
 }
 
 .logo {
     color: #e0af48;
 }
 
-.menu-icon {
+.menu_icon {
   display: none;
   color: #e0af48;
 }
 
-.nav-elements {
+.nav_elements {
     text-align: right;
+    letter-spacing: normal;
 }
 
-.nav-elements ul {
+.nav_elements ul {
   display: flex;
   justify-content: space-between;
   list-style-type: none;
 }
 
-.nav-elements ul li:not(:last-child) {
+.nav_elements ul li:not(:last-child) {
   margin-right: 60px;
 }
 
-.nav-elements ul a {
+.nav_elements ul a {
   font-size: 16px;
   font-weight: 400;
   color: #e0af48;
   text-decoration: none;
 }
 
-.nav-elements ul a.active {
+.nav_elements ul a.active {
   color: #574c4c;
   font-weight: 500;
   position: relative;
 }
 
-.nav-elements ul a.active::after {
+.nav_elements ul a.active::after {
   content: '';
   position: absolute;
   bottom: -4px;
@@ -68,23 +70,23 @@ body {
   background-color: #574c4c;
 }
 
-.search-icon{
+.search_icon{
     margin-right: 30px;
 }
 
 @media (max-width: 768px) {
-  .nav-elements ul li:not(:last-child) {
+  .nav_elements ul li:not(:last-child) {
     margin-right: 30px;
   }
 }
 
 @media (max-width: 600px) {
-  .menu-icon {
+  .menu_icon {
     display: block;
     cursor: pointer;
   }
 
-  .nav-elements {
+  .nav_elements {
     position: absolute;
     right: 0;
     top: 60px;
@@ -95,16 +97,16 @@ body {
     overflow: hidden;
   }
 
-  .nav-elements.active {
+  .nav_elements.active {
     width: 270px;
   }
 
-  .nav-elements ul {
+  .nav_elements ul {
     display: flex;
     flex-direction: column;
   }
 
-  .nav-elements ul li {
+  .nav_elements ul li {
     margin-right: unset;
     margin-top: 22px;
   }
