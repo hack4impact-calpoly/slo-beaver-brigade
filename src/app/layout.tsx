@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 import Providers from "./Providers";
-import { Navbar } from "@components/Navbar";
+import Navbar from "@components/Navbar";
 
 //! Update metadata to match your project
 export const metadata: Metadata = {
