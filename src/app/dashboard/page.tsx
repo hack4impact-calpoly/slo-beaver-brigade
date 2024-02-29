@@ -1,13 +1,23 @@
 "use client";
-import React, { useEffect , useState } from "react";
-import { Box, Divider, Heading, Select, Stack, Text, useStatStyles, Flex, Button } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Divider,
+  Heading,
+  Select,
+  Stack,
+  Text,
+  useStatStyles,
+  Flex,
+  Button,
+} from "@chakra-ui/react";
 import Slider from "react-slick";
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { url } from "inspector";
-import Image from 'next/image';
+import Image from "next/image";
 
 const Dashboard = () => {
   const events = [1, 2, 3];
@@ -15,6 +25,35 @@ const Dashboard = () => {
   const [userEvents, setUserEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const { data: session } = useSession();
+
+  const formatDate = (date) => {
+    if (!(date instanceof Date)) {
+      date = new Date(date); // Convert to Date object if not already
+    }
+
+    const options = { weekday: "long", month: "long", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatDateTimeRange = (start, end) => {
+    if (!(start instanceof Date)) {
+      start = new Date(start); // Convert to Date object if not already
+    }
+
+    if (!(end instanceof Date)) {
+      end = new Date(end); // Convert to Date object if not already
+    }
+
+    const options = {
+      hour: "numeric",
+      minute: "numeric",
+    };
+
+    const formattedStart = start.toLocaleTimeString("en-US", options);
+    const formattedEnd = end.toLocaleTimeString("en-US", options);
+
+    return `${formattedStart} - ${formattedEnd}`;
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,7 +76,9 @@ const Dashboard = () => {
           const eventsPromises = eventIds.map(async (eventId) => {
             const eventResponse = await fetch(`/api/events/${eventId}`);
             if (!eventResponse.ok) {
-              throw new Error(`Failed to fetch event ${eventId}: ${eventResponse.statusText}`);
+              throw new Error(
+                `Failed to fetch event ${eventId}: ${eventResponse.statusText}`
+              );
             }
             return eventResponse.json();
           });
@@ -47,21 +88,23 @@ const Dashboard = () => {
           setUserEvents(fetchedEvents); // Update the state with the fetched events
         }
       } catch (error) {
-        console.error('Error fetching user data:', error.message);
+        console.error("Error fetching user data:", error.message);
       }
     };
 
     const fetchAllEvents = async () => {
       try {
         // Fetch all events (if needed)
-        const eventsResponse = await fetch('/api/events');
+        const eventsResponse = await fetch("/api/events");
         if (!eventsResponse.ok) {
-          throw new Error(`Failed to fetch all events: ${eventsResponse.statusText}`);
+          throw new Error(
+            `Failed to fetch all events: ${eventsResponse.statusText}`
+          );
         }
         const fetchedAllEvents = await eventsResponse.json();
         setAllEvents(fetchedAllEvents); // Update the state with all events
       } catch (error) {
-        console.error('Error fetching all events:', error.message);
+        console.error("Error fetching all events:", error.message);
       }
     };
 
@@ -69,8 +112,6 @@ const Dashboard = () => {
     fetchUserData();
     fetchAllEvents();
   }, [session]);
-  
-  
 
   const settings = {
     dots: true,
@@ -83,44 +124,102 @@ const Dashboard = () => {
   return (
     <Box p="4">
       <Stack spacing={2} px="10" mb={6}>
-          <Text fontSize="2xl" fontWeight="bold"
-            color="grey" alignSelf="flex-start" mb={3}>
-            Your Upcoming Events
-          </Text>
-          <Divider size="sm" borderWidth="1px"
-            borderColor="black" alignSelf="center" w="100%"/>
+        <Text
+          fontSize="2xl"
+          fontWeight="bold"
+          color="grey"
+          alignSelf="flex-start"
+          mb={3}
+        >
+          Your Upcoming Events
+        </Text>
+        <Divider
+          size="sm"
+          borderWidth="1px"
+          borderColor="black"
+          alignSelf="center"
+          w="100%"
+        />
       </Stack>
       <Box px={6}>
-      <Slider {...settings} >
-        {events.map((event) => (
-          <Box key={event._id} textAlign="center" px="4" mb="4" >
-            <Box
-              className="event-box"
-              borderWidth="1px"
-              p="4"
-              mb="4"
-              h="60"
-            >
-              <Heading as="h6" fontSize="xl">
-                {event}
-              </Heading>
+        <Slider {...settings}>
+          {allEvents.map((event) => (
+            <Box key={event._id} textAlign="center" px="4" mb="4">
+              <Box
+                className="event-box"
+                borderWidth="1px"
+                p="4"
+                mb="4"
+                h="60"
+                textAlign="left"
+                style={{
+                  backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
+                  backgroundSize: "100% 100%",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  padding: "20px",
+                }}
+              >
+                <Text
+                  fontSize="3xl"
+                  fontWeight="custom"
+                  color="white"
+                  className="bold-text"
+                  mb={20}
+                  mx={2}
+                >
+                  {event.eventName}
+                </Text>
+                <Text
+                  fontSize="3xl"
+                  fontWeight="custom"
+                  color="white"
+                  className="bold-text"
+                  mx={2}
+                >
+                  {formatDate(event.startTime)}
+                </Text>
+                <Text
+                  fontSize="xl"
+                  fontWeight="custom"
+                  color="white"
+                  className="bold-text"
+                  mx={2}
+                >
+                  {formatDateTimeRange(event.startTime, event.endTime)}
+                </Text>
+              </Box>
             </Box>
-          </Box>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
       </Box>
       <Box px="10" mb={6}>
         <Flex alignItems="center" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
             Find More Volunteer Opportunities
           </Text>
-          <Select defaultValue="event-type" onChange={(event) => console.log(event.target.value)} size="sm" ml={2} w="fit-content">
-            <option value="event-type" disabled>Event Type</option>
+          <Select
+            defaultValue="event-type"
+            onChange={(event) => console.log(event.target.value)}
+            size="sm"
+            ml={2}
+            w="fit-content"
+          >
+            <option value="event-type" disabled>
+              Event Type
+            </option>
             <option value="watery-walk">Watery Walk</option>
             <option value="volunteer">Volunteer</option>
           </Select>
         </Flex>
-        <Divider size="sm" borderWidth="1px" borderColor="black" alignSelf="center" w="100%" my={2} />
+        <Divider
+          size="sm"
+          borderWidth="1px"
+          borderColor="black"
+          alignSelf="center"
+          w="100%"
+          my={2}
+        />
       </Box>
       <Box
         borderWidth="1px"
@@ -129,15 +228,36 @@ const Dashboard = () => {
         textAlign="left"
         h={64}
         mx={10}
-        style={{ backgroundImage: `url("/image_720.png")`, backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', padding: '20px'}}
+        style={{
+          backgroundImage: `url("/image_720.png")`,
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          padding: "20px",
+        }}
       >
-        <Text fontSize="3xl" fontWeight="custom" color="white" className="bold-text">
+        <Text
+          fontSize="3xl"
+          fontWeight="custom"
+          color="white"
+          className="bold-text"
+        >
           Watery Walk With Cal Poly Hack4Impact
         </Text>
-        <Text fontSize="lg" fontWeight="custom" color="white" className="bold-text">
+        <Text
+          fontSize="lg"
+          fontWeight="custom"
+          color="white"
+          className="bold-text"
+        >
           Saturday, February 17
         </Text>
-        <Text fontSize="lg" fontWeight="custom" color="white" className="bold-text">
+        <Text
+          fontSize="lg"
+          fontWeight="custom"
+          color="white"
+          className="bold-text"
+        >
           9:00 AM - 11:00 AM
         </Text>
         {/* Your content inside the big rectangular box */}
