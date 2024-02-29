@@ -288,25 +288,6 @@ address {
   line-height: inherit;
 }
 
-ol,
-ul {
-  padding-left: 2rem;
-}
-
-ol,
-ul,
-dl {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-ol ol,
-ul ul,
-ol ul,
-ul ol {
-  margin-bottom: 0;
-}
-
 dt {
   font-weight: 600;
 }
@@ -351,18 +332,7 @@ sup {
   top: -0.5em;
 }
 
-a {
-  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
-  text-decoration: underline;
-}
-a:hover {
-  --bs-link-color-rgb: var(--bs-link-hover-color-rgb);
-}
 
-a:not([href]):not([class]), a:not([href]):not([class]):hover {
-  color: inherit;
-  text-decoration: none;
-}
 
 pre,
 code,
