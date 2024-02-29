@@ -35,7 +35,7 @@ const UserList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
 
-  const tablePadding = useBreakpointValue({ base: "0", md: "4" });
+  const tablePadding = useBreakpointValue({ base: "0", md: "0" });
 
   // fetch users from route
   const fetchUsers = async () => {
@@ -76,17 +76,16 @@ const UserList = () => {
     <div className={style.mainContainer}>
       <div className={style.tableContainer}>
         <div className={style.buttonContainer}>
-
           <div className={style.innerButtons}>
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className={style.filter}
-          >
-            <option value="firstName">First Name</option>
-            <option value="lastName">Last Name</option>
-          </select>
-          <button className={style.yellowButton}>Export To CSV</button> {}
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className={style.filter}
+            >
+              <option value="firstName">First Name</option>
+              <option value="lastName">Last Name</option>
+            </select>
+            <button className={style.yellowButton}>Export To CSV</button> {}
           </div>
 
           <div className={style.searchWrapper}>
