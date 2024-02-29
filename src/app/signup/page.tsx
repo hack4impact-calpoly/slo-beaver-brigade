@@ -113,14 +113,13 @@ export default function SignUp() {
           
           //creates data object from form data
           const data = {
-            'email': email || "",
-            'phoneNumber': phone || "",
+            'email': email,
+            'phoneNumber': phone,
             'role': "user",
             'gender': gender,
             'age': age,
-            'firstName': firstName || "",
-            'lastName': lastName || "",
-            'groupId': '319238289382',
+            'firstName': firstName,
+            'lastName': lastName,
           };
 
           // passes data to createUser function
