@@ -69,22 +69,12 @@
 }
 
 @media (max-width: 880px) {
-  .innerButtons {
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 650px) {
   .buttonContainer {
     flex-direction: column;
     gap: 10px;
-    text-align: center;
-    border: 1px solid red;
-    align-items: left;
   }
 
-  .innerButtons {
-    border: 1px solid red;
-    text-align: left;
+  .yellowButton {
+    padding: 8px 20px;
   }
 }
