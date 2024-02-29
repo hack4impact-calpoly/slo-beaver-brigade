@@ -1,57 +1,76 @@
 "use client";
 import React, { useEffect , useState } from "react";
-import { Box, Divider, Heading, Select, Stack, Text, useStatStyles, Flex } from "@chakra-ui/react";
+import { Box, Divider, Heading, Select, Stack, Text, useStatStyles, Flex, Button } from "@chakra-ui/react";
 import Slider from "react-slick";
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { url } from "inspector";
+import Image from 'next/image';
 
 const Dashboard = () => {
   const events = [1, 2, 3];
+  const [users, setUsers] = useState([]);
   const [userEvents, setUserEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
-  const { data: session } = useSession(); // Access user session data
+  const { data: session } = useSession();
 
   useEffect(() => {
-    const fetchUserEvents = async () => {
+    const fetchUserData = async () => {
       try {
         if (session) {
-          // Extract user ID from the session
-          const userId = '65bed96eb82f4ef4ac394b40';
+          const userId = session.user.id;
 
-          // Fetch user data including events attended
-          const response = await axios.get(`/api/user/${userId}`);
-          const userData = response.data;
+          // Fetch user data
+          const userResponse = await fetch(`/api/user/${userId}`);
+          if (!userResponse.ok) {
+            throw new Error(`Failed to fetch user: ${userResponse.statusText}`);
+          }
+          const fetchedUser = await userResponse.json();
+          setUsers([fetchedUser]); // Update the state with the fetched user
 
-          // Extract events attended from user data
-          const eventsAttended = userData.eventsAttended || [];
-          console.log('Events Attended:', eventsAttended);
+          // Extract event IDs from the user's eventsAttended field
+          const eventIds = fetchedUser.eventsAttended || [];
 
-          setUserEvents(eventsAttended);
+          // Fetch details for each event ID
+          const eventsPromises = eventIds.map(async (eventId) => {
+            const eventResponse = await fetch(`/api/events/${eventId}`);
+            if (!eventResponse.ok) {
+              throw new Error(`Failed to fetch event ${eventId}: ${eventResponse.statusText}`);
+            }
+            return eventResponse.json();
+          });
+
+          // Wait for all event details requests to complete
+          const fetchedEvents = await Promise.all(eventsPromises);
+          setUserEvents(fetchedEvents); // Update the state with the fetched events
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching user data:', error.message);
       }
     };
 
     const fetchAllEvents = async () => {
       try {
-        // Fetch all events from your API
-        const response = await axios.get('/api/events');
-        const allEvents = response.data;
-        console.log('All Events:', allEvents);
-
-        setAllEvents(allEvents);
-        console.log('All Events:', allEvents);
+        // Fetch all events (if needed)
+        const eventsResponse = await fetch('/api/events');
+        if (!eventsResponse.ok) {
+          throw new Error(`Failed to fetch all events: ${eventsResponse.statusText}`);
+        }
+        const fetchedAllEvents = await eventsResponse.json();
+        setAllEvents(fetchedAllEvents); // Update the state with all events
       } catch (error) {
-        console.error('Error fetching all events:', error);
+        console.error('Error fetching all events:', error.message);
       }
     };
 
-    fetchUserEvents();
+    // Call the fetchUserData and fetchAllEvents functions
+    fetchUserData();
     fetchAllEvents();
   }, [session]);
+  
+  
 
   const settings = {
     dots: true,
@@ -74,7 +93,7 @@ const Dashboard = () => {
       <Box px={6}>
       <Slider {...settings} >
         {events.map((event) => (
-          <Box key={event._id} textAlign="center" px="4" mb="4">
+          <Box key={event._id} textAlign="center" px="4" mb="4" >
             <Box
               className="event-box"
               borderWidth="1px"
@@ -107,11 +126,24 @@ const Dashboard = () => {
         borderWidth="1px"
         p="4"
         mt="4"
-        textAlign="center"
+        textAlign="left"
         h={64}
         mx={10}
+        style={{ backgroundImage: `url("/image_720.png")`, backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', padding: '20px'}}
       >
+        <Text fontSize="3xl" fontWeight="custom" color="white" className="bold-text">
+          Watery Walk With Cal Poly Hack4Impact
+        </Text>
+        <Text fontSize="lg" fontWeight="custom" color="white" className="bold-text">
+          Saturday, February 17
+        </Text>
+        <Text fontSize="lg" fontWeight="custom" color="white" className="bold-text">
+          9:00 AM - 11:00 AM
+        </Text>
         {/* Your content inside the big rectangular box */}
+        <Button colorScheme="teal" mt={14}>
+          Register for this event
+        </Button>
       </Box>
     </Box>
   );
