@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react'
 import Link from 'next/link'
-import "@styles/navbar/navbar.css"
+import styles from "@styles/navbar/navbar.module.css"
 import { HamburgerIcon, Search2Icon, StarIcon } from '@chakra-ui/icons'
 
 
@@ -13,33 +13,35 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="navbar">
-      <div className="container">
-        <div className="logo">
-          <StarIcon></StarIcon>
+    <nav className={styles.navbar}>
+      <div className={styles.container}>
+        <div className={styles.logo}>
+          <Link href="/">
+            <StarIcon></StarIcon>
+          </Link>
         </div>
-        <div className="menu-icon" onClick={handleShowNavbar}>
+        <div className={styles.menu_icon} onClick={handleShowNavbar}>
           <HamburgerIcon/>
         </div>
-        <div className={`nav-elements  ${showNavbar && 'active'}`}>
+        <div className={`${styles.nav_elements}  ${showNavbar && styles.active}`}>
           <ul>
             <li>
-              <Link href="/">Visit</Link>
+              <Link href="https://www.slobeaverbrigade.com/come-to-a-beaver-pond/">Visit</Link>
             </li>
             <li>
-              <Link href="/">Volunteer</Link>
+              <Link href="https://www.slobeaverbrigade.com/news-events/">Volunteer</Link>
             </li>
             <li>
-              <Link href="/">Learn</Link>
+              <Link href="https://www.slobeaverbrigade.com/block-content-examples/">Learn</Link>
             </li>
             <li>
-              <Link href="/">About Us</Link>
+              <Link href="https://www.slobeaverbrigade.com/about-us/">About Us</Link>
             </li>
             <li>
-              <Link href="/">Donate</Link>
+              <Link href="https://www.slobeaverbrigade.com/donate/">Donate</Link>
             </li>
             <li>
-              <Link href="/"> <Search2Icon className='search-icon'/> </Link>
+              <Link href="/"> <Search2Icon className={styles.search_icon}/> </Link>
             </li>
           </ul>
         </div>
