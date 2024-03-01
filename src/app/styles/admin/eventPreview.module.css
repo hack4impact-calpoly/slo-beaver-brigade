@@ -14,7 +14,7 @@
 
 .eventCard h2 {
   color: #2b2b34;
-  font-size: 1.2rem;
+  font-size: 1.2vw;
   font-weight: bold;
 }
 
@@ -44,20 +44,31 @@
 }
 
 .infoContainer {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: space-between;
+  width: 60%;
 }
 
-@media (max-width: 1200px) {
+.date {
+  padding: 1vw 0;
+}
+
+@media (max-width: 1100px) {
   .eventCard h2 {
     font-size: 1rem;
   }
 
   .eventCard h3 {
     font-size: 0.6rem;
+  }
+
+  .imageWrapper {
+    width: 125px;
+    height: 125px;
+  }
+
+  .imageContainer {
+    display: flex;
+    width: 50%;
+    justify-content: center;
   }
 }
 
