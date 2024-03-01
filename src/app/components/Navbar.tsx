@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import styles from "@styles/navbar/navbar.module.css"
 import { HamburgerIcon, Search2Icon, StarIcon } from '@chakra-ui/icons'
+import { currentUser } from '@clerk/nextjs';
 
 
 const Navbar = () => {
@@ -19,6 +20,9 @@ const Navbar = () => {
           <Link href="/">
             <StarIcon></StarIcon>
           </Link>
+          <div className={styles.greeting}>
+            <p>Sign In</p>
+          </div>
         </div>
         <div className={styles.menu_icon} onClick={handleShowNavbar}>
           <HamburgerIcon/>
