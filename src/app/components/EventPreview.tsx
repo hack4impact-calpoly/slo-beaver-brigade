@@ -84,13 +84,13 @@ const EventPreviewComponent: React.FC<EventPreviewProps> = ({ event }) => {
           <h2>{event.eventName}</h2>
           <h3>{groupName ? groupName : "SLO Beaver Brigade"}</h3>
         </div>
-        <div>
+        <div className={style.date}>
           <h2>{formatDate(event.startTime)}</h2>
-          <h2>{formatTimeRange(event.startTime, event.endTime)}</h2>
+          <h2 >{formatTimeRange(event.startTime, event.endTime)}</h2>
         </div>
         <div>
           <h2>{event.attendeeIds.length}</h2>
-          <h3 className={style.visitors}>Visitors</h3>
+          <h3>{event.attendeeIds.length === 1 ? 'Visitor' : 'Visitors'}</h3>
         </div>
       </div>
     </div>
