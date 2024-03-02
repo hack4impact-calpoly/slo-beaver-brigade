@@ -21,6 +21,7 @@ interface IEvent {
 }
 
 const EventPreview = () => {
+  //states
   const [events, setEvents] = useState<IEvent[]>([]);
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +30,7 @@ const EventPreview = () => {
   const [showPastEvents, setShowPastEvents] = useState(false);
   const [loading, setLoading] = useState(true); // Loading state
 
-  // This function now just fetches the group name and returns it
+  // get string for some group based on id
   const fetchGroupName = async (groupId: ObjectId): Promise<string> => {
     try {
       const res = await fetch(`/api/groups/${groupId}`);

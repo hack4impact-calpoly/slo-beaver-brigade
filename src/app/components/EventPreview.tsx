@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import style from "@styles/admin/eventPreview.module.css";
 import { IEvent } from "@database/eventSchema";
 import Image from "next/image";
