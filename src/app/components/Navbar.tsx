@@ -25,9 +25,18 @@ export default function Navbar(props: { name: string; admin: boolean }) {
               height={35}
             ></Image>
           </Link>
-          <div className={styles.greeting}>
-            <p>{props.name}</p>
-          </div>
+          {(props.name === "Sign In / Log In")? 
+            <div className={styles.greeting}>
+              <Link href={"/login"}>
+                {props.name}
+              </Link>
+            </div>
+          :
+            <div className={styles.greeting}>
+              <p>{props.name}</p>
+            </div>
+        }
+
         </div>
         <div className={styles.menu_icon} onClick={handleShowNavbar}>
           <HamburgerIcon />
