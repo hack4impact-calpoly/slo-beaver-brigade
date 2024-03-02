@@ -32,6 +32,7 @@
 .greeting {
   float: right;
   margin-left: 1rem;
+  letter-spacing: normal;
 }
 
 .menu_icon {
