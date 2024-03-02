@@ -9,6 +9,7 @@ export default authMiddleware({
     "/signup",
     "/forgot-password",
     "/reset-password",
+    "/api/user"
   ],
 });
 

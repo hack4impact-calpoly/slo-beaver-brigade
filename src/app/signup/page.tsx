@@ -15,15 +15,20 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styles from './page.module.css'
 import checkmarkImage from '/docs/images/checkmark.png'
 import Image from 'next/image'
-import { useSignUp } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
+import { auth, useSignUp, useUser } from '@clerk/nextjs';
+import { getAuth, clerkClient } from '@clerk/nextjs/server';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { get } from "http";
 
 
 export default function SignUp() {
+  const { isSignedIn, user } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
   const { isLoaded, signUp, setActive } = useSignUp();
   const [email, setEmail] = useState('');
+  const [age, setAge] = useState(-1);
+  const [gender, setGender] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +38,41 @@ export default function SignUp() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams()
+  const redirect_url = searchParams.get('redirect_url')
+
+  // Create a new user post request to mongoDB
+  const createUser = async (data: any) => {
+    try {
+      const res = await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      // If the user is created, update the user metadata in Clerk
+      if (res.ok) {
+        // Get the user's ID from the response
+        const responseData = await res.json();
+        const dbId = responseData._id;
+        try {
+          // Get the user's ID from the clerk session
+          const { userId } : { userId: string | null } = auth();
+          const params = { externalId: dbId };
+          if (userId) {
+            // Update the user's id in Clerk
+            await clerkClient.users.updateUser(userId, params);
+          }
+        } catch (error) {
+          console.log('Failed to update user id in Clerk: ', error);
+        }
+      } else {
+        console.log('Failed to create user');
+      }
+    } catch (error) {
+      console.log('Failed to create user: ', error);
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
       // If the form submission is successful, setSubmitted(true);
@@ -45,24 +85,36 @@ export default function SignUp() {
       return;
     }
 
+    //checks for empty fields
     if (!firstName || !lastName || !email || !password || !phone || !zipcode) {
       alert('Please fill out all fields.');
       return;
     }
 
     try {
-      await signUp.create({emailAddress: email, password, firstName, lastName, unsafeMetadata: {phone, zipcode, interestQuestions}});
+      //create a clerk user
+      await signUp.create({
+        emailAddress: email, 
+        password, 
+        firstName, 
+        lastName, 
+        unsafeMetadata: {
+          phone, 
+          zipcode, 
+          interestQuestions
+        }
+      });
 
       // send the email.
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
 
       // change the UI to our pending section.
       setPendingVerification(true);
+
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
     }
 
-      //setSubmitted(true);
   };
 
   // Verify User Email Code
@@ -83,8 +135,36 @@ export default function SignUp() {
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === 'complete') {
+
+        try {
+          
+          //creates data object from form data
+          const data = {
+            'email': email,
+            'phoneNumber': phone,
+            'role': "user",
+            'gender': gender,
+            'age': age,
+            'firstName': firstName,
+            'lastName': lastName,
+          };
+
+          // passes data to createUser function
+          createUser(data);
+
+        } catch (error) {
+          // Handle the error
+          console.log('Error:', error);
+        }
+
         await setActive({ session: completeSignUp.createdSessionId });
-        router.push('/');
+        // Redirect the user to a post sign-up route
+        if (redirect_url){
+          router.push(redirect_url);
+        } else {
+            // Redirect the user to a post sign-in route
+            router.push('/');
+        }
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
@@ -165,6 +245,24 @@ export default function SignUp() {
                 variant="filled" 
                 onChange={(e) => setPhone(e.target.value)}
                 required={true}/>
+            </FormControl>
+            <FormControl mb={4} isRequired>
+              <FormLabel>Age</FormLabel>
+                <Input 
+                    type="number" 
+                    placeholder="Age" 
+                    variant="filled" 
+                    onChange={(e) => setAge(parseInt(e.target.value))}
+                />
+            </FormControl>
+            <FormControl mb={4} isRequired>
+              <FormLabel>Gender</FormLabel>
+              <Input 
+                type="text" 
+                placeholder="Gender" 
+                variant="filled" 
+                onChange={(e) => setGender(e.target.value)}
+              />
             </FormControl>
             <FormControl mb={4} isRequired>
               <FormLabel>Zipcode</FormLabel>
