@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "@styles/navbar/navbar.module.css";
 import { HamburgerIcon, Search2Icon, StarIcon } from "@chakra-ui/icons";
+import Image from "next/image";
 
 export default function Navbar(props: { name: string; admin: boolean }) {
   const [showNavbar, setShowNavbar] = useState(false);
@@ -14,9 +15,15 @@ export default function Navbar(props: { name: string; admin: boolean }) {
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        <div className={styles.logo}>
+        <div className={styles.nav_left}>
           <Link href="/">
-            <StarIcon></StarIcon>
+            <Image
+              className={styles.logo}
+              src={"beaver-logo.svg"}
+              alt="Beaver Logo"
+              width={35}
+              height={35}
+            ></Image>
           </Link>
           <div className={styles.greeting}>
             <p>{props.name}</p>
@@ -58,10 +65,8 @@ export default function Navbar(props: { name: string; admin: boolean }) {
               <></>
             ) : (
               <li>
-              <Link href="/">
-                My Account
-              </Link>
-            </li>
+                <Link href="/">My Account</Link>
+              </li>
             )}
             <li>
               <Link href="/">
