@@ -6,33 +6,13 @@ import beaver from "/docs/images/beaver-placeholder.jpg";
 
 interface EventPreviewProps {
   event: IEvent;
+  groupName: String;
 }
 
-const EventPreviewComponent: React.FC<EventPreviewProps> = ({ event }) => {
-  const [groupName, setGroupName] = useState<string>("SLO Beaver Brigade");
-
-  // get group name based on groupsAllowed array, if empty = slo beaver bridage
-  useEffect(() => {
-    const fetchGroupName = async () => {
-      if (event.groupsAllowed && event.groupsAllowed.length > 0) {
-        try {
-          const res = await fetch(`/api/groups/${event.groupsAllowed[0]}`);
-          if (res.ok) {
-            const data = await res.json();
-            setGroupName(data.group.group_name);
-            console.log(data.group.group_name);
-          } else {
-            console.error("Error fetching group name:", res.statusText);
-          }
-        } catch (error) {
-          console.error("Error fetching group name:", error);
-        }
-      }
-    };
-
-    fetchGroupName();
-  }, [event.groupsAllowed]);
-
+const EventPreviewComponent: React.FC<EventPreviewProps> = ({
+  event,
+  groupName,
+}) => {
   // formats date without leading zeros month/day
   const formatDate = (date: Date | string): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -82,15 +62,17 @@ const EventPreviewComponent: React.FC<EventPreviewProps> = ({ event }) => {
       <div className={style.infoContainer}>
         <div>
           <h2>{event.eventName}</h2>
-          <h3>{groupName ? groupName : "SLO Beaver Brigade"}</h3>
+          <h3>{groupName}</h3>
         </div>
-        <div className={style.date}>
+        <div className={style.data}>
           <h2>{formatDate(event.startTime)}</h2>
-          <h2 >{formatTimeRange(event.startTime, event.endTime)}</h2>
+          <h2>{formatTimeRange(event.startTime, event.endTime)}</h2>
         </div>
         <div>
           <h2>{event.attendeeIds.length}</h2>
-          <h3>{event.attendeeIds.length === 1 ? 'Visitor' : 'Visitors'}</h3>
+          <h3 className={style.visitors}>
+            {event.attendeeIds.length == 1 ? " Visitor" : "Visitors"}
+          </h3>
         </div>
       </div>
     </div>
