@@ -30,6 +30,11 @@
   margin-left: 30px;
 }
 
+.yellowButton:hover {
+  background-color: #d6a33e;
+  cursor: pointer;
+}
+
 .viewDetails {
   color: darkgray;
   text-decoration: underline;
