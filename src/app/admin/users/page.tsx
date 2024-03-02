@@ -30,13 +30,16 @@ interface IUser {
 }
 
 const UserList = () => {
+  //states
   const [users, setUsers] = useState<IUser[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
   const [loading, setLoading] = useState(true);
 
+  // table format
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
+  // fetch users from route
   const fetchUsers = async () => {
     try {
       const response = await fetch("/api/user");
@@ -56,6 +59,7 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
+  // filter users based on filter settings
   const filteredUsers = users
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
@@ -68,12 +72,13 @@ const UserList = () => {
         : a.lastName.localeCompare(b.lastName)
     );
 
+  //return a loading message while waiting to fetch users
   if (loading) {
     return (
       <Text fontSize="lg" textAlign="center">
         Loading users...
       </Text>
-    ); // Display loading message
+    );
   }
 
   return (
