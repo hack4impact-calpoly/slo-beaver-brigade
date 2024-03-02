@@ -14,7 +14,7 @@ import Link from "next/link";
 import Image from "next/image";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import {CSVLink } from "react-csv"
+import { CSVLink } from "react-csv";
 
 interface IUser {
   _id: string;
@@ -95,7 +95,9 @@ const UserList = () => {
               <option value="firstName">First Name</option>
               <option value="lastName">Last Name</option>
             </select>
-            <CSVLink data={filteredUsers} className={style.yellowButton}>Export To CSV</CSVLink>
+            <CSVLink data={filteredUsers} className={style.yellowButton}>
+              Export To CSV
+            </CSVLink>
           </div>
           <div className={style.searchWrapper}>
             <input
