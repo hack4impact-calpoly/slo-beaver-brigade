@@ -28,7 +28,7 @@ const EventPreview = () => {
   const [sortOrder, setSortOrder] = useState("earliest");
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   // get string for some group based on id
   const fetchGroupName = async (groupId: ObjectId): Promise<string> => {
