@@ -26,7 +26,7 @@ export default function RootLayout({
       <html lang="en">
         <body  className={lato.className}>
           <Providers>
-              <NavbarParent admin={false}/>
+              <NavbarParent/>
               {children}
           </Providers>
           </body>
