@@ -19,7 +19,7 @@ export default function RootLayout({
       <html lang="en">
         <body>
           <Providers>
-              <NavbarParent/>
+              <NavbarParent admin={false}/>
               {children}
           </Providers>
           </body>
