@@ -22,6 +22,9 @@ export default async function dashboard(){
   }
   const calEvent = events.map(Calendarify)
 
+  //Ievent object to pass into calendar component
+  const dbEvent = JSON.parse(JSON.stringify(events));
+
   return (
     <div className={style.page}>
         <header className={style.header}>
@@ -29,7 +32,7 @@ export default async function dashboard(){
         </header>
         <main>
             <div>
-                <Calendar events={calEvent} admin={true}
+                <Calendar events={calEvent} admin={true} dbevents={dbEvent}
                 />
             </div>
         </main>
