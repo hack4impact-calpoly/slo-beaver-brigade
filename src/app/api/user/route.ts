@@ -2,6 +2,7 @@ import connectDB from "@database/db";
 import { NextResponse, NextRequest } from "next/server";
 import User, { IUser } from "@database/userSchema";
 import { IEvent } from "@database/eventSchema";
+import mongoose from "mongoose";
 
 // GET request for getting all users
 export async function GET() {
@@ -25,22 +26,13 @@ export async function POST(req: NextRequest) {
         // convert the readable stream to JSON
         const bodyText = await new Response(req.body).text();
         const body: IUser = JSON.parse(bodyText);
-        const { email, firstName, lastName, age, role, gender } = body;
-
         // create a new user
         const newUser = new User({
-            email,
-            role,
-            age,
-            gender,
-            firstName,
-            lastName,
-            digitalWaiver: null,
+            ...body,
         });
-
         const savedUser = await newUser.save();
-
-        return NextResponse.json({ savedUser });
+        
+        return NextResponse.json({ _id: savedUser._id }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
             { error: (error as Error).message },
