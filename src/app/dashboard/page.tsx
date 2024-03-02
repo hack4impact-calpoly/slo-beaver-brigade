@@ -13,18 +13,17 @@ import {
 } from "@chakra-ui/react";
 import Slider from "react-slick";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import {useUser} from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { url } from "inspector";
 import Image from "next/image";
 
 const Dashboard = () => {
-  const events = [1, 2, 3];
+  const { isSignedIn, user, isLoaded } = useUser();
   const [users, setUsers] = useState([]);
   const [userEvents, setUserEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
-  const { data: session } = useSession();
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -58,14 +57,18 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        if (session) {
-          const userId = session.user.id;
+        if (isSignedIn) {
+          // Access user data using the `user` object
+          const userId = user.id;
+          console.log("User ID:", userId);
+          console.log("User:", user.emailAddresses[0].emailAddress, user);
 
           // Fetch user data
           const userResponse = await fetch(`/api/user/${userId}`);
           if (!userResponse.ok) {
             throw new Error(`Failed to fetch user: ${userResponse.statusText}`);
           }
+
           const fetchedUser = await userResponse.json();
           setUsers([fetchedUser]); // Update the state with the fetched user
 
@@ -76,9 +79,7 @@ const Dashboard = () => {
           const eventsPromises = eventIds.map(async (eventId) => {
             const eventResponse = await fetch(`/api/events/${eventId}`);
             if (!eventResponse.ok) {
-              throw new Error(
-                `Failed to fetch event ${eventId}: ${eventResponse.statusText}`
-              );
+              throw new Error(`Failed to fetch event ${eventId}: ${eventResponse.statusText}`);
             }
             return eventResponse.json();
           });
@@ -88,7 +89,7 @@ const Dashboard = () => {
           setUserEvents(fetchedEvents); // Update the state with the fetched events
         }
       } catch (error) {
-        console.error("Error fetching user data:", error.message);
+        console.error('Error fetching user data:', error.message);
       }
     };
 
@@ -111,7 +112,7 @@ const Dashboard = () => {
     // Call the fetchUserData and fetchAllEvents functions
     fetchUserData();
     fetchAllEvents();
-  }, [session]);
+  });
 
   const settings = {
     dots: true,
