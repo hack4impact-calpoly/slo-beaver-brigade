@@ -63,7 +63,7 @@ const EventPreviewComponent: React.FC<EventPreviewProps> = ({
           <h2>{event.eventName}</h2>
           <h3>{groupName}</h3>
         </div>
-        <div className={style.data}>
+        <div className={style.date}>
           <h2>{formatDate(event.startTime)}</h2>
           <h2>{formatTimeRange(event.startTime, event.endTime)}</h2>
         </div>
