@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import style from "@styles/admin/events.module.css";
 import EventPreviewComponent from "@components/EventPreview";
+import { ObjectId } from "mongoose";
 
 interface IEvent {
   _id: string;
@@ -14,70 +15,91 @@ interface IEvent {
   endTime: Date;
   volunteerEvent: boolean;
   visitorCount?: number;
-  groupsAllowed: [];
-  attendeeIds: [];
+  groupsAllowed: ObjectId[];
+  attendeeIds: ObjectId[];
   digitalWaiver: string | null;
-  groupId: string | null;
 }
 
-
 const EventPreview = () => {
-  // states
   const [events, setEvents] = useState<IEvent[]>([]);
+  const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("earliest");
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
+  const [loading, setLoading] = useState(true); // Loading state
 
-  // get all events from route
-  const fetchEvents = async () => {
+  // This function now just fetches the group name and returns it
+  const fetchGroupName = async (groupId: ObjectId): Promise<string> => {
     try {
-      const response = await fetch("/api/events");
-      if (!response.ok) {
-        throw new Error("Failed to fetch events");
+      const res = await fetch(`/api/groups/${groupId}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.group.group_name;
+      } else {
+        console.error("Error fetching group name:", res.statusText);
+        return "SLO Beaver Brigade";
       }
-      const data = await response.json();
-      setEvents(
-        data.map((event: IEvent) => ({
-          ...event,
-          startTime: new Date(event.startTime),
-          endTime: new Date(event.endTime),
-        }))
-      );
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching group name:", error);
+      return "SLO Beaver Brigade";
     }
   };
 
+  // grab all events from route
   useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events");
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+        const data = await response.json();
+        setEvents(
+          data.map((event: IEvent) => ({
+            ...event,
+            startTime: new Date(event.startTime),
+            endTime: new Date(event.endTime),
+          }))
+        );
+
+        // fetch group names for all events right after events are fetched
+        const names: { [key: string]: string } = {};
+        for (const event of data) {
+          if (event.groupsAllowed.length > 0) {
+            setLoading(true);
+            const groupName = await fetchGroupName(event.groupsAllowed[0]);
+            names[event._id] = groupName;
+            setLoading(false);
+          } else {
+            names[event._id] = "SLO Beaver Brigade";
+          }
+        }
+        setGroupNames(names);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchEvents();
   }, []);
 
-  // filter events based on settings
+  // filtering events logic
   const filteredEvents = events
-    .filter((event) => {
-      if (spanishSpeakingOnly) return event.spanishSpeakingAccommodation;
-      return true;
-    })
-    .filter((event) => {
-      const now = new Date();
-      if (showPastEvents) return true;
-      return new Date(event.startTime) >= now;
-    })
+    .filter((event) =>
+      spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
+    )
+    .filter((event) =>
+      showPastEvents ? true : new Date(event.startTime) >= new Date()
+    )
     .filter((event) =>
       event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .sort((a, b) => {
-      if (sortOrder === "earliest") {
-        return (
-          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-        );
-      } else {
-        return (
-          new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
-        );
-      }
-    });
+    .sort((a, b) =>
+      sortOrder === "earliest"
+        ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        : new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    );
 
   return (
     <div className={style.mainContainer}>
@@ -116,17 +138,22 @@ const EventPreview = () => {
           </div>
         </div>
       </aside>
-      <div className={style.cardContainer}>
-        <ul className={style.eventsList}>
-          {filteredEvents.map((event) => (
-            <li key={event._id} className={style.eventItem}>
-              <div className={style.eventContainer}>
-                <EventPreviewComponent event={event} />
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {loading ? (
+        <div>Loading events...</div>
+      ) : (
+        <div className={style.cardContainer}>
+          <ul className={style.eventsList}>
+            {filteredEvents.map((event) => (
+              <li key={event._id} className={style.eventItem}>
+                <EventPreviewComponent
+                  event={event}
+                  groupName={groupNames[event._id]}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
