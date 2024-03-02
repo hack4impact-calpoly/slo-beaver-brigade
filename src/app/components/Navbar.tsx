@@ -5,7 +5,7 @@ import styles from "@styles/navbar/navbar.module.css";
 import { HamburgerIcon, Search2Icon, StarIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 
-export default function Navbar(props: { name: string; admin: boolean }) {
+export default function Navbar(props: { name: string }) {
   const [showNavbar, setShowNavbar] = useState(false);
 
   const handleShowNavbar = () => {
@@ -70,13 +70,9 @@ export default function Navbar(props: { name: string; admin: boolean }) {
                 Donate
               </Link>
             </li>
-            {props.admin ? (
-              <></>
-            ) : (
-              <li>
-                <Link href="/">My Account</Link>
-              </li>
-            )}
+            <li>
+              <Link href="/">My Account</Link>
+            </li>
             <li>
               <Link href="/">
                 {" "}
