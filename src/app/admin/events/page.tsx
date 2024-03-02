@@ -66,12 +66,11 @@ const EventPreview = () => {
 
         // fetch group names for all events right after events are fetched
         const names: { [key: string]: string } = {};
+        setLoading(true);
         for (const event of data) {
           if (event.groupsAllowed.length > 0) {
-            setLoading(true);
             const groupName = await fetchGroupName(event.groupsAllowed[0]);
             names[event._id] = groupName;
-            setLoading(false);
           } else {
             names[event._id] = "SLO Beaver Brigade";
           }
@@ -80,6 +79,7 @@ const EventPreview = () => {
       } catch (error) {
         console.error(error);
       }
+        setLoading(false);
     };
 
     fetchEvents();
