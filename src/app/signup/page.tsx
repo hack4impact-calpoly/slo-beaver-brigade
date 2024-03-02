@@ -8,7 +8,8 @@ import {
   FormLabel,
   Button,
   Textarea,
-  Link as ChakraLink,
+  Link,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -25,6 +26,7 @@ export default function SignUp() {
   const { isSignedIn, user } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const { isLoaded, signUp, setActive } = useSignUp();
   const [email, setEmail] = useState('');
   const [age, setAge] = useState(-1);
@@ -40,6 +42,7 @@ export default function SignUp() {
   const router = useRouter();
   const searchParams = useSearchParams()
   const redirect_url = searchParams.get('redirect_url')
+
 
   // Create a new user post request to mongoDB
   const createUser = async (data: any) => {
@@ -80,14 +83,14 @@ export default function SignUp() {
       //for the frontend, it'll just have the successful submission screen popup
 
     e.preventDefault();
+    setSubmitAttempted(true)
 
     if (!isLoaded) {
       return;
     }
 
     //checks for empty fields
-    if (!firstName || !lastName || !email || !password || !phone || !zipcode) {
-      alert('Please fill out all fields.');
+    if (!firstName || !lastName || !email || !password || !phone || !age || !gender || !zipcode) {
       return;
     }
 
@@ -185,8 +188,9 @@ export default function SignUp() {
                 Create Account
               </Heading>
             </Box>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={firstName === '' && submitAttempted}>
               <FormLabel>First Name</FormLabel>
+              
               <Input 
                 type="text" 
                 placeholder="First Name" 
@@ -194,8 +198,9 @@ export default function SignUp() {
                 onChange={(e) => setFirstName(e.target.value)} 
                 required={true}
               />
+              <FormErrorMessage>First Name is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={lastName === '' && submitAttempted}>
               <FormLabel>Last Name</FormLabel>
               <Input 
                 type="text" 
@@ -204,8 +209,9 @@ export default function SignUp() {
                 onChange={(e) => setLastName(e.target.value)} 
                 required={true}
               />
+              <FormErrorMessage>Last Name is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={email === '' && submitAttempted}>
               <FormLabel>Email</FormLabel>
               <Input 
                 type="text" 
@@ -214,8 +220,9 @@ export default function SignUp() {
                 onChange={(e) => setEmail(e.target.value)}
                 required={true}
               />
+              <FormErrorMessage>Email is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={password === '' && submitAttempted}>
               <FormLabel>Password</FormLabel>
               <Input
                 type={showPassword ? "text" : "password"}
@@ -236,8 +243,9 @@ export default function SignUp() {
                 {/* {showPassword ? "Hide" : "Show"} */}
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
               </Button>
+              <FormErrorMessage>Password is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
               <FormLabel>Phone</FormLabel>
               <Input 
                 type="text" 
@@ -245,8 +253,9 @@ export default function SignUp() {
                 variant="filled" 
                 onChange={(e) => setPhone(e.target.value)}
                 required={true}/>
+                <FormErrorMessage>Phone is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={age === -1 && submitAttempted}>
               <FormLabel>Age</FormLabel>
                 <Input 
                     type="number" 
@@ -254,8 +263,9 @@ export default function SignUp() {
                     variant="filled" 
                     onChange={(e) => setAge(parseInt(e.target.value))}
                 />
+                <FormErrorMessage>Age is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={gender === '' && submitAttempted}>
               <FormLabel>Gender</FormLabel>
               <Input 
                 type="text" 
@@ -263,8 +273,9 @@ export default function SignUp() {
                 variant="filled" 
                 onChange={(e) => setGender(e.target.value)}
               />
+              <FormErrorMessage>Gender is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
               <FormLabel>Zipcode</FormLabel>
               <Input 
                 type="text" 
@@ -272,6 +283,7 @@ export default function SignUp() {
                 variant="filled" 
                 onChange={(e) => setZipcode(e.target.value)}
               />
+              <FormErrorMessage>Zipcode is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Interest Questions</FormLabel>
@@ -283,7 +295,7 @@ export default function SignUp() {
                 />
             </FormControl>
             <FormControl mb={4}>
-              <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
+              <Button bg="#a3caf0" width="full" onClick={(handleSubmit)}>
                 Create Account
               </Button>
             </FormControl>
@@ -320,7 +332,7 @@ export default function SignUp() {
   );
 }
 
- //When return to calendar is clicked it should reroute to the calendar
+//When return to calendar is clicked it should reroute to the calendar
 const AccountCreated = () => {
     return(
         <div className = {styles.successWindow}>
