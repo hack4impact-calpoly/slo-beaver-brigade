@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs";
 import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 
-/** fetch from MongoDB, ge\t user Role */
+/** fetch from MongoDB, get user Role */
 async function getUserRole(id: string | null){
   await connectDB()
   
