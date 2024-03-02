@@ -141,7 +141,7 @@ const EventPreview = () => {
       </aside>
       {loading ? (
         <div>Loading events...</div>
-      ) : (
+      ) : filteredEvents.length > 0 ? (
         <div className={style.cardContainer}>
           <ul className={style.eventsList}>
             {filteredEvents.map((event) => (
@@ -154,6 +154,8 @@ const EventPreview = () => {
             ))}
           </ul>
         </div>
+      ) : (
+        <div>No events to show</div>
       )}
     </div>
   );
