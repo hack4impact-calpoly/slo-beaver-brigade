@@ -6,13 +6,14 @@ import {
   Tr,
   Td,
   useBreakpointValue,
-} from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import style from '@styles/admin/users.module.css';
-import Link from 'next/link';
-import Image from 'next/image';
-import beaverLogo from '/docs/images/beaver-logo.svg';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+  Text,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import style from "@styles/admin/users.module.css";
+import Link from "next/link";
+import Image from "next/image";
+import beaverLogo from "/docs/images/beaver-logo.svg";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
 interface IUser {
   _id: string;
@@ -22,7 +23,7 @@ interface IUser {
   lastName: string;
   age: number;
   gender: string;
-  role: 'user' | 'supervisor' | 'admin';
+  role: "user" | "supervisor" | "admin";
   eventsAttended: [string];
   digitalWaiver: string | null;
   groupId: string | null;
@@ -30,21 +31,24 @@ interface IUser {
 
 const UserList = () => {
   const [users, setUsers] = useState<IUser[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortOrder, setSortOrder] = useState('firstName');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("firstName");
+  const [loading, setLoading] = useState(true);
 
-  const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
+  const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/user');
+      const response = await fetch("/api/user");
       if (!response.ok) {
-        throw new Error('Failed to fetch users');
+        throw new Error("Failed to fetch users");
       }
       const data = await response.json();
       setUsers(data.users || []);
+      setLoading(false); // Set loading to false after fetching data
     } catch (error) {
       console.error(error);
+      setLoading(false); // Ensure loading is set to false even if an error occurs
     }
   };
 
@@ -54,17 +58,28 @@ const UserList = () => {
 
   const filteredUsers = users
     .filter((user) =>
-      `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(searchTerm.toLowerCase())
+      `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      )
     )
     .sort((a, b) =>
-      sortOrder === 'firstName' ? a.firstName.localeCompare(b.firstName) : a.lastName.localeCompare(b.lastName)
+      sortOrder === "firstName"
+        ? a.firstName.localeCompare(b.firstName)
+        : a.lastName.localeCompare(b.lastName)
     );
+
+  if (loading) {
+    return (
+      <Text fontSize="lg" textAlign="center">
+        Loading users...
+      </Text>
+    ); // Display loading message
+  }
 
   return (
     <div className={style.mainContainer}>
       <div className={style.tableContainer}>
         <div className={style.buttonContainer}>
-          {/* Filters and Actions */}
           <div className={style.innerButtons}>
             <select
               value={sortOrder}
@@ -76,8 +91,6 @@ const UserList = () => {
             </select>
             <button className={style.yellowButton}>Export To CSV</button>
           </div>
-
-          {/* Search */}
           <div className={style.searchWrapper}>
             <input
               type="text"
@@ -88,19 +101,17 @@ const UserList = () => {
             />
             <MagnifyingGlassIcon
               style={{
-                width: '20px',
-                height: '20px',
-                position: 'absolute',
-                margin: 'auto',
+                width: "20px",
+                height: "20px",
+                position: "absolute",
+                margin: "auto",
                 top: 0,
                 bottom: 0,
-                right: '10px',
+                right: "10px",
               }}
             />
           </div>
         </div>
-
-        {/* Table */}
         <Box overflowX="auto">
           <Table variant="striped" size={tableSize}>
             <Tbody>
@@ -112,13 +123,16 @@ const UserList = () => {
                       alt="profile picture"
                       width="50"
                       height="30"
-                      style={{ minWidth: '50px' }}
+                      style={{ minWidth: "50px" }}
                     />
                   </Td>
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
                   <Td>
-                    <Link href={`/user/${user._id}`} className={style.viewDetails}>
+                    <Link
+                      href={`/user/${user._id}`}
+                      className={style.viewDetails}
+                    >
                       View Details
                     </Link>
                   </Td>
