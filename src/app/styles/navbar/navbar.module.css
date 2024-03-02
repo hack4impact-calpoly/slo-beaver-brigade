@@ -1,4 +1,3 @@
-
 .body {
   margin: 0;
   padding: 0;
@@ -21,12 +20,16 @@
   z-index: 9999;
 }
 
-.logo {
+.nav_left {
   color: #e0af48;
   padding-left: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.greeting{
+.greeting {
   float: right;
   margin-left: 1rem;
 }
@@ -78,13 +81,50 @@
   margin-right: 30px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
+  .nav_elements ul a {
+    font-size: 14px;
+  }
+
   .nav_elements ul li:not(:last-child) {
-    margin-right: 30px;
+    margin-right: 50px;
+  }
+  .greeting {
+    font-size: 14px;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 875px) {
+  .nav_elements ul a {
+    font-size: 14px;
+  }
+  .nav_elements ul li:not(:last-child) {
+    margin-right: 40px;
+  }
+  .greeting {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav_elements ul li:not(:last-child) {
+    margin-right: 25px;
+  }
+
+  .nav_elements ul a {
+    font-size: 13px;
+  }
+
+  .search_icon {
+    margin-right: 10px;
+  }
+
+  .greeting {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 650px) {
   .menu_icon {
     display: block;
     cursor: pointer;
