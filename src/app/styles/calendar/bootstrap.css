@@ -269,10 +269,7 @@ h6, .h6 {
   font-size: 0.75rem;
 }
 
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
+
 
 abbr[title] {
   -webkit-text-decoration: underline dotted;
