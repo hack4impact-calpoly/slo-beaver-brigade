@@ -16,6 +16,7 @@
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@clerk/clerk-react": "^4.30.6",
+    "@clerk/clerk-sdk-node": "^4.13.11",
     "@clerk/nextjs": "^4.29.7",
     "@emotion/react": "^11.11.3",
     "@emotion/style": "^0.8.0",
