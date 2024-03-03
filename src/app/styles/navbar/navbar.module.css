@@ -78,10 +78,6 @@
   background-color: #574c4c;
 }
 
-.search_icon {
-  margin-right: 30px;
-}
-
 @media (max-width: 1000px) {
   .nav_elements ul a {
     font-size: 14px;
@@ -106,9 +102,6 @@
     margin-right: 25px;
   }
 
-  .search_icon {
-    margin-right: 5px;
-  }
 }
 
 @media (max-width: 670px) {
@@ -140,5 +133,9 @@
   .nav_elements ul li {
     margin-right: unset;
     margin-top: 22px;
+  }
+
+  .search_icon {
+    margin-right: 25px;
   }
 }
