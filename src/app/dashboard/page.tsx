@@ -18,6 +18,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { url } from "inspector";
 import Image from "next/image";
+import { IUser } from "@database/userSchema";
 
 const Dashboard = () => {
   const { isSignedIn, user, isLoaded } = useUser();
@@ -59,7 +60,7 @@ const Dashboard = () => {
       try {
         if (isSignedIn) {
           // Access user data using the `user` object
-          const userId = user.id;
+          const userId = user.unsafeMetadata["dbId"];
           console.log("User ID:", userId);
           console.log("User:", user.emailAddresses[0].emailAddress, user);
 
@@ -69,7 +70,7 @@ const Dashboard = () => {
             throw new Error(`Failed to fetch user: ${userResponse.statusText}`);
           }
 
-          const fetchedUser = await userResponse.json();
+          const fetchedUser :IUser= await userResponse.json();
           setUsers([fetchedUser]); // Update the state with the fetched user
 
           // Extract event IDs from the user's eventsAttended field
@@ -125,15 +126,20 @@ const Dashboard = () => {
   return (
     <Box p="4">
       <Stack spacing={2} px="10" mb={6}>
+        <Flex alignItems="center" justifyContent="space-between">
         <Text
           fontSize="2xl"
           fontWeight="bold"
           color="grey"
-          alignSelf="flex-start"
+          alignSelf="left"
           mb={3}
         >
           Your Upcoming Events
         </Text>
+        <Button colorScheme="teal">
+          Book Event
+        </Button>
+        </Flex>
         <Divider
           size="sm"
           borderWidth="1px"
