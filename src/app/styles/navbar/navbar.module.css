@@ -96,14 +96,8 @@
 }
 
 @media (max-width: 875px) {
-  .nav_elements ul a {
-    font-size: 14px;
-  }
   .nav_elements ul li:not(:last-child) {
-    margin-right: 40px;
-  }
-  .greeting {
-    font-size: 14px;
+    margin-right: 35px;
   }
 }
 
@@ -112,20 +106,12 @@
     margin-right: 25px;
   }
 
-  .nav_elements ul a {
-    font-size: 13px;
-  }
-
   .search_icon {
-    margin-right: 10px;
-  }
-
-  .greeting {
-    font-size: 13px;
+    margin-right: 5px;
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 670px) {
   .menu_icon {
     display: block;
     cursor: pointer;
