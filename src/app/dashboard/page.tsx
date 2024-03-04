@@ -15,6 +15,7 @@ import Slider from "react-slick";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { css } from "@emotion/react";
 
 // placeholder to ensure format consistency when there is only 1-2 events
 const EventPlaceholder = () => {
@@ -42,6 +43,17 @@ const Dashboard = () => {
     location: string;
     imageUrl?: string;
   };
+
+  const sliderStyles = css`
+    .slick-dots li button:before {
+      
+    }
+
+    .slick-prev:before,
+    .slick-next:before {
+      color: teal; // Your desired color for arrows
+    }
+  `;
 
   const { isSignedIn, user, isLoaded } = useUser();
   const [userEvents, setUserEvents] = useState<Event[]>([]);
@@ -121,8 +133,8 @@ const Dashboard = () => {
                 new Date(event.startTime) >= currentDate
             )
             .slice(0, 2); // Get first two events user hasn't registered for
-          
-            // Update state with events the user has signed up for
+
+          // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
           setUnregisteredEvents(eventsUserHasntRegistered);
           console.log(eventsUserHasntRegistered);
@@ -152,207 +164,213 @@ const Dashboard = () => {
   };
 
   return (
-    <Box p="4">
-      <Stack spacing={2} px="10" mb={6}>
-        <Flex alignItems="center" justifyContent="space-between">
-          <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
-            Your Upcoming Events
-          </Text>
-          <Heading as="h2" fontSize="xl">
-            <Button colorScheme="yellow" fontSize={eventDetailSize}>
-              Book a Event
-            </Button>
-          </Heading>
-        </Flex>
-        <Divider
-          size="sm"
-          borderWidth="1px"
-          borderColor="black"
-          alignSelf="center"
-          w="100%"
-        />
-      </Stack>
-      <Box px={6}>
-        <Slider {...settings}>
-          {userEvents.length > 0 ? (
-            userEvents.map((event) => (
-              <Box key={event._id} textAlign="center" px="4" mb="4">
-                <Box
-                  position="relative"
-                  borderWidth="1px"
-                  p="4"
-                  mb="4"
-                  h="60"
-                  textAlign="left"
-                  borderRadius="lg"
-                  style={{
-                    //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                    backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
-                    backgroundSize: "cover",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  <Heading as="h1" size="2xl">
-                    <Text
-                      fontSize={eventNameSize}
-                      fontWeight="black"
-                      color="white"
-                      className="bold-text"
-                      mx={2}
-                    >
-                      {event.eventName}
-                    </Text>
-                  </Heading>
+    <div css={sliderStyles}>
+      <Box p="4">
+        <Stack spacing={2} px="10" mb={6}>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
+              Your Upcoming Events
+            </Text>
+            <Heading as="h2" fontSize="xl">
+              <Button colorScheme="yellow" fontSize={eventDetailSize}>
+                Book a Event
+              </Button>
+            </Heading>
+          </Flex>
+          <Divider
+            size="sm"
+            borderWidth="1px"
+            borderColor="black"
+            alignSelf="center"
+            w="100%"
+          />
+        </Stack>
+        <Box px={6}>
+          <Slider {...settings}>
+            {userEvents.length > 0 ? (
+              userEvents.map((event) => (
+                <Box key={event._id} textAlign="center" px="4" mb="4">
                   <Box
-                    position="absolute"
-                    bottom="0"
-                    left="0"
-                    right="0"
-                    p={2}
-                    mx="2"
-                    my="2"
+                    position="relative"
+                    borderWidth="1px"
+                    p="4"
+                    mb="4"
+                    h="60"
+                    textAlign="left"
+                    borderRadius="lg"
+                    style={{
+                      //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
+                      backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
+                      backgroundSize: "cover",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                    }}
                   >
-                    <Text
-                      fontSize={eventDetailSize}
-                      fontWeight="bold"
-                      color="white"
-                      className="bold-text"
-                      mx={2}
-                      alignContent="left-bottom"
+                    <Heading as="h1" size="2xl">
+                      <Text
+                        fontSize={eventNameSize}
+                        fontWeight="black"
+                        color="white"
+                        className="bold-text"
+                        mx={2}
+                      >
+                        {event.eventName}
+                      </Text>
+                    </Heading>
+                    <Box
+                      position="absolute"
+                      bottom="0"
+                      left="0"
+                      right="0"
+                      p={2}
+                      mx="2"
+                      my="2"
                     >
-                      {formatDate(event.startTime)}
-                    </Text>
-                    <Text
-                      fontSize={eventTimeSize}
-                      fontWeight="semibold"
-                      color="white"
-                      className="bold-text"
-                      mx={2}
-                      alignContent="left-bottom"
-                    >
-                      {event.location}
-                    </Text>
-                    <Text
-                      fontSize={eventTimeSize}
-                      fontWeight="semibold"
-                      color="white"
-                      className="bold-text"
-                      mx={2}
-                      alignContent="left-bottom"
-                    >
-                      {formatDateTimeRange(event.startTime, event.endTime)}
-                    </Text>
+                      <Text
+                        fontSize={eventDetailSize}
+                        fontWeight="bold"
+                        color="white"
+                        className="bold-text"
+                        mx={2}
+                        alignContent="left-bottom"
+                      >
+                        {formatDate(event.startTime)}
+                      </Text>
+                      <Text
+                        fontSize={eventTimeSize}
+                        fontWeight="semibold"
+                        color="white"
+                        className="bold-text"
+                        mx={2}
+                        alignContent="left-bottom"
+                      >
+                        {event.location}
+                      </Text>
+                      <Text
+                        fontSize={eventTimeSize}
+                        fontWeight="semibold"
+                        color="white"
+                        className="bold-text"
+                        mx={2}
+                        alignContent="left-bottom"
+                      >
+                        {formatDateTimeRange(event.startTime, event.endTime)}
+                      </Text>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-            ))
-          ) : (
-            <EventPlaceholder />
-          )}
-          {userEvents.length < 3 &&
-            Array.from({ length: 3 - userEvents.length }, (_, i) => (
-              <EventPlaceholder key={`placeholder-${i}`} />
-            ))}
-        </Slider>
-      </Box>
-      {/* Re-include the omitted bottom section here */}
-      <Box px="10" mb={6}>
-        <Flex alignItems="center" justifyContent="space-between">
-          <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
-            Find More Volunteer Opportunities
-          </Text>
-          <Select defaultValue="event-type" size="sm" ml={2} w="fit-content">
-            <option value="event-type" disabled>
-              Event Type
-            </option>
-            <option value="watery-walk">Watery Walk</option>
-            <option value="volunteer">Volunteer</option>
-          </Select>
-        </Flex>
-        <Divider
-          size="sm"
-          borderWidth="1px"
-          borderColor="black"
-          alignSelf="center"
-          w="100%"
-          my={2}
-        />
-      </Box>
-      <Box mt={10}>
-        {unregisteredEvents.map((event) => (
-          <Box
-            key={event._id}
-            position="relative"
+              ))
+            ) : (
+              <EventPlaceholder />
+            )}
+            {userEvents.length < 3 &&
+              Array.from({ length: 3 - userEvents.length }, (_, i) => (
+                <EventPlaceholder key={`placeholder-${i}`} />
+              ))}
+          </Slider>
+        </Box>
+        {/* Re-include the omitted bottom section here */}
+        <Box px="10" mb={6}>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
+              Find More Volunteer Opportunities
+            </Text>
+            <Select defaultValue="event-type" size="sm" ml={2} w="fit-content">
+              <option value="event-type" disabled>
+                Event Type
+              </option>
+              <option value="watery-walk">Watery Walk</option>
+              <option value="volunteer">Volunteer</option>
+            </Select>
+          </Flex>
+          <Divider
+            size="sm"
             borderWidth="1px"
-            p="4"
-            mt="4"
-            textAlign="left"
-            h="64"
-            mx="10"
-            borderRadius="lg"
-            style={{
-              backgroundImage: `url("/image_720.png")`,
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              padding: "20px",
-            }}
-          >
-            <Heading as="h1" size="3xl" mb="1">
+            borderColor="black"
+            alignSelf="center"
+            w="100%"
+            my={2}
+          />
+        </Box>
+        <Box mt={10}>
+          {unregisteredEvents.map((event) => (
+            <Box
+              key={event._id}
+              position="relative"
+              borderWidth="1px"
+              p="4"
+              mt="4"
+              textAlign="left"
+              h="64"
+              mx="10"
+              borderRadius="lg"
+              style={{
+                backgroundImage: `url("/image_720.png")`,
+                backgroundSize: "100% 100%",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                padding: "20px",
+              }}
+            >
+              <Heading as="h1" size="3xl" mb="1">
+                <Text
+                  fontSize="3xl"
+                  fontWeight="custom"
+                  color="white"
+                  className="bold-text"
+                >
+                  {event.eventName}
+                </Text>
+              </Heading>
               <Text
-                fontSize="3xl"
+                fontSize="lg"
                 fontWeight="custom"
                 color="white"
                 className="bold-text"
               >
-                {event.eventName}
+                {event.location}
               </Text>
-            </Heading>
-            <Text
-              fontSize="lg"
-              fontWeight="custom"
-              color="white"
-              className="bold-text"
-            >
-              {event.location}
-            </Text>
-            <Text
-              fontSize="lg"
-              fontWeight="custom"
-              color="white"
-              className="bold-text"
-            >
-              {formatDate(event.startTime)}
-            </Text>
-            <Text
-              fontSize="lg"
-              fontWeight="custom"
-              color="white"
-              className="bold-text"
-            >
-              {formatDateTimeRange(event.startTime, event.endTime)}
-            </Text>
-            {/* positions the stuff to the left buttom when the parent box has relative position*/}
-            <Box
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              p={2}
-              mx="2"
-              my="2"
-            >
-            <Heading as="h2" fontSize="xl">
-              <Button colorScheme="yellow" fontSize={eventDetailSize} mt={14}>
-                Register for this event
-              </Button>
-            </Heading>
+              <Text
+                fontSize="lg"
+                fontWeight="custom"
+                color="white"
+                className="bold-text"
+              >
+                {formatDate(event.startTime)}
+              </Text>
+              <Text
+                fontSize="lg"
+                fontWeight="custom"
+                color="white"
+                className="bold-text"
+              >
+                {formatDateTimeRange(event.startTime, event.endTime)}
+              </Text>
+              {/* positions the stuff to the left buttom when the parent box has relative position*/}
+              <Box
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                p={2}
+                mx="2"
+                my="2"
+              >
+                <Heading as="h2" fontSize="xl">
+                  <Button
+                    colorScheme="yellow"
+                    fontSize={eventDetailSize}
+                    mt={14}
+                  >
+                    Register for this event
+                  </Button>
+                </Heading>
+              </Box>
             </Box>
-          </Box>
-        ))}
+          ))}
+        </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 
