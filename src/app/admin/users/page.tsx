@@ -84,48 +84,48 @@ const UserList = () => {
 
   return (
     <div className={style.mainContainer}>
-      <div className={style.tableContainer}>
-        <div className={style.buttonContainer}>
-          <div className={style.innerButtons}>
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className={style.filter}
-            >
-              <option value="firstName">First Name</option>
-              <option value="lastName">Last Name</option>
-            </select>
-            <CSVLink data={filteredUsers} className={style.yellowButton}>
-              Export To CSV
-            </CSVLink>
-          </div>
-          <div className={style.searchWrapper}>
-            <input
-              type="text"
-              placeholder="Search for user"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={style.searchBar}
-            />
-            <MagnifyingGlassIcon
-              style={{
-                width: "20px",
-                height: "20px",
-                position: "absolute",
-                margin: "auto",
-                top: 0,
-                bottom: 0,
-                right: "10px",
-              }}
-            />
-          </div>
+      <div className={style.buttonContainer}>
+        <div className={style.innerButtons}>
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className={style.filter}
+          >
+            <option value="firstName">First Name</option>
+            <option value="lastName">Last Name</option>
+          </select>
+          <CSVLink data={filteredUsers} className={style.yellowButton}>
+            Export To CSV
+          </CSVLink>
         </div>
-        <Box overflowX="auto">
+        <div className={style.searchWrapper}>
+          <input
+            type="text"
+            placeholder="Search for user"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={style.searchBar}
+          />
+          <MagnifyingGlassIcon
+            style={{
+              width: "20px",
+              height: "20px",
+              position: "absolute",
+              margin: "auto",
+              top: 0,
+              bottom: 0,
+              right: "10px",
+            }}
+          />
+        </div>
+      </div>
+      <div className={style.tableContainer}>
+        <Box>
           <Table variant="striped" size={tableSize}>
             <Tbody>
               {filteredUsers.map((user) => (
                 <Tr key={user._id}>
-                  <Td>
+                  <Td className={style.mobileHide}>
                     <Image
                       src={beaverLogo}
                       alt="profile picture"

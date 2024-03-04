@@ -1,10 +1,12 @@
 .mainContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  width: 100%;;
 }
 
 .tableContainer {
-  width: 80%;
+  width: 100%;
   font-weight: bold;
 }
 
@@ -71,6 +73,10 @@
   .searchBar {
     padding: 5px 10px 5px 20px;
   }
+
+  .mobileHide {
+    display: none;
+  }
 }
 
 @media (max-width: 880px) {
@@ -81,5 +87,9 @@
 
   .yellowButton {
     padding: 8px 20px;
+  }
+
+  .tableContainer {
+    font-size: small;
   }
 }
