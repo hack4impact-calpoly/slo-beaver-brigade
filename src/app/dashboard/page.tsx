@@ -7,21 +7,17 @@ import {
   Select,
   Stack,
   Text,
-  useStatStyles,
   Flex,
-  Spacer,
   Button,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import Slider from "react-slick";
-import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { url } from "inspector";
-import Image from "next/image";
-import { IUser } from "@database/userSchema";
+import Head from "next/head";
 
+// placeholder to ensure format consistency when there is only 1-2 events
 const EventPlaceholder = () => {
   return (
     <Box
@@ -42,18 +38,13 @@ const Dashboard = () => {
   const [userEvents, setUserEvents] = useState([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState([]);
 
-  const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "2xl" });
+  const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
   const eventDetailSize = useBreakpointValue({
     base: "md",
     md: "lg",
     lg: "xl",
   });
   const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
-  const marginBottom = useBreakpointValue({
-    base: "5vh",
-    md: "8vh",
-    lg: "8vh",
-  });
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -101,11 +92,17 @@ const Dashboard = () => {
           const currentDate = new Date();
 
           // Filter events where the current user is an attendee
-          const userSignedUpEvents = allEvents.filter((event) =>
-            event.attendeeIds.includes(userId) && new Date(event.startTime) >= currentDate
+          const userSignedUpEvents = allEvents.filter(
+            (event) =>
+              event.attendeeIds.includes(userId) &&
+              new Date(event.startTime) >= currentDate
           );
           const eventsUserHasntRegistered = allEvents
-            .filter((event) => !event.attendeeIds.includes(userId) && new Date(event.startTime) >= currentDate)
+            .filter(
+              (event) =>
+                !event.attendeeIds.includes(userId) &&
+                new Date(event.startTime) >= currentDate
+            )
             .slice(0, 2); // Get first two events user hasn't registered for
           // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
@@ -173,23 +170,26 @@ const Dashboard = () => {
                     backgroundPosition: "center",
                   }}
                 >
-                  <Text
-                    fontSize={eventNameSize}
-                    fontWeight="bold"
-                    color="white"
-                    className="bold-text"
-                    //mb={marginBottom}
-                    mx={2}
-                  >
-                    {event.eventName}
-                  </Text>
-                  <Box position="absolute"
+                  <Heading as="h1" size="2xl">
+                    <Text
+                      fontSize={eventNameSize}
+                      fontWeight="black"
+                      color="white"
+                      className="bold-text"
+                      mx={2}
+                    >
+                      {event.eventName}
+                    </Text>
+                  </Heading>
+                  <Box
+                    position="absolute"
                     bottom="0"
                     left="0"
                     right="0"
                     p={2}
                     mx="2"
-                    my="2">
+                    my="2"
+                  >
                     <Text
                       fontSize={eventDetailSize}
                       fontWeight="bold"
@@ -276,14 +276,16 @@ const Dashboard = () => {
               padding: "20px",
             }}
           >
-            <Text
-              fontSize="3xl"
-              fontWeight="custom"
-              color="white"
-              className="bold-text"
-            >
-              {event.eventName}
-            </Text>
+            <Heading as="h1" size="3xl" mb="1">
+              <Text
+                fontSize="3xl"
+                fontWeight="custom"
+                color="white"
+                className="bold-text"
+              >
+                {event.eventName}
+              </Text>
+            </Heading>
             <Text
               fontSize="lg"
               fontWeight="custom"
@@ -309,16 +311,18 @@ const Dashboard = () => {
               {formatDateTimeRange(event.startTime, event.endTime)}
             </Text>
             {/* positions the stuff to the left buttom when the parent box has relative position*/}
-            <Box position="absolute"
+            <Box
+              position="absolute"
               bottom="0"
               left="0"
               right="0"
               p={2}
               mx="2"
-              my="2"> 
-            <Button colorScheme="teal" mt={14} >
-              Register for this event
-            </Button>
+              my="2"
+            >
+              <Button colorScheme="teal" mt={14}>
+                Register for this event
+              </Button>
             </Box>
           </Box>
         ))}
