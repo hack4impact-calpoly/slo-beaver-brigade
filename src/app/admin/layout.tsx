@@ -2,6 +2,8 @@ import { ReactNode } from "react";
 import { Montserrat } from "next/font/google";
 import Sidebar from "@components/Sidebar";
 import style from "@styles/admin/layout.module.css";
+import TabBar from '../components/TabBar';
+
 
 type Props = {
   children: ReactNode;
@@ -14,6 +16,7 @@ const Layout = (props: Props) => {
     <div className={montserrat.className}>
       <div className={style.adminDash}>
         <div>
+          <TabBar />
           <Sidebar />
         </div>
         <main className={style.mainContainer}>{props.children}</main>
