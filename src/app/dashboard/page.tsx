@@ -33,9 +33,19 @@ const EventPlaceholder = () => {
 };
 
 const Dashboard = () => {
+  type Event = {
+    _id: string;
+    attendeeIds: string[];
+    eventName: string;
+    startTime: Date; // Assuming ISO string format
+    endTime: Date; // Assuming ISO string format
+    location: string;
+    imageUrl?: string;
+  };
+
   const { isSignedIn, user, isLoaded } = useUser();
-  const [userEvents, setUserEvents] = useState([]);
-  const [unregisteredEvents, setUnregisteredEvents] = useState([]);
+  const [userEvents, setUserEvents] = useState<Event[]>([]);
+  const [unregisteredEvents, setUnregisteredEvents] = useState<Event[]>([]);
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
