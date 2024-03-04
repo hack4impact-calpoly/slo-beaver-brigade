@@ -15,8 +15,6 @@ import Slider from "react-slick";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { stringify } from "querystring";
-import Head from "next/head";
 
 // placeholder to ensure format consistency when there is only 1-2 events
 const EventPlaceholder = () => {
@@ -105,6 +103,7 @@ const Dashboard = () => {
               event.attendeeIds.includes(userId) &&
               new Date(event.startTime) >= currentDate
           );
+          // Filter events where the current user is not an attendee
           const eventsUserHasntRegistered = allEvents
             .filter(
               (event: any) =>
@@ -112,7 +111,8 @@ const Dashboard = () => {
                 new Date(event.startTime) >= currentDate
             )
             .slice(0, 2); // Get first two events user hasn't registered for
-          // Update state with events the user has signed up for
+          
+            // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
           setUnregisteredEvents(eventsUserHasntRegistered);
           console.log(eventsUserHasntRegistered);
@@ -126,6 +126,7 @@ const Dashboard = () => {
     fetchUserDataAndEvents();
   }, [isSignedIn, user]);
 
+  // settings for slider
   const settings = {
     dots: true,
     infinite: true,
