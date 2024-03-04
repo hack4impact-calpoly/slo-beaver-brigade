@@ -15,6 +15,7 @@ import Slider from "react-slick";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { stringify } from "querystring";
 import Head from "next/head";
 
 // placeholder to ensure format consistency when there is only 1-2 events
@@ -38,6 +39,7 @@ const Dashboard = () => {
   const [userEvents, setUserEvents] = useState([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState([]);
 
+  // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
   const eventDetailSize = useBreakpointValue({
     base: "md",
@@ -46,16 +48,22 @@ const Dashboard = () => {
   });
   const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
 
-  const formatDate = (date) => {
+  //convert date into format Dayofweek, Month
+  const formatDate = (date: Date) => {
     if (!(date instanceof Date)) {
       date = new Date(date); // Convert to Date object if not already
     }
 
-    const options = { weekday: "long", month: "long", day: "numeric" };
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    };
     return date.toLocaleDateString("en-US", options);
   };
 
-  const formatDateTimeRange = (start, end) => {
+  // convert date into xx:xx XM - xx:xx XM
+  const formatDateTimeRange = (start: Date, end: Date) => {
     if (!(start instanceof Date)) {
       start = new Date(start); // Convert to Date object if not already
     }
@@ -64,9 +72,9 @@ const Dashboard = () => {
       end = new Date(end); // Convert to Date object if not already
     }
 
-    const options = {
-      hour: "numeric",
-      minute: "numeric",
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "numeric", // "numeric" or "2-digit"
+      minute: "numeric", // "numeric" or "2-digit"
     };
 
     const formattedStart = start.toLocaleTimeString("en-US", options);
@@ -93,13 +101,13 @@ const Dashboard = () => {
 
           // Filter events where the current user is an attendee
           const userSignedUpEvents = allEvents.filter(
-            (event) =>
+            (event: any) =>
               event.attendeeIds.includes(userId) &&
               new Date(event.startTime) >= currentDate
           );
           const eventsUserHasntRegistered = allEvents
             .filter(
-              (event) =>
+              (event: any) =>
                 !event.attendeeIds.includes(userId) &&
                 new Date(event.startTime) >= currentDate
             )
@@ -139,7 +147,11 @@ const Dashboard = () => {
           <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
             Your Upcoming Events
           </Text>
-          <Button colorScheme="teal">Book Event</Button>
+          <Heading as="h2" fontSize="xl">
+            <Button colorScheme="yellow" fontSize={eventDetailSize}>
+              Book a Event
+            </Button>
+          </Heading>
         </Flex>
         <Divider
           size="sm"
@@ -320,9 +332,11 @@ const Dashboard = () => {
               mx="2"
               my="2"
             >
-              <Button colorScheme="teal" mt={14}>
+            <Heading as="h2" fontSize="xl">
+              <Button colorScheme="yellow" fontSize={eventDetailSize} mt={14}>
                 Register for this event
               </Button>
+            </Heading>
             </Box>
           </Box>
         ))}
