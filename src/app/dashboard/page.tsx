@@ -98,13 +98,14 @@ const Dashboard = () => {
             );
           }
           const allEvents = await eventsResponse.json();
+          const currentDate = new Date();
 
           // Filter events where the current user is an attendee
           const userSignedUpEvents = allEvents.filter((event) =>
-            event.attendeeIds.includes(userId)
+            event.attendeeIds.includes(userId) && new Date(event.startTime) >= currentDate
           );
           const eventsUserHasntRegistered = allEvents
-            .filter((event) => !event.attendeeIds.includes(userId))
+            .filter((event) => !event.attendeeIds.includes(userId) && new Date(event.startTime) >= currentDate)
             .slice(0, 2); // Get first two events user hasn't registered for
           // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
