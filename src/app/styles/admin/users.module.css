@@ -1,19 +1,19 @@
 .mainContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 100%;;
+  width: 100%;
+  
 }
 
 .tableContainer {
-  width: 100%;
   font-weight: bold;
+  margin: 0 5vw;
 }
 
 .buttonContainer {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 25px;
+  margin: 0 5vw 25px;
 }
 
 .innerButtons {
@@ -83,6 +83,7 @@
   .buttonContainer {
     flex-direction: column;
     gap: 10px;
+    font-size: small;
   }
 
   .yellowButton {
@@ -90,6 +91,15 @@
   }
 
   .tableContainer {
-    font-size: small;
+    font-size: 0.7rem;
+  }
+
+  .tableContainer {
+    font-size: 0.8rem; 
+    margin: 0 3vw; 
+  }
+
+  .tableContainer td, .tableContainer th {
+    padding: 8px; 
   }
 }
