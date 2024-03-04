@@ -13,18 +13,32 @@ import {
 } from "@chakra-ui/react";
 import Slider from "react-slick";
 import axios from "axios";
-import {useUser} from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { url } from "inspector";
 import Image from "next/image";
 import { IUser } from "@database/userSchema";
 
+const EventPlaceholder = () => {
+  return (
+    <Box
+      borderWidth="1px"
+      p="4"
+      mb="4"
+      h="60"
+      textAlign="left"
+      opacity="0" // Invisible but maintains layout; adjust as needed
+    >
+      {/* Placeholder content if desired */}
+    </Box>
+  );
+};
+
 const Dashboard = () => {
   const { isSignedIn, user, isLoaded } = useUser();
-  const [users, setUsers] = useState([]);
   const [userEvents, setUserEvents] = useState([]);
-  const [allEvents, setAllEvents] = useState([]);
+  const [unregisteredEvents, setUnregisteredEvents] = useState([]);
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -55,65 +69,40 @@ const Dashboard = () => {
     return `${formattedStart} - ${formattedEnd}`;
   };
 
+
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserDataAndEvents = async () => {
       try {
         if (isSignedIn) {
-          // Access user data using the `user` object
-          const userId = user.unsafeMetadata["dbId"];
-          console.log("User ID:", userId);
-          console.log("User:", user.emailAddresses[0].emailAddress, user);
+          const userId = user.unsafeMetadata["dbId"]; // Assuming this is the correct ID to match against event attendees
 
-          // Fetch user data
-          const userResponse = await fetch(`/api/user/${userId}`);
-          if (!userResponse.ok) {
-            throw new Error(`Failed to fetch user: ${userResponse.statusText}`);
+          // Fetch all events
+          const eventsResponse = await fetch("/api/events");
+          if (!eventsResponse.ok) {
+            throw new Error(
+              `Failed to fetch events: ${eventsResponse.statusText}`
+            );
           }
+          const allEvents = await eventsResponse.json();
 
-          const fetchedUser :IUser= await userResponse.json();
-          setUsers([fetchedUser]); // Update the state with the fetched user
-
-          // Extract event IDs from the user's eventsAttended field
-          const eventIds = fetchedUser.eventsAttended || [];
-
-          // Fetch details for each event ID
-          const eventsPromises = eventIds.map(async (eventId) => {
-            const eventResponse = await fetch(`/api/events/${eventId}`);
-            if (!eventResponse.ok) {
-              throw new Error(`Failed to fetch event ${eventId}: ${eventResponse.statusText}`);
-            }
-            return eventResponse.json();
-          });
-
-          // Wait for all event details requests to complete
-          const fetchedEvents = await Promise.all(eventsPromises);
-          setUserEvents(fetchedEvents); // Update the state with the fetched events
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error.message);
-      }
-    };
-
-    const fetchAllEvents = async () => {
-      try {
-        // Fetch all events (if needed)
-        const eventsResponse = await fetch("/api/events");
-        if (!eventsResponse.ok) {
-          throw new Error(
-            `Failed to fetch all events: ${eventsResponse.statusText}`
+          // Filter events where the current user is an attendee
+          const userSignedUpEvents = allEvents.filter((event) =>
+            event.attendeeIds.includes(userId)
           );
+          const eventsUserHasntRegistered = allEvents.filter((event) => !event.attendeeIds.includes(userId)).slice(0, 2); // Get first two events user hasn't registered for
+          // Update state with events the user has signed up for
+          setUserEvents(userSignedUpEvents);
+          setUnregisteredEvents(eventsUserHasntRegistered);
+          console.log(eventsUserHasntRegistered)
         }
-        const fetchedAllEvents = await eventsResponse.json();
-        setAllEvents(fetchedAllEvents); // Update the state with all events
       } catch (error) {
-        console.error("Error fetching all events:", error.message);
+        console.error("Error fetching data:", error);
       }
     };
 
-    // Call the fetchUserData and fetchAllEvents functions
-    fetchUserData();
-    fetchAllEvents();
-  });
+    // Call the function to fetch user data and events
+    fetchUserDataAndEvents();
+  }, [isSignedIn, user]);
 
   const settings = {
     dots: true,
@@ -123,154 +112,104 @@ const Dashboard = () => {
     slidesToScroll: 3,
   };
 
+  const adjustedSettings = {
+    ...settings,
+    slidesToShow: Math.min(userEvents.length, 3), // Show up to 3 slides, or less if there aren't enough events
+    infinite: userEvents.length > 3, // Only enable infinite looping if there are more than 3 events
+  };
+
   return (
     <Box p="4">
       <Stack spacing={2} px="10" mb={6}>
         <Flex alignItems="center" justifyContent="space-between">
-        <Text
-          fontSize="2xl"
-          fontWeight="bold"
-          color="grey"
-          alignSelf="left"
-          mb={3}
-        >
-          Your Upcoming Events
-        </Text>
-        <Button colorScheme="teal">
-          Book Event
-        </Button>
+          <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
+            Your Upcoming Events
+          </Text>
+          <Button colorScheme="teal">Book Event</Button>
         </Flex>
-        <Divider
-          size="sm"
-          borderWidth="1px"
-          borderColor="black"
-          alignSelf="center"
-          w="100%"
-        />
+        <Divider size="sm" borderWidth="1px" borderColor="black" alignSelf="center" w="100%" />
       </Stack>
       <Box px={6}>
         <Slider {...settings}>
-          {allEvents.map((event) => (
+          {userEvents.length > 0 ? userEvents.map((event) => (
             <Box key={event._id} textAlign="center" px="4" mb="4">
               <Box
-                className="event-box"
                 borderWidth="1px"
                 p="4"
                 mb="4"
                 h="60"
                 textAlign="left"
+                borderRadius="lg"
                 style={{
+                  //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                   backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
-                  backgroundSize: "100% 100%",
+                  backgroundSize: "cover",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
-                  padding: "20px",
                 }}
               >
-                <Text
-                  fontSize="3xl"
-                  fontWeight="custom"
-                  color="white"
-                  className="bold-text"
-                  mb={20}
-                  mx={2}
-                >
+                <Text fontSize={['xl', '2xl', '3xl']} fontWeight="bold" color="white" mb={20} mx={2}>
                   {event.eventName}
                 </Text>
-                <Text
-                  fontSize="3xl"
-                  fontWeight="custom"
-                  color="white"
-                  className="bold-text"
-                  mx={2}
-                >
+                <Text fontSize={['lg', 'xl', '2xl']} fontWeight="custom" color="white" className="bold-text" mx={2}>
                   {formatDate(event.startTime)}
                 </Text>
-                <Text
-                  fontSize="xl"
-                  fontWeight="custom"
-                  color="white"
-                  className="bold-text"
-                  mx={2}
-                >
+                <Text fontSize={['md', 'lg', 'xl']} fontWeight="semibold" color="white" mx={2}>
+                  {event.location}
+                </Text>
+                <Text fontSize={['md', 'lg', 'xl']} fontWeight="semibold" color="white" mx={2}>
                   {formatDateTimeRange(event.startTime, event.endTime)}
                 </Text>
               </Box>
             </Box>
+          )) : <EventPlaceholder />}
+          {userEvents.length < 3 && Array.from({ length: 3 - userEvents.length }, (_, i) => (
+            <EventPlaceholder key={`placeholder-${i}`} />
           ))}
         </Slider>
       </Box>
+      {/* Re-include the omitted bottom section here */}
       <Box px="10" mb={6}>
         <Flex alignItems="center" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
             Find More Volunteer Opportunities
           </Text>
-          <Select
-            defaultValue="event-type"
-            onChange={(event) => console.log(event.target.value)}
-            size="sm"
-            ml={2}
-            w="fit-content"
-          >
-            <option value="event-type" disabled>
-              Event Type
-            </option>
+          <Select defaultValue="event-type" size="sm" ml={2} w="fit-content">
+            <option value="event-type" disabled>Event Type</option>
             <option value="watery-walk">Watery Walk</option>
             <option value="volunteer">Volunteer</option>
           </Select>
         </Flex>
-        <Divider
-          size="sm"
-          borderWidth="1px"
-          borderColor="black"
-          alignSelf="center"
-          w="100%"
-          my={2}
-        />
+        <Divider size="sm" borderWidth="1px" borderColor="black" alignSelf="center" w="100%" my={2} />
       </Box>
-      <Box
-        borderWidth="1px"
-        p="4"
-        mt="4"
-        textAlign="left"
-        h={64}
-        mx={10}
-        style={{
-          backgroundImage: `url("/image_720.png")`,
-          backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          padding: "20px",
-        }}
-      >
-        <Text
-          fontSize="3xl"
-          fontWeight="custom"
-          color="white"
-          className="bold-text"
-        >
-          Watery Walk With Cal Poly Hack4Impact
-        </Text>
-        <Text
-          fontSize="lg"
-          fontWeight="custom"
-          color="white"
-          className="bold-text"
-        >
-          Saturday, February 17
-        </Text>
-        <Text
-          fontSize="lg"
-          fontWeight="custom"
-          color="white"
-          className="bold-text"
-        >
-          9:00 AM - 11:00 AM
-        </Text>
-        {/* Your content inside the big rectangular box */}
-        <Button colorScheme="teal" mt={14}>
-          Register for this event
-        </Button>
+      <Box mt={10}>
+        {unregisteredEvents.map((event) => (
+          <Box key={event._id} borderWidth="1px"p="4" mt="4" textAlign="left" h="64" mx="10" borderRadius="lg"
+            style={{
+            backgroundImage: `url("/image_720.png")`,
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            padding: "20px",
+            }}
+          >
+            <Text fontSize="3xl" fontWeight="custom" color="white" className="bold-text">
+              {event.eventName}
+            </Text>
+            <Text fontSize="lg" fontWeight="custom" color="white" className="bold-text">
+              {event.location}
+            </Text>
+            <Text fontSize="lg" fontWeight="custom" color="white" className="bold-text">
+              {formatDate(event.startTime)}
+            </Text>
+            <Text fontSize="lg" fontWeight="custom" color="white" className="bold-text">
+              {formatDateTimeRange(event.startTime, event.endTime)}
+            </Text>
+            <Button colorScheme="teal" mt={14}>
+              Register for this event
+            </Button>
+          </Box>
+        ))}
       </Box>
     </Box>
   );
