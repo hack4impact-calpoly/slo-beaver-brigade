@@ -186,7 +186,9 @@ const Dashboard = () => {
                     bottom="0"
                     left="0"
                     right="0"
-                    p={2}>
+                    p={2}
+                    mx="2"
+                    my="2">
                     <Text
                       fontSize={eventDetailSize}
                       fontWeight="bold"
@@ -305,11 +307,14 @@ const Dashboard = () => {
             >
               {formatDateTimeRange(event.startTime, event.endTime)}
             </Text>
+            {/* positions the stuff to the left buttom when the parent box has relative position*/}
             <Box position="absolute"
               bottom="0"
               left="0"
               right="0"
-              p={2}>
+              p={2}
+              mx="2"
+              my="2"> 
             <Button colorScheme="teal" mt={14} >
               Register for this event
             </Button>
