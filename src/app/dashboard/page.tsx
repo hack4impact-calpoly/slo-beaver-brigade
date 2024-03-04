@@ -49,7 +49,11 @@ const Dashboard = () => {
     lg: "xl",
   });
   const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
-  const marginBottom = useBreakpointValue({ base: '5vh', md: '8vh', lg: '8vh' });
+  const marginBottom = useBreakpointValue({
+    base: "5vh",
+    md: "8vh",
+    lg: "8vh",
+  });
 
   const formatDate = (date) => {
     if (!(date instanceof Date)) {
@@ -153,6 +157,7 @@ const Dashboard = () => {
             userEvents.map((event) => (
               <Box key={event._id} textAlign="center" px="4" mb="4">
                 <Box
+                  position="relative"
                   borderWidth="1px"
                   p="4"
                   mb="4"
@@ -172,43 +177,49 @@ const Dashboard = () => {
                     fontWeight="bold"
                     color="white"
                     className="bold-text"
-                    mb={marginBottom}
+                    //mb={marginBottom}
                     mx={2}
                   >
                     {event.eventName}
                   </Text>
-                  <Text
-                    fontSize={eventDetailSize}
-                    fontWeight="bold"
-                    color="white"
-                    className="bold-text"
-                    mx={2}
-                    alignContent="left-bottom"
-                  >
-                    {formatDate(event.startTime)}
-                  </Text>
-                  <Text
-                    fontSize={eventTimeSize}
-                    fontWeight="semibold"
-                    color="white"
-                    className="bold-text"
-                    mx={2}
-                    alignContent="left-bottom"
-                  >
-                    {event.location}
-                  </Text>
-                  <Text
-                    fontSize={eventTimeSize}
-                    fontWeight="semibold"
-                    color="white"
-                    className="bold-text"
-                    mx={2}
-                    alignContent="left-bottom"
-                  >
-                    {formatDateTimeRange(event.startTime, event.endTime)}
-                  </Text>
+                  <Box position="absolute"
+                    bottom="0"
+                    left="0"
+                    right="0"
+                    p={2}>
+                    <Text
+                      fontSize={eventDetailSize}
+                      fontWeight="bold"
+                      color="white"
+                      className="bold-text"
+                      mx={2}
+                      alignContent="left-bottom"
+                    >
+                      {formatDate(event.startTime)}
+                    </Text>
+                    <Text
+                      fontSize={eventTimeSize}
+                      fontWeight="semibold"
+                      color="white"
+                      className="bold-text"
+                      mx={2}
+                      alignContent="left-bottom"
+                    >
+                      {event.location}
+                    </Text>
+                    <Text
+                      fontSize={eventTimeSize}
+                      fontWeight="semibold"
+                      color="white"
+                      className="bold-text"
+                      mx={2}
+                      alignContent="left-bottom"
+                    >
+                      {formatDateTimeRange(event.startTime, event.endTime)}
+                    </Text>
                   </Box>
                 </Box>
+              </Box>
             ))
           ) : (
             <EventPlaceholder />
@@ -246,6 +257,7 @@ const Dashboard = () => {
         {unregisteredEvents.map((event) => (
           <Box
             key={event._id}
+            position="relative"
             borderWidth="1px"
             p="4"
             mt="4"
@@ -293,9 +305,15 @@ const Dashboard = () => {
             >
               {formatDateTimeRange(event.startTime, event.endTime)}
             </Text>
-            <Button colorScheme="teal" mt={14}>
+            <Box position="absolute"
+              bottom="0"
+              left="0"
+              right="0"
+              p={2}>
+            <Button colorScheme="teal" mt={14} >
               Register for this event
             </Button>
+            </Box>
           </Box>
         ))}
       </Box>
