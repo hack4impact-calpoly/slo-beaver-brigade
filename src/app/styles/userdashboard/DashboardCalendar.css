@@ -45,10 +45,7 @@ button {
     0 0 2px 0 rgba(#000, 0.2),
     0 5px 10px 0 rgba(#000, 0.1);
   padding: 1rem;
-  position: fixed;
-  bottom: 1; /* position at the bottom */
-  left: 0; /* position at the left */
-  margin: 2rem; /* add some margin */
+  position: relative;
 }
 
 .datepicker-top {
@@ -146,6 +143,34 @@ button {
     background-color: var(--c-theme-primary-accent);
   }
 }
+
+.time-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.time-selector input[type="time"] {
+  margin: 10px 0;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.time-selector p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+
 
 @media screen and (min-width: 1500px) and (min-height: 700px) {
   /* Adjust the styles for screens with a minimum width of 1600px and minimum height of 900px */
