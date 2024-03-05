@@ -1,0 +1,142 @@
+.eventPage{
+    padding: 3vh 5vw 10vh 5vw
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2vh;
+}
+.eventTitle{
+    font-family: 'Lato';
+    font-size: 23px;
+}
+
+.deleteButton{
+    padding: 5px 30px 5px 30px;
+    border: 2px solid #D93636;
+    color: #D93636;
+    border-radius: 7px;
+    font-family: 'Lato';
+    font-weight: bold;
+
+}
+
+.deleteButton:hover{
+    background-color: #f2b3b3;
+    color: white;
+}
+
+.temp{
+    width: 100%;
+    display: flex;
+}
+
+.leftColumn{
+    width: 40%;
+    height: 100%;
+    padding-right: 2%;
+}
+
+.rightColumn{
+    width: 60%;
+    height: 100%;
+    padding-left: 2%;
+}
+
+.imageContainer{
+    width: 100%;
+    height: 35vh;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 5%;
+    margin-top: 3%;
+}
+
+.imageContainer img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.eventInformation{
+    background-color: #FBF9F9;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.visitorHeading{
+    background-color: #337774;
+    color: white;
+    width: 100%;
+    height: 5vh;
+    border-radius: 10px 10px 0px 0px;
+    font-family: 'Lato';
+    font-weight: bold;
+    font-size: 23px;
+    padding-left: 4%;
+    padding-top: 1%;
+    text-align: left;
+    display: flex;
+}
+
+.emailAllVisitors{
+    width: 100%;
+    text-align: right;
+    background-color: none;
+    font-family: 'Lato';
+    font-size: 17px;
+    margin-bottom: 2%;
+}
+
+.emailAllVisitors:hover{
+    text-decoration: underline;
+}
+
+.topBlock{
+    display: flex
+}
+
+.leftBlock{
+    width: 60%;
+    padding-left: 4%;
+}
+
+.rightBlock{
+    width: 40%;
+    padding-left: 5%;
+}
+
+.eventField{
+    font-family: 'Lato';
+    font-weight: bold;
+    text-align: left;
+    font-size: 16px;
+    margin: 1.5vh 0vw 1.5vh 0vw
+
+}
+
+.eventEntry{
+    font-family: 'Lato';
+    text-align: left;
+    font-size: 16px;
+}
+
+.bottomBlock{
+    width: 100%;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-bottom: 4%;
+}
+
+.visitorCount{
+    font-family: 'Lato';
+    font-weight: normal;
+    margin-left: 1.5%;
+}
+
+.column{
+    width: 100px;
+    background-color: pink;
+}
