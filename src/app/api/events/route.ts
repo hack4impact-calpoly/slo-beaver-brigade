@@ -37,32 +37,11 @@ export async function POST(req: NextRequest) {
     await connectDB();
     console.log("Connected to Db");
 
-    const {
-        eventName,
-        description,
-        wheelchairAccessible,
-        spanishSpeakingAccommodation,
-        startTime,
-        endTime,
-        volunteerEvent,
-        groupsAllowed,
-        attendeeIds,
-    }: IEvent = await req.json();
+    const event: IEvent = await req.json();
 
     // create new event or return error
     try {
-        const newEvent = new Event({
-            eventName,
-            description,
-            wheelchairAccessible,
-            spanishSpeakingAccommodation,
-            startTime,
-            endTime,
-            volunteerEvent,
-            groupsAllowed,
-            attendeeIds,
-        });
-
+        const newEvent = new Event(event);
         console.log("New Event Data:", newEvent); // Add this line
 
         await newEvent.save();
