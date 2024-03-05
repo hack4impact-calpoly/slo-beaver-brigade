@@ -23,7 +23,7 @@ interface Props {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CreateEvent = (Props : {
+const StandaloneCreateEvent = (Props : {
   showModal: boolean,
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
@@ -165,4 +165,4 @@ const CreateEvent = (Props : {
   );
 };
 
-export default CreateEvent
+export default StandaloneCreateEvent

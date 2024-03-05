@@ -17,20 +17,73 @@ export async function GET() {
     }
 }
 
+// export async function POST(req: NextRequest) {
+//   await connectDB() // connect to db
+
+//   //strip Event data from req json
+//   const { eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, startTime, endTime, volunteerEvent, groupsAllowed, attendeeIds }: IEvent = await req.json()
+
+//   //create new event or return error
+//   try {
+//     const newEvent = new Event({ eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, startTime, endTime, volunteerEvent, groupsAllowed, attendeeIds })
+//     await newEvent.save()
+//     return NextResponse.json("Event added successfull: " + newEvent, { status: 200 });
+//   } catch (err) {
+//     return NextResponse.json("Event not added: " + err, { status: 400 });
+//   }
+// }
+
 export async function POST(req: NextRequest) {
-    await connectDB(); // connect to db
+    await connectDB();
+    console.log("Connected to Db");
 
-    //strip Event data from req json
-    const EventData: IEvent = await req.json();
+    const {
+        eventName,
+        description,
+        wheelchairAccessible,
+        spanishSpeakingAccommodation,
+        startTime,
+        endTime,
+        volunteerEvent,
+        groupsAllowed,
+        attendeeIds,
+    }: IEvent = await req.json();
 
-    //create new event or return error
+    // create new event or return error
     try {
-        const newEvent = new Event({ ...EventData });
+        const newEvent = new Event({
+            eventName,
+            description,
+            wheelchairAccessible,
+            spanishSpeakingAccommodation,
+            startTime,
+            endTime,
+            volunteerEvent,
+            groupsAllowed,
+            attendeeIds,
+        });
+
+        console.log("New Event Data:", newEvent); // Add this line
+
         await newEvent.save();
-        return NextResponse.json("Event added successful: " + newEvent, {
+        return NextResponse.json("Event added successfully: " + newEvent, {
             status: 200,
         });
-    } catch (err) {
-        return NextResponse.json("Event not added: " + err, { status: 400 });
+    } catch (err: any) {
+        console.error("Error creating event:", err); // Add this line
+
+        if (err.name === "ValidationError") {
+            // Handle validation errors
+            const errors = Object.values(err.errors).map(
+                (error: any) => error.message
+            );
+            return NextResponse.json("Validation error: " + errors.join(", "), {
+                status: 400,
+            });
+        } else {
+            return NextResponse.json("Event not added: " + err, {
+                status: 400,
+            });
+        }
     }
 }
