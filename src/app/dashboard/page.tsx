@@ -16,6 +16,14 @@ import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { css } from "@emotion/react";
+import '@emotion/react';
+
+// logic for letting ts know about css prop
+declare module 'react' {
+  interface Attributes {
+    css?: any;
+  }
+}
 
 // placeholder to ensure format consistency when there is only 1-2 events
 const EventPlaceholder = () => {
