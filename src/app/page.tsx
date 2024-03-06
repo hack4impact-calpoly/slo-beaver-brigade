@@ -3,7 +3,7 @@
 import { Button } from "@styles/Button";
 import NextLink from "next/link";
 import YourParentComponent from "@components/YourParentComponent";
-import DashboardCalendar from "@components/DashboardCalendar";
+import DashboardCalendar from "@components/MiniCalendar";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function Home() {
