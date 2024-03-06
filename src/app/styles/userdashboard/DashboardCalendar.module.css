@@ -171,6 +171,10 @@ button {
   color: #666;
 }
 
+.label {
+  display: inline-block;
+  width: 100px;
+}
 
 @media screen and (min-width: 1500px) and (min-height: 700px) {
   /* Adjust the styles for screens with a minimum width of 1600px and minimum height of 900px */
