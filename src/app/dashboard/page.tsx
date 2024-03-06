@@ -181,7 +181,7 @@ const Dashboard = () => {
       <Box p="4">
         <Stack spacing={2} px="10" mb={6}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
+            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
               Your Upcoming Events
             </Text>
             <Heading as="h2" fontSize="xl">
@@ -200,14 +200,14 @@ const Dashboard = () => {
           {!allDataLoaded ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="black"
+            color="grey"
             textAlign="center"
             mt={5}>Loading...</Text>
           ) : !isSignedIn ? (
             <Text
               fontSize="2xl"
               fontWeight="bold"
-              color="black"
+              color="grey"
               textAlign="center"
               mt={5}
             >
@@ -217,7 +217,7 @@ const Dashboard = () => {
             <Text
               fontSize="2xl"
               fontWeight="bold"
-              color="black"
+              color="grey"
               textAlign="center"
               mt={5}
             >
@@ -239,6 +239,16 @@ const Dashboard = () => {
                     h="60"
                     textAlign="left"
                     borderRadius="lg"
+                    _before={{
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.6)", // Adjust the opacity as needed
+                        zIndex: 1,
+                        }}
                     style={{
                       //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                       backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
@@ -247,13 +257,14 @@ const Dashboard = () => {
                       backgroundPosition: "center",
                     }}
                   >
-                    <Heading as="h1" size="2xl">
+                    <Heading as="h1" size="2xl" zIndex={2} position={"relative"}>
                       <Text
                         fontSize={eventNameSize}
                         fontWeight="black"
                         color="white"
                         className="bold-text"
                         mx={2}
+                        zIndex={2}
                       >
                         {event.eventName}
                       </Text>
@@ -266,6 +277,7 @@ const Dashboard = () => {
                       p={2}
                       mx="2"
                       my="2"
+                    zIndex={2}
                     >
                       <Text
                         fontSize={eventDetailSize}
@@ -273,6 +285,7 @@ const Dashboard = () => {
                         color="white"
                         className="bold-text"
                         mx={2}
+                        zIndex={2}
                         alignContent="left-bottom"
                       >
                         {formatDate(event.startTime)}
@@ -283,6 +296,7 @@ const Dashboard = () => {
                         color="white"
                         className="bold-text"
                         mx={2}
+                        zIndex={2}
                         alignContent="left-bottom"
                       >
                         {event.location}
@@ -294,6 +308,7 @@ const Dashboard = () => {
                         className="bold-text"
                         mx={2}
                         alignContent="left-bottom"
+                        zIndex={2}
                       >
                         {formatDateTimeRange(event.startTime, event.endTime)}
                       </Text>
@@ -314,10 +329,10 @@ const Dashboard = () => {
         {/* Re-include the omitted bottom section here */}
         <Box px="10" mb={6}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
+            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
               Find More Volunteer Opportunities
             </Text>
-            <Select defaultValue="event-type" size="md" ml={2} w="fit-content" color="black">
+            <Select defaultValue="event-type" size="sm" ml={2} w="fit-content">
               <option value="event-type" disabled>
                 Event Type
               </option>
@@ -336,19 +351,19 @@ const Dashboard = () => {
           {!allDataLoaded ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="black"
+            color="grey"
             textAlign="center"
             mt={5}>Loading...</Text>
           ) : !isSignedIn ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="black"
+            color="grey"
             textAlign="center"
             mt={5}>Sign in to see more volunteer opportunities！ ʕ•ᴥ•ʔ</Text>
           ) : (isSignedIn && unregisteredEvents.length === 0) ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="black"
+            color="grey"
             textAlign="center"
             mt={5}>No volunteer opportunities at the moment！ʕ•ᴥ•ʔ</Text>
           ) : null}
@@ -365,6 +380,16 @@ const Dashboard = () => {
               h="64"
               mx="10"
               borderRadius="lg"
+            _before={{
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.6)", // Adjust the opacity as needed
+                zIndex: 1,
+                }}
               style={{
                 backgroundImage: `url("/image_720.png")`,
                 backgroundSize: "100% 100%",
@@ -373,21 +398,24 @@ const Dashboard = () => {
                 padding: "20px",
               }}
             >
-              <Heading as="h1" size="3xl" mb="1">
+              <Heading as="h1" size="3xl" mb="1" position={"relative"} zIndex={2}>
                 <Text
                   fontSize="3xl"
                   fontWeight="custom"
                   color="white"
                   className="bold-text"
+                    zIndex={2}
                 >
                   {event.eventName}
                 </Text>
               </Heading>
+              <Box position={'relative'} zIndex={2}>
               <Text
                 fontSize="lg"
                 fontWeight="custom"
                 color="white"
                 className="bold-text"
+                zIndex={2}
               >
                 {event.location}
               </Text>
@@ -396,6 +424,7 @@ const Dashboard = () => {
                 fontWeight="custom"
                 color="white"
                 className="bold-text"
+                zIndex={2}
               >
                 {formatDate(event.startTime)}
               </Text>
@@ -404,9 +433,11 @@ const Dashboard = () => {
                 fontWeight="custom"
                 color="white"
                 className="bold-text"
+                zIndex={2}
               >
                 {formatDateTimeRange(event.startTime, event.endTime)}
               </Text>
+              </Box>
               {/* positions the stuff to the left buttom when the parent box has relative position*/}
               <Box
                 position="absolute"
@@ -416,6 +447,7 @@ const Dashboard = () => {
                 p={2}
                 mx="2"
                 my="2"
+                zIndex={2}
               >
                 <Heading as="h2" fontSize="xl">
                   <Button
