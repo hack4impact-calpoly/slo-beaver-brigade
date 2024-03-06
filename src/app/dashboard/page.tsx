@@ -317,8 +317,8 @@ const Dashboard = () => {
             <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
               Find More Volunteer Opportunities
             </Text>
-            <Select defaultValue="event-type" size="sm" ml={2} w="fit-content">
-              <option value="event-type" color="black" disabled>
+            <Select defaultValue="event-type" size="md" ml={2} w="fit-content" color="black">
+              <option value="event-type" disabled>
                 Event Type
               </option>
               <option value="watery-walk">Watery Walk</option>
