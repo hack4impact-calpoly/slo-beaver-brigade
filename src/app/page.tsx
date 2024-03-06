@@ -3,6 +3,7 @@
 import { Button } from "@styles/Button";
 import NextLink from "next/link";
 import YourParentComponent from "@components/YourParentComponent";
+import DashboardCalendar from "@components/DashboardCalendar";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
       </NextLink>
       < SignOutButton />
       <YourParentComponent />
+      <DashboardCalendar/>
     </main>
   );
 }
