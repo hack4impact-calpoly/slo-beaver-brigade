@@ -1,0 +1,152 @@
+.body {
+    margin: 0;
+    padding: 0;
+    background-color: #2b2b33;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.navbar {
+    height: 60px;
+    background-color: #2b2b33;
+    position: relative;
+    z-index: 9999;
+}
+
+.nav_left {
+    color: #e0af48;
+    padding-left: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.greeting {
+    float: right;
+    margin-left: 1rem;
+    letter-spacing: normal;
+}
+
+.menu_icon {
+    display: none;
+    color: #e0af48;
+}
+
+.nav_elements {
+    text-align: right;
+    letter-spacing: normal;
+}
+
+.nav_elements ul {
+    display: flex;
+    justify-content: space-between;
+    list-style-type: none;
+}
+
+.nav_elements ul li:not(:last-child) {
+    margin-right: 60px;
+}
+
+.nav_elements ul a {
+    font-size: 16px;
+    font-weight: 400;
+    color: #e0af48;
+    text-decoration: none;
+}
+
+.nav_elements ul a.active {
+    color: #574c4c;
+    font-weight: 500;
+    position: relative;
+}
+
+/* .nav_elements ul a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #574c4c;
+} */
+
+@media (max-width: 1000px) {
+    .nav_elements ul a {
+        font-size: 14px;
+    }
+
+    .nav_elements ul li:not(:last-child) {
+        margin-right: 50px;
+    }
+    .greeting {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 875px) {
+    .nav_elements ul li:not(:last-child) {
+        margin-right: 35px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav_elements ul li:not(:last-child) {
+        margin-right: 25px;
+    }
+}
+
+@media (max-width: 670px) {
+    .navbar.active {
+        width: 270px;
+        float: right;
+    }
+
+    .nav_left.active {
+        display: none;
+    }
+
+    .menu_icon.active {
+        margin-left: 215px;
+    }
+
+    .menu_icon {
+        display: block;
+        cursor: pointer;
+    }
+
+    .nav_elements {
+        position: absolute;
+        right: 0;
+        top: 60px;
+        background-color: #2b2b33;
+        width: 0px;
+        height: calc(100vh - 60px);
+        overflow: hidden;
+    }
+
+    .nav_elements.active {
+        width: 270px;
+    }
+
+    .nav_elements ul {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nav_elements ul li {
+        margin-right: unset;
+        margin-top: 22px;
+    }
+
+    .search_icon {
+        margin-right: 25px;
+    }
+}
