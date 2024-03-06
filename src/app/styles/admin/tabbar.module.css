@@ -1,35 +1,31 @@
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  padding-top: 40px;
-}
+/* tabbar.module.css */
 
-.tab-bar-container {
+.tabBarContainer {
+  /* display: none; */
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 0.8rem;
   width: 100%;
-  position: fixed;
-  height: 80px;
+  height: 10%;
   top: 0;
   z-index: 999;
   border-bottom: 1px solid #000000;
+  background-color: white;
+  position: sticky;
 }
 
 .tab {
-  padding: 10px 5px;
+  padding: 0.5rem 0.25rem;
   cursor: pointer;
   transition: border-bottom 0.3s ease;
   user-select: none;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 550;
-  font-size: 20px;
+  font-size: 1.2rem;
   text-align: center;
-  margin-right: 60px;
-  margin-left: 70px;
+  margin-right: 6rem;
+  margin-left: 6rem;
   display: flex;
   align-items: center;
 }
@@ -37,4 +33,14 @@ html {
 .active {
   border-bottom: 2px solid #000000;
   color: #000000;
+  
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .tab {
+    padding: 0.5rem 0.25rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
 }
