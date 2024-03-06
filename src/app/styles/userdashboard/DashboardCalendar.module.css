@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1f1f25; /* Using direct color for --c-text-primary */
+  color: #1f1f25;
   min-height: 100vh;
 }
 
@@ -30,7 +30,7 @@
 .datepicker {
   width: 100%;
   max-width: 320px;
-  background-color: #fdfdfd; /* Using direct color for --c-bg-tertiary */
+  background-color: #fdfdfd;
   border-radius: 10px;
   box-shadow:
     0 0 2px 0 rgba(0, 0, 0, 0.2),
@@ -58,7 +58,7 @@
   margin-right: 0.5rem;
   margin-top: 0.5rem;
   border: 0;
-  background-color: #eaebec; /* Using direct color for --c-bg-secondary */
+  background-color: #eaebec;
   border-radius: 10px;
   padding: 0.5em 0.75em;
   font-weight: 600;
@@ -99,7 +99,7 @@
 }
 
 .dayText {
-  color: #999fa6; /* Using direct color for --c-text-secondary */
+  color: #999fa6;
   font-size: 0.875em;
   font-weight: 500;
   margin-left: 10px;
@@ -121,12 +121,12 @@
 
 .dateButton:focus {
   outline: 0;
-  color: #008ffd; /* Using direct color for --c-theme-primary */
-  border: 2px solid #cbe8ff; /* Using direct color for --c-theme-primary-accent */
+  color: #008ffd;
+  border: 2px solid #cbe8ff;
 }
 
 .dateButton:hover {
-  background-color: #e7e8e9; /* Light blue background on hover */
+  background-color: #e7e8e9;
   border-radius: 20px;
 }
 
@@ -139,8 +139,8 @@
 
 .currentDate {
   color: #fff !important;
-  background-color: #008ffd; /* Using direct color for --c-theme-primary */
-  border-color: #008ffd; /* Using direct color for --c-theme-primary */
+  background-color: #008ffd;
+  border-color: #008ffd;
   border-radius: 20px;
 }
 
