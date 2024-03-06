@@ -1,3 +1,4 @@
+// Import React and necessary functions from date-fns
 import React, { useState, useEffect } from "react";
 import {
   format,
@@ -12,12 +13,23 @@ import {
   isSameMonth,
   eachDayOfInterval,
 } from "date-fns";
-import "../styles/userdashboard/DashboardCalendar.module.css";
+
+// Import your CSS Module here
+import styles from "../styles/userdashboard/DashboardCalendar.module.css";
+
+// Import Chakra UI icons
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
-const DashboardCalendar: React.FC = ({ onTimeChange }) => {
+type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
+
+type DashboardCalendarProps = {
+  onTimeChange: OnTimeChangeFunction;
+};
+
+const DashboardCalendar: React.FC<DashboardCalendarProps> = ({ onTimeChange }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [activeDate, setActiveDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
@@ -30,26 +42,22 @@ const DashboardCalendar: React.FC = ({ onTimeChange }) => {
   };
 
   const handleDayClick = (day: Date) => {
-    console.log(day);
+    const formattedDate = format(day, "yyyy-MM-dd");
     setSelectedDay(day);
+    setActiveDate(formattedDate);
   };
 
-  const handleTimeChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    type: string
-  ) => {
-    console.log("New Start Time:", startTime, "New End Time:", endTime);
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    const value = event.target.value
     if (type === "start") {
-      setStartTime(event.target.value);
+      setStartTime(value);
     } else {
-      setEndTime(event.target.value);
+      setEndTime(value);
     }
   };
 
   useEffect(() => {
-    console.log("Start Time:", startTime, "End Time:", endTime);
-    // Call the prop function to notify parent component of the time changes
-    if (onTimeChange) {
+    if (onTimeChange && startTime && endTime) {
       onTimeChange(startTime, endTime);
     }
   }, [startTime, endTime, onTimeChange]);
@@ -65,7 +73,6 @@ const DashboardCalendar: React.FC = ({ onTimeChange }) => {
       (_, index) => subDays(start, daysBeforeStart - index)
     );
 
-    // Calculate the number of days from the next month to display for a complete grid
     const remainingDays = 42 - (daysBeforeStart + days.length);
     const daysFromNextMonth =
       remainingDays > 0
@@ -78,7 +85,7 @@ const DashboardCalendar: React.FC = ({ onTimeChange }) => {
       (day, index) => (
         <button
           key={index}
-          className={`date${isToday(day) ? " current-day" : ""}${!isSameMonth(day, selectedDate) ? " faded" : ""}`}
+          className={`${styles.dateButton} ${isToday(day) ? styles.currentDate : ""} ${!isSameMonth(day, selectedDate) ? styles.faded : ""} ${format(day, "yyyy-MM-dd") === activeDate ? styles.selectedDate : ""}`}
           onClick={() => handleDayClick(day)}
         >
           {format(day, "d")}
@@ -88,49 +95,47 @@ const DashboardCalendar: React.FC = ({ onTimeChange }) => {
   };
 
   return (
-    <div className="calendar-wrapper">
-      <div className="datepicker">
-        <div className="datepicker-top">
-          <div className="month-selector">
-            <button className="arrow" onClick={handlePrevMonth}>
+    <div className={styles.wrapper}>
+      <div className={styles.datepicker}>
+        <div className={styles.topMargin}>
+          <div className={styles.monthSelector}>
+            <button className={styles.arrowButton} onClick={handlePrevMonth}>
               <ChevronLeftIcon />
             </button>
-            <span className="month-name">
+            <span className={styles.monthName}>
               {format(selectedDate, "MMMM yyyy")}
             </span>
-            <button className="arrow" onClick={handleNextMonth}>
+            <button className={styles.arrowButton} onClick={handleNextMonth}>
               <ChevronRightIcon />
             </button>
           </div>
         </div>
-        <div className="datepicker-calendar">
-          <span className="day">Su</span>
-          <span className="day">Mo</span>
-          <span className="day">Tu</span>
-          <span className="day">We</span>
-          <span className="day">Th</span>
-          <span className="day">Fr</span>
-          <span className="day">Sa</span>
+        <div className={styles.calendarGrid}>
+          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((dayName, index) => (
+            <div key={index} className={styles.dayText}>
+              {dayName}
+            </div>
+          ))}
           {renderDays()}
         </div>
         {selectedDay && (
-          <div className="time-selector">
+          <div className={styles.timeSelector}>
             <div>
-              <span className="label">Start Time</span>
+              Start Time :{" "}
               <input
                 type="time"
+                className={styles.timeInput}
                 value={startTime}
                 onChange={(e) => handleTimeChange(e, "start")}
-                placeholder="Start Time"
               />
             </div>
             <div>
-              <span className="label">End Time</span>
+              &nbsp;&nbsp;End Time :{" "}
               <input
                 type="time"
+                className={styles.timeInput}
                 value={endTime}
                 onChange={(e) => handleTimeChange(e, "end")}
-                placeholder="End Time"
               />
             </div>
           </div>
