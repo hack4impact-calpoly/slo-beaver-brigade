@@ -13,42 +13,49 @@ import {
   isSameMonth,
   eachDayOfInterval,
 } from "date-fns";
-
-// Import your CSS Module here
 import styles from "../styles/userdashboard/DashboardCalendar.module.css";
-
-// Import Chakra UI icons
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
+// Define type for the onTimeChange function
 type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
 
+// Define props interface for DashboardCalendar component
 type DashboardCalendarProps = {
   onTimeChange: OnTimeChangeFunction;
 };
 
-const DashboardCalendar: React.FC<DashboardCalendarProps> = ({ onTimeChange }) => {
+const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
+  onTimeChange,
+}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [activeDate, setActiveDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
+  // Function to handle going to the previous month
   const handlePrevMonth = () => {
     setSelectedDate(subMonths(selectedDate, 1));
   };
 
+  // Function to handle going to the next month
   const handleNextMonth = () => {
     setSelectedDate(addMonths(selectedDate, 1));
   };
 
+  // Function to handle clicking on a day
   const handleDayClick = (day: Date) => {
     const formattedDate = format(day, "yyyy-MM-dd");
     setSelectedDay(day);
     setActiveDate(formattedDate);
   };
 
-  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-    const value = event.target.value
+  // Function to handle changing start/end time
+  const handleTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
+    const value = event.target.value;
     if (type === "start") {
       setStartTime(value);
     } else {
@@ -56,6 +63,7 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({ onTimeChange }) =
     }
   };
 
+  // Effect hook to call onTimeChange function when start/end time changes
   useEffect(() => {
     if (onTimeChange && startTime && endTime) {
       onTimeChange(startTime, endTime);
