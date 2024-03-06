@@ -65,7 +65,13 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
 
   // Function to handle date selection from the input field
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = new Date(event.target.value);
+    const value = event.target.value
+    let newDate = new Date(value);
+    // Correct for the timezone offset to ensure the date is not shifted
+    // This adds back the timezone offset to the date, making it noon local time
+    // helps avoid the date being shifted due to timezone differences
+    newDate = new Date(newDate.getTime() + newDate.getTimezoneOffset() * 60000);
+
     setSelectedDay(newDate);
     setActiveDate(format(newDate, "yyyy-MM-dd"));
     setSelectedDate(newDate);
