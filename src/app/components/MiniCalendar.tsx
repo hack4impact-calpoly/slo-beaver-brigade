@@ -29,7 +29,7 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-  const [activeDate, setActiveDate] = useState("");
+  const [activeDate, setActiveDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
@@ -61,6 +61,14 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
     } else {
       setEndTime(value);
     }
+  };
+
+  // Function to handle date selection from the input field
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(event.target.value);
+    setSelectedDay(newDate);
+    setActiveDate(format(newDate, "yyyy-MM-dd"));
+    setSelectedDate(newDate);
   };
 
   // Effect hook to call onTimeChange function when start/end time changes
@@ -128,6 +136,15 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
         </div>
         {selectedDay && (
           <div className={styles.timeSelector}>
+            <div>
+            &nbsp;&nbsp;Date :{" "}
+              <input
+              type="date"
+              className={styles.timeInput}
+              value={activeDate}
+              onChange={handleDateChange}
+              />
+            </div>
             <div>
               Start Time :{" "}
               <input
