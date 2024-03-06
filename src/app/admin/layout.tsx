@@ -13,12 +13,14 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
 const Layout = (props: Props) => {
   return (
     <>
-      <TabBar />
 
+    <TabBar />
       <div className={montserrat.className}>
         <div className={style.adminDash}>
-          <Sidebar />
-          <main className={style.mainContainer}>{props.children}</main>
+          <main className={style.mainContainer}>
+
+            {props.children}
+        </main>
         </div>
       </div>
     </>

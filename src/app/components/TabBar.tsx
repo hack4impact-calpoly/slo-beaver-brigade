@@ -14,6 +14,11 @@ const TabBar: React.FC = () => {
 
   return (
       <div className={styles.tabBarContainer}>
+        <Link href={`/admin/calendar`} passHref>
+          <div className={`${styles.tab} ${activeTab === 'calendar' ? styles.active : ''}`} onClick={() => handleTabClick('calendar')}>
+            Calendar
+          </div>
+        </Link>
         <Link href={`/admin/events`} passHref>
           <div className={`${styles.tab} ${activeTab === 'events' ? styles.active : ''}`} onClick={() => handleTabClick('events')}>
             Events
