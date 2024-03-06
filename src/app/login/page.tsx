@@ -36,7 +36,6 @@ export default function Login() {
       return;
     }
     
-    console.log(email, password)
 
     try {
       const completeSignIn = await signIn.create({identifier: email, strategy: "password", password });
