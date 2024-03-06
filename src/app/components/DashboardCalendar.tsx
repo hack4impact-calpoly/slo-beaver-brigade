@@ -8,15 +8,14 @@ import {
   startOfMonth,
   endOfMonth,
   getDay,
-  getDaysInMonth,
   isToday,
   isSameMonth,
   eachDayOfInterval,
 } from "date-fns";
-import "../styles/userdashboard/DashboardCalendar.css";
+import "../styles/userdashboard/DashboardCalendar.module.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
-const DashboardCalendar: React.FC = ({onTimeChange}) => {
+const DashboardCalendar: React.FC = ({ onTimeChange }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState("");
@@ -31,11 +30,14 @@ const DashboardCalendar: React.FC = ({onTimeChange}) => {
   };
 
   const handleDayClick = (day: Date) => {
-    console.log(day)
+    console.log(day);
     setSelectedDay(day);
   };
 
-  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const handleTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
     console.log("New Start Time:", startTime, "New End Time:", endTime);
     if (type === "start") {
       setStartTime(event.target.value);
@@ -52,7 +54,6 @@ const DashboardCalendar: React.FC = ({onTimeChange}) => {
     }
   }, [startTime, endTime, onTimeChange]);
 
-
   const renderDays = () => {
     const start = startOfMonth(selectedDate);
     const end = endOfMonth(selectedDate);
@@ -63,26 +64,27 @@ const DashboardCalendar: React.FC = ({onTimeChange}) => {
       { length: daysBeforeStart },
       (_, index) => subDays(start, daysBeforeStart - index)
     );
-    
 
     // Calculate the number of days from the next month to display for a complete grid
     const remainingDays = 42 - (daysBeforeStart + days.length);
-    const daysFromNextMonth = remainingDays > 0
-      ? Array.from(
-          { length: remainingDays },
-          (_, index) => addDays(end, index + 1)
-        )
-      : [];
+    const daysFromNextMonth =
+      remainingDays > 0
+        ? Array.from({ length: remainingDays }, (_, index) =>
+            addDays(end, index + 1)
+          )
+        : [];
 
-    return [...daysFromPrevMonth, ...days, ...daysFromNextMonth].map((day, index) => (
-      <button
-        key={index}
-        className={`date${isToday(day) ? " current-day" : ""}${!isSameMonth(day, selectedDate) ? " faded" : ""}`}
-        onClick={() => handleDayClick(day)}
-      >
-        {format(day, "d")}
-      </button>
-    ));
+    return [...daysFromPrevMonth, ...days, ...daysFromNextMonth].map(
+      (day, index) => (
+        <button
+          key={index}
+          className={`date${isToday(day) ? " current-day" : ""}${!isSameMonth(day, selectedDate) ? " faded" : ""}`}
+          onClick={() => handleDayClick(day)}
+        >
+          {format(day, "d")}
+        </button>
+      )
+    );
   };
 
   return (
@@ -113,21 +115,24 @@ const DashboardCalendar: React.FC = ({onTimeChange}) => {
         </div>
         {selectedDay && (
           <div className="time-selector">
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => handleTimeChange(e, "start")}
-              placeholder="Start Time"
-            />
-            <input
-              type="time"
-              value={endTime}
-              onChange={(e) => handleTimeChange(e, "end")}
-              placeholder="End Time"
-            />
-            <p>Selected Date: {format(selectedDay, "PPP")}</p>
-            <p>Start Time: {startTime}</p>
-            <p>End Time: {endTime}</p>
+            <div>
+              <span className="label">Start Time</span>
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => handleTimeChange(e, "start")}
+                placeholder="Start Time"
+              />
+            </div>
+            <div>
+              <span className="label">End Time</span>
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => handleTimeChange(e, "end")}
+                placeholder="End Time"
+              />
+            </div>
           </div>
         )}
       </div>
