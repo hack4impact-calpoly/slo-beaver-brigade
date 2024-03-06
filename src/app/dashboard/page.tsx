@@ -218,7 +218,7 @@ const Dashboard = () => {
           ) : null}
         </Stack>
         <Box px={6}>
-        {userEvents.length > 3 ? (
+        {userEvents.length > 0 ? (
           <Slider {...settings}>
             {userEvents.length > 0 ? (
               userEvents.map((event) => (
@@ -342,7 +342,7 @@ const Dashboard = () => {
             fontWeight="bold"
             color="grey"
             textAlign="center"
-            mt={5}>There are no current volunteer events</Text>
+            mt={5}>No volunteer opportunities at the moment！ʕ•ᴥ•ʔ</Text>
           ) : null}
         </Box>
         <Box mt={10}>
