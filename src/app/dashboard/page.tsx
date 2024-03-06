@@ -181,7 +181,7 @@ const Dashboard = () => {
       <Box p="4">
         <Stack spacing={2} px="10" mb={6}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
+            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
               Your Upcoming Events
             </Text>
             <Heading as="h2" fontSize="xl">
@@ -200,14 +200,14 @@ const Dashboard = () => {
           {!allDataLoaded ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="grey"
+            color="black"
             textAlign="center"
             mt={5}>Loading...</Text>
           ) : !isSignedIn ? (
             <Text
               fontSize="2xl"
               fontWeight="bold"
-              color="grey"
+              color="black"
               textAlign="center"
               mt={5}
             >
@@ -217,7 +217,7 @@ const Dashboard = () => {
             <Text
               fontSize="2xl"
               fontWeight="bold"
-              color="grey"
+              color="black"
               textAlign="center"
               mt={5}
             >
@@ -314,10 +314,10 @@ const Dashboard = () => {
         {/* Re-include the omitted bottom section here */}
         <Box px="10" mb={6}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
+            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
               Find More Volunteer Opportunities
             </Text>
-            <Select defaultValue="event-type" size="sm" ml={2} w="fit-content">
+            <Select defaultValue="event-type" size="md" ml={2} w="fit-content" color="black">
               <option value="event-type" disabled>
                 Event Type
               </option>
@@ -336,19 +336,19 @@ const Dashboard = () => {
           {!allDataLoaded ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="grey"
+            color="black"
             textAlign="center"
             mt={5}>Loading...</Text>
           ) : !isSignedIn ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="grey"
+            color="black"
             textAlign="center"
             mt={5}>Sign in to see more volunteer opportunities！ ʕ•ᴥ•ʔ</Text>
           ) : (isSignedIn && unregisteredEvents.length === 0) ? (
             <Text fontSize="2xl"
             fontWeight="bold"
-            color="grey"
+            color="black"
             textAlign="center"
             mt={5}>No volunteer opportunities at the moment！ʕ•ᴥ•ʔ</Text>
           ) : null}
