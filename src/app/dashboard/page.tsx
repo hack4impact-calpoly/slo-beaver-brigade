@@ -166,6 +166,30 @@ const Dashboard = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 3,
+    responsive: [
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 3, // Show 3 slides for widths of 1280px or less
+          slidesToScroll: 3,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2, // Show 2 slides for widths of 1024px or less
+          slidesToScroll: 2,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1, // Only show 1 slide for widths of 600px or less
+          slidesToScroll: 1,
+          infinite: userEvents.length > 1, // Enable infinite looping only if there's more than 1 event
+        },
+      },
+    ],
   };
 
   const adjustedSettings = {
