@@ -13,9 +13,9 @@ export default function Navbar(props: { name: string }) {
   };
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={`${styles.navbar} ${showNavbar && styles.active}`}>
       <div className={styles.container}>
-        <div className={styles.nav_left}>
+        <div className={`${styles.nav_left} ${showNavbar && styles.active}`}>
           <Link href="/">
             <Image
               className={styles.logo}
@@ -35,10 +35,10 @@ export default function Navbar(props: { name: string }) {
             <div className={styles.greeting}>
               <p>{props.name}</p>
             </div>
-        }
+          }
 
         </div>
-        <div className={styles.menu_icon} onClick={handleShowNavbar}>
+        <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
           <HamburgerIcon />
         </div>
         <div
