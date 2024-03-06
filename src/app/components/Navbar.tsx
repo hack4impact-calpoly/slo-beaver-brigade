@@ -73,6 +73,15 @@ export default function Navbar(props: { name: string }) {
             <li>
               <Link href="/">My Account</Link>
             </li>
+            {(props.name === "Sign In / Log In")? 
+            <li>
+              <Link href={"/login"}>
+                {props.name}
+              </Link>
+            </li>
+          :
+            <></>
+          }
             <li>
               <Link href="/">
                 {" "}
