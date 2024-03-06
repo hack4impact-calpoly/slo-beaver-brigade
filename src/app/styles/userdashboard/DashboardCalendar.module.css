@@ -1,58 +1,53 @@
+/* DashboardCalendar.module.css */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
-*,
-*:after,
-*:before {
-  box-sizing: border-box;
-}
-
-:root {
-  --c-theme-primary: #008ffd;
-  --c-theme-primary-accent: #cbe8ff;
-  --c-bg-primary: #d6dae0;
-  --c-bg-secondary: #eaebec;
-  --c-bg-tertiary: #fdfdfd;
-  --c-text-primary: #1f1f25;
-  --c-text-secondary: #999fa6;
-}
-
-body {
+.wrapper {
   font-family: "Inter", sans-serif;
   line-height: 1.5;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--c-bg-primary);
-  color: var(--c-text-primary);
+  color: #1f1f25; /* Using direct color for --c-text-primary */
+  min-height: 100vh;
 }
 
-button {
+/* Resetting styles specifically for elements within the component */
+.resetStyle,
+.resetStyle:after,
+.resetStyle:before {
+  box-sizing: border-box;
+}
+
+.button {
   font: inherit;
   cursor: pointer;
-  &:focus {
-    outline: 0;
-  }
+}
+
+.buttonFocus:focus {
+  outline: 0;
 }
 
 .datepicker {
   width: 100%;
   max-width: 320px;
-  max-height: 250px;
-  background-color: var(--c-bg-tertiary);
+  background-color: #fdfdfd; /* Using direct color for --c-bg-tertiary */
   border-radius: 10px;
   box-shadow:
-    0 0 2px 0 rgba(#000, 0.2),
-    0 5px 10px 0 rgba(#000, 0.1);
+    0 0 2px 0 rgba(0, 0, 0, 0.2),
+    0 5px 10px 0 rgba(0, 0, 0, 0.1);
   padding: 1rem;
   position: relative;
+  margin: 3rem;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
 }
 
-.datepicker-top {
+.topMargin {
   margin-bottom: 1rem;
 }
 
-.btn-group {
+.flexWrap {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 1rem;
@@ -63,19 +58,19 @@ button {
   margin-right: 0.5rem;
   margin-top: 0.5rem;
   border: 0;
-  background-color: var(--c-bg-secondary);
+  background-color: #eaebec; /* Using direct color for --c-bg-secondary */
   border-radius: 10px;
   padding: 0.5em 0.75em;
   font-weight: 600;
 }
 
-.month-selector {
+.monthSelector {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.arrow {
+.arrowButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,33 +80,32 @@ button {
   width: 2.5rem;
   height: 2.5rem;
   box-shadow:
-    0 0 2px 0 rgba(#000, 0.25),
-    0 0 10px 0 rgba(#000, 0.15);
+    0 0 2px 0 rgba(0, 0, 0, 0.25),
+    0 0 10px 0 rgba(0, 0, 0, 0.15);
 }
 
-.month-name {
+.monthName {
   font-weight: 600;
 }
 
-.datepicker-calendar {
+.calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-row-gap: 1rem;
 }
 
-.day,
-.date {
+.centerText {
   justify-self: center;
 }
 
-.day {
-  color: var(--c-text-secondary);
+.dayText {
+  color: #999fa6; /* Using direct color for --c-text-secondary */
   font-size: 0.875em;
   font-weight: 500;
-  justify-self: center;
+  margin-left: 10px;
 }
 
-.date {
+.dateButton {
   border: 0;
   padding: 0;
   width: 2.25rem;
@@ -121,30 +115,36 @@ button {
   justify-content: center;
   border-radius: 6px;
   font-weight: 600;
-  border: 2px solid transparent;
   background-color: transparent;
   cursor: pointer;
-  &:focus {
-    outline: 0;
-    color: var(--c-theme-primary);
-    border: 2px solid var(--c-theme-primary-accent);
-  }
 }
 
-.faded {
-  color: var(--c-text-secondary);
+.dateButton:focus {
+  outline: 0;
+  color: #008ffd; /* Using direct color for --c-theme-primary */
+  border: 2px solid #cbe8ff; /* Using direct color for --c-theme-primary-accent */
 }
 
-.current-day {
-  color: #fff;
-  border-color: var(--c-theme-primary);
-  background-color: var(--c-theme-primary);
-  &:focus {
-    background-color: var(--c-theme-primary-accent);
-  }
+.dateButton:hover {
+  background-color: #e7e8e9; /* Light blue background on hover */
+  border-radius: 20px;
 }
 
-.time-selector {
+.dateButton:focus,
+.selectedDate {
+  background-color: #cbe8ff; /* Light blue background on click (focus state) */
+  outline: none; /* Removes default focus outline */
+  border-radius: 20px;
+}
+
+.currentDate {
+  color: #fff !important;
+  background-color: #008ffd; /* Using direct color for --c-theme-primary */
+  border-color: #008ffd; /* Using direct color for --c-theme-primary */
+  border-radius: 20px;
+}
+
+.timeSelector {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -156,7 +156,7 @@ button {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.time-selector input[type="time"] {
+.timeInput {
   margin: 10px 0;
   padding: 5px;
   border: 1px solid #ccc;
@@ -165,25 +165,12 @@ button {
   color: #333;
 }
 
-.time-selector p {
+.labelText {
   margin: 5px 0;
   font-size: 14px;
   color: #666;
 }
 
-.label {
-  display: inline-block;
-  width: 100px;
-}
-
-@media screen and (min-width: 1500px) and (min-height: 700px) {
-  /* Adjust the styles for screens with a minimum width of 1600px and minimum height of 900px */
-  .datepicker {
-    max-width: 320px;
-    max-height: 45%;
-    margin: 3rem;
-    bottom: 0;
-    left: 0;
-    overflow: auto;
-  }
+.faded {
+  color: #999fa6;
 }
