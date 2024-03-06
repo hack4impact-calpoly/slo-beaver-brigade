@@ -218,6 +218,7 @@ const Dashboard = () => {
           ) : null}
         </Stack>
         <Box px={6}>
+        {userEvents.length > 3 ? (
           <Slider {...settings}>
             {userEvents.length > 0 ? (
               userEvents.map((event) => (
@@ -300,6 +301,7 @@ const Dashboard = () => {
                 <EventPlaceholder key={`placeholder-${i}`} />
               ))}
           </Slider>
+        ) : (null)}
         </Box>
         {/* Re-include the omitted bottom section here */}
         <Box px="10" mb={6}>
@@ -323,7 +325,7 @@ const Dashboard = () => {
             w="100%"
             my={2}
           />
-          {!isLoaded ? (
+          {!allDataLoaded ? (
             <Text fontSize="2xl"
             fontWeight="bold"
             color="grey"
