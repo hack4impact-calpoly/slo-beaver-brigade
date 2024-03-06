@@ -10,7 +10,7 @@ import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "@styles/calendar/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import CreateEvent from "./StandaloneCreateEvent";
+import StandaloneCreateEvent from "./StandaloneCreateEvent";
 import EventExpandedView from "./StandaloneExpandedViewComponent";
 import { IEvent } from "@database/eventSchema";
 
@@ -78,10 +78,10 @@ export default function Calendar(props: {
   return (
     <div>
       <div className={style.wrapper}>
-        <CreateEvent
+        <StandaloneCreateEvent
           showModal={showModal}
           setShowModal={setShowModal}
-        ></CreateEvent>
+        ></StandaloneCreateEvent>
         <EventExpandedView
           eventDetails={getEvent}
           showModal={showExpandedView}
