@@ -46,7 +46,6 @@ const Dashboard = () => {
 
   const sliderStyles = css`
     .slick-dots li button:before {
-      
     }
 
     .slick-prev:before,
@@ -184,6 +183,33 @@ const Dashboard = () => {
             alignSelf="center"
             w="100%"
           />
+          {!isLoaded ? (
+            <Text fontSize="2xl"
+            fontWeight="bold"
+            color="grey"
+            textAlign="center"
+            mt={5}>Loading...</Text>
+          ) : !isSignedIn ? (
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color="grey"
+              textAlign="center"
+              mt={5}
+            >
+              Sign in to see all your upcoming events！ ʕ•ᴥ•ʔ
+            </Text>
+          ) : userEvents.length === 0 ? (
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color="grey"
+              textAlign="center"
+              mt={5}
+            >
+              Register more events below！ ʕง•ᴥ•ʔง
+            </Text>
+          ) : null}
         </Stack>
         <Box px={6}>
           <Slider {...settings}>
@@ -291,6 +317,25 @@ const Dashboard = () => {
             w="100%"
             my={2}
           />
+          {!isLoaded ? (
+            <Text fontSize="2xl"
+            fontWeight="bold"
+            color="grey"
+            textAlign="center"
+            mt={5}>Loading...</Text>
+          ) : !isSignedIn ? (
+            <Text fontSize="2xl"
+            fontWeight="bold"
+            color="grey"
+            textAlign="center"
+            mt={5}>Sign in to see more volunteer opportunities！ ʕ•ᴥ•ʔ</Text>
+          ) : (isSignedIn && unregisteredEvents.length === 0) ? (
+            <Text fontSize="2xl"
+            fontWeight="bold"
+            color="grey"
+            textAlign="center"
+            mt={5}>There are no current volunteer events</Text>
+          ) : null}
         </Box>
         <Box mt={10}>
           {unregisteredEvents.map((event) => (
