@@ -1,0 +1,176 @@
+/* MiniCalendar.module.css */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+.wrapper {
+  font-family: "Inter", sans-serif;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1f1f25;
+  min-height: 100vh;
+}
+
+/* Resetting styles specifically for elements within the component */
+.resetStyle,
+.resetStyle:after,
+.resetStyle:before {
+  box-sizing: border-box;
+}
+
+.button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.buttonFocus:focus {
+  outline: 0;
+}
+
+.datepicker {
+  width: 100%;
+  max-width: 320px;
+  background-color: #fdfdfd;
+  border-radius: 10px;
+  box-shadow:
+    0 0 2px 0 rgba(0, 0, 0, 0.2),
+    0 5px 10px 0 rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  position: relative;
+  margin: 3rem;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+}
+
+.topMargin {
+  margin-bottom: 1rem;
+}
+
+.flexWrap {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  margin-top: -0.5rem;
+}
+
+.tag {
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  border: 0;
+  background-color: #eaebec;
+  border-radius: 10px;
+  padding: 0.5em 0.75em;
+  font-weight: 600;
+}
+
+.monthSelector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrowButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background-color: #fff;
+  border-radius: 12px;
+  width: 2.5rem;
+  height: 2.5rem;
+  box-shadow:
+    0 0 2px 0 rgba(0, 0, 0, 0.25),
+    0 0 10px 0 rgba(0, 0, 0, 0.15);
+}
+
+.monthName {
+  font-weight: 600;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-row-gap: 1rem;
+}
+
+.centerText {
+  justify-self: center;
+}
+
+.dayText {
+  color: #999fa6;
+  font-size: 0.875em;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+.dateButton {
+  border: 0;
+  padding: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 600;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.dateButton:focus {
+  outline: 0;
+  color: #008ffd;
+  border: 2px solid #cbe8ff;
+}
+
+.dateButton:hover {
+  background-color: #e7e8e9;
+  border-radius: 20px;
+}
+
+.dateButton:focus,
+.selectedDate {
+  background-color: #cbe8ff; /* Light blue background on click (focus state) */
+  outline: none; /* Removes default focus outline */
+  border-radius: 20px;
+}
+
+.currentDate {
+  color: #fff !important;
+  background-color: #008ffd;
+  border-color: #008ffd;
+  border-radius: 20px;
+}
+
+.timeSelector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timeInput {
+  margin: 10px 0;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.labelText {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.faded {
+  color: #999fa6;
+}
