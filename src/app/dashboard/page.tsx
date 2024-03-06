@@ -57,6 +57,7 @@ const Dashboard = () => {
   const { isSignedIn, user, isLoaded } = useUser();
   const [userEvents, setUserEvents] = useState<Event[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<Event[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
@@ -104,6 +105,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
+      setEventsLoading(true);
       try {
         if (isSignedIn) {
           const userId = user.unsafeMetadata["dbId"]; // Assuming this is the correct ID to match against event attendees
@@ -140,6 +142,8 @@ const Dashboard = () => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setEventsLoading(false); // Stop loading irrespective of outcome
       }
     };
 
@@ -162,6 +166,8 @@ const Dashboard = () => {
     infinite: userEvents.length > 3, // Only enable infinite looping if there are more than 3 events
   };
 
+  const allDataLoaded = !eventsLoading && isLoaded;
+
   return (
     <div css={sliderStyles}>
       <Box p="4">
@@ -183,7 +189,7 @@ const Dashboard = () => {
             alignSelf="center"
             w="100%"
           />
-          {!isLoaded ? (
+          {!allDataLoaded ? (
             <Text fontSize="2xl"
             fontWeight="bold"
             color="grey"
