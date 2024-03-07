@@ -17,7 +17,6 @@ export default function Home() {
       </NextLink>
       < SignOutButton />
       <YourParentComponent />
-      <DashboardCalendar/>
     </main>
   );
 }
