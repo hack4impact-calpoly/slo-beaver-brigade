@@ -10,9 +10,9 @@ import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "@styles/calendar/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import StandaloneCreateEvent from "./StandaloneCreateEvent";
-import EventExpandedView from "./StandaloneExpandedViewComponent";
 import { IEvent } from "@database/eventSchema";
+import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
+import StandaloneCreateEvent from "./StandaloneCreateEvent";
 
 //FullCalendar Schema
 export type FCEvent = {
@@ -55,7 +55,7 @@ export default function Calendar(props: {
   const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);
   const [showExpandedView, setShowExpandedView] = useState(false);
-  const [getEvent, setEvent] = useState<IEvent>(placeHolderEvent);
+  const [getEvent, setEvent] = useState<IEvent | null>(null);
 
   if (props.admin) {
     buttonType.myCustomButton = {
@@ -69,7 +69,7 @@ export default function Calendar(props: {
     buttonType.myCustomButton = {
       text: "Sign Up",
       click: function () {
-        alert("Sign Up!");
+        setShowModal(true);
       },
       hint: "Sign Up Button",
     };
@@ -82,11 +82,11 @@ export default function Calendar(props: {
           showModal={showModal}
           setShowModal={setShowModal}
         ></StandaloneCreateEvent>
-        <EventExpandedView
+        <ExpandedViewComponent
           eventDetails={getEvent}
           showModal={showExpandedView}
           setShowModal={setShowExpandedView}
-        ></EventExpandedView>
+        ></ExpandedViewComponent>
         <FullCalendar
           customButtons={buttonType}
           plugins={[
