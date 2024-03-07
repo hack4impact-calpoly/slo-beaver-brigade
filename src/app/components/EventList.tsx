@@ -37,9 +37,9 @@ const EventListRegister = ({showModal, setShowModal} : {showModal : boolean, set
         },
         body: JSON.stringify({ userId: user?.unsafeMetadata.dbId }),
       });
-      router.refresh()
       setShowModal(false);
-      // Optionally, update the local state or refetch the events
+      router.refresh();
+      router.refresh();
     } catch (error) {
       console.error('Error registering for the event:', error);
     }
