@@ -1,5 +1,5 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState } from 'react';
 import {
   Box,
   Heading,
@@ -19,11 +19,11 @@ import Image from 'next/image'
 import { auth, useSignUp, useUser } from '@clerk/nextjs';
 import { getAuth, clerkClient } from '@clerk/nextjs/server';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { get } from "http";
-
 
 export default function SignUp() {
-  const { isSignedIn, user } = useUser();
+  //clerk consts
+  const { isLoaded, signUp, setActive } = useSignUp();
+  //ui consts
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -37,8 +37,10 @@ export default function SignUp() {
   const [phone, setPhone] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [interestQuestions, setInterestQuestions] = useState('');
+  //verification consts
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
+  //router consts
   const router = useRouter();
   const searchParams = useSearchParams()
   const redirect_url = searchParams.get('redirect_url')
@@ -85,9 +87,9 @@ export default function SignUp() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-      // If the form submission is successful, setSubmitted(true);
-      // This should also handle the backend submission later.
-      //for the frontend, it'll just have the successful submission screen popup
+    // If the form submission is successful, setSubmitted(true);
+    // This should also handle the backend submission later.
+    //for the frontend, it'll just have the successful submission screen popup
 
     e.preventDefault();
     setSubmitAttempted(true)
@@ -140,7 +142,7 @@ export default function SignUp() {
   };
 
   // Verify User Email Code
-  const onPressVerify = async (e : React.FormEvent) => {
+  const onPressVerify = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!isLoaded) {
@@ -158,34 +160,14 @@ export default function SignUp() {
       }
       if (completeSignUp.status === 'complete') {
 
-        try {
-          
-          //creates data object from form data
-          const data = {
-            'email': email,
-            'phoneNumber': phone,
-            'role': "user",
-            'gender': gender,
-            'age': age,
-            'firstName': firstName,
-            'lastName': lastName,
-          };
-
-          // passes data to createUser function
-          createUser(data);
-
-        } catch (error) {
-          // Handle the error
-          console.log('Error:', error);
-        }
-
         await setActive({ session: completeSignUp.createdSessionId });
+
         // Redirect the user to a post sign-up route
-        if (redirect_url){
+        if (redirect_url) {
           router.push(redirect_url);
         } else {
-            // Redirect the user to a post sign-in route
-            router.push('/');
+          // Redirect the user to a post sign-in route
+          router.push('/');
         }
       }
     } catch (err) {
@@ -214,28 +196,28 @@ export default function SignUp() {
                 type="text" 
                 placeholder="First Name" 
                 variant="filled"
-                onChange={(e) => setFirstName(e.target.value)} 
+                onChange={(e) => setFirstName(e.target.value)}
                 required={true}
               />
               <FormErrorMessage>First Name is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={lastName === '' && submitAttempted}>
               <FormLabel>Last Name</FormLabel>
-              <Input 
-                type="text" 
-                placeholder="Last Name" 
+              <Input
+                type="text"
+                placeholder="Last Name"
                 variant="filled"
-                onChange={(e) => setLastName(e.target.value)} 
+                onChange={(e) => setLastName(e.target.value)}
                 required={true}
               />
               <FormErrorMessage>Last Name is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
               <FormLabel>Email</FormLabel>
-              <Input 
-                type="text" 
-                placeholder="Email" 
-                variant="filled" 
+              <Input
+                type="text"
+                placeholder="Email"
+                variant="filled"
                 onChange={(e) => setEmail(e.target.value)}
                 required={true}
               />
@@ -245,14 +227,14 @@ export default function SignUp() {
             <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
               <FormLabel>Password</FormLabel>
               <Input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 variant="filled"
                 pr="4.5rem"
                 onChange={(e) => setPassword(e.target.value)}
                 required={true}
               />
-            <Button
+              <Button
                 position="absolute"
                 bg="transparent"
                 right="0"
@@ -267,10 +249,10 @@ export default function SignUp() {
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
               <FormLabel>Phone</FormLabel>
-              <Input 
-                type="text" 
-                placeholder="Phone" 
-                variant="filled" 
+              <Input
+                type="text"
+                placeholder="Phone"
+                variant="filled"
                 onChange={(e) => setPhone(e.target.value)}
                 required={true}/>
                 <FormErrorMessage>Phone is required</FormErrorMessage>
@@ -287,20 +269,20 @@ export default function SignUp() {
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={gender === '' && submitAttempted}>
               <FormLabel>Gender</FormLabel>
-              <Input 
-                type="text" 
-                placeholder="Gender" 
-                variant="filled" 
+              <Input
+                type="text"
+                placeholder="Gender"
+                variant="filled"
                 onChange={(e) => setGender(e.target.value)}
               />
               <FormErrorMessage>Gender is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
               <FormLabel>Zipcode</FormLabel>
-              <Input 
-                type="text" 
-                placeholder="Zipcode" 
-                variant="filled" 
+              <Input
+                type="text"
+                placeholder="Zipcode"
+                variant="filled"
                 onChange={(e) => setZipcode(e.target.value)}
               />
               <FormErrorMessage>Zipcode is required</FormErrorMessage>
@@ -312,7 +294,7 @@ export default function SignUp() {
                 size="lg"
                 variant="filled"
                 onChange={(e) => setInterestQuestions(e.target.value)}
-                />
+              />
             </FormControl>
 
             <FormControl mb={4}>
@@ -320,7 +302,7 @@ export default function SignUp() {
                 Create Account
               </Button>
             </FormControl>
-          </>  
+          </>
         )}
         {pendingVerification && (
           <>
@@ -332,11 +314,11 @@ export default function SignUp() {
             <FormControl mb={4} isRequired>
               <FormLabel>Verification Code</FormLabel>
               <Input
-                type="text" 
-                placeholder="Verification Code" 
+                type="text"
+                placeholder="Verification Code"
                 variant="filled"
                 onChange={(e) => setCode(e.target.value)}
-                />
+              />
             </FormControl>
             <FormControl mb={4}>
               <Button bg="#a3caf0" width="full" onClick={onPressVerify}>
@@ -346,9 +328,6 @@ export default function SignUp() {
           </>
         )}
       </Box>
-      <div>
-        {isSubmitted && <AccountCreated/>}
-      </div>
     </>
   );
 }
