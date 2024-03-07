@@ -238,20 +238,18 @@ const Dashboard = () => {
               Loading...
             </Text>
           ) : !isSignedIn ? (
-            <Flex flexDirection={'row'}>
+            <Flex flexDirection={'row'} alignItems={"center"} height={"100px"}>
 
                 <Text
                 fontSize="2xl"
                 fontWeight="bold"
                 color="black"
                 textAlign="center"
-                mt={5}
+                marginRight={"3%"}
                 >
                 Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
                 </Text>
-                <Button>
-                    <Link href="/signin">Sign in</Link>
-                </Button>
+                <Link href="/login">Sign in</Link>
 
             </Flex>
           ) : userEvents.length === 0 ? (
