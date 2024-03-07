@@ -104,11 +104,9 @@ import {
       const eventData = {
         eventName: name,
         location: loc,
-        description: desc,
-        date: date,
-        startTime: start,
+        description: new Date(`${date}T${start}`),
+        startTime: new Date(`${date}T${end}`),
         endTime: end,
-        type: type,
         wheelchairAccessible: wc,
         spanishSpeakingAccommodation: span,
         volunteerEvent: vol,

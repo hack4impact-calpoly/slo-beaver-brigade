@@ -72,10 +72,10 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 eventName,
                 location,
                 description,
-                wheelchairAccessible,
-                spanishSpeakingAccommodation,
                 startTime,
                 endTime,
+                wheelchairAccessible,
+                spanishSpeakingAccommodation,
                 volunteerEvent,
                 groupsAllowed,
                 attendeeIds,
@@ -89,18 +89,18 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (description) {
                 event.description = description;
             }
+            if (startTime) {
+                event.startTime = startTime;
+            }
+            if (endTime) {
+                event.endTime = endTime;
+            }
             if (wheelchairAccessible) {
                 event.wheelchairAccessible = wheelchairAccessible;
             }
             if (spanishSpeakingAccommodation) {
                 event.spanishSpeakingAccommodation =
                     spanishSpeakingAccommodation;
-            }
-            if (startTime) {
-                event.startTime = startTime;
-            }
-            if (endTime) {
-                event.endTime = endTime;
             }
             if (volunteerEvent) {
                 event.volunteerEvent = volunteerEvent;
