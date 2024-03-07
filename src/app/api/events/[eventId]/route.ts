@@ -42,13 +42,16 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
     const event = await Event.findById( eventId ).orFail();
     if (req.body){
       //strip Event data from req json
-      const { eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, startTime, endTime, volunteerEvent, groupsAllowed, attendeeIds }: IEvent = await req.json()
+      const { eventName, location, description, date, startTime, endTime, type, wheelchairAccessible, spanishSpeakingAccommodation,  volunteerEvent, groupsAllowed, attendeeIds }: IEvent = await req.json()
       if (eventName) {event.eventName = eventName}
+      if (location) {event.location = location}
       if (description) {event.description = description}
-      if (wheelchairAccessible) {event.wheelchairAccessible = wheelchairAccessible}
-      if (spanishSpeakingAccommodation) {event.spanishSpeakingAccommodation = spanishSpeakingAccommodation}
+      if (date) {event.date = date}
       if (startTime) {event.startTime = startTime}
       if (endTime) {event.endTime = endTime}
+      if (type) {event.type = type}
+      if (wheelchairAccessible) {event.wheelchairAccessible = wheelchairAccessible}
+      if (spanishSpeakingAccommodation) {event.spanishSpeakingAccommodation = spanishSpeakingAccommodation}
       if (volunteerEvent) {event.volunteerEvent = volunteerEvent}
       if (groupsAllowed) {event.groupsAllowed = groupsAllowed}
       if (attendeeIds) {event.attendeeIds = attendeeIds}

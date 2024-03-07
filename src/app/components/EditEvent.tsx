@@ -100,7 +100,42 @@ import {
         return h.concat(':', m)
     }
   
-    function HandleSubmit() {setIsSubmitted(true)}
+    function HandleSubmit() {
+      const eventData = {
+        eventName: name,
+        location: loc,
+        description: desc,
+        date: date,
+        startTime: start,
+        endTime: end,
+        type: type,
+        wheelchairAccessible: wc,
+        spanishSpeakingAccommodation: span,
+        volunteerEvent: vol,
+        groupsAllowed: myGrp ? [] : null,
+        attendeeIds: event.attendeeIds ? event.attendeeIds : []
+      };
+  
+      console.log("New Event Data:", eventData);
+  
+      fetch("/api/events", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to edit event");
+          }
+          setIsSubmitted(true);
+          HandleClose();
+        })
+        .catch((error) => {
+          console.error("Error editing event:", error.message);
+        });
+    }
   
     return (
       <>
