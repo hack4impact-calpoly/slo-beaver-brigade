@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { IEvent } from '@database/eventSchema';
 import { Box, Card, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
 
 const EventListRegister = ({showModal, setShowModal} : {showModal : boolean, setShowModal: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const { isSignedIn, user } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
     // Fetch events from the API
@@ -35,6 +37,8 @@ const EventListRegister = ({showModal, setShowModal} : {showModal : boolean, set
         },
         body: JSON.stringify({ userId: user?.unsafeMetadata.dbId }),
       });
+      router.refresh()
+      setShowModal(false);
       // Optionally, update the local state or refetch the events
     } catch (error) {
       console.error('Error registering for the event:', error);
