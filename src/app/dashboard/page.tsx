@@ -16,7 +16,8 @@ import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { css } from "@emotion/react";
-import "@emotion/react";
+import '@emotion/react';
+import EventListRegister from "@components/EventList";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -66,6 +67,7 @@ const Dashboard = () => {
   const [userEvents, setUserEvents] = useState<Event[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<Event[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
+  const [showEventList, setShowEventList] = useState(false);
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
@@ -201,6 +203,9 @@ const Dashboard = () => {
   const allDataLoaded = !eventsLoading && isLoaded;
 
   return (
+    <div>
+
+    <EventListRegister setShowModal={setShowEventList} showModal={showEventList}></EventListRegister>
     <div css={sliderStyles}>
       <Box p="4">
         <Stack spacing={2} px="10" mb={6}>
@@ -209,7 +214,7 @@ const Dashboard = () => {
               Your Upcoming Events
             </Text>
             <Heading as="h2" fontSize="xl">
-              <Button colorScheme="yellow" fontSize={eventDetailSize}>
+              <Button onClick={() => setShowEventList(true)} colorScheme="yellow" fontSize={eventDetailSize}>
                 Book a Event
               </Button>
             </Heading>
@@ -274,7 +279,7 @@ const Dashboard = () => {
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        backgroundColor: "rgba(0, 0, 0, 0.4)", // Adjust the opacity as needed
+                        backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
                         zIndex: 1,
                       }}
                       style={{
@@ -432,7 +437,7 @@ const Dashboard = () => {
                 left: 0,
                 width: "100%",
                 height: "100%",
-                backgroundColor: "rgba(0, 0, 0, 0.4)", // Adjust the opacity as needed
+                backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
                 zIndex: 1,
               }}
               style={{
@@ -514,6 +519,7 @@ const Dashboard = () => {
           ))}
         </Box>
       </Box>
+    </div>
     </div>
   );
 };
