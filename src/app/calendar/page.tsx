@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
-import { Box, Heading, Flex, Checkbox, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Flex,
+  Checkbox,
+  CheckboxGroup,
+  Stack,
+} from "@chakra-ui/react";
 import connectDB from "@database/db";
 
 export async function getEvents() {
@@ -59,11 +66,36 @@ export default async function Events() {
               textTransform="none"
               textAlign="left"
               padding="10px"
-              margin="0"
+              mb="5"
+              ml="2"
             >
               Events Calendar
             </Heading>
           </Box>
+          <Heading
+            as="h1"
+            textTransform="none"
+            textAlign="left"
+            padding="10px"
+            fontSize="lg"
+            color="gray.500"
+            ml="5"
+          >
+            Filters
+          </Heading>
+          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
+              <Checkbox value="watery_walk" colorScheme="teal">
+                Watery Walk
+              </Checkbox>
+              <Checkbox value="volunteer" colorScheme="yellow">
+                Volunteer
+              </Checkbox>
+              <Checkbox value="special_events" colorScheme="green">
+                Special Events
+              </Checkbox>
+            </Stack>
+          </CheckboxGroup>
         </Box>
         <Box flex="2" margin="10" padding="0">
           {" "}
