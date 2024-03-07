@@ -47,7 +47,7 @@ const EventPreviewComponent: React.FC<EventPreviewProps> = ({
   };
 
   // blue color for outside group
-  const cardColor = groupName === "SLO Beaver Brigade" ? "#e7dabf" : "#5CB8AF";
+  const cardColor = groupName === "SLO Beaver Brigade" ? "#e7dabf" : "#a5d7ec";
 
   return (
     <div
