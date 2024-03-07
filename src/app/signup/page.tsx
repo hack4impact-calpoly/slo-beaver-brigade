@@ -93,6 +93,8 @@ export default function SignUp() {
     setSubmitAttempted(true)
     setEmailError(false)
     setPasswordError(false)
+    setEmailErrorMessage('Email is required')
+    setPasswordErrorMessage('Password is required')
 
     if (!isLoaded) {
       return;
@@ -254,7 +256,7 @@ export default function SignUp() {
                 position="absolute"
                 bg="transparent"
                 right="0"
-                top="65%"
+                top="48.1"
                 transform="translateY(-38%)"
                 onClick={handleTogglePassword}
               >

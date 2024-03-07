@@ -119,17 +119,19 @@ export default function Login() {
             pr="4.5rem"
             onChange={(e) => setPassword(e.target.value)}
           />
+
           <Button
             position="absolute"
             bg="transparent"
             right="0"
-            top="53.5%"
+            top="53.5"
             transform="translateY(-50%)"
             onClick={handleTogglePassword}
           >
             {/* {showPassword ? "Hide" : "Show"} */}
             {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
           </Button>
+
           <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
           <ChakraLink href="#" fontSize="sm" mt={1} display="block">
             Forgot password?
