@@ -323,6 +323,7 @@ const Dashboard = () => {
                         p={2}
                         mx="2"
                         my="2"
+                        backdropFilter={"blur(5px)"}
                         zIndex={2}
                       >
                         <Text
