@@ -1,3 +1,4 @@
+import React from "react";
 import style from "@styles/admin/eventPreview.module.css";
 import { IEvent } from "@database/eventSchema";
 import Image from "next/image";
@@ -6,11 +7,13 @@ import beaver from "/docs/images/beaver-placeholder.jpg";
 interface EventPreviewProps {
   event: IEvent;
   groupName: String;
+  onClick: () => void;
 }
 
 const EventPreviewComponent: React.FC<EventPreviewProps> = ({
   event,
   groupName,
+  onClick,
 }) => {
   // formats date without leading zeros month/day
   const formatDate = (date: Date | string): string => {
@@ -44,10 +47,14 @@ const EventPreviewComponent: React.FC<EventPreviewProps> = ({
   };
 
   // blue color for outside group
-  const cardColor = groupName === "SLO Beaver Brigade" ? "#e7dabf" : "#5CB8AF";
+  const cardColor = groupName === "SLO Beaver Brigade" ? "#e7dabf" : "#a5d7ec";
 
   return (
-    <div className={style.eventCard} style={{ backgroundColor: cardColor }}>
+    <div
+      className={style.eventCard}
+      style={{ backgroundColor: cardColor }}
+      onClick={onClick}
+    >
       <div className={style.imageContainer}>
         <div className={style.imageWrapper}>
           <Image
