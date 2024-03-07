@@ -27,7 +27,6 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
-  const { isLoaded, signUp, setActive } = useSignUp();
   const [email, setEmail] = useState('');
   const [age, setAge] = useState(-1);
   const [gender, setGender] = useState('');
