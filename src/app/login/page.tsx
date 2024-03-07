@@ -9,6 +9,7 @@ import {
   FormLabel,
   Button,
   Link as ChakraLink,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -23,16 +24,26 @@ export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams()
   const redirect_url = searchParams.get('redirect_url')
+  const [submitAttempted, setSubmitAttempted] = useState(false)
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('Password is required')
+  const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required')
+  const [passwordError, setPasswordError] = useState(false)
+  const [emailError, setEmailError] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitAttempted(true)
+    setEmailError(false)
+    setPasswordError(false)
+    setEmailErrorMessage('Email is required')
+    setPasswordErrorMessage('Password is required')
+
 
     if (!isLoaded) {
       return;
     }
 
     if (!email || !password) {
-      alert('Please fill out all fields.');
       return;
     }
     
@@ -59,8 +70,16 @@ export default function Login() {
             router.push('/');
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
+      let error = err.errors[0]
+      if (error.code.includes('password')){
+        setPasswordErrorMessage(error.message)
+        setPasswordError(true)
+      } else {
+        setEmailErrorMessage(error.message)
+        setEmailError(true)
+      }
     }
 
       //setSubmitted(true);
@@ -81,7 +100,7 @@ export default function Login() {
             Log In
           </Heading>
         </Box>
-        <FormControl mb={4} isRequired>
+        <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
           <FormLabel>Email</FormLabel>
           <Input 
             type="text" 
@@ -89,8 +108,9 @@ export default function Login() {
             variant="filled" 
             onChange={(e) => setEmail(e.target.value)}
           />
+          <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
         </FormControl>
-        <FormControl mb={4} isRequired>
+        <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
           <FormLabel>Password</FormLabel>
           <Input
             type={showPassword ? "text" : "password"}
@@ -110,14 +130,17 @@ export default function Login() {
             {/* {showPassword ? "Hide" : "Show"} */}
             {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
           </Button>
+          <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
           <ChakraLink href="#" fontSize="sm" mt={1} display="block">
             Forgot password?
           </ChakraLink>
         </FormControl>
         <FormControl mb={4}>
+
           <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
             Log In
           </Button>
+
         </FormControl>
         <Box textAlign="center">
           <NextLink href="/signup" passHref>
