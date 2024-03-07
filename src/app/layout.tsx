@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./Providers";
 import NavbarParent from "@components/NavbarParents";
 import { Lato } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 //! Update metadata to match your project
 export const metadata: Metadata = {
