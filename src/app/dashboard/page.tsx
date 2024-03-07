@@ -16,10 +16,10 @@ import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { css } from "@emotion/react";
-import '@emotion/react';
+import "@emotion/react";
 
 // logic for letting ts know about css prop
-declare module 'react' {
+declare module "react" {
   interface Attributes {
     css?: any;
   }
@@ -205,7 +205,7 @@ const Dashboard = () => {
       <Box p="4">
         <Stack spacing={2} px="10" mb={6}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
+            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
               Your Upcoming Events
             </Text>
             <Heading as="h2" fontSize="xl">
@@ -222,16 +222,20 @@ const Dashboard = () => {
             w="100%"
           />
           {!allDataLoaded ? (
-            <Text fontSize="2xl"
-            fontWeight="bold"
-            color="grey"
-            textAlign="center"
-            mt={5}>Loading...</Text>
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color="black"
+              textAlign="center"
+              mt={5}
+            >
+              Loading...
+            </Text>
           ) : !isSignedIn ? (
             <Text
               fontSize="2xl"
               fontWeight="bold"
-              color="grey"
+              color="black"
               textAlign="center"
               mt={5}
             >
@@ -241,7 +245,7 @@ const Dashboard = () => {
             <Text
               fontSize="2xl"
               fontWeight="bold"
-              color="grey"
+              color="black"
               textAlign="center"
               mt={5}
             >
@@ -250,113 +254,118 @@ const Dashboard = () => {
           ) : null}
         </Stack>
         <Box px={6}>
-        {userEvents.length > 0 ? (
-          <Slider {...settings}>
-            {userEvents.length > 0 ? (
-              userEvents.map((event) => (
-                <Box key={event._id} textAlign="center" px="4" mb="4">
-                  <Box
-                    position="relative"
-                    borderWidth="1px"
-                    p="4"
-                    mb="4"
-                    h="60"
-                    textAlign="left"
-                    borderRadius="lg"
-                    _before={{
+          {userEvents.length > 0 ? (
+            <Slider {...settings}>
+              {userEvents.length > 0 ? (
+                userEvents.map((event) => (
+                  <Box key={event._id} textAlign="center" px="4" mb="4">
+                    <Box
+                      position="relative"
+                      borderWidth="1px"
+                      p="4"
+                      mb="4"
+                      h="60"
+                      textAlign="left"
+                      borderRadius="lg"
+                      _before={{
                         content: '""',
                         position: "absolute",
                         top: 0,
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        backgroundColor: "rgba(0, 0, 0, 0.6)", // Adjust the opacity as needed
+                        backgroundColor: "rgba(0, 0, 0, 0.4)", // Adjust the opacity as needed
                         zIndex: 1,
-                        }}
-                    style={{
-                      //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                      backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    <Heading as="h1" size="2xl" zIndex={2} position={"relative"}>
-                      <Text
-                        fontSize={eventNameSize}
-                        fontWeight="black"
-                        color="white"
-                        className="bold-text"
-                        mx={2}
-                        zIndex={2}
-                      >
-                        {event.eventName}
-                      </Text>
-                    </Heading>
-                    <Box
-                      position="absolute"
-                      bottom="0"
-                      left="0"
-                      right="0"
-                      p={2}
-                      mx="2"
-                      my="2"
-                    zIndex={2}
+                      }}
+                      style={{
+                        //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
+                        backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                      }}
                     >
-                      <Text
-                        fontSize={eventDetailSize}
-                        fontWeight="bold"
-                        color="white"
-                        className="bold-text"
-                        mx={2}
+                      <Heading
+                        as="h1"
+                        size="2xl"
                         zIndex={2}
-                        alignContent="left-bottom"
+                        position={"relative"}
                       >
-                        {formatDate(event.startTime)}
-                      </Text>
-                      <Text
-                        fontSize={eventTimeSize}
-                        fontWeight="semibold"
-                        color="white"
-                        className="bold-text"
-                        mx={2}
-                        zIndex={2}
-                        alignContent="left-bottom"
-                      >
-                        {event.location}
-                      </Text>
-                      <Text
-                        fontSize={eventTimeSize}
-                        fontWeight="semibold"
-                        color="white"
-                        className="bold-text"
-                        mx={2}
-                        alignContent="left-bottom"
+                        <Text
+                          fontSize={eventNameSize}
+                          fontWeight="black"
+                          color="white"
+                          className="bold-text"
+                          mx={2}
+                          zIndex={2}
+                        >
+                          {event.eventName}
+                        </Text>
+                      </Heading>
+                      <Box
+                        position="absolute"
+                        bottom="0"
+                        left="0"
+                        right="0"
+                        p={2}
+                        mx="2"
+                        my="2"
                         zIndex={2}
                       >
-                        {formatDateTimeRange(event.startTime, event.endTime)}
-                      </Text>
+                        <Text
+                          fontSize={eventDetailSize}
+                          fontWeight="bold"
+                          color="white"
+                          className="bold-text"
+                          mx={2}
+                          zIndex={2}
+                          alignContent="left-bottom"
+                        >
+                          {formatDate(event.startTime)}
+                        </Text>
+                        <Text
+                          fontSize={eventTimeSize}
+                          fontWeight="semibold"
+                          color="white"
+                          className="bold-text"
+                          mx={2}
+                          zIndex={2}
+                          alignContent="left-bottom"
+                        >
+                          {event.location}
+                        </Text>
+                        <Text
+                          fontSize={eventTimeSize}
+                          fontWeight="semibold"
+                          color="white"
+                          className="bold-text"
+                          mx={2}
+                          alignContent="left-bottom"
+                          zIndex={2}
+                        >
+                          {formatDateTimeRange(event.startTime, event.endTime)}
+                        </Text>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              ))
-            ) : (
-              <EventPlaceholder />
-            )}
-            {userEvents.length < 3 &&
-              Array.from({ length: 3 - userEvents.length }, (_, i) => (
-                <EventPlaceholder key={`placeholder-${i}`} />
-              ))}
-          </Slider>
-        ) : (null)}
+                ))
+              ) : (
+                <EventPlaceholder />
+              )}
+              {userEvents.length < 3 &&
+                Array.from({ length: 3 - userEvents.length }, (_, i) => (
+                  <EventPlaceholder key={`placeholder-${i}`} />
+                ))}
+            </Slider>
+          ) : null}
         </Box>
         {/* Re-include the omitted bottom section here */}
         <Box px="10" mb={6}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="grey" mb={3}>
+            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
               Find More Volunteer Opportunities
             </Text>
-            <Select defaultValue="event-type" size="sm" ml={2} w="fit-content">
+            <Select defaultValue="event-type" size="md" ml={2} w="fit-content">
               <option value="event-type" disabled>
                 Event Type
               </option>
@@ -373,26 +382,38 @@ const Dashboard = () => {
             my={2}
           />
           {!allDataLoaded ? (
-            <Text fontSize="2xl"
-            fontWeight="bold"
-            color="grey"
-            textAlign="center"
-            mt={5}>Loading...</Text>
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color="black"
+              textAlign="center"
+              mt={5}
+            >
+              Loading...
+            </Text>
           ) : !isSignedIn ? (
-            <Text fontSize="2xl"
-            fontWeight="bold"
-            color="grey"
-            textAlign="center"
-            mt={5}>Sign in to see more volunteer opportunities！ ʕ•ᴥ•ʔ</Text>
-          ) : (isSignedIn && unregisteredEvents.length === 0) ? (
-            <Text fontSize="2xl"
-            fontWeight="bold"
-            color="grey"
-            textAlign="center"
-            mt={5}>No volunteer opportunities at the moment！ʕ•ᴥ•ʔ</Text>
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color="black"
+              textAlign="center"
+              mt={5}
+            >
+              Sign in to see more volunteer opportunities！ ʕ•ᴥ•ʔ
+            </Text>
+          ) : isSignedIn && unregisteredEvents.length === 0 ? (
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color="black"
+              textAlign="center"
+              mt={5}
+            >
+              No volunteer opportunities at the moment！ʕ•ᴥ•ʔ
+            </Text>
           ) : null}
         </Box>
-        <Box mt={10}>
+        <Box mt={6}>
           {unregisteredEvents.map((event) => (
             <Box
               key={event._id}
@@ -404,16 +425,16 @@ const Dashboard = () => {
               h="64"
               mx="10"
               borderRadius="lg"
-            _before={{
+              _before={{
                 content: '""',
                 position: "absolute",
                 top: 0,
                 left: 0,
                 width: "100%",
                 height: "100%",
-                backgroundColor: "rgba(0, 0, 0, 0.6)", // Adjust the opacity as needed
+                backgroundColor: "rgba(0, 0, 0, 0.4)", // Adjust the opacity as needed
                 zIndex: 1,
-                }}
+              }}
               style={{
                 backgroundImage: `url("/image_720.png")`,
                 backgroundSize: "100% 100%",
@@ -422,45 +443,51 @@ const Dashboard = () => {
                 padding: "20px",
               }}
             >
-              <Heading as="h1" size="3xl" mb="1" position={"relative"} zIndex={2}>
+              <Heading
+                as="h1"
+                size="3xl"
+                mb="1"
+                position={"relative"}
+                zIndex={2}
+              >
                 <Text
                   fontSize="3xl"
                   fontWeight="custom"
                   color="white"
                   className="bold-text"
-                    zIndex={2}
+                  zIndex={2}
                 >
                   {event.eventName}
                 </Text>
               </Heading>
-              <Box position={'relative'} zIndex={2}>
-              <Text
-                fontSize="lg"
-                fontWeight="custom"
-                color="white"
-                className="bold-text"
-                zIndex={2}
-              >
-                {event.location}
-              </Text>
-              <Text
-                fontSize="lg"
-                fontWeight="custom"
-                color="white"
-                className="bold-text"
-                zIndex={2}
-              >
-                {formatDate(event.startTime)}
-              </Text>
-              <Text
-                fontSize="lg"
-                fontWeight="custom"
-                color="white"
-                className="bold-text"
-                zIndex={2}
-              >
-                {formatDateTimeRange(event.startTime, event.endTime)}
-              </Text>
+              <Box position={"relative"} zIndex={2}>
+                <Text
+                  fontSize="lg"
+                  fontWeight="custom"
+                  color="white"
+                  className="bold-text"
+                  zIndex={2}
+                >
+                  {event.location}
+                </Text>
+                <Text
+                  fontSize="lg"
+                  fontWeight="custom"
+                  color="white"
+                  className="bold-text"
+                  zIndex={2}
+                >
+                  {formatDate(event.startTime)}
+                </Text>
+                <Text
+                  fontSize="lg"
+                  fontWeight="custom"
+                  color="white"
+                  className="bold-text"
+                  zIndex={2}
+                >
+                  {formatDateTimeRange(event.startTime, event.endTime)}
+                </Text>
               </Box>
               {/* positions the stuff to the left buttom when the parent box has relative position*/}
               <Box
