@@ -9,7 +9,7 @@ import {
   Button,
   Textarea,
   Link,
-  FormErrorMessage,
+  FormErrorMessage
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -42,6 +42,13 @@ export default function SignUp() {
   const router = useRouter();
   const searchParams = useSearchParams()
   const redirect_url = searchParams.get('redirect_url')
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('Password is required')
+  const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required')
+  const [passwordError, setPasswordError] = useState(false)
+  const [emailError, setEmailError] = useState(false)
+
+
+  
 
 
   // Create a new user post request to mongoDB
@@ -84,6 +91,8 @@ export default function SignUp() {
 
     e.preventDefault();
     setSubmitAttempted(true)
+    setEmailError(false)
+    setPasswordError(false)
 
     if (!isLoaded) {
       return;
@@ -114,8 +123,16 @@ export default function SignUp() {
       // change the UI to our pending section.
       setPendingVerification(true);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
+      let error = err.errors[0]
+      if (error.code.includes('password')){
+        setPasswordErrorMessage(error.message)
+        setPasswordError(true)
+      } else {
+        setEmailErrorMessage(error.message)
+        setEmailError(true)
+      }
     }
 
   };
@@ -211,7 +228,7 @@ export default function SignUp() {
               />
               <FormErrorMessage>Last Name is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired isInvalid={email === '' && submitAttempted}>
+            <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
               <FormLabel>Email</FormLabel>
               <Input 
                 type="text" 
@@ -220,9 +237,10 @@ export default function SignUp() {
                 onChange={(e) => setEmail(e.target.value)}
                 required={true}
               />
-              <FormErrorMessage>Email is required</FormErrorMessage>
+              <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired isInvalid={password === '' && submitAttempted}>
+
+            <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
               <FormLabel>Password</FormLabel>
               <Input
                 type={showPassword ? "text" : "password"}
@@ -243,7 +261,7 @@ export default function SignUp() {
                 {/* {showPassword ? "Hide" : "Show"} */}
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
               </Button>
-              <FormErrorMessage>Password is required</FormErrorMessage>
+              <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
               <FormLabel>Phone</FormLabel>
@@ -294,6 +312,7 @@ export default function SignUp() {
                 onChange={(e) => setInterestQuestions(e.target.value)}
                 />
             </FormControl>
+
             <FormControl mb={4}>
               <Button bg="#a3caf0" width="full" onClick={(handleSubmit)}>
                 Create Account
