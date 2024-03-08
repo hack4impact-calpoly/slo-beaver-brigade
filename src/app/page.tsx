@@ -73,7 +73,7 @@ const Dashboard = () => {
   const [showAllEvents, setShowAllEvents] = useState(false);
 
   // breakpoint for different viewport size
-  const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
+  const eventNameSize = useBreakpointValue({ base: "lg", md: "2xl", lg: "3xl" });
   const eventDetailSize = useBreakpointValue({
     base: "md",
     md: "lg",
@@ -241,7 +241,7 @@ const Dashboard = () => {
             </Text>
             <Heading as="h2" fontSize="xl">
               <Button onClick={() => setShowEventList(true)} colorScheme="yellow" fontSize={eventDetailSize}>
-                Book a Event
+                Book Event
               </Button>
             </Heading>
           </Flex>
@@ -310,7 +310,7 @@ const Dashboard = () => {
                         mb="4"
                         h="60"
                         textAlign="left"
-                        borderRadius="lg"
+                        borderRadius="20px"
                         _before={{
                           content: '""',
                           position: "absolute",
@@ -319,6 +319,7 @@ const Dashboard = () => {
                           width: "100%",
                           height: "100%",
                           backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
+                          borderRadius: "20px",
                           zIndex: 1,
                         }}
                         style={{
@@ -468,7 +469,7 @@ const Dashboard = () => {
                 textAlign="left"
                 h="64"
                 mx="10"
-                borderRadius="lg"
+                borderRadius="20px"
                 _before={{
                   content: '""',
                   position: "absolute",
@@ -477,6 +478,7 @@ const Dashboard = () => {
                   width: "100%",
                   height: "100%",
                   backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
+                  borderRadius: "20px",
                   zIndex: 1,
                 }}
                 style={{
@@ -495,7 +497,7 @@ const Dashboard = () => {
                   zIndex={2}
                 >
                   <Text
-                    fontSize="3xl"
+                    fontSize={eventNameSize}
                     fontWeight="custom"
                     color="white"
                     className="bold-text"
@@ -504,9 +506,8 @@ const Dashboard = () => {
                     {event.eventName}
                   </Text>
                 </Heading>
-                <Box position={"relative"} zIndex={2}>
+                <Box position={"relative"} zIndex={2} fontSize={eventDetailSize}>
                   <Text
-                    fontSize="lg"
                     fontWeight="custom"
                     color="white"
                     className="bold-text"
@@ -515,7 +516,6 @@ const Dashboard = () => {
                     {event.location}
                   </Text>
                   <Text
-                    fontSize="lg"
                     fontWeight="custom"
                     color="white"
                     className="bold-text"
@@ -524,7 +524,6 @@ const Dashboard = () => {
                     {formatDate(event.startTime)}
                   </Text>
                   <Text
-                    fontSize="lg"
                     fontWeight="custom"
                     color="white"
                     className="bold-text"
@@ -550,7 +549,7 @@ const Dashboard = () => {
                       fontSize={eventDetailSize}
                       mt={14}
                     >
-                      Register for this event
+                      Register Event
                     </Button>
                   </Heading>
                 </Box>
