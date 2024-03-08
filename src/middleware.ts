@@ -8,6 +8,8 @@ import { NextResponse, type NextRequest } from "next/server";
 export default authMiddleware({
     publicRoutes: [
         "/",
+        "/waiver",
+        "/waiverMembers",
         "/login",
         "/signup",
         "/forgot-password",
