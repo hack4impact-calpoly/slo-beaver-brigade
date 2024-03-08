@@ -19,6 +19,7 @@ import { css } from "@emotion/react";
 import "@emotion/react";
 import EventListRegister from "@components/EventList";
 import Link from "next/link";
+import { getEvents } from "./actions/eventsactions"
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -69,6 +70,7 @@ const Dashboard = () => {
   const [unregisteredEvents, setUnregisteredEvents] = useState<Event[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [showEventList, setShowEventList] = useState(false);
+  const [showAllEvents, setShowAllEvents] = useState(false);
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
@@ -144,12 +146,31 @@ const Dashboard = () => {
                 !event.attendeeIds.includes(userId) &&
                 new Date(event.startTime) >= currentDate
             )
-            .slice(0, 2); // Get first two events user hasn't registered for
 
           // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
           setUnregisteredEvents(eventsUserHasntRegistered);
-          console.log(eventsUserHasntRegistered);
+        } else {
+          // Reset the events when user signs out
+          const eventsResponse = await fetch("/api/events");
+          if (!eventsResponse.ok) {
+            throw new Error(
+              `Failed to fetch events: ${eventsResponse.statusText}`
+            );
+          }
+          const allEvents = await eventsResponse.json();
+          const currentDate = new Date();
+
+          // Getting all upcoming events
+          const userEvents = allEvents.filter(
+            (event: any) =>
+              new Date(event.startTime) >= currentDate
+          );
+
+          console.log(userEvents)
+
+          setUserEvents([]);
+          setUnregisteredEvents(userEvents);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -203,6 +224,8 @@ const Dashboard = () => {
 
   const allDataLoaded = !eventsLoading && isLoaded;
 
+  const displayedEvents = isSignedIn || showAllEvents ? unregisteredEvents : unregisteredEvents.slice(0, 2);
+
   return (
     <div>
 
@@ -238,7 +261,7 @@ const Dashboard = () => {
               Loading...
             </Text>
           ) : !isSignedIn ? (
-            <Flex flexDirection={'row'} alignItems={"center"} height={"100px"}>
+            <Flex flexDirection={'column'} alignItems={"center"} height={"100px"}>
 
                 <Text
                 fontSize="2xl"
@@ -249,264 +272,304 @@ const Dashboard = () => {
                 >
                 Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
                 </Text>
-                <Link href="/login">Sign in</Link>
-
-            </Flex>
-          ) : userEvents.length === 0 ? (
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
-              color="black"
-              textAlign="center"
-              mt={5}
-            >
-              Register more events below！ ʕง•ᴥ•ʔง
-            </Text>
-          ) : null}
-        </Stack>
-        <Box px={6}>
-          {userEvents.length > 0 ? (
-            <Slider {...settings}>
-              {userEvents.length > 0 ? (
-                userEvents.map((event) => (
-                  <Box key={event._id} textAlign="center" px="4" mb="4">
-                    <Box
-                      position="relative"
-                      borderWidth="1px"
-                      p="4"
-                      mb="4"
-                      h="60"
-                      textAlign="left"
-                      borderRadius="lg"
-                      style={{
-                        //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                        background: 'linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("/underwater-saltwater-beavers.jpg")',
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                      }}
-                    >
-                      <Heading
-                        as="h1"
-                        size="2xl"
-                        zIndex={2}
-                        position={"relative"}
-                      >
-                        <Text
-                          fontSize={eventNameSize}
-                          fontWeight="black"
-                          color="white"
-                          className="bold-text"
-                          mx={2}
-                          zIndex={2}
-                        >
-                          {event.eventName}
-                        </Text>
-                      </Heading>
+                <Link href="/signin">
+                  <Button
+                    width="200px"
+                    colorScheme="yellow"
+                    variant="outline"
+                    mt="5"
+                  >
+                    Sign in
+                  </Button>
+                </Link>
+              </Flex>
+            ) : userEvents.length === 0 ? (
+              <Text
+                fontSize="2xl"
+                fontWeight="bold"
+                color="black"
+                textAlign="center"
+                mt={5}
+              >
+                Register more events below！ ʕง•ᴥ•ʔง
+              </Text>
+            ) : null}
+          </Stack>
+          <Box px={6}>
+            {userEvents.length > 0 ? (
+              <Slider {...settings}>
+                {userEvents.length > 0 ? (
+                  userEvents.map((event) => (
+                    <Box key={event._id} textAlign="center" px="4" mb="4">
                       <Box
-                        position="absolute"
-                        bottom="0"
-                        left="0"
-                        right="0"
-                        p={2}
-                        mx="2"
-                        my="2"
-                        backdropFilter={"blur(5px)"}
-                        zIndex={2}
+                        position="relative"
+                        borderWidth="1px"
+                        p="4"
+                        mb="4"
+                        h="60"
+                        textAlign="left"
+                        borderRadius="lg"
+                        _before={{
+                          content: '""',
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
+                          zIndex: 1,
+                        }}
+                        style={{
+                          //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
+                          backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
+                          backgroundSize: "cover",
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "center",
+                        }}
                       >
-                        <Text
-                          fontSize={eventDetailSize}
-                          fontWeight="bold"
-                          color="white"
-                          className="bold-text"
-                          mx={2}
+                        <Heading
+                          as="h1"
+                          size="2xl"
                           zIndex={2}
-                          alignContent="left-bottom"
+                          position={"relative"}
                         >
-                          {formatDate(event.startTime)}
-                        </Text>
-                        <Text
-                          fontSize={eventTimeSize}
-                          fontWeight="semibold"
-                          color="white"
-                          className="bold-text"
-                          mx={2}
-                          zIndex={2}
-                          alignContent="left-bottom"
-                        >
-                          {event.location}
-                        </Text>
-                        <Text
-                          fontSize={eventTimeSize}
-                          fontWeight="semibold"
-                          color="white"
-                          className="bold-text"
-                          mx={2}
-                          alignContent="left-bottom"
+                          <Text
+                            fontSize={eventNameSize}
+                            fontWeight="black"
+                            color="white"
+                            className="bold-text"
+                            mx={2}
+                            zIndex={2}
+                          >
+                            {event.eventName}
+                          </Text>
+                        </Heading>
+                        <Box
+                          position="absolute"
+                          bottom="0"
+                          left="0"
+                          right="0"
+                          p={2}
+                          mx="2"
+                          my="2"
                           zIndex={2}
                         >
-                          {formatDateTimeRange(event.startTime, event.endTime)}
-                        </Text>
+                          <Text
+                            fontSize={eventDetailSize}
+                            fontWeight="bold"
+                            color="white"
+                            className="bold-text"
+                            mx={2}
+                            zIndex={2}
+                            alignContent="left-bottom"
+                          >
+                            {formatDate(event.startTime)}
+                          </Text>
+                          <Text
+                            fontSize={eventTimeSize}
+                            fontWeight="semibold"
+                            color="white"
+                            className="bold-text"
+                            mx={2}
+                            zIndex={2}
+                            alignContent="left-bottom"
+                          >
+                            {event.location}
+                          </Text>
+                          <Text
+                            fontSize={eventTimeSize}
+                            fontWeight="semibold"
+                            color="white"
+                            className="bold-text"
+                            mx={2}
+                            alignContent="left-bottom"
+                            zIndex={2}
+                          >
+                            {formatDateTimeRange(
+                              event.startTime,
+                              event.endTime
+                            )}
+                          </Text>
+                        </Box>
                       </Box>
                     </Box>
-                  </Box>
-                ))
-              ) : (
-                <EventPlaceholder />
-              )}
-              {userEvents.length < 3 &&
-                Array.from({ length: 3 - userEvents.length }, (_, i) => (
-                  <EventPlaceholder key={`placeholder-${i}`} />
-                ))}
-            </Slider>
-          ) : null}
-        </Box>
-        {/* Re-include the omitted bottom section here */}
-        <Box px="10" mb={6}>
-          <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
-              Find More Volunteer Opportunities
-            </Text>
-            <Select defaultValue="event-type" size="md" ml={2} w="fit-content">
-              <option value="event-type" disabled>
-                Event Type
-              </option>
-              <option value="watery-walk">Watery Walk</option>
-              <option value="volunteer">Volunteer</option>
-            </Select>
-          </Flex>
-          <Divider
-            size="sm"
-            borderWidth="1px"
-            borderColor="black"
-            alignSelf="center"
-            w="100%"
-            my={2}
-          />
-          {!allDataLoaded ? (
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
-              color="black"
-              textAlign="center"
-              mt={5}
-            >
-              Loading...
-            </Text>
-          ) : !isSignedIn ? (
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
-              color="black"
-              textAlign="center"
-              mt={5}
-            >
-              Sign in to see more volunteer opportunities！ ʕ•ᴥ•ʔ
-            </Text>
-          ) : isSignedIn && unregisteredEvents.length === 0 ? (
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
-              color="black"
-              textAlign="center"
-              mt={5}
-            >
-              No volunteer opportunities at the moment！ʕ•ᴥ•ʔ
-            </Text>
-          ) : null}
-        </Box>
-        <Box mt={6}>
-          {unregisteredEvents.map((event) => (
-            <Box
-              key={event._id}
-              position="relative"
+                  ))
+                ) : (
+                  <EventPlaceholder />
+                )}
+                {userEvents.length < 3 &&
+                  Array.from({ length: 3 - userEvents.length }, (_, i) => (
+                    <EventPlaceholder key={`placeholder-${i}`} />
+                  ))}
+              </Slider>
+            ) : null}
+          </Box>
+          {/* Re-include the omitted bottom section here */}
+          <Box px="10" mb={6}>
+            <Flex alignItems="center" justifyContent="space-between">
+              <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
+                Find More Volunteer Opportunities
+              </Text>
+              <Select
+                defaultValue="event-type"
+                size="md"
+                ml={2}
+                w="fit-content"
+              >
+                <option value="event-type" disabled>
+                  Event Type
+                </option>
+                <option value="watery-walk">Watery Walk</option>
+                <option value="volunteer">Volunteer</option>
+              </Select>
+            </Flex>
+            <Divider
+              size="sm"
               borderWidth="1px"
-              p="4"
-              mt="4"
-              textAlign="left"
-              h="64"
-              mx="10"
-              borderRadius="lg"
-              style={{
-                background: 'linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("/image_720.png")',
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "100% 100%",
-                padding: "20px",
-              }}
-            >
-              <Heading
-                as="h1"
-                size="3xl"
-                mb="1"
-                position={"relative"}
-                zIndex={2}
+              borderColor="black"
+              alignSelf="center"
+              w="100%"
+              my={2}
+            />
+            {!allDataLoaded ? (
+              <Text
+                fontSize="2xl"
+                fontWeight="bold"
+                color="black"
+                textAlign="center"
+                mt={5}
               >
-                <Text
-                  fontSize="3xl"
-                  fontWeight="custom"
-                  color="white"
-                  className="bold-text"
-                  zIndex={2}
-                >
-                  {event.eventName}
-                </Text>
-              </Heading>
-              <Box position={"relative"} zIndex={2}>
-                <Text
-                  fontSize="lg"
-                  fontWeight="custom"
-                  color="white"
-                  className="bold-text"
-                  zIndex={2}
-                >
-                  {event.location}
-                </Text>
-                <Text
-                  fontSize="lg"
-                  fontWeight="custom"
-                  color="white"
-                  className="bold-text"
-                  zIndex={2}
-                >
-                  {formatDate(event.startTime)}
-                </Text>
-                <Text
-                  fontSize="lg"
-                  fontWeight="custom"
-                  color="white"
-                  className="bold-text"
-                  zIndex={2}
-                >
-                  {formatDateTimeRange(event.startTime, event.endTime)}
-                </Text>
-              </Box>
-              {/* positions the stuff to the left buttom when the parent box has relative position*/}
+                Loading...
+              </Text>
+            ) : isSignedIn && unregisteredEvents.length === 0 ? (
+              <Text
+                fontSize="2xl"
+                fontWeight="bold"
+                color="black"
+                textAlign="center"
+                mt={5}
+              >
+                No volunteer opportunities at the moment！ʕ•ᴥ•ʔ
+              </Text>
+            ) : null}
+          </Box>
+          <Box mt={6}>
+            {unregisteredEvents
+              .slice(0, showAllEvents ? unregisteredEvents.length: 2)
+              .map((event) => (
               <Box
-                position="absolute"
-                bottom="0"
-                left="0"
-                right="0"
-                p={2}
-                mx="2"
-                my="2"
-                zIndex={2}
+                key={event._id}
+                position="relative"
+                borderWidth="1px"
+                p="4"
+                mt="4"
+                textAlign="left"
+                h="64"
+                mx="10"
+                borderRadius="lg"
+                _before={{
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
+                  zIndex: 1,
+                }}
+                style={{
+                  backgroundImage: `url("/beaver1.jpg")`,
+                  backgroundSize: "100% 100%",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  padding: "20px",
+                }}
               >
-                <Heading as="h2" fontSize="xl">
-                  <Button
-                    colorScheme="yellow"
-                    fontSize={eventDetailSize}
-                    mt={14}
+                <Heading
+                  as="h1"
+                  size="3xl"
+                  mb="1"
+                  position={"relative"}
+                  zIndex={2}
+                >
+                  <Text
+                    fontSize="3xl"
+                    fontWeight="custom"
+                    color="white"
+                    className="bold-text"
+                    zIndex={2}
                   >
-                    Register for this event
-                  </Button>
+                    {event.eventName}
+                  </Text>
                 </Heading>
+                <Box position={"relative"} zIndex={2}>
+                  <Text
+                    fontSize="lg"
+                    fontWeight="custom"
+                    color="white"
+                    className="bold-text"
+                    zIndex={2}
+                  >
+                    {event.location}
+                  </Text>
+                  <Text
+                    fontSize="lg"
+                    fontWeight="custom"
+                    color="white"
+                    className="bold-text"
+                    zIndex={2}
+                  >
+                    {formatDate(event.startTime)}
+                  </Text>
+                  <Text
+                    fontSize="lg"
+                    fontWeight="custom"
+                    color="white"
+                    className="bold-text"
+                    zIndex={2}
+                  >
+                    {formatDateTimeRange(event.startTime, event.endTime)}
+                  </Text>
+                </Box>
+                {/* positions the stuff to the left buttom when the parent box has relative position*/}
+                <Box
+                  position="absolute"
+                  bottom="0"
+                  left="0"
+                  right="0"
+                  p={2}
+                  mx="2"
+                  my="2"
+                  zIndex={2}
+                >
+                  <Heading as="h2" fontSize="xl">
+                    <Button
+                      colorScheme="yellow"
+                      fontSize={eventDetailSize}
+                      mt={14}
+                    >
+                      Register for this event
+                    </Button>
+                  </Heading>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
+            {(unregisteredEvents.length > 2 && !showAllEvents)?
+            <Flex justifyContent="center" mt="4">
+              <Button colorScheme="yellow" variant="outline" onClick={() => setShowAllEvents(true)}>
+                View More
+              </Button>
+            </Flex>
+            : unregisteredEvents.length > 2 ?
+            <Flex justifyContent="center" mt="4">
+              <Button colorScheme="yellow" variant="outline" onClick={() => setShowAllEvents(false)}>
+                Collapse
+              </Button>
+            </Flex>
+            : null}
+          </Box>
         </Box>
-      </Box>
-    </div>
+      </div>
     </div>
   );
 };
