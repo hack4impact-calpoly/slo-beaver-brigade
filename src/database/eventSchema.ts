@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export type IEvent = {
-    _id: Schema.Types.ObjectId;
+    _id: Schema.Types.ObjectId | string;
     eventName: string;
     location: string;
     description: string;

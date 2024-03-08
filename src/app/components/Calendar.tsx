@@ -13,6 +13,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { IEvent } from "@database/eventSchema";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
 import StandaloneCreateEvent from "./StandaloneCreateEvent";
+import EventListRegister from "./EventList";
 
 //FullCalendar Schema
 export type FCEvent = {
@@ -54,6 +55,7 @@ export default function Calendar(props: {
   };
   const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);
+  const [showEventList, setShowEventList] = useState(false);
   const [showExpandedView, setShowExpandedView] = useState(false);
   const [getEvent, setEvent] = useState<IEvent | null>(null);
 
@@ -69,7 +71,7 @@ export default function Calendar(props: {
     buttonType.myCustomButton = {
       text: "Sign Up",
       click: function () {
-        setShowModal(true);
+        setShowEventList(true);
       },
       hint: "Sign Up Button",
     };
@@ -82,6 +84,8 @@ export default function Calendar(props: {
           showModal={showModal}
           setShowModal={setShowModal}
         ></StandaloneCreateEvent>
+        <EventListRegister showModal={showEventList} setShowModal={setShowEventList}>
+        </EventListRegister>
         <ExpandedViewComponent
           eventDetails={getEvent}
           showModal={showExpandedView}
