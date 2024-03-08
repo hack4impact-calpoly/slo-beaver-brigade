@@ -19,6 +19,7 @@ import { css } from "@emotion/react";
 import "@emotion/react";
 import EventListRegister from "@components/EventList";
 import Link from "next/link";
+import { getEvents } from "./actions/eventsactions"
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -151,8 +152,25 @@ const Dashboard = () => {
           setUnregisteredEvents(eventsUserHasntRegistered);
         } else {
           // Reset the events when user signs out
+          const eventsResponse = await fetch("/api/events");
+          if (!eventsResponse.ok) {
+            throw new Error(
+              `Failed to fetch events: ${eventsResponse.statusText}`
+            );
+          }
+          const allEvents = await eventsResponse.json();
+          const currentDate = new Date();
+
+          // Getting all upcoming events
+          const userEvents = allEvents.filter(
+            (event: any) =>
+              new Date(event.startTime) >= currentDate
+          );
+
+          console.log(userEvents)
+
           setUserEvents([]);
-          setUnregisteredEvents([]);
+          setUnregisteredEvents(userEvents);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -426,16 +444,6 @@ const Dashboard = () => {
               >
                 Loading...
               </Text>
-            ) : !isSignedIn ? (
-              <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                color="black"
-                textAlign="center"
-                mt={5}
-              >
-                Sign in to see more volunteer opportunities！ ʕ•ᴥ•ʔ
-              </Text>
             ) : isSignedIn && unregisteredEvents.length === 0 ? (
               <Text
                 fontSize="2xl"
@@ -471,7 +479,7 @@ const Dashboard = () => {
                   zIndex: 1,
                 }}
                 style={{
-                  backgroundImage: `url("/image_720.png")`,
+                  backgroundImage: `url("/beaver1.jpg")`,
                   backgroundSize: "100% 100%",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
