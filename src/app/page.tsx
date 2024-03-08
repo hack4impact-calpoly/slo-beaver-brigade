@@ -118,7 +118,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
+      if (!isLoaded) return; //ensure that user data is loaded
       setEventsLoading(true);
+
       try {
         if (isSignedIn) {
           const userId = user.unsafeMetadata["dbId"]; // Assuming this is the correct ID to match against event attendees
@@ -181,7 +183,7 @@ const Dashboard = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user]);
+  }, [isSignedIn, user, isLoaded]);
 
   // settings for slider
   const settings = {
