@@ -70,6 +70,7 @@ const Dashboard = () => {
   const [unregisteredEvents, setUnregisteredEvents] = useState<Event[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [showEventList, setShowEventList] = useState(false);
+  const [showAllEvents, setShowAllEvents] = useState(false);
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
@@ -145,7 +146,6 @@ const Dashboard = () => {
                 !event.attendeeIds.includes(userId) &&
                 new Date(event.startTime) >= currentDate
             )
-            .slice(0, 2); // Get first two events user hasn't registered for
 
           // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
@@ -223,6 +223,8 @@ const Dashboard = () => {
   };
 
   const allDataLoaded = !eventsLoading && isLoaded;
+
+  const displayedEvents = isSignedIn || showAllEvents ? unregisteredEvents : unregisteredEvents.slice(0, 2);
 
   return (
     <div>
@@ -452,7 +454,9 @@ const Dashboard = () => {
             ) : null}
           </Box>
           <Box mt={6}>
-            {unregisteredEvents.map((event) => (
+            {unregisteredEvents
+              .slice(0, showAllEvents ? unregisteredEvents.length: 2)
+              .map((event) => (
               <Box
                 key={event._id}
                 position="relative"
@@ -550,6 +554,19 @@ const Dashboard = () => {
                 </Box>
               </Box>
             ))}
+            {(unregisteredEvents.length > 2 && !showAllEvents)?
+            <Flex justifyContent="center" mt="4">
+              <Button colorScheme="yellow" variant="outline" onClick={() => setShowAllEvents(true)}>
+                View More
+              </Button>
+            </Flex>
+            : unregisteredEvents.length > 2 ?
+            <Flex justifyContent="center" mt="4">
+              <Button colorScheme="yellow" variant="outline" onClick={() => setShowAllEvents(false)}>
+                Collapse
+              </Button>
+            </Flex>
+            : null}
           </Box>
         </Box>
       </div>
