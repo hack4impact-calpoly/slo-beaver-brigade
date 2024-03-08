@@ -352,6 +352,8 @@ const Dashboard = () => {
                           p={2}
                           mx="2"
                           my="2"
+                          backdropBlur={2}
+                          backdropFilter={"blur(5px)"}
                           zIndex={2}
                         >
                           <Text
@@ -479,7 +481,7 @@ const Dashboard = () => {
                 }}
                 style={{
                   backgroundImage: `url("/beaver1.jpg")`,
-                  backgroundSize: "100% 100%",
+                  backgroundSize: "200% 100%",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                   padding: "20px",
