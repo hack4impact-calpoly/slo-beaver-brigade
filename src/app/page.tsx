@@ -259,7 +259,7 @@ const Dashboard = () => {
               Loading...
             </Text>
           ) : !isSignedIn ? (
-            <Flex flexDirection={'row'} alignItems={"center"} height={"100px"}>
+            <Flex flexDirection={'column'} alignItems={"center"} height={"100px"}>
 
                 <Text
                 fontSize="2xl"
