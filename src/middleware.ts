@@ -4,7 +4,6 @@ export default authMiddleware({
     publicRoutes: [
         "/",
         "/admin",
-        "/dashboard",
         "/login",
         "/signup",
         "/forgot-password",
