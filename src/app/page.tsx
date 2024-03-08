@@ -226,54 +226,49 @@ const Dashboard = () => {
 
   return (
     <div>
-      <EventListRegister
-        setShowModal={setShowEventList}
-        showModal={showEventList}
-      ></EventListRegister>
-      <div css={sliderStyles}>
-        <Box p="4">
-          <Stack spacing={2} px="10" mb={6}>
-            <Flex alignItems="center" justifyContent="space-between">
-              <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
-                Your Upcoming Events
-              </Text>
-              <Heading as="h2" fontSize="xl">
-                <Button
-                  onClick={() => setShowEventList(true)}
-                  colorScheme="yellow"
-                  fontSize={eventDetailSize}
-                >
-                  Book a Event
-                </Button>
-              </Heading>
-            </Flex>
-            <Divider
-              size="sm"
-              borderWidth="1px"
-              borderColor="black"
-              alignSelf="center"
-              w="100%"
-            />
-            {!allDataLoaded ? (
-              <Text
+
+    <EventListRegister setShowModal={setShowEventList} showModal={showEventList}></EventListRegister>
+    <div css={sliderStyles}>
+      <Box p="4">
+        <Stack spacing={2} px="10" mb={6}>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
+              Your Upcoming Events
+            </Text>
+            <Heading as="h2" fontSize="xl">
+              <Button onClick={() => setShowEventList(true)} colorScheme="yellow" fontSize={eventDetailSize}>
+                Book a Event
+              </Button>
+            </Heading>
+          </Flex>
+          <Divider
+            size="sm"
+            borderWidth="1px"
+            borderColor="black"
+            alignSelf="center"
+            w="100%"
+          />
+          {!allDataLoaded ? (
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              color="black"
+              textAlign="center"
+              mt={5}
+            >
+              Loading...
+            </Text>
+          ) : !isSignedIn ? (
+            <Flex flexDirection={'row'} alignItems={"center"} height={"100px"}>
+
+                <Text
                 fontSize="2xl"
                 fontWeight="bold"
                 color="black"
                 textAlign="center"
-                mt={5}
-              >
-                Loading...
-              </Text>
-            ) : !isSignedIn ? (
-              <Flex flexDirection={"column"} align="center">
-                <Text
-                  fontSize="2xl"
-                  fontWeight="bold"
-                  color="black"
-                  textAlign="center"
-                  mt={5}
+                marginRight={"3%"}
                 >
-                  Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
+                Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
                 </Text>
                 <Link href="/signin">
                   <Button
