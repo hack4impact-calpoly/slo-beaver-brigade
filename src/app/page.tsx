@@ -272,7 +272,7 @@ const Dashboard = () => {
                 >
                 Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
                 </Text>
-                <Link href="/signin">
+                <Link href="/login">
                   <Button
                     width="200px"
                     colorScheme="yellow"
