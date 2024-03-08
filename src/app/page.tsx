@@ -71,7 +71,7 @@ const Dashboard = () => {
   const [eventsLoading, setEventsLoading] = useState(true);
   const [showEventList, setShowEventList] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(0);
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({
