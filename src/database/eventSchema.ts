@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export type IEvent = {
-    _id: string;
+    _id: Schema.Types.ObjectId | string;
     eventName: string;
     location: string;
     description: string;
@@ -15,7 +15,8 @@ export type IEvent = {
 };
 
 // Mongoose schema
-const eventSchema = new Schema({
+const eventSchema = new Schema<IEvent>({
+    _id: { type: String, required: true },
     eventName: { type: String, required: true },
     location: { type: String, required: true },
     description: { type: String, required: true },

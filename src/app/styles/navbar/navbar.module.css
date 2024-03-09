@@ -68,6 +68,19 @@
     position: relative;
 }
 
+.nav_elements ul button {
+    font-size: 16px;
+    font-weight: 400;
+    color: #e0af48;
+    text-decoration: none;
+}
+
+.nav_elements ul button.active {
+    color: #574c4c;
+    font-weight: 500;
+    position: relative;
+}
+
 /* .nav_elements ul a.active::after {
   content: "";
   position: absolute;

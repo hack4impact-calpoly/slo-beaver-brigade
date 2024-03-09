@@ -20,12 +20,12 @@ import { IEvent } from "@database/eventSchema";
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 
 interface Props {
-  eventDetails: IEvent;
+  eventDetails: IEvent | null;
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ExpandedTest = ({ eventDetails, showModal, setShowModal }: Props) => {
+const ExpandedViewComponent = ({ eventDetails, showModal, setShowModal }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -45,6 +45,11 @@ const ExpandedTest = ({ eventDetails, showModal, setShowModal }: Props) => {
     }
   };
 
+  if (eventDetails == null){
+    return (
+        <></>
+    )
+  }
 
   const formattedDate = new Date(eventDetails.startTime).toLocaleDateString('en-US', {
     weekday: 'long',
@@ -161,4 +166,4 @@ const ExpandedTest = ({ eventDetails, showModal, setShowModal }: Props) => {
   );
 };
 
-export default ExpandedTest;
+export default ExpandedViewComponent;

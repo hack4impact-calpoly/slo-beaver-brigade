@@ -71,17 +71,15 @@ export default function Navbar(props: { name: string }) {
                 Donate
               </Link>
             </li>
+            {(props.name != "Sign In / Log In") &&
+          <>
             <li>
               <Link href="/">My Account</Link>
             </li>
-            {(props.name === "Sign In / Log In")? 
             <li>
-              <Link href={"/login"}>
-                {props.name}
-              </Link>
+                <SignOutButton />
             </li>
-          :
-            <></>
+            </>
           }
             <li>
               <Link href="/">
