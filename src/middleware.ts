@@ -8,15 +8,24 @@ import { NextResponse, type NextRequest } from "next/server";
 export default authMiddleware({
     publicRoutes: [
         "/",
+        "/waiver",
+        "/waiverMembers",
         "/login",
         "/signup",
         "/forgot-password",
         "/reset-password",
         "/api/user",
         "/api/events",
+<<<<<<< HEAD
         "/api/events/:id",
+=======
+        "/(api|trpc)(.*)",
+>>>>>>> 42465e0c7180a5dcbb17e959ed34392a85ed5386
     ],
 });
+/**
+ * "/(api|trpc)(.*)"
+ */
 
 /**
  * 
@@ -52,5 +61,5 @@ export default authMiddleware({
  */
 
 export const config = {
-    matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+    matcher: ["/((?!.*\\..*|_next).*)"],
 };

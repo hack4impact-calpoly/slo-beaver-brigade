@@ -19,7 +19,7 @@ import { css } from "@emotion/react";
 import "@emotion/react";
 import EventListRegister from "@components/EventList";
 import Link from "next/link";
-import { getEvents } from "./actions/eventsactions"
+import { getEvents } from "./actions/eventsactions";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -71,9 +71,14 @@ const Dashboard = () => {
   const [eventsLoading, setEventsLoading] = useState(true);
   const [showEventList, setShowEventList] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
 
   // breakpoint for different viewport size
-  const eventNameSize = useBreakpointValue({ base: "lg", md: "xl", lg: "3xl" });
+  const eventNameSize = useBreakpointValue({
+    base: "lg",
+    md: "2xl",
+    lg: "3xl",
+  });
   const eventDetailSize = useBreakpointValue({
     base: "md",
     md: "lg",
@@ -118,7 +123,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
+      if (!isLoaded) return; //ensure that user data is loaded
       setEventsLoading(true);
+
       try {
         if (isSignedIn) {
           const userId = user.unsafeMetadata["dbId"]; // Assuming this is the correct ID to match against event attendees
@@ -140,12 +147,11 @@ const Dashboard = () => {
               new Date(event.startTime) >= currentDate
           );
           // Filter events where the current user is not an attendee
-          const eventsUserHasntRegistered = allEvents
-            .filter(
-              (event: any) =>
-                !event.attendeeIds.includes(userId) &&
-                new Date(event.startTime) >= currentDate
-            )
+          const eventsUserHasntRegistered = allEvents.filter(
+            (event: any) =>
+              !event.attendeeIds.includes(userId) &&
+              new Date(event.startTime) >= currentDate
+          );
 
           // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
@@ -163,11 +169,10 @@ const Dashboard = () => {
 
           // Getting all upcoming events
           const userEvents = allEvents.filter(
-            (event: any) =>
-              new Date(event.startTime) >= currentDate
+            (event: any) => new Date(event.startTime) >= currentDate
           );
 
-          console.log(userEvents)
+          console.log(userEvents);
 
           setUserEvents([]);
           setUnregisteredEvents(userEvents);
@@ -181,12 +186,29 @@ const Dashboard = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user]);
+  }, [isSignedIn, user, isLoaded]);
+
+  useEffect(() => {
+    // Handler to call on window resize
+    const handleResize = () => {
+      // Set window width to state
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount and unmount
 
   // settings for slider
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: userEvents.length > 3,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 3,
@@ -203,6 +225,7 @@ const Dashboard = () => {
         settings: {
           slidesToShow: 2, // Show 2 slides for widths of 1024px or less
           slidesToScroll: 2,
+          infinite: userEvents.length > 2,
         },
       },
       {
@@ -210,7 +233,7 @@ const Dashboard = () => {
         settings: {
           slidesToShow: 1, // Only show 1 slide for widths of 600px or less
           slidesToScroll: 1,
-          infinite: userEvents.length > 1, // Enable infinite looping only if there's more than 1 event
+          infinite: userEvents.length > 1,
         },
       },
     ],
@@ -224,53 +247,65 @@ const Dashboard = () => {
 
   const allDataLoaded = !eventsLoading && isLoaded;
 
-  const displayedEvents = isSignedIn || showAllEvents ? unregisteredEvents : unregisteredEvents.slice(0, 2);
+  const displayedEvents =
+    isSignedIn || showAllEvents
+      ? unregisteredEvents
+      : unregisteredEvents.slice(0, 2);
 
   return (
     <div>
-
-    <EventListRegister setShowModal={setShowEventList} showModal={showEventList}></EventListRegister>
-    <div css={sliderStyles}>
-      <Box p="4">
-        <Stack spacing={2} px="10" mb={6}>
-          <Flex alignItems="center" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
-              Your Upcoming Events
-            </Text>
-            <Heading as="h2" fontSize="xl">
-              <Button onClick={() => setShowEventList(true)} colorScheme="yellow" fontSize={eventDetailSize}>
-                Book a Event
-              </Button>
-            </Heading>
-          </Flex>
-          <Divider
-            size="sm"
-            borderWidth="1px"
-            borderColor="black"
-            alignSelf="center"
-            w="100%"
-          />
-          {!allDataLoaded ? (
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
-              color="black"
-              textAlign="center"
-              mt={5}
-            >
-              Loading...
-            </Text>
-          ) : !isSignedIn ? (
-            <Flex flexDirection={'column'} alignItems={"center"} height={"100px"}>
-
-                <Text
+      <EventListRegister
+        setShowModal={setShowEventList}
+        showModal={showEventList}
+      ></EventListRegister>
+      <div css={sliderStyles}>
+        <Box p="4">
+          <Stack spacing={2} px="10" mb={6}>
+            <Flex alignItems="center" justifyContent="space-between">
+              <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
+                Your Upcoming Events
+              </Text>
+              <Heading as="h2" fontSize="xl">
+                <Button
+                  onClick={() => setShowEventList(true)}
+                  colorScheme="yellow"
+                  fontSize={eventDetailSize}
+                >
+                  Book Event
+                </Button>
+              </Heading>
+            </Flex>
+            <Divider
+              size="sm"
+              borderWidth="1px"
+              borderColor="black"
+              alignSelf="center"
+              w="100%"
+            />
+            {!allDataLoaded ? (
+              <Text
                 fontSize="2xl"
                 fontWeight="bold"
                 color="black"
                 textAlign="center"
-                marginRight={"3%"}
+                mt={5}
+              >
+                Loading...
+              </Text>
+            ) : !isSignedIn ? (
+              <Flex
+                flexDirection={"column"}
+                alignItems={"center"}
+                height={"100px"}
+              >
+                <Text
+                  fontSize="2xl"
+                  fontWeight="bold"
+                  color="black"
+                  textAlign="center"
+                  marginRight={"3%"}
                 >
-                Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
+                  Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
                 </Text>
                 <Link href="/login">
                   <Button
@@ -305,10 +340,9 @@ const Dashboard = () => {
                         position="relative"
                         borderWidth="1px"
                         p="4"
-                        mb="4"
                         h="60"
                         textAlign="left"
-                        borderRadius="lg"
+                        borderRadius="20px"
                         _before={{
                           content: '""',
                           position: "absolute",
@@ -317,6 +351,7 @@ const Dashboard = () => {
                           width: "100%",
                           height: "100%",
                           backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
+                          borderRadius: "20px",
                           zIndex: 1,
                         }}
                         style={{
@@ -352,6 +387,8 @@ const Dashboard = () => {
                           p={2}
                           mx="2"
                           my="2"
+                          backdropBlur={2}
+                          backdropFilter={"blur(5px)"}
                           zIndex={2}
                         >
                           <Text
@@ -398,16 +435,36 @@ const Dashboard = () => {
                   <EventPlaceholder />
                 )}
                 {userEvents.length < 3 &&
-                  Array.from({ length: 3 - userEvents.length }, (_, i) => (
-                    <EventPlaceholder key={`placeholder-${i}`} />
-                  ))}
+                  (window.innerWidth <= 600
+                    ? Array.from({ length: 0 }, (_, i) => (
+                        <EventPlaceholder key={`placeholder-${i}`} />
+                      ))
+                    : window.innerWidth <= 1024
+                      ? Array.from(
+                          { length: 3 - (userEvents.length === 2 ? 3 : 2) },
+                          (_, i) => (
+                            <EventPlaceholder key={`placeholder-${i}`} />
+                          )
+                        )
+                      : Array.from(
+                          { length: 3 - userEvents.length },
+                          (_, i) => (
+                            <EventPlaceholder key={`placeholder-${i}`} />
+                          )
+                        ))}
               </Slider>
             ) : null}
           </Box>
           {/* Re-include the omitted bottom section here */}
           <Box px="10" mb={6}>
             <Flex alignItems="center" justifyContent="space-between">
-              <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
+              <Text
+                fontSize="2xl"
+                fontWeight="bold"
+                color="black"
+                mb={3}
+                mt={5}
+              >
                 Find More Volunteer Opportunities
               </Text>
               <Select
@@ -455,118 +512,128 @@ const Dashboard = () => {
           </Box>
           <Box mt={6}>
             {unregisteredEvents
-              .slice(0, showAllEvents ? unregisteredEvents.length: 2)
+              .slice(0, showAllEvents ? unregisteredEvents.length : 2)
               .map((event) => (
-              <Box
-                key={event._id}
-                position="relative"
-                borderWidth="1px"
-                p="4"
-                mt="4"
-                textAlign="left"
-                h="64"
-                mx="10"
-                borderRadius="lg"
-                _before={{
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
-                  zIndex: 1,
-                }}
-                style={{
-                  backgroundImage: `url("/beaver1.jpg")`,
-                  backgroundSize: "100% 100%",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  padding: "20px",
-                }}
-              >
-                <Heading
-                  as="h1"
-                  size="3xl"
-                  mb="1"
-                  position={"relative"}
-                  zIndex={2}
-                >
-                  <Text
-                    fontSize="3xl"
-                    fontWeight="custom"
-                    color="white"
-                    className="bold-text"
-                    zIndex={2}
-                  >
-                    {event.eventName}
-                  </Text>
-                </Heading>
-                <Box position={"relative"} zIndex={2}>
-                  <Text
-                    fontSize="lg"
-                    fontWeight="custom"
-                    color="white"
-                    className="bold-text"
-                    zIndex={2}
-                  >
-                    {event.location}
-                  </Text>
-                  <Text
-                    fontSize="lg"
-                    fontWeight="custom"
-                    color="white"
-                    className="bold-text"
-                    zIndex={2}
-                  >
-                    {formatDate(event.startTime)}
-                  </Text>
-                  <Text
-                    fontSize="lg"
-                    fontWeight="custom"
-                    color="white"
-                    className="bold-text"
-                    zIndex={2}
-                  >
-                    {formatDateTimeRange(event.startTime, event.endTime)}
-                  </Text>
-                </Box>
-                {/* positions the stuff to the left buttom when the parent box has relative position*/}
                 <Box
-                  position="absolute"
-                  bottom="0"
-                  left="0"
-                  right="0"
-                  p={2}
-                  mx="2"
-                  my="2"
-                  zIndex={2}
+                  key={event._id}
+                  position="relative"
+                  borderWidth="1px"
+                  p="4"
+                  mt="4"
+                  textAlign="left"
+                  h="64"
+                  mx="10"
+                  borderRadius="20px"
+                  _before={{
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
+                    borderRadius: "20px",
+                    zIndex: 1,
+                  }}
+                  style={{
+                    backgroundImage: `url("/beaver1.jpg")`,
+                    backgroundSize: "100% 100%",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    padding: "20px",
+                  }}
                 >
-                  <Heading as="h2" fontSize="xl">
-                    <Button
-                      colorScheme="yellow"
-                      fontSize={eventDetailSize}
-                      mt={14}
+                  <Heading
+                    as="h1"
+                    size="3xl"
+                    mb="1"
+                    position={"relative"}
+                    zIndex={2}
+                  >
+                    <Text
+                      fontSize={eventNameSize}
+                      fontWeight="custom"
+                      color="white"
+                      className="bold-text"
+                      zIndex={2}
                     >
-                      Register for this event
-                    </Button>
+                      {event.eventName}
+                    </Text>
                   </Heading>
+                  <Box
+                    position={"relative"}
+                    zIndex={2}
+                    fontSize={eventDetailSize}
+                  >
+                    <Text
+                      fontWeight="custom"
+                      color="white"
+                      className="bold-text"
+                      zIndex={2}
+                    >
+                      {event.location}
+                    </Text>
+                    <Text
+                      fontWeight="custom"
+                      color="white"
+                      className="bold-text"
+                      zIndex={2}
+                    >
+                      {formatDate(event.startTime)}
+                    </Text>
+                    <Text
+                      fontWeight="custom"
+                      color="white"
+                      className="bold-text"
+                      zIndex={2}
+                    >
+                      {formatDateTimeRange(event.startTime, event.endTime)}
+                    </Text>
+                  </Box>
+                  {/* positions the stuff to the left buttom when the parent box has relative position*/}
+                  <Box
+                    position="absolute"
+                    bottom="0"
+                    left="0"
+                    right="0"
+                    p={2}
+                    mx="2"
+                    my="2"
+                    zIndex={2}
+                  >
+                    <Heading as="h2" fontSize="xl">
+                      <Button
+                        colorScheme="yellow"
+                        fontSize={eventDetailSize}
+                        mt={14}
+                      >
+                        Register Event
+                      </Button>
+                    </Heading>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
-            {(unregisteredEvents.length > 2 && !showAllEvents)?
-            <Flex justifyContent="center" mt="4">
-              <Button colorScheme="yellow" variant="outline" onClick={() => setShowAllEvents(true)}>
-                View More
-              </Button>
-            </Flex>
-            : unregisteredEvents.length > 2 ?
-            <Flex justifyContent="center" mt="4">
-              <Button colorScheme="yellow" variant="outline" onClick={() => setShowAllEvents(false)}>
-                Collapse
-              </Button>
-            </Flex>
-            : null}
+              ))}
+            {unregisteredEvents.length > 2 && !showAllEvents ? (
+              <Flex justifyContent="center" mt="4">
+                <Button
+                  colorScheme="yellow"
+                  variant="outline"
+                  onClick={() => setShowAllEvents(true)}
+                >
+                  View More
+                </Button>
+              </Flex>
+            ) : unregisteredEvents.length > 2 ? (
+              <Flex justifyContent="center" mt="4">
+                <Button
+                  colorScheme="yellow"
+                  variant="outline"
+                  onClick={() => setShowAllEvents(false)}
+                >
+                  Collapse
+                </Button>
+              </Flex>
+            ) : null}
           </Box>
         </Box>
       </div>
