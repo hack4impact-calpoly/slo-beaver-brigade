@@ -199,5 +199,5 @@ import {
     );
   };
   
-  export default StandaloneCreateEvent
+export default StandaloneCreateEvent;
   

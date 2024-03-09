@@ -103,7 +103,7 @@ export default function SignUp() {
         }
 
       } else {
-        console.log('Failed to create user');
+        console.log('Failed to create user in MongoDB');
       }
 
     } catch (error) {

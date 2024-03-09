@@ -14,25 +14,16 @@ const TabBar: React.FC = () => {
 
   return (
       <div className={styles.tabBarContainer}>
-        <Link href={`/admin/calendar`} passHref>
-          <div className={`${styles.tab} ${activeTab === 'calendar' ? styles.active : ''}`} onClick={() => handleTabClick('calendar')}>
+        <Link className={`${styles.tab} ${activeTab === 'calendar' ? styles.active : ''}`} onClick={() => handleTabClick('calendar')} href={`/calendar`} passHref>
             Calendar
-          </div>
         </Link>
-        <Link href={`/admin/events`} passHref>
-          <div className={`${styles.tab} ${activeTab === 'events' ? styles.active : ''}`} onClick={() => handleTabClick('events')}>
-            Events
-          </div>
+        <Link className={`${styles.tab} ${activeTab === 'events' ? styles.active : ''}`} onClick={() => handleTabClick('events')} href={`/admin/events`} passHref> Events
         </Link>
-        <Link href={`/admin/organizations`} passHref>
-          <div className={`${styles.tab} ${activeTab === 'organizations' ? styles.active : ''}`} onClick={() => handleTabClick('organizations')}>
+        <Link className={`${styles.tab} ${activeTab === 'organizations' ? styles.active : ''}`} onClick={() => handleTabClick('organizations')} href={`/admin/organizations`} passHref>
             Organizations
-          </div>
         </Link>
-        <Link href={`/admin/users`} passHref>
-          <div className={`${styles.tab} ${activeTab === 'users' ? styles.active : ''}`} onClick={() => handleTabClick('users')}>
+        <Link className={`${styles.tab} ${activeTab === 'users' ? styles.active : ''}`} onClick={() => handleTabClick('users')} href={`/admin/users`} passHref>
             Users
-          </div>
         </Link>
       </div>
   );
