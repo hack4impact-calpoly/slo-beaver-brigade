@@ -1,9 +1,10 @@
 // src/app/components/YourParentComponent.tsx
-import React from 'react';
-import EventExpandedView from './ExpandedViewComponent';
-import { IEvent } from '@database/eventSchema';
+import React, {useState} from "react";
+import EventExpandedView from "./StandaloneExpandedViewComponent";
+import { IEvent } from "@database/eventSchema";
 
 const YourParentComponent: React.FC = () => {
+  const [showExpandedView, setShowExpandedView] = useState(false);
   const startTime = new Date();
   startTime.setHours(8, 0, 0); // Set hours, minutes, and seconds for 8 am
 
@@ -11,9 +12,10 @@ const YourParentComponent: React.FC = () => {
   endTime.setHours(12, 0, 0); // Set hours, minutes, and seconds for 12 pm
 
   const eventDetails: IEvent = {
-    eventName: 'Watery Walk',
-    location: 'East Main Street',
-    description: 'This is a sample event description.',
+    _id:"sampleid",
+    eventName: "Watery Walk",
+    location: "East Main Street",
+    description: "This is a sample event description.",
     wheelchairAccessible: true,
     spanishSpeakingAccommodation: false,
     startTime: startTime,
@@ -23,7 +25,7 @@ const YourParentComponent: React.FC = () => {
     attendeeIds: [], // array of Schema.Types.ObjectId
   };
 
-  return <EventExpandedView eventDetails={eventDetails} />;
+  return <EventExpandedView eventDetails={eventDetails} showModal={showExpandedView} setShowModal={setShowExpandedView}/>;
 };
 
 export default YourParentComponent;
