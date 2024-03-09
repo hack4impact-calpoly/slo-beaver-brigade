@@ -8,7 +8,6 @@
   align-items: center;
   justify-content: center;
   color: #1f1f25;
-  min-height: 100vh;
 }
 
 /* Resetting styles specifically for elements within the component */
@@ -37,10 +36,10 @@
     0 5px 10px 0 rgba(0, 0, 0, 0.1);
   padding: 1rem;
   position: relative;
-  margin: 3rem;
-  bottom: 0;
+  margin: 1rem;
+  /*bottom: 0;
   left: 0;
-  overflow: auto;
+  overflow: auto;*/
 }
 
 .topMargin {
