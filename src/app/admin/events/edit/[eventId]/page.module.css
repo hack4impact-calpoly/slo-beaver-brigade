@@ -64,21 +64,25 @@
     width: 100%;
     height: 100%;
     border-radius: 10px;
+    padding-bottom: 4%;
 }
 
 .visitorHeading{
     background-color: #337774;
     color: white;
     width: 100%;
-    height: 5vh;
+    height: 45px;
     border-radius: 10px 10px 0px 0px;
     font-family: 'Lato';
     font-weight: bold;
     font-size: 23px;
     padding-left: 4%;
-    padding-top: 1%;
+    padding-top: 5px;
     text-align: left;
     display: flex;
+    margin-bottom: 1.5vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .emailAllVisitors{
@@ -91,7 +95,7 @@
 }
 
 .emailAllVisitors:hover{
-    text-decoration: underline;
+    text-decoration-line: underline;
 }
 
 .topBlock{
@@ -126,9 +130,7 @@
 .bottomBlock{
     width: 100%;
     padding-left: 4%;
-    padding-right: 4%;
-    padding-bottom: 4%;
-}
+    padding-right: 4%;}
 
 .visitorCount{
     font-family: 'Lato';
@@ -136,7 +138,182 @@
     margin-left: 1.5%;
 }
 
-.column{
-    width: 100px;
-    background-color: pink;
+.nameColumn{
+    padding: 1.5% 3% 1.5% 3%;
+    text-align: left;
+    width: 30%;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+}
+
+.emailColumn{
+    padding: 1.5% 3% 1.5% 3%;
+    text-align: left;
+    width: 50%;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+.detailsColumn{
+    padding: 1.5% 3% 1.5% 3%;
+    text-align: left;
+    width: 20%;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.detailsColumn:hover{
+    text-decoration-line: underline;
+}
+
+.visitorTable{
+    width: 100%;
+    table-layout: fixed;
+}
+
+.screenOverlay{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(217, 217, 217, 0.70);
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    right: 0;
+ 
+}
+
+.visitorInfoBox{
+    width: 60%;
+    height: 70%;
+    background-color: white;
+}
+
+.visitorInfoHeader{
+    padding: 1.5% 4% 1.5% 4%;
+    text-align: left;
+    font-size: 35px;
+    font-weight: bold;
+    font-family: 'Lato';
+    width: 100%;
+}
+
+.topDividingLine{
+    margin-left: 4%;
+    width: 92%;
+}
+
+.visitorInfoLandR{
+    width: 100%;
+    display: flex;
+}
+
+.visitorInfoLeft{
+    padding: 0% 4% 0% 4%;
+    width: 50%;
+}
+
+.visitorInfoRight{
+    padding: 0% 4% 0% 4%;
+    width: 50%; 
+}
+.visitorInfoSmallHeader{
+    background-color: #337774;
+    color: white;
+    font-family: 'Lato';
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 10px;
+    text-align: left;
+    padding: 2%;
+    margin: 7% 0% 3% 0%;;
+}
+
+.fieldInfo{
+    text-align: left;
+    margin: 2.5% 5% 2.5% 5%;
+    font-size: 14px;
+}
+
+.closeVisitor{
+    position: absolute;
+    width: 2%;
+    left: 76%;
+    top: 17.5%;
+    font-size: 25px;
+}
+
+.closeVisitor:hover{
+    stroke: blue;
+}
+
+.editEvent{
+    width: 45%;
+    height: 100%;
+    font-size: 17px;
+    margin-left: 50px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.editEvent:hover{
+    text-decoration-line: underline;
+}
+
+.originalEditText{
+    margin: 5px;
+}
+
+.editButton{
+    position: relative;
+    margin: 0.25% 1.5% 0.5% 0.5%;
+    width: 23px;
+
+}
+
+.confirmDeletion{
+    width: 35%;
+    height: 35%;
+    padding: 70px;
+    border-radius: 15px;
+    background-color: white;
+    font-family: 'Lato';
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.cancelOrDelete{
+    display: flex;
+    width: 100%;
+    margin-top: 14%;
+    font-size: 15px;
+    justify-content: space-between;
+    padding: 0px 50px 0px 50px;
+}
+
+.cancelButton{
+    padding: 5px 30px 5px 30px;
+    border: 2px solid #989898;
+    color: #989898;
+    border-radius: 7px;
+    font-family: 'Lato';
+    font-weight: bold;
+
+}
+
+.cancelButton:hover{
+    background-color: #ffffff;
+    color: #4a4848;;
+    border: 2px solid #4a4848;
 }
