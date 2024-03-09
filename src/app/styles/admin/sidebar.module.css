@@ -4,6 +4,10 @@
   height: 100vh;
   text-align: center;
   transition: width 0.3s;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
   box-shadow: 5px 0 5px rgba(0, 0, 0, 0.1);
 }
 
