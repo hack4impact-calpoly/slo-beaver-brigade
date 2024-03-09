@@ -67,6 +67,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         const event = await Event.findById(eventId).orFail();
         if (req.body) {
             //strip Event data from req json
+            console.log(req.body);
             const {
                 eventName,
                 location,
@@ -114,6 +115,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         await event.save();
         return NextResponse.json("Event updated: " + event, { status: 200 });
     } catch (err) {
+        console.error("Error updating event (EventId = " + eventId + "):", err);
         return NextResponse.json(
             "Event not updated (EventId = " + eventId + ") " + err,
             { status: 400 }

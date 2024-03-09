@@ -14,6 +14,7 @@ export default authMiddleware({
         "/reset-password",
         "/api/user",
         "/api/events",
+        "/api/events/:id",
     ],
 });
 
