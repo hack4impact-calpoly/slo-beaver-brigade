@@ -104,8 +104,9 @@ import {
   
     return (
       <>
-        <Button onClick={onOpen}>
-          Edit Event
+        <Button onClick={onOpen} style = {{border: 'none', fontWeight: 'bold', padding: '0%', margin: '5px',
+                                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+          Edit Event Details
         </Button>
   
         <Modal isOpen={isOpen} onClose={HandleClose} size='xl'>
