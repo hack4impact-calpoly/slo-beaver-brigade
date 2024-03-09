@@ -11,8 +11,6 @@ type IParams = {
 export async function GET(req: NextRequest, { params }: IParams) {
     await connectDB(); // connect to db
     const { eventId } = params; // another destructure
-    console.log(eventId);
-
     try {
         const event = await Event.findById(eventId).orFail();
         return NextResponse.json(event);
@@ -29,12 +27,33 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
     const { eventId } = params; // another destructure
 
     try {
-        const event = await Event.findById(eventId).orFail();
-        await Event.deleteOne({ event });
-        return NextResponse.json("Event deleted: " + event, { status: 200 });
+        const event = await Event.findByIdAndDelete(eventId).orFail();
+        return NextResponse.json("Event deleted: " + eventId, {
+            status: 200,
+        });
     } catch (err) {
         return NextResponse.json(
             "Event not deleted (EventId = " + eventId + ") " + err,
+            { status: 400 }
+        );
+    }
+}
+
+/** add user to atendee id */
+export async function PUT(req: NextRequest, { params }: IParams) {
+    await connectDB(); // connect to db
+    const { eventId } = params; // another destructure
+    const { userId } = await req.json();
+    try {
+        const event = await Event.findById(eventId).orFail();
+        event.attendeeIds.push(userId);
+        await event.save();
+        return NextResponse.json("User added to event: " + event, {
+            status: 200,
+        });
+    } catch (err) {
+        return NextResponse.json(
+            "User not added to event (EventId = " + eventId + ") " + err,
             { status: 400 }
         );
     }
