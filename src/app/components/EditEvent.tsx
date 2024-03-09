@@ -19,7 +19,7 @@ import {
   import { Button } from '@styles/Button'
   import React, {useState} from 'react';  
   
-  const EditEvent = (event: IEvent) => {
+  const EditEvent = ({event}: {event: IEvent}) => {
     const { isOpen, onOpen, onClose } = useDisclosure() // button open/close
   
     const [name, setName] = useState(event.eventName) 
@@ -104,9 +104,9 @@ import {
       const eventData = {
         eventName: name,
         location: loc,
-        description: new Date(`${date}T${start}`),
-        startTime: new Date(`${date}T${end}`),
-        endTime: end,
+        description: desc,
+        startTime: new Date(`${date}T${start}`),
+        endTime: new Date(`${date}T${end}`),
         wheelchairAccessible: wc,
         spanishSpeakingAccommodation: span,
         volunteerEvent: vol,
@@ -115,24 +115,19 @@ import {
       };
   
       console.log("New Event Data:", eventData);
-  
-      fetch("/api/events", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to edit event");
-          }
-          setIsSubmitted(true);
-          HandleClose();
-        })
-        .catch((error) => {
-          console.error("Error editing event:", error.message);
+      try {
+        const response = fetch(`/api/events/${event._id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
         });
+        setIsSubmitted(true);
+        HandleClose();
+      } catch (error) {
+        console.log("Error editing event:", error);
+      }
     }
   
     return (

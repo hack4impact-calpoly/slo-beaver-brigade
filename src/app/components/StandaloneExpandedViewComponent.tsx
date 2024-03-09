@@ -18,6 +18,7 @@ import {
 import React, { useRef, useState } from 'react';
 import { IEvent } from "@database/eventSchema";
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import EditEvent from "./EditEvent";
 
 interface Props {
   eventDetails: IEvent | null;
@@ -161,7 +162,6 @@ const ExpandedViewComponent = ({ eventDetails, showModal, setShowModal }: Props)
       </ModalFooter>
       </ModalContent>
   </Modal>
-
   </>
   );
 };
