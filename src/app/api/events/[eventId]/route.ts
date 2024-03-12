@@ -67,14 +67,15 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         const event = await Event.findById(eventId).orFail();
         if (req.body) {
             //strip Event data from req json
+            console.log(req.body);
             const {
                 eventName,
                 location,
                 description,
-                wheelchairAccessible,
-                spanishSpeakingAccommodation,
                 startTime,
                 endTime,
+                wheelchairAccessible,
+                spanishSpeakingAccommodation,
                 volunteerEvent,
                 groupsAllowed,
                 attendeeIds,
@@ -88,18 +89,18 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (description) {
                 event.description = description;
             }
+            if (startTime) {
+                event.startTime = startTime;
+            }
+            if (endTime) {
+                event.endTime = endTime;
+            }
             if (wheelchairAccessible) {
                 event.wheelchairAccessible = wheelchairAccessible;
             }
             if (spanishSpeakingAccommodation) {
                 event.spanishSpeakingAccommodation =
                     spanishSpeakingAccommodation;
-            }
-            if (startTime) {
-                event.startTime = startTime;
-            }
-            if (endTime) {
-                event.endTime = endTime;
             }
             if (volunteerEvent) {
                 event.volunteerEvent = volunteerEvent;
@@ -114,6 +115,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         await event.save();
         return NextResponse.json("Event updated: " + event, { status: 200 });
     } catch (err) {
+        console.error("Error updating event (EventId = " + eventId + "):", err);
         return NextResponse.json(
             "Event not updated (EventId = " + eventId + ") " + err,
             { status: 400 }
