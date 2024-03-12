@@ -19,11 +19,11 @@ export async function GET(
 
     // check if user exists
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    return Response.json(user);
   } catch (error) {
-    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }
