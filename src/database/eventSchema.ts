@@ -16,7 +16,7 @@ export type IEvent = {
 
 // Mongoose schema
 const eventSchema = new Schema<IEvent>({
-    _id: { type: String, required: true },
+    _id: { type: Schema.Types.ObjectId, required: true },
     eventName: { type: String, required: true },
     location: { type: String, required: true },
     description: { type: String, required: true },
