@@ -33,15 +33,13 @@
 }
 
 .leftColumn{
-    width: 40%;
     height: 100%;
-    padding-right: 2%;
+    margin-bottom: 5%;
 }
 
 .rightColumn{
-    width: 60%;
     height: 100%;
-    padding-left: 2%;
+    margin-bottom: 5%
 }
 
 .imageContainer{
@@ -50,7 +48,6 @@
     overflow: hidden;
     border-radius: 10px;
     margin-bottom: 5%;
-    margin-top: 3%;
 }
 
 .imageContainer img{
@@ -151,7 +148,7 @@
 .emailColumn{
     padding: 1.5% 3% 1.5% 3%;
     text-align: left;
-    width: 50%;
+    width: 60%;
     font-size: 15px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -160,13 +157,14 @@
 }
 
 .detailsColumn{
-    padding: 1.5% 3% 1.5% 3%;
+    padding: 1.5% 0% 1.5% 3%;
     text-align: left;
     width: 20%;
     font-size: 15px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-right: 3%;
 }
 
 .detailsColumn:hover{
@@ -178,54 +176,6 @@
     table-layout: fixed;
 }
 
-.screenOverlay{
-    width: 100%;
-    height: 100%;
-    background-color: rgba(217, 217, 217, 0.70);
-    position: absolute;
-    z-index: 5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 0;
-    right: 0;
- 
-}
-
-.visitorInfoBox{
-    width: 60%;
-    height: 70%;
-    background-color: white;
-}
-
-.visitorInfoHeader{
-    padding: 1.5% 4% 1.5% 4%;
-    text-align: left;
-    font-size: 35px;
-    font-weight: bold;
-    font-family: 'Lato';
-    width: 100%;
-}
-
-.topDividingLine{
-    margin-left: 4%;
-    width: 92%;
-}
-
-.visitorInfoLandR{
-    width: 100%;
-    display: flex;
-}
-
-.visitorInfoLeft{
-    padding: 0% 4% 0% 4%;
-    width: 50%;
-}
-
-.visitorInfoRight{
-    padding: 0% 4% 0% 4%;
-    width: 50%; 
-}
 .visitorInfoSmallHeader{
     background-color: #337774;
     color: white;
@@ -240,20 +190,9 @@
 
 .fieldInfo{
     text-align: left;
-    margin: 2.5% 5% 2.5% 5%;
+    margin: 3% 5% 3% 5%;
     font-size: 14px;
-}
-
-.closeVisitor{
-    position: absolute;
-    width: 2%;
-    left: 76%;
-    top: 17.5%;
-    font-size: 25px;
-}
-
-.closeVisitor:hover{
-    stroke: blue;
+    font-family: 'Lato'
 }
 
 .editEvent{
@@ -283,7 +222,7 @@
 }
 
 .confirmDeletion{
-    width: 35%;
+    width: 30%;
     height: 35%;
     padding: 70px;
     border-radius: 15px;
@@ -296,16 +235,16 @@
 .cancelOrDelete{
     display: flex;
     width: 100%;
-    margin-top: 14%;
+    margin-top: 5%;
     font-size: 15px;
     justify-content: space-between;
-    padding: 0px 50px 0px 50px;
 }
 
 .cancelButton{
     padding: 5px 30px 5px 30px;
     border: 2px solid #989898;
     color: #989898;
+    background-color: white;
     border-radius: 7px;
     font-family: 'Lato';
     font-weight: bold;
@@ -317,3 +256,4 @@
     color: #4a4848;;
     border: 2px solid #4a4848;
 }
+
