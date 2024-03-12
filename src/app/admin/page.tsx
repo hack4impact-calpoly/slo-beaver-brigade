@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import style from "@styles/admin/events.module.css";
-import EventPreviewComponent from "@components/EventPreview";
+import EventCard from "@components/EventCard";
 import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
 
@@ -21,7 +21,7 @@ interface IEvent {
   digitalWaiver: string | null;
 }
 
-export default function Page(){
+export default function Page() {
   //states
   const [events, setEvents] = useState<IEvent[]>([]);
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
@@ -154,7 +154,7 @@ export default function Page(){
           <ul className={style.eventsList}>
             {filteredEvents.map((event) => (
               <li key={event._id} className={style.eventItem}>
-                <EventPreviewComponent
+                <EventCard
                   event={event}
                   groupName={groupNames[event._id]}
                   onClick={() => handleEventClick(event)} // Pass onClick handler
@@ -175,4 +175,4 @@ export default function Page(){
       )}
     </div>
   );
-};
+}

@@ -1,8 +1,7 @@
 .mainContainer {
   display: flex;
   flex-direction: row;
-  gap: 70px;
-  max-width: 100vw;
+  justify-content: space-evenly;
 }
 
 .sidebar {
@@ -10,16 +9,14 @@
   flex-direction: column;
   gap: 20px;
   width: 15vw;
-  margin-left: 20px;
 }
 
 .eventsList {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 35px;
   padding: 0;
   list-style: none;
-  margin: 20px 0;
 }
 
 .searchBar,
@@ -28,7 +25,6 @@
   margin-bottom: 10px;
   border: 1px solid black;
   border-radius: 5px;
-  width: 90%;
   box-sizing: border-box;
 }
 

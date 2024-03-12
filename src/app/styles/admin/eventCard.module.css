@@ -1,0 +1,56 @@
+.eventCard {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  width: 25vw;
+  height: 250px;
+  /* color: #FBF9F9; */
+}
+
+.bottomRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: last baseline;
+}
+
+.visitorCount {
+  text-align: center;
+}
+
+.eventCard h2 {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.eventCard h3 {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.eventCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .eventCard h2 {
+    font-size: 1rem;
+  }
+
+  .eventCard h3 {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .eventCard {
+    width: 65vw;
+  }
+}

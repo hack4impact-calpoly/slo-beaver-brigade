@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import style from "@styles/admin/events.module.css";
-import EventPreviewComponent from "@components/EventPreview";
+import EventPreviewComponent from "@components/EventCard";
 import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
 
@@ -157,7 +157,7 @@ const EventPreview = () => {
                 <EventPreviewComponent
                   event={event}
                   groupName={groupNames[event._id]}
-                  onClick={() => handleEventClick(event)} // Pass onClick handler
+                  onClick={() => handleEventClick(event)}
                 />
               </li>
             ))}
