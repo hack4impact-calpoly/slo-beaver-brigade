@@ -49,7 +49,7 @@ const EventCard: React.FC<EventPreviewProps> = ({
     <div
       className={style.eventCard}
       style={{
-        backgroundImage: `url('/beaver-simming.webp')`,
+        backgroundImage: `url('/beaver-eventcard.jpeg')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

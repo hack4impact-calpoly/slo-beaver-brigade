@@ -1,6 +1,5 @@
 .eventCard {
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   transition: transform 0.3s ease;
   display: flex;
@@ -9,7 +8,7 @@
   text-align: left;
   width: 25vw;
   height: 250px;
-  /* color: #FBF9F9; */
+  color: #FBF9F9;
 }
 
 .bottomRow {
@@ -24,7 +23,7 @@
 }
 
 .eventCard h2 {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 

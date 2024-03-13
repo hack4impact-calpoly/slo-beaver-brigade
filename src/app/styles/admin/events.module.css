@@ -7,7 +7,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
   width: 15vw;
 }
 
@@ -19,7 +19,21 @@
   list-style: none;
 }
 
-.searchBar,
+.searchBar {
+  font-weight: bold;
+  color: black;
+  padding: 5px 20px 5px 70px;
+  border: 1.5px solid #337774;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  width: fit-content;
+}
+
 .sortSelect {
   padding: 5px;
   margin-bottom: 10px;
@@ -30,6 +44,20 @@
 
 .checkBoxes {
   text-align: left;
+}
+
+.yellowButton {
+  padding: 12px 30px;
+  background-color: #ecb94a;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.yellowButton:hover {
+  background-color: #d6a33e;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

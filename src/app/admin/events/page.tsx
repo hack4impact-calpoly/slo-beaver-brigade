@@ -4,6 +4,7 @@ import style from "@styles/admin/events.module.css";
 import EventPreviewComponent from "@components/EventCard";
 import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
+import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
 interface IEvent {
   _id: string;
@@ -113,13 +114,27 @@ const EventPreview = () => {
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
-        <input
-          type="text"
-          placeholder="Search events"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className={style.searchBar}
-        />
+        <button className={style.yellowButton}>Create new event</button>
+      <div className={style.searchWrapper}>
+          <input
+            type="text"
+            placeholder="Search events"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={style.searchBar}
+          />
+          <MagnifyingGlassIcon
+            style={{
+              width: "15px",
+              height: "15px",
+              position: "absolute",
+              margin: "auto",
+              top: 0,
+              bottom: 0,
+              right: "20px",
+            }}
+          />
+        </div>
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
