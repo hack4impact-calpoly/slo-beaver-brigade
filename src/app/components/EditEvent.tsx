@@ -19,7 +19,7 @@ import {
   import { Button } from '@styles/Button'
   import React, {useState} from 'react';  
   
-  const EditEvent = (event: IEvent) => {
+  const EditEvent = ({event}: {event: IEvent}) => {
     const { isOpen, onOpen, onClose } = useDisclosure() // button open/close
   
     const [name, setName] = useState(event.eventName) 
@@ -100,7 +100,35 @@ import {
         return h.concat(':', m)
     }
   
-    function HandleSubmit() {setIsSubmitted(true)}
+    function HandleSubmit() {
+      const eventData = {
+        eventName: name,
+        location: loc,
+        description: desc,
+        startTime: new Date(`${date}T${start}`),
+        endTime: new Date(`${date}T${end}`),
+        wheelchairAccessible: wc,
+        spanishSpeakingAccommodation: span,
+        volunteerEvent: vol,
+        groupsAllowed: myGrp ? [] : null,
+        attendeeIds: event.attendeeIds ? event.attendeeIds : []
+      };
+  
+      console.log("New Event Data:", eventData);
+      try {
+        const response = fetch(`/api/events/${event._id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        });
+        setIsSubmitted(true);
+        HandleClose();
+      } catch (error) {
+        console.log("Error editing event:", error);
+      }
+    }
   
     return (
       <>
