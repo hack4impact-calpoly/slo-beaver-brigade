@@ -1,5 +1,7 @@
 import connectDB from "@database/db";
 import User from "@database/userSchema";
+import { NextResponse, NextRequest } from "next/server";
+
 
 // Dynamic GET request to get user by ID
 export async function GET(
@@ -20,7 +22,7 @@ export async function GET(
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    return Response.json({ user });
+    return Response.json(user);
   } catch (error) {
     return Response.json({ error: (error as Error).message }, { status: 500 });
   }
