@@ -82,7 +82,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                     <Text style={{width: '50%'}}>Primary Information</Text>
                     <Box className = {styles.editEvent}>
                         {eventData.description === '' ? 
-                        <Text className = {styles.originalEditText}>Edit Event Details</Text> : <EditEvent {...eventData}/>}
+                        <Text className = {styles.originalEditText}>Edit Event Details</Text> : <EditEvent event={eventData}/>}
                     </Box>
                     <Image src={editButton.src} alt="editButton" className={styles.editButton}/>
                 </Box>
