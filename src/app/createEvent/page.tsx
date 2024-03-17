@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -14,9 +14,10 @@ import {
   InputGroup,
   Flex,
   Select,
-  Textarea
+  Textarea,
+  IconButton
 } from "@chakra-ui/react";
-import { CalendarIcon } from "@chakra-ui/icons";
+import { AddIcon, CalendarIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../components/MiniCalendar";
 
 const CreateEvent = () => {
@@ -47,6 +48,16 @@ const CreateEvent = () => {
     }
   };
 
+  const fileInputRef = useRef(null); // Create a ref for the file input
+
+  // Adjust handleImageChange to automatically click the file input when the box is clicked
+  const promptFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+
   const handleCreateEvent = async () => {
     if (!eventName) {
       toast({
@@ -74,40 +85,54 @@ const CreateEvent = () => {
         Create New Event
       </Text>
 
-      <FormControl mb="4">
-            <FormLabel htmlFor="cover-image"></FormLabel>
-            <Input
-              id="cover-image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-            {imagePreview && (
-              <Box
-                position="relative"
-                borderWidth="1px"
-                p="4"
-                mt="4"
-                textAlign="left"
-                h="64"
-                borderRadius="20px"
-                overflow="hidden"
-                bg="gray.200"
-              >
-                <Image
-                  src={imagePreview}
-                  alt="Event cover preview"
-                  position="absolute"
-                  top={0}
-                  left={0}
-                  width="100%"
-                  height="100%"
-                  objectFit="fill"
-                  zIndex={0}
-                />
-              </Box>
-            )}
-          </FormControl>
+      <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
+    <Input
+      id="cover-image"
+      type="file"
+      accept="image/*"
+      onChange={handleImageChange}
+      ref={fileInputRef}
+      hidden // Hide the actual input
+    />
+    <Box
+      position="relative"
+      borderWidth="1px"
+      p="4"
+      mt="4"
+      textAlign="center"
+      h="64"
+      borderRadius="20px"
+      overflow="hidden"
+      bg="gray.200"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+    >
+      {!imagePreview ? (
+        <>
+          <Text>Upload Image</Text>
+          <IconButton
+            aria-label="Upload image"
+            icon={<AddIcon />}
+            mt="2"
+          />
+        </>
+      ) : (
+        <Image
+          src={imagePreview}
+          alt="Event cover preview"
+          position="absolute"
+          top={0}
+          left={0}
+          width="100%"
+          height="100%"
+          objectFit="fill"
+          zIndex={0}
+        />
+      )}
+    </Box>
+  </FormControl>
 
       <Flex direction={{ base: "column", md: "row" }} gap={20}>
         <VStack spacing={4} align="stretch" flex="1">
