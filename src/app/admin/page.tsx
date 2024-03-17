@@ -166,7 +166,6 @@ export default function Page(){
       ) : (
         <div>No events to show</div>
       )}
-
       {selectedEvent && (
         <ExpandedTest
           eventDetails={selectedEvent}
