@@ -13,6 +13,7 @@ import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
 
 type Visitor = {
+
     email: string,
     firstName: string,
     lastName: string,
