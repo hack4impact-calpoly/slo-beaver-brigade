@@ -11,6 +11,10 @@
   width: 15vw;
 }
 
+.cardContainer {
+width: 80%;
+}
+
 .eventsList {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -22,7 +26,7 @@
 .searchBar {
   font-weight: bold;
   color: black;
-  padding: 5px 20px 5px 70px;
+  padding: 5px 20px 5px 20px;
   border: 1.5px solid #337774;
   border-radius: 10px;
   width: 100%;

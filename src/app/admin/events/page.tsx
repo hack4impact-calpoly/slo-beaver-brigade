@@ -163,7 +163,7 @@ const EventPreview = () => {
         </div>
       </aside>
       {loading ? (
-        <div>Loading events...</div>
+        <div className={style.cardContainer}>Loading events...</div>
       ) : filteredEvents.length > 0 ? (
         <div className={style.cardContainer}>
           <ul className={style.eventsList}>
@@ -179,7 +179,7 @@ const EventPreview = () => {
           </ul>
         </div>
       ) : (
-        <div>No events to show</div>
+        <div className={style.cardContainer}>No events to show</div>
       )}
       {selectedEvent && (
         <ExpandedTest
