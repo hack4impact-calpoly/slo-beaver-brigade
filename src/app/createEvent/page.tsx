@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, CalendarIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../components/MiniCalendar";
+import { Organization } from "@clerk/nextjs/server";
 
 const CreateEvent = () => {
   const toast = useToast();
@@ -59,12 +60,18 @@ const CreateEvent = () => {
   };
 
   const handleCreateEvent = async () => {
-    if (!eventName) {
+    if (
+      !eventName ||
+      !eventType ||
+      !organization ||
+      !location ||
+      !description
+    ) {
       toast({
         title: "Error",
-        description: "Event name can't be empty.",
+        description: "Event details are not complete",
         status: "error",
-        duration: 5000,
+        duration: 2500,
         isClosable: true,
       });
       return;
