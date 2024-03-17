@@ -65,20 +65,22 @@ const EventPreview = () => {
             ...event,
             startTime: new Date(event.startTime),
             endTime: new Date(event.endTime),
+            groupsAllowed: event.groupsAllowed || [],
           }))
         );
 
-        // fetch group names for all events right after events are fetched
         const names: { [key: string]: string } = {};
         setLoading(true);
-        for (const event of data) {
-          if (event.groupsAllowed.length > 0) {
-            const groupName = await fetchGroupName(event.groupsAllowed[0]);
-            names[event._id] = groupName;
-          } else {
-            names[event._id] = "SLO Beaver Brigade";
-          }
-        }
+        await Promise.all(
+          data.map(async (event: IEvent) => {
+            if (event.groupsAllowed && event.groupsAllowed.length > 0) {
+              const groupName = await fetchGroupName(event.groupsAllowed[0]);
+              names[event._id] = groupName;
+            } else {
+              names[event._id] = "SLO Beaver Brigade";
+            }
+          })
+        );
         setGroupNames(names);
       } catch (error) {
         console.error(error);
@@ -115,7 +117,7 @@ const EventPreview = () => {
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
         <button className={style.yellowButton}>Create new event</button>
-      <div className={style.searchWrapper}>
+        <div className={style.searchWrapper}>
           <input
             type="text"
             placeholder="Search events"
