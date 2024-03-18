@@ -5,6 +5,8 @@ import EventPreviewComponent from "@components/EventPreview";
 import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
 
+/**test */
+
 interface IEvent {
   _id: string;
   eventName: string;
