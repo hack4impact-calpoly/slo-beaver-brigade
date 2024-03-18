@@ -12,6 +12,7 @@ import React, {useState, useEffect} from 'react'
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
 
+/** test */
 type Visitor = {
     email: string,
     firstName: string,
