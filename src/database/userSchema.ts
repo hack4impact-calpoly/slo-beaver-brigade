@@ -58,7 +58,11 @@ const UserSchema = new Schema<IUser>({
         default: [],
     },
     groupId: { type: Schema.Types.ObjectId, required: false },
-    digitalWaiver: { type: Schema.Types.ObjectId, required: false },
+    digitalWaiver: {
+        type: [Schema.Types.ObjectId],
+        default: [],
+        required: false,
+    },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
