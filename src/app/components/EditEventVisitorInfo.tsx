@@ -11,20 +11,10 @@ import { Box, Card, Badge, Text, Button, Flex, Spinner,
 import React, {useState, useEffect} from 'react'
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
-
-type Visitor = {
-    email: string,
-    firstName: string,
-    lastName: string,
-    age: number,
-    gender: string,
-    role: string,
-    phoneNumber: string,
-    eventsAttended: string[],
-}
+import { IUser } from '@database/userSchema';
 
 
-function SingleVisitorComponent({visitorData} : {visitorData: Visitor}){
+function SingleVisitorComponent({visitorData} : {visitorData: IUser}){
     const { isOpen, onOpen, onClose } = useDisclosure() 
     return (
       <>
@@ -73,14 +63,16 @@ function SingleVisitorComponent({visitorData} : {visitorData: Visitor}){
 
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const [loading, setLoading] = useState(true);
-    const [visitorData, setVisitorData] = useState([{
+    const [visitorData, setVisitorData] = useState<IUser[]>([{
+        _id: '',
+        groupId: null,
         email: '',
         firstName: '',
         lastName: '',
         phoneNumber: '',
         age: -1,
         gender: '',
-        role: '',
+        role: 'user',
         eventsAttended: [],
     }])
 

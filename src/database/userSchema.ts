@@ -29,6 +29,7 @@ export type EventInfo = {
 };
 
 export type IUser = {
+    _id: string;
     email: string;
     phoneNumber: string;
     firstName: string;
