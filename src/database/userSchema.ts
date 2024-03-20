@@ -23,6 +23,11 @@ enum Role {
     "admin",
 }
 
+export type EventInfo = {
+    eventId: Schema.Types.ObjectId;
+    digitalWaiver: Schema.Types.ObjectId | null;
+};
+
 export type IUser = {
     email: string;
     phoneNumber: string;
@@ -31,15 +36,14 @@ export type IUser = {
     age: number;
     gender: string;
     role: "user" | "supervisor" | "admin";
-    eventsAttended: [Schema.Types.ObjectId];
-    digitalWaiver: Schema.Types.ObjectId | null;
+    eventsAttended: EventInfo[];
     groupId: Schema.Types.ObjectId | null;
 };
 
 //groupId and digitalWaiver seem to require a schema
 //currently there is no schema for them so I am leaving them as null for now
 //can groupId just be a string and digitalWaiver be a boolean?
-const UserSchema = new Schema<IUser>({
+const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
     firstName: { type: String, required: true },
@@ -53,9 +57,12 @@ const UserSchema = new Schema<IUser>({
         required: true,
     },
     eventsAttended: {
-        type: [Schema.Types.ObjectId],
-        required: true,
+        type: {
+            eventId: { type: Schema.Types.ObjectId, required: true },
+            digitalWaiver: { type: Schema.Types.ObjectId, required: false },
+        },
         default: [],
+        required: false,
     },
     groupId: { type: Schema.Types.ObjectId, required: false },
     digitalWaiver: {
