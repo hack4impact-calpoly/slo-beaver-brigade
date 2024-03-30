@@ -296,7 +296,6 @@ const Dashboard = () => {
               <Flex
                 flexDirection={"column"}
                 alignItems={"center"}
-                height={"100px"}
               >
                 <Text
                   fontSize="2xl"
