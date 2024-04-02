@@ -24,4 +24,8 @@
         background-position: 55% 50%;
         padding: 20px;
     }
+    .eventBox::after {
+        content: "";
+        width: 0%;
+    }
 }
