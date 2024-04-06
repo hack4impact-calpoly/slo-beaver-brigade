@@ -93,7 +93,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     useEffect(() => {
         const fetchEventData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/events/${eventId}`);
+                const response = await fetch(`/api/events/${eventId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error, status: ${response.status}`);
                 }
@@ -112,7 +112,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         const fetchVisitorData = async() => {
             if(eventData.eventName !== ""){
                 const visitorDataArray = await Promise.all(eventData.attendeeIds.filter(userId => userId !== null).map(async (userId) => {
-                    const response = await fetch(`http://localhost:3000/api/user/${userId}`);
+                    const response = await fetch(`/api/user/${userId}`);
                     return response.json();
                 }))
                 setVisitorData(visitorDataArray)

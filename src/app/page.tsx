@@ -19,6 +19,7 @@ import { css } from "@emotion/react";
 import "@emotion/react";
 import EventListRegister from "@components/EventList";
 import Link from "next/link";
+import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "./actions/eventsactions";
 
 // logic for letting ts know about css prop
@@ -296,7 +297,6 @@ const Dashboard = () => {
               <Flex
                 flexDirection={"column"}
                 alignItems={"center"}
-                height={"100px"}
               >
                 <Text
                   fontSize="2xl"
@@ -343,20 +343,9 @@ const Dashboard = () => {
                         h="60"
                         textAlign="left"
                         borderRadius="20px"
-                        _before={{
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
-                          borderRadius: "20px",
-                          zIndex: 1,
-                        }}
                         style={{
                           //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                          backgroundImage: `url("/underwater-saltwater-beavers.jpg")`,
+                          background: 'linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("/underwater-saltwater-beavers.jpg")',
                           backgroundSize: "cover",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "center",
@@ -524,24 +513,8 @@ const Dashboard = () => {
                   h="64"
                   mx="10"
                   borderRadius="20px"
-                  _before={{
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity as needed
-                    borderRadius: "20px",
-                    zIndex: 1,
-                  }}
-                  style={{
-                    backgroundImage: `url("/beaver1.jpg")`,
-                    backgroundSize: "100% 100%",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    padding: "20px",
-                  }}
+                  className={style.eventBox}
+                
                 >
                   <Heading
                     as="h1"

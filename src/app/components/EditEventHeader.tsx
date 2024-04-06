@@ -50,7 +50,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
 
     const handleDelete = async () => {
         try{
-            const response = await fetch(`http://localhost:3000/api/events/${eventId}`, {
+            const response = await fetch(`/api/events/${eventId}`, {
             method: 'DELETE'
             });
             if (response.ok) {
@@ -70,7 +70,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
     useEffect(() => {
         const fetchEventData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/events/${eventId}`);
+                const response = await fetch(`/api/events/${eventId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error, status: ${response.status}`);
                 }
