@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import styles from "../styles/profile/profile.module.css";
 import { PencilIcon } from "@heroicons/react/16/solid";
-import { useUser } from "@clerk/clerk-react"; // Import useUser from Clerk
+import { useUser } from "@clerk/nextjs"; // Import useUser from Clerk
 import { currentUser } from "@clerk/nextjs";
 
 interface UserData {
@@ -23,15 +22,18 @@ interface UserData {
   receiveEmails: string;
 }
 
-const ProfileEdit: React.FC = () => {
+function EditProfile() {
   //const { userId } = useParams<{ userId: string }>();
   const [userData, setUserData] = useState("");
 
   const { isSignedIn, user, isLoaded } = useUser();
 
+  console.log('wow')
+  console.log(user, isSignedIn)
   if (isSignedIn) {
     const userId = user.unsafeMetadata["dbId"]; // Assuming this is the correct ID to match against event attendees
 
+    console.log("hi")
     console.log("wow: " + userId)
     // Fetch all events
     const eventsResponse = fetch("/api/events");
@@ -167,4 +169,4 @@ const ProfileEdit: React.FC = () => {
   );
 };
 
-export default ProfileEdit;
+export default EditProfile;
