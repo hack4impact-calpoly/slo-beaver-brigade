@@ -11,3 +11,24 @@
     font-weight: bold;
     font-style: normal; 
 }
+
+@font-face {
+    font-family: 'Lato';
+    src: url('static/Lato-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal; 
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('static/Lato-Light.ttf') format('truetype');
+    font-weight: lighter;
+    font-style: normal; 
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('static/Lato-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal; 
+}
