@@ -30,7 +30,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
     useEffect(() => {
         const fetchEventData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/events/${eventId}`);
+                const response = await fetch(`/api/events/${eventId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error, status: ${response.status}`);
                 }
@@ -55,7 +55,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                 if(eventData.groupsAllowed && eventData.groupsAllowed.length !== 0){
                     const groupDataArray = await Promise.all(eventData.groupsAllowed.map(async (groupId) =>
                     {
-                        const response = await fetch(`http://localhost:3000/api/group/${groupId}`);
+                        const response = await fetch(`/api/group/${groupId}`);
                         return response.json();
                     }))
                     
