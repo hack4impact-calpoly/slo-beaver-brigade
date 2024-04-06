@@ -58,10 +58,12 @@ const UserSchema = new Schema({
         required: true,
     },
     eventsAttended: {
-        type: {
-            eventId: { type: Schema.Types.ObjectId, required: true },
-            digitalWaiver: { type: Schema.Types.ObjectId, required: false },
-        },
+        type: [
+            {
+                eventId: { type: Schema.Types.ObjectId, required: true },
+                digitalWaiver: { type: Schema.Types.ObjectId, required: false },
+            },
+        ],
         default: [],
         required: false,
     },
