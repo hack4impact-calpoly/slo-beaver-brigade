@@ -1,6 +1,7 @@
 import mongoose, { Mongoose, Schema } from "mongoose";
 
 export type IGroup = {
+    _id: string;
     group_name: string;
     groupees: Schema.Types.ObjectId[];
 };
