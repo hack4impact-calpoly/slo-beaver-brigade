@@ -6,7 +6,7 @@ import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
-
+import { getEvents } from "app/actions/eventsactions";
 
 interface IEvent {
   _id: string;
@@ -58,11 +58,13 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/events");
-        if (!response.ok) {
-          throw new Error("Failed to fetch events");
+
+        const res = await getEvents(0, 10)
+        if (!res){
+            console.log("Error getting events.")
+            return;
         }
-        const data = await response.json();
+        const data = JSON.parse(res)
         setEvents(
           data.map((event: IEvent) => ({
             ...event,

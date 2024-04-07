@@ -8,9 +8,9 @@ export const getEvents = async (offset: number, limit: number) => {
 
     try {
         // query for all events and sort by date
-        const events = await Event.find().sort({ date: -1 }).skip(offset).limit(limit).orFail();
-        return events;
+        const events = await Event.find().skip(offset).limit(limit).sort({ date: -1 }).orFail();
+        return JSON.stringify(events);
     } catch (err) {
-        return [];
+        return null;
     }
 }
