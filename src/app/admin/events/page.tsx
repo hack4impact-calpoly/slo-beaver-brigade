@@ -30,6 +30,7 @@ const EventPreview = () => {
   const [sortOrder, setSortOrder] = useState("earliest");
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
+  const [showFutureEvents, setShowFutureEvents] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
@@ -102,9 +103,18 @@ const EventPreview = () => {
     .filter((event) =>
       spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
     )
-    .filter((event) =>
-      showPastEvents ? true : new Date(event.startTime) >= new Date()
-    )
+    .filter((event) => {
+      const eventDate = new Date(event.startTime);
+      const now = new Date();
+      if (showFutureEvents && showPastEvents) {
+        return true;
+      } else if (showFutureEvents) {
+        return eventDate >= now;
+      } else if (showPastEvents) {
+        return eventDate <= now;
+      }
+      return true;
+    })
     .filter((event) =>
       event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -146,6 +156,14 @@ const EventPreview = () => {
           <option value="latest">Latest First</option>
         </select>
         <div className={style.checkBoxes}>
+          <div>
+            <input
+              type="checkbox"
+              checked={showFutureEvents}
+              onChange={() => setShowFutureEvents(!showFutureEvents)}
+            />{" "}
+            Future Events
+          </div>
           <div>
             <input
               type="checkbox"

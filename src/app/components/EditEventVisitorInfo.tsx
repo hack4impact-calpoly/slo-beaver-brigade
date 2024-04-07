@@ -1,4 +1,5 @@
 'use client'
+
 import { Box, Card, Badge, Text, Button, Flex, Spinner, 
     Modal,
     ModalOverlay,
@@ -10,20 +11,10 @@ import { Box, Card, Badge, Text, Button, Flex, Spinner,
 import React, {useState, useEffect} from 'react'
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
-
-type Visitor = {
-    email: string,
-    firstName: string,
-    lastName: string,
-    age: number,
-    gender: string,
-    role: string,
-    phoneNumber: string,
-    eventsAttended: string[],
-}
+import { IUser } from '@database/userSchema';
 
 
-function SingleVisitorComponent({visitorData} : {visitorData: Visitor}){
+function SingleVisitorComponent({visitorData} : {visitorData: IUser}){
     const { isOpen, onOpen, onClose } = useDisclosure() 
     return (
       <>
@@ -72,14 +63,16 @@ function SingleVisitorComponent({visitorData} : {visitorData: Visitor}){
 
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const [loading, setLoading] = useState(true);
-    const [visitorData, setVisitorData] = useState([{
+    const [visitorData, setVisitorData] = useState<IUser[]>([{
+        _id: '',
+        groupId: null,
         email: '',
         firstName: '',
         lastName: '',
         phoneNumber: '',
         age: -1,
         gender: '',
-        role: '',
+        role: 'user',
         eventsAttended: [],
     }])
 
@@ -100,7 +93,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     useEffect(() => {
         const fetchEventData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/events/${eventId}`);
+                const response = await fetch(`/api/events/${eventId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error, status: ${response.status}`);
                 }
@@ -119,7 +112,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         const fetchVisitorData = async() => {
             if(eventData.eventName !== ""){
                 const visitorDataArray = await Promise.all(eventData.attendeeIds.filter(userId => userId !== null).map(async (userId) => {
-                    const response = await fetch(`http://localhost:3000/api/user/${userId}`);
+                    const response = await fetch(`/api/user/${userId}`);
                     return response.json();
                 }))
                 setVisitorData(visitorDataArray)

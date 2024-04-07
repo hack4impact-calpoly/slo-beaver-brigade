@@ -64,12 +64,26 @@ width: 80%;
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .mainContainer {
     flex-direction: column;
     gap: 20px;
     align-items: center;
   }
+
+  .cardContainer {
+    width: auto;
+    }
+
+  .sidebar {
+    width: 100%;
+    margin-left: 0;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
 
   .sidebar {
     width: 100%;
@@ -85,9 +99,6 @@ width: 80%;
   .searchBar,
   .sortSelect {
     padding: 10px;
-    margin-bottom: 10px;
-    max-width: 90%;
-    width: 50%;
   }
 
   .checkBoxes label {
