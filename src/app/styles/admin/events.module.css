@@ -32,6 +32,22 @@ width: 80%;
   width: 100%;
 }
 
+.sortSelect {
+  background-color: white;
+  color: #333; 
+  padding: 10px 20px; 
+  margin: 10px 0; 
+  border: 1px solid #ddd; 
+  border-radius: 5px; 
+  font-size: 16px;
+  cursor: pointer; 
+}
+
+.sortSelect:focus {
+  outline: none; 
+  border-color: #aaa; 
+}
+
 .searchWrapper {
   position: relative;
   display: flex;
