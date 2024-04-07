@@ -5,6 +5,8 @@ import EventPreviewComponent from "@components/EventCard";
 import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import Link from "next/link";
+
 
 interface IEvent {
   _id: string;
@@ -189,11 +191,12 @@ const EventPreview = () => {
           <ul className={style.eventsList}>
             {filteredEvents.map((event) => (
               <li key={event._id} className={style.eventItem}>
+                <Link href={"/admin/events/edit/" + event._id}>
                 <EventPreviewComponent
                   event={event}
                   groupName={groupNames[event._id]}
-                  onClick={() => handleEventClick(event)}
-                />
+                  onClick={() => console.log()}
+                /></Link>
               </li>
             ))}
           </ul>
