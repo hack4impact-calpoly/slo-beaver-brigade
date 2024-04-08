@@ -148,6 +148,13 @@
     padding-left: 4%;
     padding-right: 4%;}
 
+.checkBox{
+    padding: 2.25% 3% 1.5% 2%;
+    text-align: left;
+    width: 5%;
+    font-size: 15px;
+}
+
 .visitorCount{
     font-family: 'Lato';
     font-weight: normal;
