@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import style from "@styles/admin/events.module.css";
 import EventPreviewComponent from "@components/EventPreview";
+import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
+import Link from "next/link";
 
 interface IEvent {
   _id: string;
@@ -29,6 +31,8 @@ const EventPreview = () => {
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
 
   // get string for some group based on id
   const fetchGroupName = async (groupId: ObjectId): Promise<string> => {
@@ -79,11 +83,17 @@ const EventPreview = () => {
       } catch (error) {
         console.error(error);
       }
-        setLoading(false);
+      setLoading(false);
     };
 
     fetchEvents();
   }, []);
+
+  // open standAloneComponent on click
+  const handleEventClick = (event: IEvent) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  };
 
   // filtering events logic
   const filteredEvents = events
@@ -101,7 +111,6 @@ const EventPreview = () => {
         ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
         : new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
     );
-
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
@@ -146,16 +155,25 @@ const EventPreview = () => {
           <ul className={style.eventsList}>
             {filteredEvents.map((event) => (
               <li key={event._id} className={style.eventItem}>
+                <Link href={"/admin/events/edit/" + event._id}>
                 <EventPreviewComponent
                   event={event}
                   groupName={groupNames[event._id]}
-                />
+                  onClick={() => console.log()}
+                /></Link>
               </li>
             ))}
           </ul>
         </div>
       ) : (
         <div>No events to show</div>
+      )}
+      {selectedEvent && (
+        <ExpandedTest
+          eventDetails={selectedEvent}
+          showModal={isModalOpen}
+          setShowModal={setIsModalOpen}
+        />
       )}
     </div>
   );

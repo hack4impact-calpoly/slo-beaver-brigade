@@ -9,6 +9,7 @@ import {
   Button,
   Textarea,
   Link as ChakraLink,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSignUp } from '@clerk/nextjs';
@@ -36,6 +37,11 @@ export default function SignUp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect_url = searchParams.get('redirect_url');
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('Password is required');
+  const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required');
+  const [passwordError, setPasswordError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     // If the form submission is successful, setSubmitted(true);
@@ -43,6 +49,11 @@ export default function SignUp() {
     //for the frontend, it'll just have the successful submission screen popup
 
     e.preventDefault();
+    setSubmitAttempted(true);
+    setEmailError(false);
+    setPasswordError(false);
+    setEmailErrorMessage('Email is required');
+    setPasswordErrorMessage('Password is required');
 
     if (!isLoaded) {
       return;
@@ -50,7 +61,6 @@ export default function SignUp() {
 
     //checks for empty fields
     if (!firstName || !lastName || !email || !password || !phone || !zipcode) {
-      alert('Please fill out all fields.');
       return;
     }
 
@@ -92,26 +102,30 @@ export default function SignUp() {
               interestQuestions,
             },
           });
-    
+
           // send the email.
           await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
-    
+
           // change the UI to our pending section.
           setPendingVerification(true);
-        } catch (err) {
+        } catch (err: any) {
           console.error(JSON.stringify(err, null, 2));
+          let error = err.errors[0];
+          if (error.code.includes('password')) {
+            setPasswordErrorMessage(error.message);
+            setPasswordError(true);
+          } else {
+            setEmailErrorMessage(error.message);
+            setEmailError(true);
+          }
         }
-
       } else {
-        console.log('Failed to create user');
+        console.log('Failed to create user in MongoDB');
       }
-
     } catch (error) {
       // Handle the error
       console.log('Error:', error);
     }
-
-    
   };
 
   // Verify User Email Code
@@ -132,7 +146,6 @@ export default function SignUp() {
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === 'complete') {
-
         await setActive({ session: completeSignUp.createdSessionId });
 
         // Redirect the user to a post sign-up route
@@ -162,7 +175,7 @@ export default function SignUp() {
                 Create Account
               </Heading>
             </Box>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={firstName === '' && submitAttempted}>
               <FormLabel>First Name</FormLabel>
               <Input
                 type="text"
@@ -171,8 +184,9 @@ export default function SignUp() {
                 onChange={(e) => setFirstName(e.target.value)}
                 required={true}
               />
+              <FormErrorMessage>First Name is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={lastName === '' && submitAttempted}>
               <FormLabel>Last Name</FormLabel>
               <Input
                 type="text"
@@ -181,8 +195,9 @@ export default function SignUp() {
                 onChange={(e) => setLastName(e.target.value)}
                 required={true}
               />
+              <FormErrorMessage>Last Name is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
               <FormLabel>Email</FormLabel>
               <Input
                 type="text"
@@ -191,8 +206,9 @@ export default function SignUp() {
                 onChange={(e) => setEmail(e.target.value)}
                 required={true}
               />
+              <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
               <FormLabel>Password</FormLabel>
               <Input
                 type={showPassword ? 'text' : 'password'}
@@ -213,8 +229,9 @@ export default function SignUp() {
                 {/* {showPassword ? "Hide" : "Show"} */}
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
               </Button>
+              <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
               <FormLabel>Phone</FormLabel>
               <Input
                 type="text"
@@ -223,8 +240,9 @@ export default function SignUp() {
                 onChange={(e) => setPhone(e.target.value)}
                 required={true}
               />
+              <FormErrorMessage>Phone is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={age === -1 && submitAttempted}>
               <FormLabel>Age</FormLabel>
               <Input
                 type="number"
@@ -232,8 +250,9 @@ export default function SignUp() {
                 variant="filled"
                 onChange={(e) => setAge(parseInt(e.target.value))}
               />
+              <FormErrorMessage>Age is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={gender === '' && submitAttempted}>
               <FormLabel>Gender</FormLabel>
               <Input
                 type="text"
@@ -241,8 +260,9 @@ export default function SignUp() {
                 variant="filled"
                 onChange={(e) => setGender(e.target.value)}
               />
+              <FormErrorMessage>Gender is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired>
+            <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
               <FormLabel>Zipcode</FormLabel>
               <Input
                 type="text"
@@ -250,6 +270,7 @@ export default function SignUp() {
                 variant="filled"
                 onChange={(e) => setZipcode(e.target.value)}
               />
+              <FormErrorMessage>Zipcode is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Interest Questions</FormLabel>
@@ -283,10 +304,11 @@ export default function SignUp() {
                 onChange={(e) => setCode(e.target.value)}
               />
             </FormControl>
-            <FormControl mb={4}>
+            <FormControl mb={4} isInvalid={submitAttempted}>
               <Button bg="#a3caf0" width="full" onClick={onPressVerify}>
                 Verify
               </Button>
+              <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>
             </FormControl>
           </>
         )}
