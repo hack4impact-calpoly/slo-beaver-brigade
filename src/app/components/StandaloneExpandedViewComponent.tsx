@@ -19,6 +19,7 @@ import React, { useRef, useState } from 'react';
 import { IEvent } from "@database/eventSchema";
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import EditEvent from "./EditEvent";
+import GuestSignUp from "./GuestSignUp";
 
 interface Props {
   eventDetails: IEvent | null;
@@ -28,6 +29,16 @@ interface Props {
 
 const ExpandedViewComponent = ({ eventDetails, showModal, setShowModal }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [guestIsOpen, setGuestIsOpen] = useState(false);
+
+  const handleGuestOpen = () => {
+    setGuestIsOpen(true);
+  };
+
+  const handleGuestClose = () => {
+    setGuestIsOpen(false);
+  };
 
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -117,16 +128,19 @@ const ExpandedViewComponent = ({ eventDetails, showModal, setShowModal }: Props)
                       justifyContent={{ base: 'center', md: 'space-evenly' }}
                       flexWrap="wrap"
                   >
-                      <Button
-                          onClick={onOpen}
+                      <div>
+                        <Button
+                          onClick={handleGuestOpen}
                           bg="lightblue"
                           fontSize={{ base: 'xl', md: 'md' }}
                           mb={{ base: 2, md: 5 }}
                           p={{ base: '2', md: '2' }}
                           flexBasis={{ base: '100%', md: 'auto' }}
-                      >
+                        >
                           <strong>Sign Up As Guest</strong>
-                      </Button>
+                        </Button>
+                        <GuestSignUp isOpen={guestIsOpen} onClose={handleGuestClose} />
+                      </div>
                       <Button
                           onClick={onOpen}
                           bg="lightblue"
