@@ -18,8 +18,6 @@ export default authMiddleware({
         "/api/events",
         "/api/events/:id",
         "/(api|trpc)(.*)",
-        "/createEvent"
-
     ],
 });
 /**
