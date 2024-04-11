@@ -1,8 +1,12 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
+  Checkbox,
+  Menu,
+  MenuButton,
+  MenuList,
   FormControl,
   FormLabel,
   Input,
@@ -10,60 +14,115 @@ import {
   VStack,
   Image,
   Text,
-  InputLeftElement,
-  InputGroup,
   Flex,
   Select,
+  Stack,
   Textarea,
   IconButton,
+
 } from "@chakra-ui/react";
-import { AddIcon, CalendarIcon } from "@chakra-ui/icons";
+import { AddIcon, ChevronDownIcon} from "@chakra-ui/icons";
 import MiniCalendar from "../components/MiniCalendar";
-import { Organization } from "@clerk/nextjs/server";
+import { formatISO, parse } from 'date-fns';
+
+// Define a type for groups to resolve '_id' does not exist on type 'never'
+type Group = {
+  _id: string;
+  group_name: string;
+};
+
 
 const CreateEvent = () => {
   const toast = useToast();
   const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState(new Date());
-  const [coverImage, setCoverImage] = useState("");
+  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [eventType, setEventType] = useState("");
-  const [organization, setOrganization] = useState("");
+  const [organizationIds, setOrganizationIds] = useState<string[]>([]);
+  // Specify type for group to avoid error
+  const [groups, setGroups] = useState<Group[]>([]);
   const [location, setLocation] = useState("");
   const [language, setLanguage] = useState("");
   const [description, setDescription] = useState("");
   const [accessibilityAccommodation, setAccessibilityAccommodation] =
     useState("");
   const [requiredItems, setRequiredItems] = useState("");
+  const [eventStart, setEventStart] = useState("");
+  const [eventEnd, setEventEnd] = useState("");
+  const [activeDate, setActiveDate] = useState("");
 
-  const handleEventNameChange = (e) => setEventName(e.target.value);
+  const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setEventName(e.target.value);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setCoverImage(file);
-    }
+  const handleOrganizationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const groupId = e.target.value;
+    const isChekced = e.target.checked;
+
+    setOrganizationIds ((prevIds: string[]) => {
+      if (isChekced){
+        //add to list
+        return [...prevIds,groupId]
+      } else {
+        //remove from list
+        return prevIds.filter((id) => id != groupId);
+      }
+    });
   };
 
-  const fileInputRef = useRef(null); // Create a ref for the file input
+  //Parse and format start and end time from user input
+  const handleTimeChange = (start: string, end: string) => {
+    // Format for parsing input times (handle both 12-hour and 24-hour formats)
+    const timeFormat = start.includes('AM') || start.includes('PM') ? "h:mm a" : "HH:mm";
+    
+    // Parse the start and end times as dates on the active date
+    const parsedStartTime = parse(`${start}`, timeFormat, new Date(`${activeDate}T00:00:00`));
+    const parsedEndTime = parse(`${end}`, timeFormat, new Date(`${activeDate}T00:00:00`));
 
-  // Adjust handleImageChange to automatically click the file input when the box is clicked
+    // Format the adjusted dates back into ISO strings
+    const formattedStartDateTime = formatISO(parsedStartTime);
+    const formattedEndDateTime = formatISO(parsedEndTime);
+
+    // Update the state with the formatted date times
+    setEventStart(formattedStartDateTime);
+    setEventEnd(formattedEndDateTime);
+  };
+
+  // Update active date upon change from MiniCalendar
+  const handleDateChangeFromCalendar = (newDate: string) => {
+    setActiveDate(newDate);
+  };  
+
+   // Create a ref for the file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+   // Function to trigger file input click for image upload
   const promptFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
+  // Handle file selection for the event cover image and set preview
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setImagePreview(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+      setCoverImage(file);
+    }
+  };
+
+  // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
+    // Form validation before submission
     if (
       !eventName ||
       !eventType ||
-      !organization ||
+      !accessibilityAccommodation ||
       !location ||
       !description
     ) {
@@ -77,14 +136,76 @@ const CreateEvent = () => {
       return;
     }
 
-    toast({
-      title: "Event Created",
-      description: "Your event has been successfully created.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+    const eventData = {
+      eventName,
+      location,
+      description,
+      wheelchairAccessible: accessibilityAccommodation === "Yes",
+      spanishSpeakingAccommodation: language === "Yes",
+      startTime: eventStart,
+      endTime: eventEnd,
+      volunteerEvent: eventType === "Volunteer",
+      groupsAllowed: organizationIds,
+    };
+    
+    // Attempt to create event via API and handle response
+    try{
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(eventData),
+      });
+
+      if (!response.ok) {
+        throw new Error('HTTP error! status: $(response.status)')
+      }
+
+      const result = await response.json()
+      console.log(result);
+
+      toast({
+        title: "Event Created",
+        description: "Your event has been successfully created.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Failed to create the event:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create the event",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+    }
   };
+
+  // Fetch groups data on component mount
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try{
+        const response = await fetch ("/api/group")
+        if (!response.ok) {
+          throw new Error("Failed to fetch groups")
+        }
+        const data = await response.json()
+        setGroups(data)
+      } catch (error){
+        toast({
+          title: "Error",
+          description: "Failed to fetch groups",
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+        });
+      }
+    };
+    fetchGroups();
+  }, [toast]);
 
   return (
     <Box p={8} mx="10">
@@ -139,7 +260,6 @@ const CreateEvent = () => {
 
       <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
         <VStack spacing={4} align="stretch" flex="1">
-          {/* All your form controls */}
           <FormControl isRequired>
             <FormLabel htmlFor="event-name" fontWeight="bold">
               Event Name
@@ -150,17 +270,6 @@ const CreateEvent = () => {
               onChange={handleEventNameChange}
             />
           </FormControl>
-          {/*<FormControl>
-            <FormLabel htmlFor="event-date">Event Date/Time</FormLabel>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none" children={<CalendarIcon />} />
-              <Input
-                id="event-date"
-                type="datetime-local"
-                onChange={(e) => setEventDate(new Date(e.target.value))}
-              />
-            </InputGroup>
-            </FormControl>*/}
 
           <Flex justifyContent="space-between" width="100%">
             <FormControl isRequired width="48%">
@@ -172,25 +281,41 @@ const CreateEvent = () => {
                 placeholder="Select"
                 onChange={(e) => setEventType(e.target.value)}
               >
-                {/* Populate with options */}
                 <option value="Watery Walk">Watery Walk</option>
                 <option value="Volunteer">Volunteer</option>
               </Select>
             </FormControl>
-
-            <FormControl isRequired width="48%">
+          
+            <FormControl width="48%">
               <FormLabel htmlFor="organization" fontWeight="bold">
                 Organization
               </FormLabel>
-              <Select
-                id="organization-type"
-                placeholder="Select"
-                onChange={(e) => setOrganization(e.target.value)}
-              >
-                {/* Populate with options */}
-                <option value="Watery Walk">I dont know</option>
-                <option value="Volunteer">I dont know</option>
-              </Select>
+              <Menu closeOnSelect={false}>
+                  <MenuButton 
+                    as={Button} 
+                    rightIcon={<ChevronDownIcon/> }
+                    fontWeight="normal" 
+                    bg="white" 
+                    borderColor="gray.300" 
+                    borderWidth="1px"
+                  >
+                    Select Organization
+                  </MenuButton>
+                  <MenuList>
+                    <Stack pl={4} pr={4}>
+                      {groups.map((group) => (
+                      <Checkbox
+                        key={group._id}
+                        value={group._id}
+                        isChecked={organizationIds.includes(group._id)}
+                        onChange={handleOrganizationChange}
+                      >
+                        {group.group_name}
+                      </Checkbox>
+                    ))}
+                    </Stack>
+                  </MenuList>
+              </Menu>
             </FormControl>
           </Flex>
 
@@ -206,17 +331,30 @@ const CreateEvent = () => {
           </FormControl>
 
           <FormControl isRequired>
-            <FormLabel htmlFor="language" fontWeight="bold">
-              Language
+            <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
+              Spanish Speaking Accommodation
             </FormLabel>
             <Select
-              id="language-type"
+              id="accommodation-type"
               placeholder="Select"
               onChange={(e) => setLanguage(e.target.value)}
             >
-              {/* Populate with options */}
-              <option value="English">English</option>
-              <option value="Spanish">Spanish</option>
+              <option >Yes</option>
+              <option >No</option>
+            </Select>
+          </FormControl>
+
+          <FormControl isRequired>
+            <FormLabel htmlFor="accessibility" fontWeight="bold">
+              Accessibility Accommodation
+            </FormLabel>
+            <Select
+              id="accessibility"
+              placeholder="Select"
+              onChange={(e) => setAccessibilityAccommodation(e.target.value)}
+            >
+              <option >Yes</option>
+              <option >No</option>
             </Select>
           </FormControl>
 
@@ -228,17 +366,6 @@ const CreateEvent = () => {
               id="description"
               placeholder="Enter event description"
               onChange={(e) => setDescription(e.target.value)}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="accessibility" fontWeight="bold">
-              Accessibility Accommodation
-            </FormLabel>
-            <Input
-              id="accessibility"
-              placeholder="Enter accessibility accommodation"
-              onChange={(e) => setAccessibilityAccommodation(e.target.value)}
             />
           </FormControl>
 
@@ -258,12 +385,15 @@ const CreateEvent = () => {
             Date/Time
           </Text>
           {/* MiniCalendar */}
-          <MiniCalendar />
+          <FormControl isRequired>
+            <MiniCalendar onTimeChange={(start, end) => handleTimeChange(start, end)}
+            onDateChange={(date) => handleDateChangeFromCalendar(date)} />
+          </FormControl>
         </Box>
       </Flex>
       <Box display="flex" justifyContent="center" mt={4}>
         <Button
-          colorScheme="blue"
+          colorScheme="yellow"
           onClick={handleCreateEvent}
           minWidth="150px"
           width="20%"
