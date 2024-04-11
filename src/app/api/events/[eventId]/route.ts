@@ -71,6 +71,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             const {
                 eventName,
                 location,
+                eventType,
                 description,
                 startTime,
                 endTime,
@@ -110,6 +111,9 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             }
             if (attendeeIds) {
                 event.attendeeIds = attendeeIds;
+            }
+            if (eventType) {
+                event.eventType = eventType;
             }
         }
         await event.save();

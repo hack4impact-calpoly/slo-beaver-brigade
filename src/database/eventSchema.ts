@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export type IEvent = {
     _id: string;
     eventName: string;
+    eventType: string;
     location: string;
     description: string;
     wheelchairAccessible: boolean;
@@ -17,6 +18,7 @@ export type IEvent = {
 // Mongoose schema
 const eventSchema = new Schema({
     eventName: { type: String, required: true },
+    eventType: { type: String, required: true },
     location: { type: String, required: true },
     description: { type: String, required: true },
     wheelchairAccessible: { type: Boolean, required: true },
@@ -29,6 +31,6 @@ const eventSchema = new Schema({
 });
 
 const Event =
-    mongoose.models["events"] || mongoose.model("events", eventSchema);
+    mongoose.models["eventsTest"] || mongoose.model("eventsTest", eventSchema);
 
 export default Event;
