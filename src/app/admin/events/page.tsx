@@ -4,6 +4,7 @@ import style from "@styles/admin/events.module.css";
 import EventPreviewComponent from "@components/EventPreview";
 import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
+import Link from "next/link";
 
 interface IEvent {
   _id: string;
@@ -154,11 +155,12 @@ const EventPreview = () => {
           <ul className={style.eventsList}>
             {filteredEvents.map((event) => (
               <li key={event._id} className={style.eventItem}>
+                <Link href={"/admin/events/edit/" + event._id}>
                 <EventPreviewComponent
                   event={event}
                   groupName={groupNames[event._id]}
-                  onClick={() => handleEventClick(event)} // Pass onClick handler
-                />
+                  onClick={() => console.log()}
+                /></Link>
               </li>
             ))}
           </ul>
