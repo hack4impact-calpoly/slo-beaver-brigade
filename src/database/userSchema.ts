@@ -70,11 +70,6 @@ const UserSchema = new Schema({
         required: false,
     },
     groupId: { type: Schema.Types.ObjectId, required: false },
-    digitalWaiver: {
-        type: [Schema.Types.ObjectId],
-        default: [],
-        required: false,
-    },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
