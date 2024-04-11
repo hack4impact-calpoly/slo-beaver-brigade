@@ -26,6 +26,8 @@ enum Role {
 export type EventInfo = {
     eventId: Schema.Types.ObjectId;
     digitalWaiver: Schema.Types.ObjectId | null;
+    startTime: Date | null;
+    endTime: Date | null;
 };
 
 export type IUser = {
