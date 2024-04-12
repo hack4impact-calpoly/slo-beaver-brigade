@@ -78,7 +78,7 @@ export default function Calendar(props: {
   return (
     <div>
       <div className={style.wrapper}>
-        <StandaloneCreateEvent
+      <StandaloneCreateEvent
           showModal={showModal}
           setShowModal={setShowModal}
         ></StandaloneCreateEvent>
@@ -97,9 +97,9 @@ export default function Calendar(props: {
             listPlugin,
           ]}
           headerToolbar={{
-            left: "prev,next today",
+            left: "prev",
             center: "title",
-            right: "myCustomButton dayGridMonth,listMonth",
+            right: "next",
           }}
           events={props.events}
           nowIndicator={true}

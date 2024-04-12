@@ -1,7 +1,9 @@
+"use client"
 import React, { useState } from "react";
 import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
+import DashboardCalendar from "@components/MiniCalendar";
 import {
   Box,
   Heading,
@@ -47,12 +49,17 @@ export function Calendarify(event: IEvent) {
   return calEvent;
 }
 
+export function handleTimeChange() {
+
+}
+
 export default async function Events() {
   const events = await getEvents();
   let calEvent = events.map(Calendarify);
 
   //Ievent object to pass into calendar component
   const dbEvent = JSON.parse(JSON.stringify(events));
+
 
   return (
     <Flex className={style.page} direction="column" align="flex-end">
@@ -96,6 +103,7 @@ export default async function Events() {
               </Checkbox>
             </Stack>
           </CheckboxGroup>
+          <DashboardCalendar onTimeChange={handleTimeChange}/>
         </Box>
         <Box flex="2" margin="10" padding="0">
           {" "}
