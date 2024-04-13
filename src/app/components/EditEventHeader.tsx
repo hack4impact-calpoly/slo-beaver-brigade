@@ -59,7 +59,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
             } else {
                 console.error('Failed to delete event:', response.statusText);
             }
-            router.push('/');
+            router.push('/admin/events');
         }
         catch(error){
             console.error('Error deleting event:', error);
