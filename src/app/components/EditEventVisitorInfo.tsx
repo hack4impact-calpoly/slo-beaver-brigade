@@ -181,7 +181,6 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 {visitorData.map((visitor, index) => (
                 <tr className={styles.visitorRow} key={index}>
                   <td className={styles.checkBox}>
-                      <Button></Button>
                       <Checkbox colorScheme="green" onChange={(e) => console.log("here1")} />
                   </td>
                   <td className={styles.nameColumn}>
