@@ -13,7 +13,7 @@ Just a cool little beaver project.
 
 ### Purpose
 
-{Short paragraph description of the non-profit mission and the purpose of this project. Who will this project help, why is it necessary. Impact of the project.}
+To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more. 
 
 ### Team
 
