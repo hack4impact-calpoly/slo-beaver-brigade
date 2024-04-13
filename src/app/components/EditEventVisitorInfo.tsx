@@ -124,6 +124,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         volunteerEvent: false,
         groupsAllowed: [],
         registeredIds: [],
+        attendeeIds:[]
     });
 
     useEffect(() => {
