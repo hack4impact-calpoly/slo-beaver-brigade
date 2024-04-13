@@ -22,10 +22,11 @@ type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
 // Define props interface for DashboardCalendar component
 type DashboardCalendarProps = {
   onTimeChange: OnTimeChangeFunction;
+  onDateChange: (date: string) => void;
 };
 
 const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
-  onTimeChange,
+  onTimeChange, onDateChange
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
@@ -48,6 +49,7 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
     const formattedDate = format(day, "yyyy-MM-dd");
     setSelectedDay(day);
     setActiveDate(formattedDate);
+    onDateChange(formattedDate)
   };
 
   // Function to handle changing start/end time
@@ -64,18 +66,21 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
   };
 
   // Function to handle date selection from the input field
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    let newDate = new Date(value);
-    // Correct for the timezone offset to ensure the date is not shifted
-    // This adds back the timezone offset to the date, making it noon local time
-    // helps avoid the date being shifted due to timezone differences
-    newDate = new Date(newDate.getTime() + newDate.getTimezoneOffset() * 60000);
+  // In DashboardCalendar, when the date changes
+const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const value = event.target.value;
+  let newDate = new Date(value + 'T12:00:00Z'); // Adding T12:00:00Z to keep it noon
 
-    setSelectedDay(newDate);
-    setActiveDate(format(newDate, "yyyy-MM-dd"));
-    setSelectedDate(newDate);
-  };
+  // Update local state
+  setSelectedDay(newDate);
+  setActiveDate(format(newDate, "yyyy-MM-dd"));
+  setSelectedDate(newDate);
+
+  if (onDateChange) {
+    onDateChange(format(newDate, "yyyy-MM-dd"));
+  }
+};
+
 
   // Effect hook to call onTimeChange function when start/end time changes
   useEffect(() => {
