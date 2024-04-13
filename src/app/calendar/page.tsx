@@ -48,6 +48,7 @@ export function Calendarify(event: IEvent) {
   return calEvent;
 }
 
+
 export default async function Events() {
   const events = await getEvents();
   let calEvent = events.map(Calendarify);
@@ -97,7 +98,7 @@ export default async function Events() {
               </Checkbox>
             </Stack>
           </CheckboxGroup>
-
+          <DashboardCalendar onTimeChange={handleTimeChange}/>
         </Box>
         <Box flex="2" margin="10" padding="0">
           {" "}
