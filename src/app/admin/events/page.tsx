@@ -20,7 +20,7 @@ interface IEvent {
   volunteerEvent: boolean;
   visitorCount?: number;
   groupsAllowed: ObjectId[];
-  attendeeIds: ObjectId[];
+  registeredIds: ObjectId[];
   digitalWaiver: string | null;
 }
 

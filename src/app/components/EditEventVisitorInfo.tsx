@@ -111,19 +111,20 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     },
   ]);
 
-  const [eventData, setEventData] = useState<IEvent>({
-    _id: "",
-    eventName: "",
-    location: "",
-    description: "",
-    wheelchairAccessible: false,
-    spanishSpeakingAccommodation: false,
-    startTime: new Date(0),
-    endTime: new Date(0),
-    volunteerEvent: false,
-    groupsAllowed: [],
-    attendeeIds: [],
-  });
+    const [eventData, setEventData] = useState<IEvent>({
+        _id: '',
+        eventName: '',
+        eventType: '',
+        location: '',
+        description: '',
+        wheelchairAccessible: false,
+        spanishSpeakingAccommodation: false,
+        startTime: new Date(0),
+        endTime: new Date(0),
+        volunteerEvent: false,
+        groupsAllowed: [],
+        registeredIds: [],
+    });
 
     useEffect(() => {
         const fetchEventData = async () => {
@@ -146,7 +147,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     useEffect(() => {
         const fetchVisitorData = async() => {
             if(eventData.eventName !== ""){
-                const visitorDataArray = await Promise.all(eventData.attendeeIds.filter(userId => userId !== null).map(async (userId) => {
+                const visitorDataArray = await Promise.all(eventData.registeredIds.filter(userId => userId !== null).map(async (userId) => {
                     const response = await fetch(`/api/user/${userId}`);
                     return response.json();
                 }))

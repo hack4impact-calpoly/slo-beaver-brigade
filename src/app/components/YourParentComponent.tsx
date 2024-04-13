@@ -22,7 +22,7 @@ const YourParentComponent: React.FC = () => {
     endTime: endTime,
     volunteerEvent: true,
     groupsAllowed: [],
-    attendeeIds: [], // array of Schema.Types.ObjectId
+    registeredIds: [], // array of Schema.Types.ObjectId
   };
 
   return <EventExpandedView eventDetails={eventDetails} showModal={showExpandedView} setShowModal={setShowExpandedView}/>;
