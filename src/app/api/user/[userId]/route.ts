@@ -19,11 +19,35 @@ export async function GET(
 
     // check if user exists
     if (!user) {
-      return Response.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return Response.json(user);
+    return NextResponse.json(user);
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+  }
+}
+
+export async function POST(
+  request: Request,
+  { params }: { params: { userId: string } }
+) {
+  try {
+    await connectDB();
+
+    // grab id from param
+    const id = params.userId;
+
+    // search for user in db
+    const user = await User.findById(id);
+
+    // check if user exists
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }

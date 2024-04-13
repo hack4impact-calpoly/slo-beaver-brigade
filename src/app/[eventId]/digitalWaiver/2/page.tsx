@@ -9,10 +9,15 @@ import styles from './page.module.css'
 import beaverLogo from '/docs/images/beaver-logo.svg'
 import Image from 'next/image'
 import NextLink from "next/link";
+import { ObjectId } from "mongoose";
 
+type IParams = {
+  params: {
+      eventId: string
+  }
+}
 
-
-export default function Waiver() {
+export default function Waiver({ params: { eventId } }: IParams) {
   const [dependents, setDependents] = useState(['']); //Used to store added dependents
   const [formFilled, setFormFilled] = useState(false);
   const [email, setEmail] = useState('');
@@ -40,7 +45,28 @@ export default function Waiver() {
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    //For later implementation
+    console.log("hmmmm");
+    event.preventDefault()
+    //check to see if there is an account associated with email
+    console.log("hello")
+    /*
+    const fetchUsers = async (): Promise<string> => {
+      try {
+        const res = await fetch(`/api/user`);
+        if (res.ok) {
+          const data = await res.json();
+          return data;
+        } else {
+          console.error("Error fetching group name:", res.statusText);
+          return "SLO Beaver Brigade";
+        }
+      } catch (error) {
+        console.error("Error fetching group name:", error);
+        return "SLO Beaver Brigade";
+      }
+    };
+    console.log(fetchUsers)
+    */
   };
 
   return (
@@ -99,13 +125,13 @@ export default function Waiver() {
           }
           {
             formFilled && 
-            <NextLink href = "/">
-              <Button sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
+            /*<NextLink href = "/">*/
+              <Button /*onClick={() => document.forms[0].submit()}*/ sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
               backgroundColor: '#337774', border: '2px solid #337774', color: 'white',
               borderRadius: '10px', 
               '&:hover':{ backgroundColor: '#296361', border: '2px solid #296361' } 
               }}>Continue</Button>
-           </NextLink>
+           /*</NextLink>*/
           }
           
         </Flex>
