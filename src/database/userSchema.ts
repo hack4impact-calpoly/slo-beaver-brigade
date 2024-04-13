@@ -26,8 +26,7 @@ enum Role {
 export type EventInfo = {
     eventId: Schema.Types.ObjectId;
     digitalWaiver: Schema.Types.ObjectId | null;
-    startTime: Date | null;
-    endTime: Date | null;
+    isRegistered: boolean;
 };
 
 export type IUser = {
@@ -64,6 +63,11 @@ const UserSchema = new Schema({
             {
                 eventId: { type: Schema.Types.ObjectId, required: true },
                 digitalWaiver: { type: Schema.Types.ObjectId, required: false },
+                isRegistered: {
+                    type: Boolean,
+                    required: false,
+                    default: false,
+                },
             },
         ],
         default: [],

@@ -13,6 +13,7 @@ export type IEvent = {
     volunteerEvent: boolean;
     groupsAllowed: Schema.Types.ObjectId[] | null;
     attendeeIds: Schema.Types.ObjectId[];
+    registeredIds: Schema.Types.ObjectId[];
 };
 
 // Mongoose schema
@@ -27,7 +28,16 @@ const eventSchema = new Schema({
     endTime: { type: Date, required: true },
     volunteerEvent: { type: Boolean, required: true },
     groupsAllowed: { type: [Schema.Types.ObjectId], required: false },
-    attendeeIds: { type: [Schema.Types.ObjectId], required: true, default: [] },
+    attendeeIds: {
+        type: [Schema.Types.ObjectId],
+        required: false,
+        default: [],
+    },
+    registeredIds: {
+        type: [Schema.Types.ObjectId],
+        required: true,
+        default: [],
+    },
 });
 
 const Event =

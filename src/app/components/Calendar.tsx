@@ -32,7 +32,7 @@ export type FCEvent = {
   textColor: string;
   volunteerEvent: boolean;
   groupsAllowed: number[];
-  attendeeIds: Schema.Types.ObjectId[];
+  registeredIds: Schema.Types.ObjectId[];
 };
 
 export default function Calendar(props: {
@@ -51,7 +51,7 @@ export default function Calendar(props: {
     endTime: new Date("2024-02-17T17:30:00.000+00:00"),
     volunteerEvent: false,
     groupsAllowed: [],
-    attendeeIds: [],
+    registeredIds: [],
   };
   const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);

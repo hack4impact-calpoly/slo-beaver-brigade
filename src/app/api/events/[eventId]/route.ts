@@ -46,7 +46,7 @@ export async function PUT(req: NextRequest, { params }: IParams) {
     const { userId } = await req.json();
     try {
         const event = await Event.findById(eventId).orFail();
-        event.attendeeIds.push(userId);
+        event.registeredIds.push(userId);
         await event.save();
         return NextResponse.json("User added to event: " + event, {
             status: 200,
@@ -79,7 +79,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 spanishSpeakingAccommodation,
                 volunteerEvent,
                 groupsAllowed,
-                attendeeIds,
+                registeredIds,
             }: IEvent = await req.json();
             if (location) {
                 event.location = location;
@@ -109,8 +109,8 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (groupsAllowed) {
                 event.groupsAllowed = groupsAllowed;
             }
-            if (attendeeIds) {
-                event.attendeeIds = attendeeIds;
+            if (registeredIds) {
+                event.registeredIds = registeredIds;
             }
             if (eventType) {
                 event.eventType = eventType;

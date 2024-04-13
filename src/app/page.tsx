@@ -48,7 +48,7 @@ const EventPlaceholder = () => {
 const Dashboard = () => {
   type Event = {
     _id: string;
-    attendeeIds: string[];
+    registeredIds: string[];
     eventName: string;
     startTime: Date; // Assuming ISO string format
     endTime: Date; // Assuming ISO string format
@@ -144,13 +144,13 @@ const Dashboard = () => {
           // Filter events where the current user is an attendee
           const userSignedUpEvents = allEvents.filter(
             (event: any) =>
-              event.attendeeIds.includes(userId) &&
+              event.registeredIds.includes(userId) &&
               new Date(event.startTime) >= currentDate
           );
           // Filter events where the current user is not an attendee
           const eventsUserHasntRegistered = allEvents.filter(
             (event: any) =>
-              !event.attendeeIds.includes(userId) &&
+              !event.registeredIds.includes(userId) &&
               new Date(event.startTime) >= currentDate
           );
 

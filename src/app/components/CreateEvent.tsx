@@ -79,7 +79,7 @@ import {
         endTime: new Date(`${date}T${end}`),
         volunteerEvent: vol,
         groupsAllowed: myGrp ? [] : null,
-        attendeeIds: [],
+        registeredIds: [],
       };
   
       console.log("New Event Data:", eventData);

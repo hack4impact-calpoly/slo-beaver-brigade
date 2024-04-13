@@ -88,7 +88,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         endTime: new Date(0),
         volunteerEvent: false,
         groupsAllowed: [],
-        attendeeIds: [],
+        registeredIds: [],
     });
 
     useEffect(() => {
@@ -112,7 +112,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     useEffect(() => {
         const fetchVisitorData = async() => {
             if(eventData.eventName !== ""){
-                const visitorDataArray = await Promise.all(eventData.attendeeIds.filter(userId => userId !== null).map(async (userId) => {
+                const visitorDataArray = await Promise.all(eventData.registeredIds.filter(userId => userId !== null).map(async (userId) => {
                     const response = await fetch(`/api/user/${userId}`);
                     return response.json();
                 }))
