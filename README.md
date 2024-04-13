@@ -17,7 +17,7 @@ To allow the SLO Beaver Brigade team to more efficiently keep track of their vol
 
 ### Team
 
-The SLO Beaver Brigade team consists of {#} Cal Poly students. Over the course of about 9 months, we worked as a team to deploy this web application. The team members are listed below:
+The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of about 9 months, we worked as a team to deploy this web application. The team members are listed below:
 
 - [Tyler Kim](https://www.linkedin.com/) - Project Manager
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead
