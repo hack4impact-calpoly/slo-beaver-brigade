@@ -178,15 +178,21 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             </div>
             <table className = {styles.visitorTable}>
                 <tbody>
-                    {visitorData.map((visitor, index) => (
-                        <tr className = {styles.visitorRow} key={index}>
-                            <td className = {styles.nameColumn}>{visitor.firstName} {visitor.lastName}</td>
-                            <td className = {styles.emailColumn}>{visitor.email}</td>
-                            <td className = {styles.detailsColumn}>
-                                <SingleVisitorComponent visitorData={visitor}/>
-                            </td>
-                        </tr>
-                     ))}
+                {visitorData.map((visitor, index) => (
+                <tr className={styles.visitorRow} key={index}>
+                  <td className={styles.checkBox}>
+                      <Button></Button>
+                      <Checkbox colorScheme="green" onChange={(e) => console.log("here1")} />
+                  </td>
+                  <td className={styles.nameColumn}>
+                    {visitor.firstName} {visitor.lastName}
+                  </td>
+                  <td className={styles.emailColumn}>{visitor.email}</td>
+                  <td className={styles.detailsColumn}>
+                    <SingleVisitorComponent visitorData={visitor} />
+                  </td>
+                </tr>
+              ))}
 
                 </tbody>
             </table>
