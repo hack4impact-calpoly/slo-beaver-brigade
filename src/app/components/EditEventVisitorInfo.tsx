@@ -125,92 +125,75 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     attendeeIds: [],
   });
 
-  useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/events/${eventId}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error, status: ${response.status}`);
+    useEffect(() => {
+        const fetchEventData = async () => {
+            try {
+                const response = await fetch(`/api/events/${eventId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error, status: ${response.status}`);
+                }
+                const data = await response.json();
+                data.startTime = new Date(data.startTime);
+                data.endTime = new Date(data.endTime);
+                setEventData(data);
+            } catch (error) {
+                console.error('Error fetching event data:', error);
+            }
+        };
+        fetchEventData();
+    }, [eventId]);
+
+    useEffect(() => {
+        const fetchVisitorData = async() => {
+            if(eventData.eventName !== ""){
+                const visitorDataArray = await Promise.all(eventData.attendeeIds.filter(userId => userId !== null).map(async (userId) => {
+                    const response = await fetch(`/api/user/${userId}`);
+                    return response.json();
+                }))
+                setVisitorData(visitorDataArray)
+                setLoading(false);
+            }
         }
-        const data = await response.json();
-        data.startTime = new Date(data.startTime);
-        data.endTime = new Date(data.endTime);
-        setEventData(data);
-      } catch (error) {
-        console.error("Error fetching event data:", error);
-      }
-    };
-    fetchEventData();
-  }, [eventId]);
+        fetchVisitorData()
+    }, [eventData]);
+    
+   
+    return(
+        <Box className={styles.eventInformation}>
+            {loading ? (
+                <div className = {styles.visitorHeadingLoading}>
+                 Visitors
+                 <Spinner className = {styles.spinner} speed="0.8s" thickness="3px"/>
+                </div>
+            ) : 
+            (
+            <>
+            <div className = {styles.visitorHeading}>
+                Visitors
+                <div className = {styles.visitorCount}>
+                    ({visitorData.length})
+                </div>
+            </div>
+            <table className = {styles.visitorTable}>
+                <tbody>
+                    {visitorData.map((visitor, index) => (
+                        <tr className = {styles.visitorRow} key={index}>
+                            <td className = {styles.nameColumn}>{visitor.firstName} {visitor.lastName}</td>
+                            <td className = {styles.emailColumn}>{visitor.email}</td>
+                            <td className = {styles.detailsColumn}>
+                                <SingleVisitorComponent visitorData={visitor}/>
+                            </td>
+                        </tr>
+                     ))}
 
-  useEffect(() => {
-    const fetchVisitorData = async () => {
-      if (eventData.eventName !== "") {
-        const visitorDataArray = await Promise.all(
-          eventData.attendeeIds
-            .filter((userId) => userId !== null)
-            .map(async (userId) => {
-              const response = await fetch(
-                `http://localhost:3000/api/user/${userId}`
-              );
-              return response.json();
-            })
-        );
-        setVisitorData(visitorDataArray);
-        setLoading(false);
-      }
-    };
-    fetchVisitorData();
-  }, [eventData]);
+                </tbody>
+            </table>
+            </>
+            )}
+        </Box>
+    );
+        
+}
 
-  function setAttendance(checked : String, userid : String){
-    console.log("here2")
-    if(checked === "True"){
-      console.log("its true")
-    }
-    else{
-      console.log("its false")
-    }
-  }
-
-  return (
-    <Box className={styles.eventInformation}>
-      {loading ? (
-        <div className={styles.visitorHeadingLoading}>
-          Visitors
-          <Spinner className={styles.spinner} speed="0.8s" thickness="3px" />
-        </div>
-      ) : (
-        <>
-          <div className={styles.visitorHeading}>
-            Visitors
-            <div className={styles.visitorCount}>({visitorData.length})</div>
-          </div>
-          <table className={styles.visitorTable}>
-            <tbody>
-              {visitorData.map((visitor, index) => (
-                <tr className={styles.visitorRow} key={index}>
-                  <td className={styles.checkBox}>
-                      <Button></Button>
-                      <Checkbox colorScheme="green" onChange={(e) => console.log("here1")} />
-                  </td>
-                  <td className={styles.nameColumn}>
-                    {visitor.firstName} {visitor.lastName}
-                  </td>
-                  <td className={styles.emailColumn}>{visitor.email}</td>
-                  <td className={styles.detailsColumn}>
-                    <SingleVisitorComponent visitorData={visitor} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
-    </Box>
-  );
-};
-
+  
 export default EditEventVisitorInfo;
