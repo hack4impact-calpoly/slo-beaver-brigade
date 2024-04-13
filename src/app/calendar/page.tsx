@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
@@ -48,6 +49,13 @@ export function Calendarify(event: IEvent) {
   return calEvent;
 }
 
+export function handleTimeChange() {
+
+}
+
+export function handleDateChange() {
+
+}
 
 export default async function Events() {
   const events = await getEvents();
@@ -98,7 +106,7 @@ export default async function Events() {
               </Checkbox>
             </Stack>
           </CheckboxGroup>
-          <DashboardCalendar onTimeChange={handleTimeChange}/>
+          <DashboardCalendar onTimeChange={handleTimeChange} onDateChange={handleDateChange}/>
         </Box>
         <Box flex="2" margin="10" padding="0">
           {" "}
