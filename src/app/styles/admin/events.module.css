@@ -1,128 +1,135 @@
 .mainContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
 .sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  width: 15vw;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 15vw;
 }
 
 .cardContainer {
-width: 80%;
+    width: 80%;
 }
 
 .eventsList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 35px;
-  padding: 0;
-  list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    padding: 0;
+    list-style: none;
 }
 
 .searchBar {
-  font-weight: bold;
-  color: black;
-  padding: 5px 20px 5px 20px;
-  border: 1.5px solid #337774;
-  border-radius: 10px;
-  width: 100%;
+    font-weight: bold;
+    color: black;
+    padding: 5px 20px 5px 20px;
+    border: 1.5px solid #337774;
+    border-radius: 10px;
+    width: 100%;
 }
 
 .sortSelect {
-  background-color: white;
-  color: #333; 
-  padding: 10px 20px; 
-  margin: 10px 0; 
-  border: 1px solid #ddd; 
-  border-radius: 5px; 
-  font-size: 16px;
-  cursor: pointer; 
+    background-color: white;
+    color: #333;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 .sortSelect:focus {
-  outline: none; 
-  border-color: #aaa; 
+    outline: none;
+    border-color: #aaa;
 }
 
 .searchWrapper {
-  position: relative;
-  display: flex;
-  width: fit-content;
+    position: relative;
+    display: flex;
+    width: fit-content;
 }
 
 .sortSelect {
-  padding: 5px;
-  margin-bottom: 10px;
-  border: 1px solid black;
-  border-radius: 5px;
-  box-sizing: border-box;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .checkBoxes {
-  text-align: left;
+    text-align: left;
 }
 
 .yellowButton {
-  padding: 12px 30px;
-  background-color: #ecb94a;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: bold;
+    padding: 12px 30px;
+    background-color: #ecb94a;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .yellowButton:hover {
-  background-color: #d6a33e;
-  cursor: pointer;
+    background-color: #d6a33e;
+    cursor: pointer;
 }
 
 @media (max-width: 1200px) {
-  .mainContainer {
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-  }
-
-  .cardContainer {
-    width: auto;
+    .mainContainer {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
     }
 
-  .sidebar {
-    width: 100%;
-    margin-left: 0;
-    align-items: center;
-    gap: 10px;
-  }
+    .eventsList {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 35px;
+        padding: 0;
+        list-style: none;
+    }
+
+    .cardContainer {
+        width: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin-left: 0;
+        align-items: center;
+        gap: 10px;
+    }
 }
 
 @media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        margin-left: 0;
+        align-items: center;
+    }
 
-  .sidebar {
-    width: 100%;
-    margin-left: 0;
-    align-items: center;
-  }
+    .eventsList {
+        grid-template-columns: 1fr;
+        align-items: center;
+    }
 
-  .eventsList {
-    grid-template-columns: 1fr;
-    align-items: center;
-  }
+    .searchBar,
+    .sortSelect {
+        padding: 10px;
+    }
 
-  .searchBar,
-  .sortSelect {
-    padding: 10px;
-  }
+    .checkBoxes label {
+        display: block;
+        margin-bottom: 5px;
+    }
 
-  .checkBoxes label {
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  .checkBoxes input[type="checkbox"] {
-    margin-right: 5px;
-  }
+    .checkBoxes input[type="checkbox"] {
+        margin-right: 5px;
+    }
 }

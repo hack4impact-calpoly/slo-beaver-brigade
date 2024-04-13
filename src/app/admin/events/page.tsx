@@ -29,7 +29,7 @@ const EventPreview = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("earliest");
+  const [sortOrder, setSortOrder] = useState("latest");
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
   const [showFutureEvents, setShowFutureEvents] = useState(false);
