@@ -165,6 +165,16 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     fetchVisitorData();
   }, [eventData]);
 
+  function setAttendance(checked : String, userid : String){
+    console.log("here2")
+    if(checked === "True"){
+      console.log("its true")
+    }
+    else{
+      console.log("its false")
+    }
+  }
+
   return (
     <Box className={styles.eventInformation}>
       {loading ? (
@@ -182,16 +192,10 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             <tbody>
               {visitorData.map((visitor, index) => (
                 <tr className={styles.visitorRow} key={index}>
-                    {(new Date > eventData.startTime)?
-                        <td className={styles.checkBox}>
-                            <Checkbox colorScheme="green" />
-                        </td>
-                        :
-                        <td className={styles.checkBox}>
-                            <Checkbox colorScheme="green" isDisabled />
-                        </td>
-                    }
-
+                  <td className={styles.checkBox}>
+                      <Button></Button>
+                      <Checkbox colorScheme="green" onChange={(e) => console.log("here1")} />
+                  </td>
                   <td className={styles.nameColumn}>
                     {visitor.firstName} {visitor.lastName}
                   </td>

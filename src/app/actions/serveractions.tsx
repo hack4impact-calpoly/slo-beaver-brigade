@@ -14,7 +14,7 @@ export async function addAttendee(userid : String, eventid : String) {
             return Response.json("Invalid Comment.", { status: 400 });
         }
 
-        await Event.deleteOne({eventid},{$push: {attendeeIds : userid} }).orFail();
+        await Event.updateOne({eventid},{$pull: {attendeeIds : userid} }).orFail();
         //await event.save();
 
         return Response.json("ID Deleted", { status: 200 });

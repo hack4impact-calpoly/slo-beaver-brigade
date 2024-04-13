@@ -1,290 +1,285 @@
-.eventPage{
-    padding: 3vh 5vw 10vh 5vw
+.eventPage {
+  padding: 3vh 5vw 10vh 5vw;
 }
 
-.header{
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2vh;
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2vh;
 }
-.eventTitle{
-    font-family: 'Lato';
-    font-size: 23px;
-}
-
-.deleteButton{
-    padding: 5px 30px 5px 30px;
-    border: 2px solid #D93636;
-    color: #D93636;
-    border-radius: 7px;
-    font-family: 'Lato';
-    font-weight: bold;
-
+.eventTitle {
+  font-family: "Lato";
+  font-size: 23px;
 }
 
-.deleteButton:hover{
-    background-color: #f2b3b3;
-    color: white;
+.deleteButton {
+  padding: 5px 30px 5px 30px;
+  border: 2px solid #d93636;
+  color: #d93636;
+  border-radius: 7px;
+  font-family: "Lato";
+  font-weight: bold;
 }
 
-.temp{
-    width: 100%;
-    display: flex;
+.deleteButton:hover {
+  background-color: #f2b3b3;
+  color: white;
 }
 
-.leftColumn{
-    height: 100%;
-    margin-bottom: 5%;
+.temp {
+  width: 100%;
+  display: flex;
 }
 
-.rightColumn{
-    height: 100%;
-    margin-bottom: 5%
+.leftColumn {
+  height: 100%;
+  margin-bottom: 5%;
 }
 
-.imageContainer{
-    width: 100%;
-    height: 35vh;
-    overflow: hidden;
-    border-radius: 10px;
-    margin-bottom: 5%;
+.rightColumn {
+  height: 100%;
+  margin-bottom: 5%;
 }
 
-.imageContainer img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.imageContainer {
+  width: 100%;
+  height: 35vh;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 5%;
 }
 
-.eventInformation{
-    background-color: #FBF9F9;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    padding-bottom: 4%;
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.visitorHeading{
-    background-color: #337774;
-    color: white;
-    width: 100%;
-    height: 45px;
-    border-radius: 10px 10px 0px 0px;
-    font-family: 'Lato';
-    font-weight: bold;
-    font-size: 23px;
-    padding-left: 4%;
-    padding-top: 5px;
-    text-align: left;
-    display: flex;
-    margin-bottom: 1.5vh;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.eventInformation {
+  background-color: #fbf9f9;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  padding-bottom: 4%;
 }
 
-.visitorHeadingLoading{
-    background-color: #337774;
-    color: white;
-    width: 100%;
-    height: 45px;
-    border-radius: 10px 10px 0px 0px;
-    font-family: 'Lato';
-    font-weight: bold;
-    font-size: 23px;
-    padding-left: 4%;
-    padding-top: 5px;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1.5vh;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.visitorHeading {
+  background-color: #337774;
+  color: white;
+  width: 100%;
+  height: 45px;
+  border-radius: 10px 10px 0px 0px;
+  font-family: "Lato";
+  font-weight: bold;
+  font-size: 23px;
+  padding-left: 4%;
+  padding-top: 5px;
+  text-align: left;
+  display: flex;
+  margin-bottom: 1.5vh;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.emailAllVisitors{
-    width: 100%;
-    text-align: right;
-    background-color: none;
-    font-family: 'Lato';
-    font-size: 17px;
-    margin-bottom: 2%;
+.visitorHeadingLoading {
+  background-color: #337774;
+  color: white;
+  width: 100%;
+  height: 45px;
+  border-radius: 10px 10px 0px 0px;
+  font-family: "Lato";
+  font-weight: bold;
+  font-size: 23px;
+  padding-left: 4%;
+  padding-top: 5px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5vh;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.emailAllVisitors:hover{
-    text-decoration-line: underline;
+.emailAllVisitors {
+  width: 100%;
+  text-align: right;
+  background-color: none;
+  font-family: "Lato";
+  font-size: 17px;
+  margin-bottom: 2%;
 }
 
-.topBlock{
-    display: flex
+.emailAllVisitors:hover {
+  text-decoration-line: underline;
 }
 
-.leftBlock{
-    width: 60%;
-    padding-left: 4%;
+.topBlock {
+  display: flex;
 }
 
-.rightBlock{
-    width: 40%;
-    padding-left: 5%;
+.leftBlock {
+  width: 60%;
+  padding-left: 4%;
 }
 
-.eventField{
-    font-family: 'Lato';
-    font-weight: bold;
-    text-align: left;
-    font-size: 16px;
-    margin: 1.5vh 0vw 1.5vh 0vw
-
+.rightBlock {
+  width: 40%;
+  padding-left: 5%;
 }
 
-.eventEntry{
-    font-family: 'Lato';
-    text-align: left;
-    font-size: 16px;
+.eventField {
+  font-family: "Lato";
+  font-weight: bold;
+  text-align: left;
+  font-size: 16px;
+  margin: 1.5vh 0vw 1.5vh 0vw;
 }
 
-.bottomBlock{
-    width: 100%;
-    padding-left: 4%;
-    padding-right: 4%;}
-
-.checkBox{
-    padding: 2.25% 3% 1.5% 2%;
-    text-align: left;
-    width: 5%;
-    font-size: 15px;
+.eventEntry {
+  font-family: "Lato";
+  text-align: left;
+  font-size: 16px;
 }
 
-.visitorCount{
-    font-family: 'Lato';
-    font-weight: normal;
-    margin-left: 1.5%;
+.bottomBlock {
+  width: 100%;
+  padding-left: 4%;
+  padding-right: 4%;
 }
 
-.nameColumn{
-    padding: 1.5% 3% 1.5% 3%;
-    text-align: left;
-    width: 30%;
-    font-size: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space:nowrap;
+.checkBox {
+  padding: 2.25% 3% 1.5% 1.5%;
+  text-align: left;
+  width: 5%;
+  font-size: 15px;
 }
 
-.emailColumn{
-    padding: 1.5% 3% 1.5% 3%;
-    text-align: left;
-    width: 60%;
-    font-size: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
+.visitorCount {
+  font-family: "Lato";
+  font-weight: normal;
+  margin-left: 1.5%;
 }
 
-.detailsColumn{
-    padding: 1.5% 0% 1.5% 3%;
-    text-align: left;
-    width: 20%;
-    font-size: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-right: 3%;
+.nameColumn {
+  padding: 1.5% 3% 1.5% 3%;
+  text-align: left;
+  width: 30%;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.detailsColumn:hover{
-    text-decoration-line: underline;
+.emailColumn {
+  padding: 1.5% 3% 1.5% 3%;
+  text-align: left;
+  width: 60%;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.visitorTable{
-    width: 100%;
-    table-layout: fixed;
+.detailsColumn {
+  padding: 1.5% 0% 1.5% 3%;
+  text-align: left;
+  width: 20%;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 3%;
 }
 
-.visitorInfoSmallHeader{
-    background-color: #337774;
-    color: white;
-    font-family: 'Lato';
-    font-weight: bold;
-    font-size: 15px;
-    border-radius: 10px;
-    text-align: left;
-    padding: 2%;
-    margin: 7% 0% 3% 0%;;
+.detailsColumn:hover {
+  text-decoration-line: underline;
 }
 
-.fieldInfo{
-    text-align: left;
-    margin: 3% 5% 3% 5%;
-    font-size: 14px;
-    font-family: 'Lato'
+.visitorTable {
+  width: 100%;
+  table-layout: fixed;
 }
 
-.editEvent{
-    width: 45%;
-    height: 100%;
-    font-size: 17px;
-    margin-left: 50px;
-    text-align: right;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+.visitorInfoSmallHeader {
+  background-color: #337774;
+  color: white;
+  font-family: "Lato";
+  font-weight: bold;
+  font-size: 15px;
+  border-radius: 10px;
+  text-align: left;
+  padding: 2%;
+  margin: 7% 0% 3% 0%;
 }
 
-.editEvent:hover{
-    text-decoration-line: underline;
+.fieldInfo {
+  text-align: left;
+  margin: 3% 5% 3% 5%;
+  font-size: 14px;
+  font-family: "Lato";
 }
 
-.originalEditText{
-    margin: 5px;
+.editEvent {
+  width: 45%;
+  height: 100%;
+  font-size: 17px;
+  margin-left: 50px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
-.editButton{
-    position: relative;
-    margin: 0.25% 1.5% 0.5% 0.5%;
-    width: 23px;
-
+.editEvent:hover {
+  text-decoration-line: underline;
 }
 
-.confirmDeletion{
-    width: 30%;
-    height: 35%;
-    padding: 70px;
-    border-radius: 15px;
-    background-color: white;
-    font-family: 'Lato';
-    font-weight: bold;
-    font-size: 25px;
+.originalEditText {
+  margin: 5px;
 }
 
-.cancelOrDelete{
-    display: flex;
-    width: 100%;
-    margin-top: 5%;
-    font-size: 15px;
-    justify-content: space-between;
+.editButton {
+  position: relative;
+  margin: 0.25% 1.5% 0.5% 0.5%;
+  width: 23px;
 }
 
-.cancelButton{
-    padding: 5px 30px 5px 30px;
-    border: 2px solid #989898;
-    color: #989898;
-    background-color: white;
-    border-radius: 7px;
-    font-family: 'Lato';
-    font-weight: bold;
-
+.confirmDeletion {
+  width: 30%;
+  height: 35%;
+  padding: 70px;
+  border-radius: 15px;
+  background-color: white;
+  font-family: "Lato";
+  font-weight: bold;
+  font-size: 25px;
 }
 
-.cancelButton:hover{
-    background-color: #ffffff;
-    color: #4a4848;;
-    border: 2px solid #4a4848;
+.cancelOrDelete {
+  display: flex;
+  width: 100%;
+  margin-top: 5%;
+  font-size: 15px;
+  justify-content: space-between;
 }
 
+.cancelButton {
+  padding: 5px 30px 5px 30px;
+  border: 2px solid #989898;
+  color: #989898;
+  background-color: white;
+  border-radius: 7px;
+  font-family: "Lato";
+  font-weight: bold;
+}
 
-.spinner{
-    align-self: right;
-    margin: 5px 10px 5px 10px;
+.cancelButton:hover {
+  background-color: #ffffff;
+  color: #4a4848;
+  border: 2px solid #4a4848;
+}
+
+.spinner {
+  align-self: right;
+  margin: 5px 10px 5px 10px;
 }
