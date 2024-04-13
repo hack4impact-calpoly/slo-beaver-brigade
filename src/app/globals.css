@@ -9,12 +9,13 @@
 
   @media (max-width: 1090px) {
     .fc .fc-toolbar.fc-header-toolbar {
-      display: block;
+      display: flex;
       text-align: center;
     }
 
     .fc-header-toolbar .fc-toolbar-chunk {
-      display: block;
+      display: flex;
     }
+    
   }
 }

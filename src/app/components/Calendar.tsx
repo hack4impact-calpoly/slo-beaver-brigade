@@ -59,23 +59,19 @@ export default function Calendar(props: {
   const [showExpandedView, setShowExpandedView] = useState(false);
   const [getEvent, setEvent] = useState<IEvent | null>(null);
 
-  if (props.admin) {
-    buttonType.myCustomButton = {
+  const customButtons = props.admin ? {
+    myCustomButton: {
       text: "Add Event",
-      click: function () {
-        setShowModal(true);
-      },
+      click: () => setShowModal(true),
       hint: "Add Event Button",
-    };
-  } else {
-    buttonType.myCustomButton = {
-      text: "Sign Up",
-      click: function () {
-        setShowEventList(true);
-      },
-      hint: "Sign Up Button",
-    };
-  }
+    }
+  } : {};
+
+  const headerToolbar = {
+    left: "prev",
+    center: "title",
+    right: props.admin ? "next myCustomButton" : "next",
+  };
 
   return (
     <div>
@@ -100,11 +96,7 @@ export default function Calendar(props: {
             bootstrap5Plugin,
             listPlugin,
           ]}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "myCustomButton dayGridMonth,listMonth",
-          }}
+          headerToolbar={headerToolbar}
           events={props.events}
           nowIndicator={true}
           editable={true}

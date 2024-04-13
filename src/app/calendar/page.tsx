@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
+import DashboardCalendar from "@components/MiniCalendar";
 import {
   Box,
   Heading,
@@ -96,6 +97,7 @@ export default async function Events() {
               </Checkbox>
             </Stack>
           </CheckboxGroup>
+
         </Box>
         <Box flex="2" margin="10" padding="0">
           {" "}
