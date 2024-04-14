@@ -48,7 +48,7 @@ const ProfileEdit: React.FC = () => {
        lastName: user.lastName || "",
        username: user.username || "",
        email: user.primaryEmailAddress?.emailAddress  || "",
-       zipcode: String(user.unsafeMetadata["phone"])  || "",
+       zipcode: String(user.unsafeMetadata["zipcode"])  || "",
        preferredLanguage: "",
        phoneNumber: String(user.unsafeMetadata["phone"])  || "",
        password: "",
