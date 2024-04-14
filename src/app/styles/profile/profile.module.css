@@ -1,152 +1,182 @@
 /* profile.module.css */
 
-.profileContainer {
-    max-width: 1400px; /* Adjusted max-width for better layout */
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .formGroup {
-    margin-bottom: 20px;
-  }
-  
-  .highlight {
-    background-color: #006d75; /* Slightly darker background color */
-    color: #fff; /* White text */
-    border-radius: 15px 15px 0 0; /* Rounded edges at the top */
-  }
-  
-  .accountDetails {
-    width: 35%; /* Adjusted width for Account Details */
-    float: left;
-  }
-  
-  .accountDetails .formFields > div > p {
-    margin-top: 35px;
-    margin-left: 15px;
-    white-space: nowrap;
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Align items vertically */
-    justify-content: space-between;
-  }
-  
-  .accountDetails .formFields > div > p button {
-    white-space: nowrap;
-    margin-left: 155px; /* Add margin between the field and the button */
-  }
-  
-  /* profile.module.css */
-  
-  .personalDetails .formFields > div > p {
-    margin-top: 35px;
-    margin-left: 15px;
-  }
-  
-  .savedAddress .formFields > div > p {
-    margin-top: 35px;
-    margin-left: 15px;
-  }
-  
-  .accountHeader,
-  .personalHeader,
-  .savedAddressHeader {
-    padding: 10px 15px; /* Adjusted padding for headers */
-  }
-  
-  .personalDetails,
-  .savedAddress {
-    width: 60%; /* Adjusted width for Personal Details and Saved Address */
-    float: right;
-    margin-bottom: 80px;
-  }
-  
-  .title {
-    color: #fff; /* White text */
-  }
-  
-  .biggerTitle {
-    font-size: 22px; /* Decreased font size for titles */
-  }
-  
-  .formGroup label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .formGroup input[type="text"],
-  .formGroup input[type="email"],
-  .formGroup input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .formGroup button {
-    clear: both;
-    margin-top: 20px;
-    padding: 1px 20px;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .formContainer {
-    overflow: hidden;
-  }
-  
-  .formFields {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    grid-gap: 20px;
-  }
-  
-  .editButton {
-    font-size: 22px; /* Match the font size with the header */
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Align items vertically */
-    cursor: pointer; /* Change cursor to pointer on hover */
-    margin-right: 15px;
-    text-decoration: underline;
-  }
-  
-  .editFieldButton {
-    font-size: 16px; /* Adjusted font size for smaller buttons */
-    padding: 5px 10px; /* Adjusted padding for smaller buttons */
-    background-color: #ffc107; /* Yellow background color */
-    color: #000; /* Black text color */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .pencilIcon {
-    width: 25px; /* Adjust the width of the pencil icon */
-    height: 25px; /* Adjust the height of the pencil icon */
-    margin-left: auto; /* Move the icon to the far right */
-  }
-  
-  /* Adjusted padding for headers */
-  .accountHeader,
-  .personalHeader,
-  .savedAddressHeader {
-    padding: 10px 0 10px 15px;
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Align items vertically */
-    justify-content: space-between; /* Add space between items */
-  }
-  
-  @media (min-width: 768px) {
-    .formFields {
-      grid-template-columns: repeat(2, 1fr);
-    }
 
-    .formGroup .editFieldButton {
-      display: block; /* Change display to block for stacking buttons */
-      margin-top: 10px; /* Add margin-top for spacing between buttons */
-      margin-left: auto; /* Move buttons to the right */
-    }
+.profileContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+ }
+ 
+ 
+ .formGroup {
+  margin-bottom: 20px;
+ }
+ 
+ 
+ .highlight {
+  background-color: #006d75;
+  color: #fff;
+  border-radius: 15px 15px 0 0;
+ }
+ 
+ 
+ .accountDetails {
+  width: 35%;
+  float: left;
+ }
+ 
+ 
+ .accountDetails .formFields > div > p {
+  margin-top: 35px;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+ }
+ 
+ 
+ .accountDetails .formFields > div > p button {
+  margin-left: 100px;
+  padding: 5px 10px;
+ 
+ 
+ }
+ 
+ 
+ .personalDetails .formFields > div > p {
+  margin-top: 35px;
+  margin-left: 15px;
+ }
+ 
+ 
+ .savedAddress .formFields > div > p {
+  margin-top: 35px;
+  margin-left: 15px;
+ }
+ 
+ 
+ .accountHeader,
+ .personalHeader,
+ .savedAddressHeader {
+  padding: 10px 15px;
+ }
+ 
+ 
+ .personalDetails,
+ .savedAddress {
+  width: 60%;
+  float: right;
+  margin-bottom: 80px;
+ }
+ 
+ 
+ .title {
+  color: #fff;
+ }
+ 
+ 
+ .biggerTitle {
+  font-size: 22px;
+ }
+ 
+ 
+ .formGroup label {
+  display: block;
+  margin-bottom: 5px;
+ }
+ 
+ 
+ .formGroup input[type="text"],
+ .formGroup input[type="email"],
+ .formGroup input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+ }
+ 
+ 
+ .formGroup button {
+  clear: both;
+  margin-top: 20px;
+  padding: 1px 20px;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+ }
+ 
+ 
+ .formContainer {
+  overflow: hidden;
+ }
+ 
+ 
+ .formFields {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 20px;
+ }
+ 
+ 
+ .editButton {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 15px;
+  text-decoration: underline;
+ }
+ 
+ 
+ .editFieldButton {
+  font-size: 15px;
+  background-color: #ffc107;
+  color: #000;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: bold;
+  width: auto;
+ }
+ 
+ 
+ .pencilIcon {
+  width: 25px;
+  height: 25px;
+  margin-left: auto;
+ }
+ 
+ 
+ .accountHeader,
+ .personalHeader,
+ .savedAddressHeader {
+  padding: 10px 0 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ }
+ 
+ 
+ @media (min-width: 768px) {
+  .formFields {
+    grid-template-columns: repeat(2, 1fr);
   }
+ }
+ 
+ 
+ @media (max-width: 1050px) {
+  .accountDetails .formFields > div > p {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+ 
+ 
+  .accountDetails .formFields > div > p button {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+ }
+ 
