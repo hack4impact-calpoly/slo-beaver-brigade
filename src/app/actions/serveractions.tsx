@@ -3,7 +3,7 @@
 import connectDB from "@database/db";
 import Event from "@database/eventSchema";
 
-export async function addAttendee(userid : String, eventid : String) {
+export async function removeAttendee(userid : String, eventid : String) {
     try{
         await connectDB(); // connect to db
 

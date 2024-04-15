@@ -2,26 +2,23 @@
 
 import {
   Box,
-  Card,
-  Badge,
   Text,
-  Button,
-  Flex,
   Spinner,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   useDisclosure,
   Checkbox,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from "@database/eventSchema";
 import { IUser } from "@database/userSchema";
+import { removeAttendee } from "app/actions/serveractions";
+import { addAttendee } from "app/actions/useractions";
 
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -159,6 +156,15 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         fetchVisitorData()
     }, [eventData]);
     
+    function handleCheck(checked:Boolean,userid: String){
+      
+      if(checked){
+        addAttendee(userid,eventId)
+      }
+      else{
+        removeAttendee(userid,eventId)
+      }
+    }
    
     return(
         <Box className={styles.eventInformation}>
@@ -181,7 +187,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 {visitorData.map((visitor, index) => (
                 <tr className={styles.visitorRow} key={index}>
                   <td className={styles.checkBox}>
-                      <Checkbox colorScheme="green" onChange={(e) => console.log("here1")} />
+                      <Checkbox colorScheme="green" onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
                   </td>
                   <td className={styles.nameColumn}>
                     {visitor.firstName} {visitor.lastName}
