@@ -190,9 +190,9 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                   <td className={styles.checkBox}>
                       {eventData.attendeeIds.includes(new mongoose.Types.ObjectId(visitor._id)) 
                       ?
-                      <Checkbox colorScheme="green" isChecked={true} onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
+                      <Checkbox colorScheme="green" defaultChecked onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
                       :
-                      <Checkbox colorScheme="green" isChecked={false} onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
+                      <Checkbox colorScheme="green" onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
                     }
                       
                   </td>
