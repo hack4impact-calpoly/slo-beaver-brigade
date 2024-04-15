@@ -92,6 +92,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
 }
 
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
+  var mongoose = require('mongoose');
   const [loading, setLoading] = useState(true);
   const [visitorData, setVisitorData] = useState<IUser[]>([
     {
@@ -187,7 +188,13 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 {visitorData.map((visitor, index) => (
                 <tr className={styles.visitorRow} key={index}>
                   <td className={styles.checkBox}>
-                      <Checkbox colorScheme="green" onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
+                      {eventData.attendeeIds.includes(new mongoose.Types.ObjectId(visitor._id)) 
+                      ?
+                      <Checkbox colorScheme="green" isChecked={true} onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
+                      :
+                      <Checkbox colorScheme="green" isChecked={false} onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
+                    }
+                      
                   </td>
                   <td className={styles.nameColumn}>
                     {visitor.firstName} {visitor.lastName}
