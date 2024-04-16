@@ -74,6 +74,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         gender: '',
         role: 'user',
         eventsAttended: [],
+        recieveNewsletter: false
     }])
 
     const [eventData, setEventData] = useState<IEvent>({

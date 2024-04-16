@@ -49,7 +49,6 @@ export default function SignUp() {
     //for the frontend, it'll just have the successful submission screen popup
 
     e.preventDefault();
-    setSubmitAttempted(true);
     setEmailError(false);
     setPasswordError(false);
     setEmailErrorMessage('Email is required');
@@ -65,28 +64,7 @@ export default function SignUp() {
     }
 
     try {
-      //creates data object from form data
-      const data = {
-        email: email,
-        phoneNumber: phone,
-        role: 'user',
-        gender: gender,
-        age: age,
-        firstName: firstName,
-        lastName: lastName,
-      };
-
-      const res = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      // If the user is created, update the user metadata in Clerk
-      if (res.ok) {
-        // Get the user's ID from the response
-        const responseData = await res.json();
-        const dbId = responseData._id;
+ 
 
         try {
           //create a clerk user
@@ -96,12 +74,12 @@ export default function SignUp() {
             firstName,
             lastName,
             unsafeMetadata: {
-              dbId: dbId,
               phone,
               zipcode,
               interestQuestions,
             },
           });
+ 
 
           // send the email.
           await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
@@ -119,12 +97,11 @@ export default function SignUp() {
             setEmailError(true);
           }
         }
-      } else {
-        console.log('Failed to create user in MongoDB');
       }
-    } catch (error) {
+     catch (error) {
       // Handle the error
       console.log('Error:', error);
+        setSubmitAttempted(true);
     }
   };
 
@@ -145,7 +122,34 @@ export default function SignUp() {
          or if the user needs to complete more steps.*/
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
-      if (completeSignUp.status === 'complete') {
+      if (completeSignUp.status === 'complete') {     //creates data object from form data
+        const data = {
+            email: email,
+            phoneNumber: phone,
+            role: 'user',
+            gender: gender,
+            age: age,
+            firstName: firstName,
+            lastName: lastName,
+        };
+
+        const res = await fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        if (res.ok){
+            const responseData = await res.json();
+            const dbId = responseData._id;
+            // update user
+            signUp.update({unsafeMetadata: {
+                dbId: dbId
+            }})
+            console.log("CREATED MONGODB USER")
+        }
+        else{
+            console.log("error occurred: ", res.statusText)
+        }
         await setActive({ session: completeSignUp.createdSessionId });
 
         // Redirect the user to a post sign-up route
@@ -310,6 +314,7 @@ export default function SignUp() {
               </Button>
               <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>
             </FormControl>
+     
           </>
         )}
       </Box>
