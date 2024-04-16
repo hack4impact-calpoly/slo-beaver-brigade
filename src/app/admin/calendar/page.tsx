@@ -1,8 +1,21 @@
 import React from 'react'
 import Calendar from '@components/Calendar'
 import style from "@styles/calendar/eventpage.module.css"
-import { Calendarify, getEvents } from 'app/calendar/page';
+import { Calendarify } from 'app/lib/calendar';
+import Event from "@database/eventSchema"
+import connectDB from '@database/db';
 
+async function getEvents() {
+  await connectDB(); // connect to db
+  try {
+    // query for all events and sort by date
+    const events = await Event.find().sort({ date: -1 }).orFail();
+    // returns all events in json format or errors
+    return events;
+  } catch (err) {
+    return [];
+  }
+}
 
 export default async function dashboard(){
   const events = await getEvents();
