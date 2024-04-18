@@ -2,24 +2,28 @@
 
 import connectDB from "@database/db";
 import Event from "@database/eventSchema";
+import { NextResponse } from "next/server";
 
-export async function addAttendee(userid : String, eventid : String) {
+export async function addAttendee(userid : string, eventid : string) {
     try{
+    
+        console.log("here ", userid, typeof userid, eventid, typeof eventid )
         await connectDB(); // connect to db
 
-        const event = Event.findOne({eventid}).orFail();
+        const event = Event.findOne({_id: eventid}).orFail();
 
         // validate inputs
         if (!userid || !eventid) {
-            return Response.json("Invalid Comment.", { status: 400 });
+            return NextResponse.json("Invalid Comment.", { status: 400 });
         }
 
-        await Event.updateOne({eventid},{$push: {attendeeIds : userid} }).orFail();
+        await Event.updateOne({_id: eventid},{$push: {attendeeIds : userid} }).orFail();
         //await event.save();
 
-        return Response.json("ID Added", { status: 200 });
+        return NextResponse.json("ID Added", { status: 200 });
     }
     catch(err){
-        Response.json(err, { status: 400});
+        console.log("Error bro", err)
+       return NextResponse.json(err, { status: 400});
     }
 }

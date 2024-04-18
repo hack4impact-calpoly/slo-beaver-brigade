@@ -157,13 +157,13 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         fetchVisitorData()
     }, [eventData]);
     
-    function handleCheck(checked:Boolean,userid: String){
+    async function handleCheck(checked:boolean,userid: string){
       
       if(checked){
-        addAttendee(userid,eventId)
+        await addAttendee(userid,eventId.toString())
       }
       else{
-        removeAttendee(userid,eventId)
+        await removeAttendee(userid,eventId.toString())
       }
     }
    
@@ -190,9 +190,9 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                   <td className={styles.checkBox}>
                       {eventData.attendeeIds.includes(new mongoose.Types.ObjectId(visitor._id)) 
                       ?
-                      <Checkbox colorScheme="green" defaultChecked onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
+                      <Checkbox colorScheme="green" defaultChecked onChange={async(e) => await handleCheck(e.target.checked,visitor._id.toString())} />
                       :
-                      <Checkbox colorScheme="green" onChange={(e) => handleCheck(e.target.checked,visitor._id)} />
+                      <Checkbox colorScheme="green" onChange={async(e) => await handleCheck(e.target.checked,visitor._id.toString())} />
                     }
                       
                   </td>
