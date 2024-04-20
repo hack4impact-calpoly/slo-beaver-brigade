@@ -40,6 +40,7 @@ export type IUser = {
     role: "user" | "supervisor" | "admin";
     eventsAttended: EventInfo[];
     groupId: Schema.Types.ObjectId | null;
+    recieveNewsletter: boolean;
 };
 
 //groupId and digitalWaiver seem to require a schema
@@ -58,7 +59,7 @@ const UserSchema = new Schema({
         default: "user",
         required: true,
     },
-    eventsAttended: {
+    eventsRegistered: {
         type: [
             {
                 eventId: { type: Schema.Types.ObjectId, required: true },
@@ -73,9 +74,24 @@ const UserSchema = new Schema({
         default: [],
         required: false,
     },
+    eventsAttended: {
+        type: [
+            {
+                eventId: { type: Schema.Types.ObjectId, required: true },
+            },
+        ],
+        default: [],
+        required: false,
+    },
     groupId: { type: Schema.Types.ObjectId, required: false },
+    recieveNewsletter: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
+const User =
+    mongoose.models["userTest"] || mongoose.model("userTest", UserSchema);
 
 export default User;

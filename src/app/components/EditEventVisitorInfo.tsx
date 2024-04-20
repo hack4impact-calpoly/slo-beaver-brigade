@@ -107,6 +107,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       gender: "",
       role: "user",
       eventsAttended: [],
+        recieveNewsletter: false
     },
   ]);
 
@@ -123,7 +124,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         volunteerEvent: false,
         groupsAllowed: [],
         registeredIds: [],
-        attendeeIds:[]
+        attendeeIds: []
     });
 
     useEffect(() => {
