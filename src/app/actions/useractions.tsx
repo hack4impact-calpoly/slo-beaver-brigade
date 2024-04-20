@@ -2,6 +2,7 @@
 
 import connectDB from "@database/db";
 import Event from "@database/eventSchema";
+import User from "@database/userSchema";
 import { NextResponse } from "next/server";
 
 export async function addAttendee(userid : string, eventid : string) {
@@ -18,6 +19,7 @@ export async function addAttendee(userid : string, eventid : string) {
         }
 
         await Event.updateOne({_id: eventid},{$push: {attendeeIds : userid} }).orFail();
+        await User.updateOne({_id:userid},{$push: {eventsAttended : eventid}}).orFail();
         //await event.save();
 
         return NextResponse.json("ID Added", { status: 200 });
