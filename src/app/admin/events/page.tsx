@@ -1,10 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import style from "@styles/admin/events.module.css";
-import EventPreviewComponent from "@components/EventPreview";
+import EventPreviewComponent from "@components/EventCard";
 import ExpandedTest from "@components/StandaloneExpandedViewComponent";
 import { ObjectId } from "mongoose";
+import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
+import { getEvents } from "app/actions/eventsactions";
 
 interface IEvent {
   _id: string;
@@ -27,9 +29,10 @@ const EventPreview = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("earliest");
+  const [sortOrder, setSortOrder] = useState("latest");
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
+  const [showFutureEvents, setShowFutureEvents] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
@@ -55,30 +58,34 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/events");
-        if (!response.ok) {
-          throw new Error("Failed to fetch events");
+
+        const res = await getEvents(0, 10)
+        if (!res){
+            console.log("Error getting events.")
+            return;
         }
-        const data = await response.json();
+        const data = JSON.parse(res)
         setEvents(
           data.map((event: IEvent) => ({
             ...event,
             startTime: new Date(event.startTime),
             endTime: new Date(event.endTime),
+            groupsAllowed: event.groupsAllowed || [],
           }))
         );
 
-        // fetch group names for all events right after events are fetched
         const names: { [key: string]: string } = {};
         setLoading(true);
-        for (const event of data) {
-          if (event.groupsAllowed.length > 0) {
-            const groupName = await fetchGroupName(event.groupsAllowed[0]);
-            names[event._id] = groupName;
-          } else {
-            names[event._id] = "SLO Beaver Brigade";
-          }
-        }
+        await Promise.all(
+          data.map(async (event: IEvent) => {
+            if (event.groupsAllowed && event.groupsAllowed.length > 0) {
+              const groupName = await fetchGroupName(event.groupsAllowed[0]);
+              names[event._id] = groupName;
+            } else {
+              names[event._id] = "SLO Beaver Brigade";
+            }
+          })
+        );
         setGroupNames(names);
       } catch (error) {
         console.error(error);
@@ -100,9 +107,18 @@ const EventPreview = () => {
     .filter((event) =>
       spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
     )
-    .filter((event) =>
-      showPastEvents ? true : new Date(event.startTime) >= new Date()
-    )
+    .filter((event) => {
+      const eventDate = new Date(event.startTime);
+      const now = new Date();
+      if (showFutureEvents && showPastEvents) {
+        return true;
+      } else if (showFutureEvents) {
+        return eventDate >= now;
+      } else if (showPastEvents) {
+        return eventDate <= now;
+      }
+      return true;
+    })
     .filter((event) =>
       event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -114,13 +130,27 @@ const EventPreview = () => {
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
-        <input
-          type="text"
-          placeholder="Search events"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className={style.searchBar}
-        />
+        <button className={style.yellowButton}>Create new event</button>
+        <div className={style.searchWrapper}>
+          <input
+            type="text"
+            placeholder="Search events"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={style.searchBar}
+          />
+          <MagnifyingGlassIcon
+            style={{
+              width: "15px",
+              height: "15px",
+              position: "absolute",
+              margin: "auto",
+              top: 0,
+              bottom: 0,
+              right: "20px",
+            }}
+          />
+        </div>
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
@@ -130,6 +160,14 @@ const EventPreview = () => {
           <option value="latest">Latest First</option>
         </select>
         <div className={style.checkBoxes}>
+          <div>
+            <input
+              type="checkbox"
+              checked={showFutureEvents}
+              onChange={() => setShowFutureEvents(!showFutureEvents)}
+            />{" "}
+            Future Events
+          </div>
           <div>
             <input
               type="checkbox"
@@ -149,7 +187,7 @@ const EventPreview = () => {
         </div>
       </aside>
       {loading ? (
-        <div>Loading events...</div>
+        <div className={style.cardContainer}>Loading events...</div>
       ) : filteredEvents.length > 0 ? (
         <div className={style.cardContainer}>
           <ul className={style.eventsList}>
@@ -166,7 +204,7 @@ const EventPreview = () => {
           </ul>
         </div>
       ) : (
-        <div>No events to show</div>
+        <div className={style.cardContainer}>No events to show</div>
       )}
       {selectedEvent && (
         <ExpandedTest

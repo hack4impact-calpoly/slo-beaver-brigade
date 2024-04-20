@@ -11,41 +11,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import connectDB from "@database/db";
-
-export async function getEvents() {
-  await connectDB(); // connect to db
-  try {
-    // query for all events and sort by date
-    const events = await Event.find().sort({ date: -1 }).orFail();
-    // returns all events in json format or errors
-    return events;
-  } catch (err) {
-    return [];
-  }
-}
-
-//converts an event into a FullCalendar event
-export function Calendarify(event: IEvent) {
-  //convert events into plain object before passing into client component
-  const calEvent = JSON.parse(JSON.stringify(event));
-  calEvent.title = event.eventName;
-  delete calEvent.eventName;
-  calEvent.start = event.startTime;
-  calEvent.end = event.endTime;
-  calEvent.id = event._id;
-
-  if (event.eventName == "Beaver Walk") {
-    calEvent.backgroundColor = "#8A6240";
-    calEvent.borderColor = "#4D2D18";
-    calEvent.textColor = "#fff";
-  } else {
-    calEvent.backgroundColor = "#0077b6";
-    calEvent.borderColor = "#03045e";
-    calEvent.textColor = "#fff";
-  }
-
-  return calEvent;
-}
+import { Calendarify } from "app/lib/calendar";
 
 export default async function Events() {
   const events = await getEvents();
@@ -106,3 +72,16 @@ export default async function Events() {
     </Flex>
   );
 }
+
+async function getEvents() {
+  await connectDB(); // connect to db
+  try {
+    // query for all events and sort by date
+    const events = await Event.find().sort({ date: -1 }).orFail();
+    // returns all events in json format or errors
+    return events;
+  } catch (err) {
+    return [];
+  }
+}
+
