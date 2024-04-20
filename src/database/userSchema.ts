@@ -38,7 +38,8 @@ export type IUser = {
     age: number;
     gender: string;
     role: "user" | "supervisor" | "admin";
-    eventsAttended: EventInfo[];
+    eventsRegistered:EventInfo[];
+    eventsAttended: Schema.Types.ObjectId[];
     groupId: Schema.Types.ObjectId | null;
     recieveNewsletter: boolean;
 };
@@ -75,11 +76,7 @@ const UserSchema = new Schema({
         required: false,
     },
     eventsAttended: {
-        type: [
-            {
-                eventId: { type: Schema.Types.ObjectId, required: true },
-            },
-        ],
+        type: [Schema.Types.ObjectId],
         default: [],
         required: false,
     },

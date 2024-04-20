@@ -107,7 +107,8 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       gender: "",
       role: "user",
       eventsAttended: [],
-        recieveNewsletter: false
+      eventsRegistered:[],
+      recieveNewsletter: false
     },
   ]);
 
