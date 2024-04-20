@@ -59,7 +59,7 @@ const UserSchema = new Schema({
         default: "user",
         required: true,
     },
-    eventsAttended: {
+    eventsRegistered: {
         type: [
             {
                 eventId: { type: Schema.Types.ObjectId, required: true },
@@ -69,6 +69,15 @@ const UserSchema = new Schema({
                     required: false,
                     default: false,
                 },
+            },
+        ],
+        default: [],
+        required: false,
+    },
+    eventsAttended: {
+        type: [
+            {
+                eventId: { type: Schema.Types.ObjectId, required: true },
             },
         ],
         default: [],
