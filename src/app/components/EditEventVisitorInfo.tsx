@@ -94,6 +94,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   var mongoose = require('mongoose');
   const [loading, setLoading] = useState(true);
+  const [attendees,setAttendees] = useState([]);
   const [visitorData, setVisitorData] = useState<IUser[]>([
     {
       _id: "",
@@ -160,10 +161,10 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     async function handleCheck(checked:boolean,userid: string){
       
       if(checked){
-        await addAttendee(userid,eventId.toString())
+        await addAttendee(userid.toString(),eventId.toString())
       }
       else{
-        await removeAttendee(userid,eventId.toString())
+        await removeAttendee(userid.toString(),eventId.toString())
       }
     }
    
@@ -188,7 +189,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 {visitorData.map((visitor, index) => (
                 <tr className={styles.visitorRow} key={index}>
                   <td className={styles.checkBox}>
-                      {eventData.attendeeIds.includes(new mongoose.Types.ObjectId(visitor._id)) 
+                      {eventData.attendeeIds.map(oid => oid.toString()).includes(visitor._id) 
                       ?
                       <Checkbox colorScheme="green" defaultChecked onChange={async(e) => await handleCheck(e.target.checked,visitor._id.toString())} />
                       :
