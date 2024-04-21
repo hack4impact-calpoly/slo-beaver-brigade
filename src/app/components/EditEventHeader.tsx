@@ -27,6 +27,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         volunteerEvent: false,
         groupsAllowed: [],
         registeredIds: [],
+        attendeeIds:[]
     });
 
     function DeleteEvent({eventName, onDelete}: {eventName: string, onDelete: () => void}){
