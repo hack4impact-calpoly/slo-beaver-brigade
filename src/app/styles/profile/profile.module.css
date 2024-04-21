@@ -1,0 +1,182 @@
+/* profile.module.css */
+
+
+.profileContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+ }
+ 
+ 
+ .formGroup {
+  margin-bottom: 20px;
+ }
+ 
+ 
+ .highlight {
+  background-color: #006d75;
+  color: #fff;
+  border-radius: 15px 15px 0 0;
+ }
+ 
+ 
+ .accountDetails {
+  width: 35%;
+  float: left;
+ }
+ 
+ 
+ .accountDetails .formFields > div > p {
+  margin-top: 35px;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+ }
+ 
+ 
+ .accountDetails .formFields > div > p button {
+  margin-left: 100px;
+  padding: 5px 10px;
+ 
+ 
+ }
+ 
+ 
+ .personalDetails .formFields > div > p {
+  margin-top: 35px;
+  margin-left: 15px;
+ }
+ 
+ 
+ .savedAddress .formFields > div > p {
+  margin-top: 35px;
+  margin-left: 15px;
+ }
+ 
+ 
+ .accountHeader,
+ .personalHeader,
+ .savedAddressHeader {
+  padding: 10px 15px;
+ }
+ 
+ 
+ .personalDetails,
+ .savedAddress {
+  width: 60%;
+  float: right;
+  margin-bottom: 80px;
+ }
+ 
+ 
+ .title {
+  color: #fff;
+ }
+ 
+ 
+ .biggerTitle {
+  font-size: 22px;
+ }
+ 
+ 
+ .formGroup label {
+  display: block;
+  margin-bottom: 5px;
+ }
+ 
+ 
+ .formGroup input[type="text"],
+ .formGroup input[type="email"],
+ .formGroup input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+ }
+ 
+ 
+ .formGroup button {
+  clear: both;
+  margin-top: 20px;
+  padding: 1px 20px;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+ }
+ 
+ 
+ .formContainer {
+  overflow: hidden;
+ }
+ 
+ 
+ .formFields {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 20px;
+ }
+ 
+ 
+ .editButton {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 15px;
+  text-decoration: underline;
+ }
+ 
+ 
+ .editFieldButton {
+  font-size: 15px;
+  background-color: #ffc107;
+  color: #000;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: bold;
+  width: auto;
+ }
+ 
+ 
+ .pencilIcon {
+  width: 25px;
+  height: 25px;
+  margin-left: auto;
+ }
+ 
+ 
+ .accountHeader,
+ .personalHeader,
+ .savedAddressHeader {
+  padding: 10px 0 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ }
+ 
+ 
+ @media (min-width: 768px) {
+  .formFields {
+    grid-template-columns: repeat(2, 1fr);
+  }
+ }
+ 
+ 
+ @media (max-width: 1050px) {
+  .accountDetails .formFields > div > p {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+ 
+ 
+  .accountDetails .formFields > div > p button {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+ }
+ 

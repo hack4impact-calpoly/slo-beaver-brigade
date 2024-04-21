@@ -13,11 +13,11 @@ Just a cool little beaver project.
 
 ### Purpose
 
-{Short paragraph description of the non-profit mission and the purpose of this project. Who will this project help, why is it necessary. Impact of the project.}
+To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more. 
 
 ### Team
 
-The SLO Beaver Brigade team consists of {#} Cal Poly students. Over the course of about 9 months, we worked as a team to deploy this web application. The team members are listed below:
+The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of about 9 months, we worked as a team to deploy this web application. The team members are listed below:
 
 - [Tyler Kim](https://www.linkedin.com/) - Project Manager
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead

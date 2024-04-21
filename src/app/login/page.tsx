@@ -22,22 +22,21 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  const searchParams = useSearchParams()
-  const redirect_url = searchParams.get('redirect_url')
-  const [submitAttempted, setSubmitAttempted] = useState(false)
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('Password is required')
-  const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required')
-  const [passwordError, setPasswordError] = useState(false)
-  const [emailError, setEmailError] = useState(false)
+  const searchParams = useSearchParams();
+  const redirect_url = searchParams.get('redirect_url');
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('Password is required');
+  const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required');
+  const [passwordError, setPasswordError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitAttempted(true)
-    setEmailError(false)
-    setPasswordError(false)
-    setEmailErrorMessage('Email is required')
-    setPasswordErrorMessage('Password is required')
-
+    setSubmitAttempted(true);
+    setEmailError(false);
+    setPasswordError(false);
+    setEmailErrorMessage('Email is required');
+    setPasswordErrorMessage('Password is required');
 
     if (!isLoaded) {
       return;
@@ -46,7 +45,6 @@ export default function Login() {
     if (!email || !password) {
       return;
     }
-    
 
     try {
       const completeSignIn = await signIn.create({identifier: email, strategy: "password", password });
@@ -55,11 +53,11 @@ export default function Login() {
         // Please see https://clerk.com/docs/references/react/use-sign-in#result-status for  more information
         console.log(JSON.stringify(completeSignIn, null, 2));
       }
- 
+
       if (completeSignIn.status === 'complete') {
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
-        
+
         // Redirect the user to a post sign-in route
         if (redirect_url){
             router.push(redirect_url);
@@ -71,13 +69,13 @@ export default function Login() {
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
-      let error = err.errors[0]
+      let error = err.errors[0];
       if (error.code.includes('password')){
-        setPasswordErrorMessage(error.message)
-        setPasswordError(true)
+        setPasswordErrorMessage(error.message);
+        setPasswordError(true);
       } else {
-        setEmailErrorMessage(error.message)
-        setEmailError(true)
+        setEmailErrorMessage(error.message);
+        setEmailError(true);
       }
     }
 

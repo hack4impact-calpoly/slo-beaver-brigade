@@ -32,10 +32,12 @@ export async function POST(req: NextRequest) {
         const newUser = new User({
             ...body,
         });
+
         const savedUser = await newUser.save();
-        
+
         return NextResponse.json({ _id: savedUser._id }, { status: 200 });
     } catch (error) {
+        console.log((error as Error).name);
         return NextResponse.json(
             { error: (error as Error).message },
             { status: 500 }
