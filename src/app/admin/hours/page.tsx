@@ -80,6 +80,9 @@ const AttendedEvents = () => {
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [startDateTime, setStartDateTime] = useState("");
+  const [endDateTime, setEndDateTime] = useState("");
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
@@ -91,51 +94,39 @@ const AttendedEvents = () => {
       setEventsLoading(true);
 
       try {
-        if (isSignedIn) {
-          // Fetch all events
-          const eventsResponse = await fetch('/api/events');
-          if (!eventsResponse.ok) {
-            throw new Error(
-              `Failed to fetch events: ${eventsResponse.statusText}`
-            );
-          }
-          const allEvents = await eventsResponse.json();
-          const currentDate = new Date();
-
-          // Filter events where the current user is an attendee
-          const pastEvents = allEvents.filter(
-            (event: any) =>
-              event.volunteerEvent && new Date(event.startTime) <= currentDate
+        // Fetch all events
+        const eventsResponse = await fetch('/api/events');
+        if (!eventsResponse.ok) {
+          throw new Error(
+            `Failed to fetch events: ${eventsResponse.statusText}`
           );
-
-          const time = pastEvents.map(
-            (event: any) =>
-              getDuration(event.startTime, event.endTime) *
-              event.attendeeIds.length
-          );
-          setTotalTime(time.reduce((a, b) => a + b, 0));
-
-          // Update state with events the user has signed up for
-          setUserEvents(pastEvents);
-        } else {
-          // Reset the events when user signs out
-          const eventsResponse = await fetch('/api/events');
-          if (!eventsResponse.ok) {
-            throw new Error(
-              `Failed to fetch events: ${eventsResponse.statusText}`
-            );
-          }
-          const allEvents = await eventsResponse.json();
-          const currentDate = new Date();
-
-          // Getting all upcoming events
-          const userEvents = allEvents.filter(
-            (event: IEvent) =>
-              event.volunteerEvent && new Date(event.startTime) >= currentDate
-          );
-
-          setUserEvents([]);
         }
+        const allEvents = await eventsResponse.json();
+      
+        if (startDateTime === "") {
+          const today = new Date();
+          setStartDateTime(new Date(today.setMonth(today.getMonth() - 1)).toString());
+        }
+        if (endDateTime === "") {
+          const today = new Date();
+          setEndDateTime(today.toString());
+        }
+        
+        // Filter events where the current user is an attendee
+        const pastEvents = allEvents.filter(
+          (event: any) =>
+          event.volunteerEvent && new Date(event.endTime) <= new Date(endDateTime) && new Date(event.startTime) >= new Date(startDateTime)
+          );
+
+        const time = pastEvents.map(
+          (event: any) =>
+            getDuration(event.startTime, event.endTime) *
+            event.attendeeIds.length
+        );
+        setTotalTime(time.reduce((a, b) => a + b, 0));
+
+        // Update state with events the user has signed up for
+        setUserEvents(pastEvents);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -146,7 +137,7 @@ const AttendedEvents = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isSignedIn, user, isLoaded, startDateTime, endDateTime]);
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
@@ -201,14 +192,14 @@ const AttendedEvents = () => {
           </Text>
         </Box>
         <Box>
-        <Text display="inline">From:</Text>
+          <Text display="inline">From:</Text>
           <Input
             placeholder="From:"
             size="md"
             type="datetime-local"
             width="250px"
             margin="10px"
-            className='startDateTime'
+            onChange={(e) => setStartDateTime(e.target.value)}
           />
           <Text display="inline">To:</Text>
           <Input
@@ -217,10 +208,11 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
-            className='endDateTime'
+            onChange={(e) => setEndDateTime(e.target.value)}
           />
           <Input
             placeholder='Event Search'
+            type='search'
             size="md"
             width='250px'
             margin='10px'

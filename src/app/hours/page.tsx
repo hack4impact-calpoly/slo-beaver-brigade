@@ -79,6 +79,9 @@ const AttendedEvents = () => {
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [startDateTime, setStartDateTime] = useState('');
+  const [endDateTime, setEndDateTime] = useState('');
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
@@ -101,14 +104,23 @@ const AttendedEvents = () => {
             );
           }
           const allEvents = await eventsResponse.json();
-          const currentDate = new Date();
+
+          if (startDateTime === "") {
+            const today = new Date();
+            setStartDateTime(new Date(today.setMonth(today.getMonth() - 1)).toString());
+          }
+          if (endDateTime === "") {
+            const today = new Date();
+            setEndDateTime(today.toString());
+          }
 
           // Filter events where the current user is an attendee
           const userSignedUpEvents = allEvents.filter(
             (event: any) =>
               event.attendeeIds.includes(userId) &&
               event.volunteerEvent &&
-              new Date(event.startTime) <= currentDate
+              new Date(event.startTime) >= new Date(startDateTime) &&
+              new Date(event.endTime) <= new Date(endDateTime)
           );
 
           userSignedUpEvents.forEach((event: any) => {
@@ -133,7 +145,7 @@ const AttendedEvents = () => {
           // Getting all upcoming events
           const userEvents = allEvents.filter(
             (event: any) =>
-              event.volunteerEvent && new Date(event.startTime) <= currentDate
+              event.volunteerEvent && new Date(event.startTime) >= currentDate
           );
 
           console.log(userEvents);
@@ -150,7 +162,7 @@ const AttendedEvents = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isSignedIn, user, isLoaded, startDateTime, endDateTime]);
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
@@ -210,6 +222,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
+            onChange={(e) => setStartDateTime(e.target.value)}
           />
           <Text display="inline">To:</Text>
           <Input
@@ -218,6 +231,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
+            onChange={(e) => setEndDateTime(e.target.value)}
           />
           <Input
             placeholder="Event Search"
