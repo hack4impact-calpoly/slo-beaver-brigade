@@ -107,7 +107,7 @@ const AttendedEvents = () => {
           const userSignedUpEvents = allEvents.filter(
             (event: any) =>
               event.attendeeIds.includes(userId) &&
-              new Date(event.startTime) >= currentDate
+              (event.volunteerEvent) && (new Date(event.startTime) <= currentDate)
           );
 
           userSignedUpEvents.forEach((event: any) => {
@@ -131,7 +131,7 @@ const AttendedEvents = () => {
 
           // Getting all upcoming events
           const userEvents = allEvents.filter(
-            (event: any) => new Date(event.startTime) >= currentDate
+            (event: any) => (event.volunteerEvent) && (new Date(event.startTime) <= currentDate)
           );
 
           console.log(userEvents);

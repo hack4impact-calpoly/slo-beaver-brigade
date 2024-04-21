@@ -102,7 +102,7 @@ const AttendedEvents = () => {
 
           // Filter events where the current user is an attendee
           const pastEvents = allEvents.filter(
-            (event: any) => new Date(event.startTime) <= currentDate
+            (event: any) => (event.volunteerEvent) && (new Date(event.startTime) <= currentDate)
           );
 
           const time = pastEvents.map(
@@ -127,7 +127,7 @@ const AttendedEvents = () => {
 
           // Getting all upcoming events
           const userEvents = allEvents.filter(
-            (event: any) => new Date(event.startTime) >= currentDate
+            (event: IEvent) => (event.volunteerEvent) && (new Date(event.startTime) >= currentDate)
           );
 
           setUserEvents([]);
