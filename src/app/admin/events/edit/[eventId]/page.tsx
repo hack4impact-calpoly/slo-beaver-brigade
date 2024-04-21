@@ -91,7 +91,6 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     const subject = encodeURIComponent(eventData.eventName + " Update");
     return `mailto:?cc=${emails.join(",")}&subject=${subject}`;
   };
-
   return (
     <Box className={styles.eventPage}>
       <EditEventHeader eventId={eventId} />
