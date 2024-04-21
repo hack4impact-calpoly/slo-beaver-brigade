@@ -15,8 +15,10 @@ const Layout = async (props: Props) => {
     // get user if possible
     const user = await getUserDbData()
 
-    if (user?.role != "admin"){
-        redirect("/")
+    if (process.env.DEV_MODE != "true"){
+        if (user?.role != "admin"){
+            redirect("/")
+        }
     }
 
   return (
