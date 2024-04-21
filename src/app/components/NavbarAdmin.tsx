@@ -62,8 +62,8 @@ export default function NavbarAdmin(props: { name: string }) {
               </Link>
             </li>
             <li>
-              <Link href="/admin/events">
-                Events 
+              <Link href="/admin/events/hours">
+                Event Logs
               </Link>
             </li>
             

@@ -24,7 +24,6 @@ const Layout = async (props: Props) => {
   return (
     <>
 
-    <TabBar />
       <div className={montserrat.className}>
         <div className={style.adminDash}>
           <main className={style.mainContainer}>
