@@ -185,6 +185,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 <div className = {styles.visitorCount}>
                     ({visitorData.length})
                 </div>
+                <button className={styles.emailAllVisitors}>Email All Visitors</button>
             </div>
             <table className = {styles.visitorTable}>
                 <tbody>
