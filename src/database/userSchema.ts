@@ -41,7 +41,6 @@ export type IUser = {
     role: "user" | "supervisor" | "admin";
     eventsAttended: EventInfo[];
     groupId: Schema.Types.ObjectId | null;
-    digitalWaiver: Schema.Types.ObjectId[]
 };
 
 //groupId and digitalWaiver seem to require a schema

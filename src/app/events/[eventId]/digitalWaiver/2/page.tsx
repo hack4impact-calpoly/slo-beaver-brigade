@@ -108,11 +108,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
             //add digitalWaiverId to user, and add an object that consists of
             //the eventId and digitalWaiverId to eventsAttended
             const updatedInfo ={
-              eventsAttended: {
+              eventsRegistered: {
                   eventId: eventId,
                   digitalWaiver: waiverId,
-              },
-              digitalWaiver: waiverId
+              }
             }
 
             try {
