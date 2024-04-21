@@ -14,6 +14,7 @@ export default authMiddleware({
         "/signup",
         "/forgot-password",
         "/reset-password",
+        "/calendar",
         "/api/user",
         "/api/events",
         "/api/waiver",
