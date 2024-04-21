@@ -101,12 +101,18 @@
 }
 
 .emailAllVisitors {
+  border:none;
+  font-weight: bold;
+  padding:0%;
   width: 100%;
   text-align: right;
   background-color: none;
   font-family: "Lato";
   font-size: 17px;
-  margin-bottom: 2%;
+  margin: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .emailAllVisitors:hover {
