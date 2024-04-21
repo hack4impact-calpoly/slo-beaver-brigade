@@ -575,13 +575,15 @@ const Dashboard = () => {
                     zIndex={2}
                   >
                     <Heading as="h2" fontSize="xl">
-                      <Button
-                        colorScheme="yellow"
-                        fontSize={eventDetailSize}
-                        mt={14}
-                      >
-                        Register Event
-                      </Button>
+                        <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
+                        <Button
+                            colorScheme="yellow"
+                            fontSize={eventDetailSize}
+                            mt={14}
+                        >
+                            Register Event
+                        </Button>
+                      </Link>
                     </Heading>
                   </Box>
                 </Box>
