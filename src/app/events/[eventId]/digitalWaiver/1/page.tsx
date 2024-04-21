@@ -66,7 +66,7 @@ export default function Waiver() {
            }}>Continue</Button>
           }
           {isScrolledToBottom && 
-          <NextLink href = "/waiverMembers">
+          <NextLink href = "./2">
             <Button sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
             backgroundColor: '#337774', border: '2px solid #337774', color: 'white',
             borderRadius: '10px', 
