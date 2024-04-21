@@ -26,7 +26,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
                     <Box className={styles.imageContainer}>
                         <Image src={defaultBeaver} alt="eventImage"/>
                     </Box>
-                    <button className={styles.emailAllVisitors}>Email All Visitors</button>
+                    
                     <EditEventVisitorInfo eventId={eventId}/>
                 </Box>
                 <Box className={styles.rightColumn} w={{ base: '100%', md: '58%' }}>
