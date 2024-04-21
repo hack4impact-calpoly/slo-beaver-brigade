@@ -9,13 +9,13 @@ import {
   Td,
   useBreakpointValue,
   Text,
+  Input,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import style from '@styles/admin/users.module.css';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '@database/eventSchema';
-import { IUser } from '@database/userSchema';
 
 //convert date into format Dayofweek, Month
 const formatDate = (date: Date) => {
@@ -107,7 +107,8 @@ const AttendedEvents = () => {
           const userSignedUpEvents = allEvents.filter(
             (event: any) =>
               event.attendeeIds.includes(userId) &&
-              (event.volunteerEvent) && (new Date(event.startTime) <= currentDate)
+              event.volunteerEvent &&
+              new Date(event.startTime) <= currentDate
           );
 
           userSignedUpEvents.forEach((event: any) => {
@@ -131,7 +132,8 @@ const AttendedEvents = () => {
 
           // Getting all upcoming events
           const userEvents = allEvents.filter(
-            (event: any) => (event.volunteerEvent) && (new Date(event.startTime) <= currentDate)
+            (event: any) =>
+              event.volunteerEvent && new Date(event.startTime) <= currentDate
           );
 
           console.log(userEvents);
@@ -199,6 +201,30 @@ const AttendedEvents = () => {
           >
             {Math.floor(totalTime / 60)} h {totalTime % 60} min
           </Text>
+        </Box>
+        <Box>
+          <Text display="inline">From:</Text>
+          <Input
+            placeholder="From:"
+            size="md"
+            type="datetime-local"
+            width="250px"
+            margin="10px"
+          />
+          <Text display="inline">To:</Text>
+          <Input
+            placeholder="To:"
+            size="md"
+            type="datetime-local"
+            width="250px"
+            margin="10px"
+          />
+          <Input
+            placeholder="Event Search"
+            size="md"
+            width="250px"
+            margin="10px"
+          />
         </Box>
       </Box>
       <div className={style.tableContainer}>

@@ -9,7 +9,9 @@ import {
   Td,
   useBreakpointValue,
   Text,
+  Input,
 } from '@chakra-ui/react';
+import { MagnifyingGlassIcon } from '@heroicons/react/16/solid';
 import React, { useEffect, useState } from 'react';
 import style from '@styles/admin/users.module.css';
 import Link from 'next/link';
@@ -102,7 +104,8 @@ const AttendedEvents = () => {
 
           // Filter events where the current user is an attendee
           const pastEvents = allEvents.filter(
-            (event: any) => (event.volunteerEvent) && (new Date(event.startTime) <= currentDate)
+            (event: any) =>
+              event.volunteerEvent && new Date(event.startTime) <= currentDate
           );
 
           const time = pastEvents.map(
@@ -127,7 +130,8 @@ const AttendedEvents = () => {
 
           // Getting all upcoming events
           const userEvents = allEvents.filter(
-            (event: IEvent) => (event.volunteerEvent) && (new Date(event.startTime) >= currentDate)
+            (event: IEvent) =>
+              event.volunteerEvent && new Date(event.startTime) >= currentDate
           );
 
           setUserEvents([]);
@@ -195,6 +199,32 @@ const AttendedEvents = () => {
           >
             {Math.floor(totalTime / 60)} h {totalTime % 60} min
           </Text>
+        </Box>
+        <Box>
+        <Text display="inline">From:</Text>
+          <Input
+            placeholder="From:"
+            size="md"
+            type="datetime-local"
+            width="250px"
+            margin="10px"
+            className='startDateTime'
+          />
+          <Text display="inline">To:</Text>
+          <Input
+            placeholder="To:"
+            size="md"
+            type="datetime-local"
+            width="250px"
+            margin="10px"
+            className='endDateTime'
+          />
+          <Input
+            placeholder='Event Search'
+            size="md"
+            width='250px'
+            margin='10px'
+          />
         </Box>
       </Box>
       <div className={style.tableContainer}>
