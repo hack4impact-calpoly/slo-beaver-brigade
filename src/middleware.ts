@@ -16,6 +16,7 @@ export default authMiddleware({
         "/reset-password",
         "/api/user",
         "/api/events",
+        "/api/waiver",
         "/api/events/:id",
         "/(api|trpc)(.*)",
     ],

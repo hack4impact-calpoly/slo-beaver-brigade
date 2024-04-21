@@ -74,6 +74,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         gender: '',
         role: 'user',
         eventsAttended: [],
+        digitalWaiver: [],
     }])
 
     const [eventData, setEventData] = useState<IEvent>({

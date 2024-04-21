@@ -1,15 +1,24 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Box,
   Flex,
   Button,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 import styles from './page.module.css'
 import beaverLogo from '/docs/images/beaver-logo.svg'
 import Image from 'next/image'
 import NextLink from "next/link";
-import { ObjectId } from "mongoose";
+import { IUser } from '@database/userSchema';
+import { useNavigate } from 'react-router-dom';
 
 type IParams = {
   params: {
@@ -18,11 +27,16 @@ type IParams = {
 }
 
 export default function Waiver({ params: { eventId } }: IParams) {
-  const [dependents, setDependents] = useState(['']); //Used to store added dependents
+  const [dependents, setDependents] = useState(['']);
   const [formFilled, setFormFilled] = useState(false);
   const [email, setEmail] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [signature, setSignature] = useState('');
+  const [validEmail, setValidEmail] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef<HTMLButtonElement | null>(null);
+
 
   useEffect(() => {
     // Check if all required fields are filled
@@ -32,7 +46,6 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   const addDependent = () => {
     const emptyFieldCount = dependents.filter(dependent => dependent === '').length;
-    console.log(emptyFieldCount)
     if(emptyFieldCount <= 1){
       setDependents([...dependents, '']);
     }               
@@ -44,29 +57,92 @@ export default function Waiver({ params: { eventId } }: IParams) {
     setDependents(newDependents);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("hmmmm");
-    event.preventDefault()
-    //check to see if there is an account associated with email
-    console.log("hello")
-    /*
-    const fetchUsers = async (): Promise<string> => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setEmailChecked(true);
+    const dependentArray = dependents.filter((dependent) => dependent !== '');
+
+    const data = {
+      eventId: eventId,
+      dependents: dependentArray,
+    };
+
+    //finds the userId associated with the given email
+    const fetchUser = async (): Promise<string | null> => {
       try {
         const res = await fetch(`/api/user`);
         if (res.ok) {
           const data = await res.json();
-          return data;
+          const specificUser = data.users.filter((user:IUser) => user.email === email)
+          if(specificUser.length > 0){
+            return specificUser[0]._id;
+          } else{
+            return null;
+          }
         } else {
-          console.error("Error fetching group name:", res.statusText);
-          return "SLO Beaver Brigade";
+          console.error("Error fetching user:", res.statusText);
+          return null;
         }
       } catch (error) {
-        console.error("Error fetching group name:", error);
-        return "SLO Beaver Brigade";
+        console.error("Error fetching user", error);
+        return null;
       }
     };
-    console.log(fetchUsers)
-    */
+    const uId = await fetchUser();
+    
+    //if a user exists for the given email, create a new waiver
+    //returns the waiverId, 
+    if(uId){
+      setValidEmail(true);
+      try {
+        const res = await fetch(`/api/waiver`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        //if the waiver returns successfully
+        if (res.ok) {
+            const responseData = await res.json();
+            const waiverId = responseData._id; 
+            
+            //add digitalWaiverId to user, and add an object that consists of
+            //the eventId and digitalWaiverId to eventsAttended
+            const updatedInfo ={
+              eventsAttended: {
+                  eventId: eventId,
+                  digitalWaiver: waiverId,
+              },
+              digitalWaiver: waiverId
+            }
+
+            try {
+              //call to update the user object
+              const res = await fetch(`/api/user/${uId}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(updatedInfo),
+              });
+              if (res.ok) {
+                //on success, return to the home page
+                window.location.href = '/';
+                
+              } else {
+                  console.error("Error adding info to user", res.statusText);
+              }} 
+            catch (error) {
+              console.error("Error adding info to user", error);
+            }
+        } else {
+            console.error("Error creating waiver", res.statusText);
+        }} 
+      catch (error) {
+        console.error("Error creating waiver:", error);
+      }
+
+    }
+    else{
+      onOpen();
+    }
   };
 
   return (
@@ -74,15 +150,15 @@ export default function Waiver({ params: { eventId } }: IParams) {
       <Flex flexDirection="column" justifyContent="flex-start" alignItems="center" 
         height="100vh" marginTop="5vh">
         <Image src={beaverLogo} alt="beaver"/>
-        <Box w="50%" h="45%" mt={20} mb='2.7%' padding='1vw' overflow="auto">
+        <form onSubmit={handleSubmit}>
+        <Box w="100%" h="60%" mt={20} mb='2.7%' padding='1vw' overflow="auto">
           <h1 style={{ fontSize: "30px", fontWeight: "bold" } }>Add Members</h1>
-          <form onSubmit={handleSubmit}>
           <h2 className={styles.formHeading}>Contact Information</h2>
           <input className={styles.inputForm} type="email" id="email" name="email" 
           placeholder="Email" onChange={(e) => setEmail(e.target.value)} required/>
           <input className={styles.inputZipcode} type="zipcode" id="zipcode" name="zipcode" 
           placeholder="Zipcode" onChange={(e) => setZipcode(e.target.value)} required/>
-          <table>
+          <table width="100%">
             <tbody>
             {dependents.map((name, index) => (
               <tr key={index}>
@@ -107,7 +183,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
             <h2 className={styles.formHeading}>Sign Here</h2>
             <input className={styles.inputSignature} type="string" id="signature" name="signature" 
             placeholder="Signature"onChange={(e) => setSignature(e.target.value)} required/>
-          </form>
+          
         </Box>
         <Flex flexDirection="row">
           <NextLink href = "/waiver">
@@ -125,17 +201,46 @@ export default function Waiver({ params: { eventId } }: IParams) {
           }
           {
             formFilled && 
-            /*<NextLink href = "/">*/
-              <Button /*onClick={() => document.forms[0].submit()}*/ sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
+              <Button type="submit" sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
               backgroundColor: '#337774', border: '2px solid #337774', color: 'white',
               borderRadius: '10px', 
               '&:hover':{ backgroundColor: '#296361', border: '2px solid #296361' } 
-              }}>Continue</Button>
-           /*</NextLink>*/
+              }}>
+                Continue
+              </Button>
           }
           
         </Flex>
+        </form>
       </Flex>
+
+      <AlertDialog
+        motionPreset='slideInBottom'
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>Email not registered</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            Please try again or create an account.
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              Close
+            </Button>
+            <Button sx={{marginLeft: "5%"}}>
+              <a href="/signup">
+                Create Account
+              </a>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
