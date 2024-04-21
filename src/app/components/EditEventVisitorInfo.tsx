@@ -73,7 +73,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         age: -1,
         gender: '',
         role: 'user',
-        eventsAttended: [],
+        eventsAttended: []
     }])
 
     const [eventData, setEventData] = useState<IEvent>({
