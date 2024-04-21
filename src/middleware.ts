@@ -8,8 +8,9 @@ import { NextResponse, type NextRequest } from "next/server";
 export default authMiddleware({
     publicRoutes: [
         "/",
-        "/:id/digitalWavier/1",
-        "/:id/digitalWaiver/2",
+        "/events/:id/digitalWavier/1",
+        "/dashboard",
+        "/events/:id/digitalWaiver/2",
         "/login",
         "/signup",
         "/forgot-password",
@@ -18,6 +19,7 @@ export default authMiddleware({
         "/api/user",
         "/api/events",
         "/api/waiver",
+        "/dashbord",
         "/api/events/:id",
         "/(api|trpc)(.*)",
     ],

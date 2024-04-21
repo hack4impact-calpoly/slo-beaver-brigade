@@ -4,7 +4,8 @@ import "./globals.css";
 import Providers from "./Providers";
 import NavbarParent from "@components/NavbarParents";
 import { Lato } from "next/font/google";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { getUserDbData } from "./lib/authentication";
 
 //! Update metadata to match your project
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+    
   return (
       <html lang="en">
         <body  className={lato.className}>

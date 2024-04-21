@@ -6,7 +6,7 @@ import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
 
 /** fetch from MongoDB, get user Role */
-async function getUserRole(id: string | null){
+async function getUserData(id: string | null){
   await connectDB()
   
   try{
@@ -23,10 +23,12 @@ export default async function NavbarParent() {
   
   if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
   const dbId: string | null = user?.unsafeMetadata["dbId"] as string
-  const dbuser = await getUserRole(dbId)
+  const dbuser = await getUserData(dbId)
   const name = `Hi ${user?.firstName}!`;
+  console.log(dbuser)
 
     if(dbuser?.role == "admin"){
+        console.log('admin')
         // get user role
         return <NavbarAdmin name={name}></NavbarAdmin>
     }
