@@ -48,6 +48,13 @@ import {
                         fontWeight="bold"
                     />
                     </FormControl>
+                    <FormControl>
+                    <Input
+                        variant="flushed"
+                        placeholder="Phone"
+                        fontWeight="bold"
+                    />
+                    </FormControl>
                 </Stack>
             </ModalBody>
     
