@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 import styles from "./page.module.css";
@@ -91,6 +91,13 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     const subject = encodeURIComponent(eventData.eventName + " Update");
     return `mailto:?cc=${emails.join(",")}&subject=${subject}`;
   };
+
+  const handleEmailAllVisitors = () => {
+    const mailtoLink = emailLink();
+    console.log(mailtoLink)
+    window.location.href = mailtoLink;
+  };
+
   return (
     <Box className={styles.eventPage}>
       <EditEventHeader eventId={eventId} />
@@ -103,9 +110,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
           <Box className={styles.imageContainer}>
             <Image src={defaultBeaver} alt="eventImage" />
           </Box>
-          <a href={emailLink()} className={styles.emailAllVisitors}>
-            Email All Visitors
-          </a>
+          <button onClick={handleEmailAllVisitors} className={styles.emailAllVisitors}>Email All Visitors</button>
           <EditEventVisitorInfo visitorData={visitorData} loading={loading} />
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>
