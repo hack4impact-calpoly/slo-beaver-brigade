@@ -8,7 +8,7 @@ export type IWaiver = {
 
 const digitalWaiverSchema = new Schema({
     eventId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
     dependents: {
@@ -19,6 +19,6 @@ const digitalWaiverSchema = new Schema({
 });
 
 const Waiver =
-    mongoose.models.Waiver || mongoose.model("waiver", digitalWaiverSchema);
+    mongoose.models["waiver"] || mongoose.model("waiver", digitalWaiverSchema);
 
 export default Waiver;
