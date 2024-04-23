@@ -115,8 +115,9 @@
   white-space: nowrap;
 }
 
-.emailAllVisitors:hover {
-  text-decoration-line: underline;
+.emailAllVisitors:hover{
+    text-decoration-line: underline;
+    cursor: pointer;
 }
 
 .topBlock {

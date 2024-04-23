@@ -1,4 +1,5 @@
 "use client";
+"use client";
 
 import {
   Box,
@@ -219,5 +220,6 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         
 }
 
-  
+
 export default EditEventVisitorInfo;
+
