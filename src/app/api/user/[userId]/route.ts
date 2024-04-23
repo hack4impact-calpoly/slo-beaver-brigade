@@ -74,8 +74,8 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
     const { userId } = params; // Destructure the userId from params
 
     try {
-        console.log("hello", req.body);
         const { eventsAttended }: IUser = await req.json();
+        console.log("hello", eventsAttended);
 
         const user = await User.findOneAndUpdate(
             { _id: userId },
@@ -92,6 +92,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 { status: 404 }
             );
         }
+        console.log("updated user");
 
         return NextResponse.json("User updated: " + userId, { status: 200 });
     } catch (err) {
