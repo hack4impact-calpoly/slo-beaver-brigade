@@ -10,6 +10,7 @@ import { getEvents } from "app/actions/eventsactions";
 
 interface IEvent {
   _id: string;
+  eventType: string;
   eventName: string;
   location: string;
   description: string;
@@ -21,6 +22,7 @@ interface IEvent {
   visitorCount?: number;
   groupsAllowed: ObjectId[];
   registeredIds: ObjectId[];
+  attendeeIds: ObjectId[];
   digitalWaiver: string | null;
 }
 
