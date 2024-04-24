@@ -24,7 +24,7 @@ import {
 import { AddIcon, ChevronDownIcon} from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/MiniCalendar";
 import { formatISO, parse } from 'date-fns';
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -33,7 +33,7 @@ type Group = {
 };
 
 
-export default function CreateEvent() {
+export default function Page() {
   const toast = useToast();
   const router = useRouter()
   const [eventName, setEventName] = useState("");
