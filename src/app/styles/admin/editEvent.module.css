@@ -112,6 +112,7 @@
 
 .emailAllVisitors:hover{
     text-decoration-line: underline;
+    cursor: pointer;
 }
 
 .topBlock{
