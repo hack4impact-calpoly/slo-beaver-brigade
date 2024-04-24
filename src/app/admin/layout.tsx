@@ -13,10 +13,15 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
 const Layout = async (props: Props) => {
  
     // get user if possible
-    const user = await getUserDbData()
 
     if (process.env.DEV_MODE != "true"){
-        if (user?.role != "admin"){
+        // get user role
+        let user = null
+        const res = await getUserDbData()
+        if (res){
+            user = JSON.parse(res)
+        }
+        if (!user || user?.role != "admin"){
             redirect("/")
         }
     }

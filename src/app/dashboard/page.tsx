@@ -21,6 +21,8 @@ import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "../actions/eventsactions";
+import { getUserDbData } from "app/lib/authentication";
+import { IUser } from "@database/userSchema";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -126,11 +128,12 @@ const Dashboard = () => {
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
       setEventsLoading(true);
-
       try {
-        if (isSignedIn) {
-          const userId = user.unsafeMetadata["dbId"]; // Assuming this is the correct ID to match against event attendees
+        const userRes= await getUserDbData();
+        if (userRes) {
+        const dbUser : IUser = JSON.parse(userRes)
 
+          console.log(dbUser);
           // Fetch all events
           const eventsResponse = await fetch("/api/events");
           if (!eventsResponse.ok) {
@@ -140,20 +143,19 @@ const Dashboard = () => {
           }
           const allEvents = await eventsResponse.json();
           const currentDate = new Date();
-
+          console.log(allEvents);
           // Filter events where the current user is an attendee
           const userSignedUpEvents = allEvents.filter(
             (event: any) =>
-              event.attendeeIds.includes(userId) &&
+              event.registeredIds.includes(dbUser?._id) &&
               new Date(event.startTime) >= currentDate
           );
           // Filter events where the current user is not an attendee
           const eventsUserHasntRegistered = allEvents.filter(
             (event: any) =>
-              !event.attendeeIds.includes(userId) &&
+              !event.registeredIds.includes(dbUser?._id) &&
               new Date(event.startTime) >= currentDate
           );
-
           // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
           setUnregisteredEvents(eventsUserHasntRegistered);
@@ -167,14 +169,11 @@ const Dashboard = () => {
           }
           const allEvents = await eventsResponse.json();
           const currentDate = new Date();
-
           // Getting all upcoming events
           const userEvents = allEvents.filter(
             (event: any) => new Date(event.startTime) >= currentDate
           );
-
           console.log(userEvents);
-
           setUserEvents([]);
           setUnregisteredEvents(userEvents);
         }
@@ -184,10 +183,9 @@ const Dashboard = () => {
         setEventsLoading(false); // Stop loading irrespective of outcome
       }
     };
-
-    // Call the function to fetch user data and events
+  
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isLoaded, isSignedIn]); // Add dependencies array
 
   useEffect(() => {
     // Handler to call on window resize

@@ -21,11 +21,11 @@ export async function GET() {
 //   await connectDB() // connect to db
 
 //   //strip Event data from req json
-//   const { eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, startTime, endTime, volunteerEvent, groupsAllowed, attendeeIds }: IEvent = await req.json()
+//   const { eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, startTime, endTime, volunteerEvent, groupsAllowed, registeredIds }: IEvent = await req.json()
 
 //   //create new event or return error
 //   try {
-//     const newEvent = new Event({ eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, startTime, endTime, volunteerEvent, groupsAllowed, attendeeIds })
+//     const newEvent = new Event({ eventName, description, wheelchairAccessible, spanishSpeakingAccommodation, startTime, endTime, volunteerEvent, groupsAllowed, registeredIds })
 //     await newEvent.save()
 //     return NextResponse.json("Event added successfull: " + newEvent, { status: 200 });
 //   } catch (err) {
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     // create new event or return error
     try {
-        const newEvent = new Event(event);
+        const newEvent = new Event({...event, eventType: "Volunteer"});
         console.log("New Event Data:", newEvent); // Add this line
 
         await newEvent.save();

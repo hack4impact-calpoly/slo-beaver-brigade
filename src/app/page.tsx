@@ -3,7 +3,11 @@ import { redirect } from "next/navigation";
 
 export default async function Page() {
     // get user role
-    const user = await getUserDbData()
+    let user = null
+    const res = await getUserDbData()
+    if (res){
+        user = JSON.parse(res)
+    }
     if (user?.role == "admin"){
         redirect("/admin/events")
     }
