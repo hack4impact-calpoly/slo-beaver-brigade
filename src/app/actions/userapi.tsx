@@ -13,7 +13,7 @@ export async function doesUserExist(email: string){
             if (!user) {
                 return false
             }
-            return user.role != "guest"
+            return true
 
         } catch (error) {
             return false
