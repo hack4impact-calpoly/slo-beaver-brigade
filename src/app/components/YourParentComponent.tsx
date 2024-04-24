@@ -13,6 +13,7 @@ const YourParentComponent: React.FC = () => {
 
   const eventDetails: IEvent = {
     _id:"sampleid",
+    eventType: "",
     eventName: "Watery Walk",
     location: "East Main Street",
     description: "This is a sample event description.",
@@ -23,6 +24,7 @@ const YourParentComponent: React.FC = () => {
     volunteerEvent: true,
     groupsAllowed: [],
     registeredIds: [], // array of Schema.Types.ObjectId
+    attendeeIds: []
   };
 
   return <EventExpandedView eventDetails={eventDetails} showModal={showExpandedView} setShowModal={setShowExpandedView}/>;
