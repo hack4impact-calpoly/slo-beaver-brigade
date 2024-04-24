@@ -122,7 +122,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
           >
             Email All Visitors
           </button>
-          <EditEventVisitorInfo visitorData={visitorData} loading={loading} />
+          <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>
           <EditEventPrimaryInfo eventId={eventId} />

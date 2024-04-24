@@ -22,8 +22,9 @@ import {
 
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon} from "@chakra-ui/icons";
-import MiniCalendar from "../components/MiniCalendar";
+import MiniCalendar from "../../../components/MiniCalendar";
 import { formatISO, parse } from 'date-fns';
+import { useRouter } from "next/router";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -32,8 +33,9 @@ type Group = {
 };
 
 
-const CreateEvent = () => {
+export default function CreateEvent() {
   const toast = useToast();
+  const router = useRouter()
   const [eventName, setEventName] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -138,6 +140,7 @@ const CreateEvent = () => {
 
     const eventData = {
       eventName,
+      eventType: "Beaver Walk",
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
@@ -172,6 +175,7 @@ const CreateEvent = () => {
         duration: 5000,
         isClosable: true,
       });
+      router.push("/" + "admin/events")
     } catch (error) {
       console.error("Failed to create the event:", error);
       toast({
@@ -404,5 +408,3 @@ const CreateEvent = () => {
     </Box>
   );
 };
-
-export default CreateEvent;
