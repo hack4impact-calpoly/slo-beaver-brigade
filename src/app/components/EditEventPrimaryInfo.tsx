@@ -21,6 +21,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
         volunteerEvent: false,
         groupsAllowed: [],
         registeredIds: [],
+        attendeeIds: []
     });
 
     const [groupData, setGroupData] = useState([{

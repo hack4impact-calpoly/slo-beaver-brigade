@@ -18,6 +18,8 @@ export async function GET() {
     }
 }
 
+
+
 // POST request for adding user
 export async function POST(req: NextRequest) {
     try {

@@ -6,7 +6,7 @@ import { HamburgerIcon, Search2Icon, StarIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import { SignOutButton } from "@clerk/clerk-react";
 
-export default function Navbar(props: { name: string }) {
+export default function NavbarAdmin(props: { name: string }) {
   const [showNavbar, setShowNavbar] = useState(false);
 
   const handleShowNavbar = () => {
@@ -51,21 +51,27 @@ export default function Navbar(props: { name: string }) {
                 Home
               </Link>
             </li>
-           <li>
+            <li>
               <Link href="/calendar">
                 Calendar
               </Link>
             </li>
-            {(props.name != "Sign In / Log In") &&
-          <>
             <li>
-              <Link href="/hours">
-                Hours
+              <Link href="/admin/users">
+                Users
               </Link>
             </li>
             <li>
-              <Link href="/profile">My Account</Link>
-            </li>  
+              <Link href="/admin/events/hours">
+                Event Logs
+              </Link>
+            </li>
+            
+            {(props.name != "Sign In / Log In") &&
+          <>
+            <li>
+              <Link href="/">My Account</Link>
+            </li>
             <li>
                 <SignOutButton />
             </li>

@@ -7,22 +7,23 @@ import { ObjectId } from "mongoose";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { getEvents } from "app/actions/eventsactions";
+import { IEvent } from "@database/eventSchema";
 
-interface IEvent {
-  _id: string;
-  eventName: string;
-  location: string;
-  description: string;
-  wheelchairAccessible: boolean;
-  spanishSpeakingAccommodation: boolean;
-  startTime: Date;
-  endTime: Date;
-  volunteerEvent: boolean;
-  visitorCount?: number;
-  groupsAllowed: ObjectId[];
-  registeredIds: ObjectId[];
-  digitalWaiver: string | null;
-}
+// interface IEvent {
+//   _id: string;
+//   eventName: string;
+//   location: string;
+//   description: string;
+//   wheelchairAccessible: boolean;
+//   spanishSpeakingAccommodation: boolean;
+//   startTime: Date;
+//   endTime: Date;
+//   volunteerEvent: boolean;
+//   visitorCount?: number;
+//   groupsAllowed: ObjectId[];
+//   registeredIds: ObjectId[];
+//   digitalWaiver: string | null;
+// }
 
 const EventPreview = () => {
   //states

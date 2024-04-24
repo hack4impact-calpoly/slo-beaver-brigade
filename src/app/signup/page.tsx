@@ -14,6 +14,7 @@ import {
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSignUp } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { doesUserExist } from 'app/actions/userapi';
 
 export default function SignUp() {
   //clerk consts
@@ -64,7 +65,12 @@ export default function SignUp() {
     }
 
     try {
- 
+
+
+      // If the user is created, update the user metadata in Clerk
+      // check if user already exists in mongo
+      const userExists = await doesUserExist(email)
+      if (!userExists) {
 
         try {
           //create a clerk user
@@ -97,8 +103,10 @@ export default function SignUp() {
             setEmailError(true);
           }
         }
+      } else {
+        console.log('Email already exists.');
       }
-     catch (error) {
+    }catch (error) {
       // Handle the error
       console.log('Error:', error);
         setSubmitAttempted(true);
@@ -118,11 +126,14 @@ export default function SignUp() {
         code,
       });
       if (completeSignUp.status !== 'complete') {
+        // create mongoose account
         /*  investigate the response, to see if there was an error
          or if the user needs to complete more steps.*/
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
-      if (completeSignUp.status === 'complete') {     //creates data object from form data
+      if (completeSignUp.status === 'complete') {
+        // create mongoose user
+        //creates data object from form data
         const data = {
             email: email,
             phoneNumber: phone,
@@ -139,26 +150,16 @@ export default function SignUp() {
             body: JSON.stringify(data),
         });
         if (res.ok){
-            const responseData = await res.json();
-            const dbId = responseData._id;
-            // update user
-            signUp.update({unsafeMetadata: {
-                dbId: dbId
-            }})
-            console.log("CREATED MONGODB USER")
+            await setActive({ session: completeSignUp.createdSessionId });
+            // Redirect the user to a post sign-up route
+            if (redirect_url) {
+            router.push(redirect_url);
+            } else {
+            // Redirect the user to a post sign-in route
+            router.push('/');
+            }
         }
-        else{
-            console.log("error occurred: ", res.statusText)
-        }
-        await setActive({ session: completeSignUp.createdSessionId });
 
-        // Redirect the user to a post sign-up route
-        if (redirect_url) {
-          router.push(redirect_url);
-        } else {
-          // Redirect the user to a post sign-in route
-          router.push('/');
-        }
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
