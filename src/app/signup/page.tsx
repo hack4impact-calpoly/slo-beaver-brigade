@@ -50,7 +50,6 @@ export default function SignUp() {
     //for the frontend, it'll just have the successful submission screen popup
 
     e.preventDefault();
-    setSubmitAttempted(true);
     setEmailError(false);
     setPasswordError(false);
     setEmailErrorMessage('Email is required');
@@ -86,6 +85,7 @@ export default function SignUp() {
               interestQuestions,
             },
           });
+ 
 
           // send the email.
           await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
@@ -106,9 +106,10 @@ export default function SignUp() {
       } else {
         console.log('Email already exists.');
       }
-    } catch (error) {
+    }catch (error) {
       // Handle the error
       console.log('Error:', error);
+        setSubmitAttempted(true);
     }
   };
 
@@ -314,6 +315,7 @@ export default function SignUp() {
               </Button>
               <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>
             </FormControl>
+     
           </>
         )}
       </Box>

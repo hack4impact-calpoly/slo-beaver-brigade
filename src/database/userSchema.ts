@@ -27,8 +27,6 @@ enum Role {
 export type EventInfo = {
     eventId: Schema.Types.ObjectId;
     digitalWaiver: Schema.Types.ObjectId | null;
-    startTime: Date | null;
-    endTime: Date | null;
 };
 
 export type IUser = {
@@ -40,8 +38,10 @@ export type IUser = {
     age: number;
     gender: string;
     role: "user" | "supervisor" | "admin" | "guest";
-    eventsAttended: EventInfo[];
+    eventsRegistered: EventInfo[];
+    eventsAttended: Schema.Types.ObjectId[];
     groupId: Schema.Types.ObjectId | null;
+    recieveNewsletter: boolean;
 };
 
 //groupId and digitalWaiver seem to require a schema
@@ -60,7 +60,7 @@ const UserSchema = new Schema({
         default: "user",
         required: true,
     },
-    eventsAttended: {
+    eventsRegistered: {
         type: [
             {
                 eventId: { type: Schema.Types.ObjectId, required: true },
@@ -70,9 +70,20 @@ const UserSchema = new Schema({
         default: [],
         required: false,
     },
+    eventsAttended: {
+        type: [Schema.Types.ObjectId],
+        default: [],
+        required: false,
+    },
     groupId: { type: Schema.Types.ObjectId, required: false },
+    recieveNewsletter: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
+const User =
+    mongoose.models["userTest"] || mongoose.model("userTest", UserSchema);
 
 export default User;

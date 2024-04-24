@@ -22,6 +22,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent>({
     _id: "",
     eventName: "",
+    eventType: "",
     location: "",
     description: "",
     wheelchairAccessible: false,
@@ -30,6 +31,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     endTime: new Date(0),
     volunteerEvent: false,
     groupsAllowed: [],
+    registeredIds: [],
     attendeeIds: [],
   });
 
@@ -44,6 +46,8 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
       age: -1,
       gender: "",
       role: "user",
+      eventsRegistered: [],
+      recieveNewsletter: false,
       eventsAttended: [],
     },
   ]);
@@ -72,7 +76,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
         const visitorDataArray = await Promise.all(
-          eventData.attendeeIds
+          eventData.registeredIds
             .filter((userId) => userId !== null)
             .map(async (userId) => {
               const response = await fetch(`/api/user/${userId}`);
@@ -118,7 +122,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
           >
             Email All Visitors
           </button>
-          <EditEventVisitorInfo visitorData={visitorData} loading={loading} />
+          <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>
           <EditEventPrimaryInfo eventId={eventId} />
