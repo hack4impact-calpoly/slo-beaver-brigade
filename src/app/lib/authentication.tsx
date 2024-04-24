@@ -4,19 +4,19 @@ import User, { IUser } from "@database/userSchema";
 
 export async function getUserDbData(){
 const clerk_user = await currentUser();
-if (!clerk_user){
-    return null
-}
-const dbId = clerk_user?.unsafeMetadata["dbId"]
-if (!dbId){
-    return null
-}
-  await connectDB()
-  try{
-    const user: IUser | null = await User.findById(dbId).orFail();
-    return user;
-  }
-  catch(err){
-    return null
-  }
+    if (!clerk_user){
+        return null
+    }
+    // search db for user with matching email address
+    await connectDB()
+    console.log(clerk_user.emailAddresses[0].emailAddress)
+    try{
+        const user: IUser | null = await User.findOne({email: clerk_user.emailAddresses[0].emailAddress}).orFail();
+        console.log("user found")
+        return user;
+    }
+    catch(err){
+        console.log('user not found')
+        return null
+    }
 }
