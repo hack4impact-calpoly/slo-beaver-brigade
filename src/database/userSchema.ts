@@ -65,11 +65,6 @@ const UserSchema = new Schema({
             {
                 eventId: { type: Schema.Types.ObjectId, required: true },
                 digitalWaiver: { type: Schema.Types.ObjectId, required: false },
-                isRegistered: {
-                    type: Boolean,
-                    required: false,
-                    default: false,
-                },
             },
         ],
         default: [],

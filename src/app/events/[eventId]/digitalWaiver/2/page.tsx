@@ -19,6 +19,7 @@ import Image from 'next/image'
 import NextLink from "next/link";
 import { IUser } from '@database/userSchema';
 import { useNavigate } from 'react-router-dom';
+import { addToRegistered } from "app/actions/useractions";
 
 type IParams = {
   params: {
@@ -116,18 +117,14 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
             try {
               //call to update the user object
-              const res = await fetch(`/api/user/${uId}`, {
-                  method: 'PATCH',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(updatedInfo),
-              });
-              if (res.ok) {
+              const res = await addToRegistered(uId, eventId, waiverId)
+              if (res) {
                 console.log('added')
                 //on success, return to the home page
                 window.location.href = '/';
                 
               } else {
-                  console.error("Error adding info to user", res.statusText);
+                  console.error("Error adding info to user");
               }} 
             catch (error) {
               console.error("Error adding info to user", error);
