@@ -10,6 +10,7 @@ export default async function Page() {
             redirect("/admin/events")
         }
     }
+
     redirect("/dashboard")
 }
 
