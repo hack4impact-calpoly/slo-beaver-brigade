@@ -71,17 +71,18 @@ export async function POST(
 export async function PATCH(req: NextRequest, { params }: IParams) {
     await connectDB(); // Connect to the database
 
+    console.log("in patch");
     const { userId } = params; // Destructure the userId from params
 
     try {
-        const { eventsAttended }: IUser = await req.json();
-        console.log("hello", eventsAttended);
+        const { eventsRegistered }: IUser = await req.json();
+        console.log("hello", eventsRegistered);
 
         const user = await User.findOneAndUpdate(
             { _id: userId },
             {
                 $push: {
-                    eventsRegistered: eventsAttended,
+                    eventsRegistered: eventsRegistered,
                 },
             }
         );

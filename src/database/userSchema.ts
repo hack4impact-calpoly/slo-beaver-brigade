@@ -27,7 +27,6 @@ enum Role {
 export type EventInfo = {
     eventId: Schema.Types.ObjectId;
     digitalWaiver: Schema.Types.ObjectId | null;
-    isRegistered: boolean;
 };
 
 export type IUser = {
@@ -39,7 +38,8 @@ export type IUser = {
     age: number;
     gender: string;
     role: "user" | "supervisor" | "admin" | "guest";
-    eventsAttended: EventInfo[];
+    eventsRegistered: EventInfo[];
+    eventsAttended: Schema.Types.ObjectId[];
     groupId: Schema.Types.ObjectId | null;
     recieveNewsletter: boolean;
 };

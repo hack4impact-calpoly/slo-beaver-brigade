@@ -21,6 +21,8 @@ import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "../actions/eventsactions";
+import { getUserDbData } from "app/lib/authentication";
+import { IUser } from "@database/userSchema";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -129,7 +131,8 @@ const Dashboard = () => {
 
       try {
         if (isSignedIn) {
-          const userId = user.unsafeMetadata["dbId"]; // Assuming this is the correct ID to match against event attendees
+            const dbUser: IUser | null= await getUserDbData()
+            console.log(dbUser)
 
           // Fetch all events
           const eventsResponse = await fetch("/api/events");
@@ -144,13 +147,13 @@ const Dashboard = () => {
           // Filter events where the current user is an attendee
           const userSignedUpEvents = allEvents.filter(
             (event: any) =>
-              event.attendeeIds.includes(userId) &&
+              event.attendeeIds.includes(dbUser?._id) &&
               new Date(event.startTime) >= currentDate
           );
           // Filter events where the current user is not an attendee
           const eventsUserHasntRegistered = allEvents.filter(
             (event: any) =>
-              !event.attendeeIds.includes(userId) &&
+              !event.attendeeIds.includes(dbUser?._id) &&
               new Date(event.startTime) >= currentDate
           );
 

@@ -110,7 +110,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
             const updatedInfo ={
               eventsRegistered: {
                   eventId: eventId,
-                  digitalWaiver: waiverId,
+                  digitalWaiver: waiverId
               }
             }
 
@@ -122,6 +122,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                   body: JSON.stringify(updatedInfo),
               });
               if (res.ok) {
+                console.log('added')
                 //on success, return to the home page
                 window.location.href = '/';
                 
