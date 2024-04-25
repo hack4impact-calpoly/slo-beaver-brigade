@@ -12,7 +12,8 @@
     justify-content: space-between;
     align-items: center;
     height: 100%;
-    
+    position: relative;
+
 }
 
 .navbar {
@@ -48,13 +49,17 @@
     text-align: right;
     letter-spacing: normal;
     right: 0px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     
 }
 
 .nav_elements ul {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     list-style-type: none;
+
 }
 
 /*
@@ -70,6 +75,8 @@
 .nav_elements ul li {
     margin-right: 20px;
     margin-left: 20px;
+    white-space: nowrap;
+   
 }
 
 .nav_elements ul a {
@@ -205,6 +212,7 @@
         background-color: #2b2b33;
         width: 0px;
         height: calc(100vh - 60px);
+        overflow: hidden;
 
         
     }

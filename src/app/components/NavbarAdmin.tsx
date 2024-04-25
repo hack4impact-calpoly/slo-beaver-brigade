@@ -54,17 +54,22 @@ export default function Navbar(props: { name: string }) {
                 Calendar
               </Link>
             </li>
+            <li>
+              <Link href="https://www.slobeaverbrigade.com">
+                Homepage
+              </Link>
+            </li>
             {(props.name != "Sign In / Log In") &&
-            <>
-              <li>
-                <Link href="/hours">
-                  Volunteer Hours
-                </Link>
-              </li>
-              <li>
-                <Link href="/profile">User List</Link>
-              </li>  
-            </>
+              <>
+                <li>
+                  <Link href="/admin/users">User List</Link>
+                </li>
+                <li>
+                  <Link href="/admin/hours">
+                    Volunteer Hours
+                  </Link>
+                </li>
+              </>
             }
           </ul>
         </div>
@@ -72,20 +77,10 @@ export default function Navbar(props: { name: string }) {
         <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
           <ul>
             {(props.name != "Sign In / Log In") &&
-            <>
               <li>
                   <SignOutButton />
               </li>
-              <li>
-                |
-              </li>
-              </>
             }
-              <li>
-                <Link href="https://www.slobeaverbrigade.com">
-                  Homepage
-                </Link>
-              </li>
             </ul>
           </div>
           <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
