@@ -25,6 +25,7 @@ import { AddIcon, ChevronDownIcon} from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/MiniCalendar";
 import { formatISO, parse } from 'date-fns';
 import { useRouter } from "next/navigation";
+import { uploadFileS3Bucket } from "app/actions/useractions";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -104,7 +105,7 @@ export default function Page() {
   };
 
   // Handle file selection for the event cover image and set preview
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
@@ -137,10 +138,28 @@ export default function Page() {
       });
       return;
     }
+    // Try to upload image
+    const form = new FormData()
+    const file = fileInputRef?.current?.files ?fileInputRef?.current?.files[0] : null 
+    if (!file){
+      console.error("Failed to create the event: image upload.");
+      toast({
+        title: "Error",
+        description: "Failed to create the event",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+      return;
+    }
+    form.append("file", file)
+    const imageurl = await uploadFileS3Bucket(form)
+    console.log(imageurl)
 
     const eventData = {
       eventName,
       eventType: "Beaver Walk",
+      eventImage: imageurl,
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
@@ -150,6 +169,8 @@ export default function Page() {
       volunteerEvent: eventType === "Volunteer",
       groupsAllowed: organizationIds,
     };
+
+
     
     // Attempt to create event via API and handle response
     try{

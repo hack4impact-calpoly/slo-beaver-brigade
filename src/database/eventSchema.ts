@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export type IEvent = {
     _id: string;
     eventName: string;
+    eventImage: string;
     eventType: string;
     location: string;
     description: string;
@@ -19,6 +20,7 @@ export type IEvent = {
 // Mongoose schema
 const eventSchema = new Schema({
     eventName: { type: String, required: true },
+    eventImage: { type: String, required: false },
     eventType: { type: String, required: true },
     location: { type: String, required: true },
     description: { type: String, required: true },
