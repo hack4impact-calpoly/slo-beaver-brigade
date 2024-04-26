@@ -379,7 +379,7 @@ const Dashboard = () => {
                           mx="2"
                           my="2"
                           backdropBlur={2}
-                          backdropFilter={"blur(5px)"}
+                          backdropFilter={"blur(2px)"}
                           zIndex={2}
                         >
                           <Text
@@ -512,11 +512,12 @@ const Dashboard = () => {
             style={{
                           //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                           background: backgroundImage,
-                          backgroundSize: "70% auto",
+                          backgroundSize: "100% auto",
                           backgroundRepeat: "no-repeat",
                             backgroundPosition: "left 40%"
                         }}
                   position="relative"
+                  width="70%"
                   borderWidth="1px"
                   p="4"
                   mt="4"

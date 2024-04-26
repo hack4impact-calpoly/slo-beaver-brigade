@@ -4,16 +4,8 @@
     background-position: left 25%;
     padding: 20px;
 }
-.eventBox::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 30%;
-    background-color: rgba(4, 17, 106, 0.737);
-}
-@media (max-width: 750px) {
+
+/* @media (max-width: 750px) {
     .eventBox {
         background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
             url("/beaver1.jpg");
@@ -26,4 +18,4 @@
         content: "";
         width: 0%;
     }
-}
+} */
