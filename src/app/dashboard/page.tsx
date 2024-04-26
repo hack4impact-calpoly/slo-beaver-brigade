@@ -23,6 +23,8 @@ import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "../actions/eventsactions";
 import { getUserDbData } from "app/lib/authentication";
 import { IUser } from "@database/userSchema";
+import { fallbackBackgroundImage } from "app/lib/random";
+import { IEvent } from "@database/eventSchema";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -69,8 +71,8 @@ const Dashboard = () => {
   `;
 
   const { isSignedIn, user, isLoaded } = useUser();
-  const [userEvents, setUserEvents] = useState<Event[]>([]);
-  const [unregisteredEvents, setUnregisteredEvents] = useState<Event[]>([]);
+  const [userEvents, setUserEvents] = useState<IEvent[]>([]);
+  const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [showEventList, setShowEventList] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
@@ -332,7 +334,9 @@ const Dashboard = () => {
             {userEvents.length > 0 ? (
               <Slider {...settings}>
                 {userEvents.length > 0 ? (
-                  userEvents.map((event) => (
+                  userEvents.map((event) => {
+                    const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
+                    return (
                     <Box key={event._id} textAlign="center" px="4" mb="4">
                       <Box
                         position="relative"
@@ -343,7 +347,7 @@ const Dashboard = () => {
                         borderRadius="20px"
                         style={{
                           //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                          background: 'linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("/underwater-saltwater-beavers.jpg")',
+                          background: backgroundImage,
                           backgroundSize: "cover",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "center",
@@ -417,7 +421,7 @@ const Dashboard = () => {
                         </Box>
                       </Box>
                     </Box>
-                  ))
+                  )})
                 ) : (
                   <EventPlaceholder />
                 )}
@@ -500,9 +504,18 @@ const Dashboard = () => {
           <Box mt={6}>
             {unregisteredEvents
               .slice(0, showAllEvents ? unregisteredEvents.length : 2)
-              .map((event) => (
+              .map((event) => {
+                const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
+                return(
                 <Box
                   key={event._id}
+            style={{
+                          //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
+                          background: backgroundImage,
+                          backgroundSize: "70% auto",
+                          backgroundRepeat: "no-repeat",
+                            backgroundPosition: "left 40%"
+                        }}
                   position="relative"
                   borderWidth="1px"
                   p="4"
@@ -585,7 +598,7 @@ const Dashboard = () => {
                     </Heading>
                   </Box>
                 </Box>
-              ))}
+              )})}
             {unregisteredEvents.length > 2 && !showAllEvents ? (
               <Flex justifyContent="center" mt="4">
                 <Button

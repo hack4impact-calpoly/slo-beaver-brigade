@@ -1,6 +1,7 @@
 import React from "react";
 import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
+import { fallbackBackgroundImage } from "app/lib/random";
 
 interface EventPreviewProps {
   event: IEvent;
@@ -45,12 +46,12 @@ const EventCard: React.FC<EventPreviewProps> = ({
     return `${formattedStartTime} - ${formattedEndTime}`;
   };
 
+  const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
   return (
     <div
       className={style.eventCard}
       style={{
-
-        background: event.eventImage ? `linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(${event.eventImage})` : 'linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("/beaver-eventcard.jpeg")',
+        background: backgroundImage,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backdropFilter: "brightness(50%)"
