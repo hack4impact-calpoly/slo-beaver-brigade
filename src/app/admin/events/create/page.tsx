@@ -138,28 +138,34 @@ export default function Page() {
       });
       return;
     }
+   
+
     // Try to upload image
     const form = new FormData()
-    const file = fileInputRef?.current?.files ?fileInputRef?.current?.files[0] : null 
-    if (!file){
-      console.error("Failed to create the event: image upload.");
-      toast({
-        title: "Error",
-        description: "Failed to create the event",
-        status: "error",
-        duration: 2500,
-        isClosable: true,
-      });
-      return;
-    }
-    form.append("file", file)
-    const imageurl = await uploadFileS3Bucket(form)
-    console.log(imageurl)
+    const file = fileInputRef?.current?.files?.[0] ?? null;
+    let imageurl = null
 
+    if (file) {
+      form.append("file", file);
+      imageurl = await uploadFileS3Bucket(form);
+      if (!imageurl) {
+        console.error("Failed to create the event: image upload.");
+        toast({
+          title: "Error",
+          description: "Failed to create the event",
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+        });
+        return;
+      }
+      console.log(imageurl);
+    }
+    
     const eventData = {
       eventName,
+      ...(imageurl && { eventImage: imageurl }),
       eventType: "Beaver Walk",
-      eventImage: imageurl,
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
@@ -169,7 +175,19 @@ export default function Page() {
       volunteerEvent: eventType === "Volunteer",
       groupsAllowed: organizationIds,
     };
-
+    
+    try {
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventData),
+      });
+      // Handle the response
+    } catch (error) {
+      // Handle the error
+    }
 
     
     // Attempt to create event via API and handle response
