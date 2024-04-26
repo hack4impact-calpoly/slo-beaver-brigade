@@ -11,6 +11,7 @@ import EditEventHeader from "@components/EditEventHeader";
 import { useEffect, useState } from "react";
 import { IUser } from "@database/userSchema";
 import { IEvent } from "@database/eventSchema";
+import { fallbackBackgroundImage } from "app/lib/random";
 
 type IParams = {
   params: {
@@ -22,6 +23,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent>({
     _id: "",
     eventName: "",
+    eventImage: null,
     eventType: "",
     location: "",
     description: "",
@@ -113,8 +115,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
-          <Box className={styles.imageContainer}>
-            <Image src={defaultBeaver} alt="eventImage" />
+          <Box style={{background: fallbackBackgroundImage(eventData.eventImage, "/beaver-eventcard.jpeg"), backgroundSize: "cover"}} className={styles.imageContainer}>
           </Box>
           <button
             onClick={handleEmailAllVisitors}

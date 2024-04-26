@@ -11,6 +11,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
     const [eventData, setEventData] = useState<IEvent>({
         _id: '',
         eventName: '',
+        eventImage: null,
         eventType: '',
         location: '',
         description: '',

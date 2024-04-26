@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export type IEvent = {
     _id: string;
     eventName: string;
-    eventImage: string;
+    eventImage: string | null;
     eventType: string;
     location: string;
     description: string;
