@@ -131,7 +131,9 @@ const EventPreview = () => {
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
-        <button className={style.yellowButton}>Create new event</button>
+        <Link href={"/admin/events/create"}>
+            <button className={style.yellowButton}>Create new event</button>
+        </Link>
         <div className={style.searchWrapper}>
           <input
             type="text"
