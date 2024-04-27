@@ -16,63 +16,8 @@ import React, { useEffect, useState } from 'react';
 import style from '@styles/admin/users.module.css';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
-import { IEvent } from '@database/eventSchema';
-
-//convert date into format Dayofweek, Month
-const formatDate = (date: Date) => {
-  if (!(date instanceof Date)) {
-    date = new Date(date); // Convert to Date object if not already
-  }
-
-  const options: Intl.DateTimeFormatOptions = {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  };
-  return date.toLocaleDateString('en-US', options);
-};
-
-// convert date into xx:xx XM - xx:xx XM
-const formatDuration = (start: Date, end: Date) => {
-  if (!(start instanceof Date)) {
-    start = new Date(start); // Convert to Date object if not already
-  }
-
-  if (!(end instanceof Date)) {
-    end = new Date(end); // Convert to Date object if not already
-  }
-
-  // Calculate the time difference in milliseconds
-  const timeDiff = end.getTime() - start.getTime();
-
-  // Convert milliseconds to minutes
-  const minutes = Math.floor(timeDiff / (1000 * 60));
-
-  // Calculate remaining hours and minutes
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-
-  return `${hours}h ${remainingMinutes} min`;
-};
-
-// convert date into xx:xx XM - xx:xx XM
-const getDuration = (start: Date, end: Date) => {
-  if (!(start instanceof Date)) {
-    start = new Date(start); // Convert to Date object if not already
-  }
-
-  if (!(end instanceof Date)) {
-    end = new Date(end); // Convert to Date object if not already
-  }
-
-  // Calculate the time difference in milliseconds
-  const timeDiff = end.getTime() - start.getTime();
-
-  // Convert milliseconds to minutes
-  const minutes = Math.floor(timeDiff / (1000 * 60));
-
-  return minutes;
-};
+import { IEvent } from '../../../database/eventSchema';
+import { formatDate, formatDuration, getDuration } from '../../lib/dates';
 
 const AttendedEvents = () => {
   //states
@@ -111,19 +56,18 @@ const AttendedEvents = () => {
           const today = new Date();
           setEndDateTime(today.toString());
         }
-        
+
         // Filter events where the current user is an attendee
         const pastEvents = allEvents.filter(
           (event: any) =>
           event.volunteerEvent && new Date(event.endTime) <= new Date(endDateTime) && new Date(event.startTime) >= new Date(startDateTime)
           );
 
-        const time = pastEvents.map(
-          (event: any) =>
-            getDuration(event.startTime, event.endTime) *
-            event.attendeeIds.length
-        );
-        setTotalTime(time.reduce((a, b) => a + b, 0));
+        pastEvents.forEach((event: any) => {
+          setTotalTime(
+            totalTime + (getDuration(event.startTime, event.endTime) * event.attendeeIds.length)
+          );
+        });
 
         // Update state with events the user has signed up for
         setUserEvents(pastEvents);

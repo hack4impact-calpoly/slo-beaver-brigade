@@ -27,11 +27,7 @@
     }
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/app/admin/hours"
+    "next-env.d.ts"
   ],
   "exclude": ["node_modules"]
 }
