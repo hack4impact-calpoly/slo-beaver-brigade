@@ -176,20 +176,7 @@ export default function Page() {
       groupsAllowed: organizationIds,
     };
     
-    try {
-      const response = await fetch("/api/events", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
-      // Handle the response
-    } catch (error) {
-      // Handle the error
-    }
 
-    
     // Attempt to create event via API and handle response
     try{
       const response = await fetch("/api/events", {
