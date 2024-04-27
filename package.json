@@ -13,7 +13,7 @@
     "lint:fix": "next lint --fix"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.563.0",
+    "@aws-sdk/client-s3": "^3.564.0",
     "@aws-sdk/lib-storage": "^3.563.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
