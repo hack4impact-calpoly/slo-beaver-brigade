@@ -16,16 +16,16 @@ import {
 } from '@chakra-ui/react';
 import { IEvent } from '@database/eventSchema';
 
-const CancelEvent = ({ event, onDelete }) => {
+const CancelEvent = ({ event, onDelete }: { event: IEvent, onDelete: (id: string) => void }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [reason, setReason] = useState('');
 
-    const handleReasonChange = (e) => setReason(e.target.value);
+    const handleReasonChange = (e : any) => setReason(e.target.value);
 
     const handleCancel = async () => {
         try {
             // note for fetch: not sure where to fetch from, hope this works
-            await fetch(`@api/events/${event.id}`, {
+            await fetch(`@api/events/${event._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const CancelEvent = ({ event, onDelete }) => {
                 body: JSON.stringify({ reason }),
             });
 
-            onDelete(event.id);
+            onDelete(event._id);
 
             onClose();
         } catch (error) {
