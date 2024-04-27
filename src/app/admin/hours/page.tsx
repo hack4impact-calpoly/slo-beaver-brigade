@@ -11,13 +11,12 @@ import {
   Text,
   Input,
 } from '@chakra-ui/react';
-import { MagnifyingGlassIcon } from '@heroicons/react/16/solid';
 import React, { useEffect, useState } from 'react';
 import style from '@styles/admin/users.module.css';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
-import { formatDate, formatDuration, getDuration } from '../../lib/dates';
+import { formatDate, formatDuration } from '../../lib/dates';
 import { calcHours, calcHoursForAll, filterPastEvents } from '../../lib/hours';
 
 const AttendedEvents = () => {
