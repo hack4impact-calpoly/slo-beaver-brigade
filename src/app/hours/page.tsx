@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../database/eventSchema';
 import { formatDate, formatDuration, getDuration } from '../lib/dates';
+import { calcHours, calcHoursForAll, filterUserSignedUpEvents } from '../lib/hours';
 
 const AttendedEvents = () => {
   //states
@@ -25,11 +26,38 @@ const AttendedEvents = () => {
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [startDateTime, setStartDateTime] = useState('');
-  const [endDateTime, setEndDateTime] = useState('');
+  const [startDateTime, setStartDateTime] = useState(new Date((new Date).setMonth((new Date).getMonth() - 1)).toString());
+  const [endDateTime, setEndDateTime] = useState((new Date).toString());
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
+
+  async function fetchData(start, end): Promise<void> {
+    if (isSignedIn) {
+      const userId = user.unsafeMetadata['dbId']; // Assuming this is the correct ID to match against event attendees
+
+      // Fetch all events
+      const eventsResponse = await fetch('/api/events');
+      if (!eventsResponse.ok) {
+        throw new Error(
+          `Failed to fetch events: ${eventsResponse.statusText}`
+        );
+      }
+      const allEvents = await eventsResponse.json();
+
+      setStartDateTime(start);
+      setEndDateTime(end);
+
+      // Filter events where the current user is an attendee
+      const userSignedUpEvents = filterUserSignedUpEvents(allEvents, userId, start, end);
+
+      const hours = calcHours(userSignedUpEvents);
+      setTotalTime(hours);
+
+      // Update state with events the user has signed up for
+      setUserEvents(userSignedUpEvents);
+    }
+  }
 
   useEffect(() => {
     console.log('Fetching user events...');
@@ -38,76 +66,17 @@ const AttendedEvents = () => {
       setEventsLoading(true);
 
       try {
-        if (isSignedIn) {
-          const userId = user.unsafeMetadata['dbId']; // Assuming this is the correct ID to match against event attendees
-
-          // Fetch all events
-          const eventsResponse = await fetch('/api/events');
-          if (!eventsResponse.ok) {
-            throw new Error(
-              `Failed to fetch events: ${eventsResponse.statusText}`
-            );
-          }
-          const allEvents = await eventsResponse.json();
-
-          if (startDateTime === "") {
-            const today = new Date();
-            setStartDateTime(new Date(today.setMonth(today.getMonth() - 1)).toString());
-          }
-          if (endDateTime === "") {
-            const today = new Date();
-            setEndDateTime(today.toString());
-          }
-
-          // Filter events where the current user is an attendee
-          const userSignedUpEvents = allEvents.filter(
-            (event: any) =>
-              event.attendeeIds.includes(userId) &&
-              event.volunteerEvent &&
-              new Date(event.startTime) >= new Date(startDateTime) &&
-              new Date(event.endTime) <= new Date(endDateTime)
-          );
-
-          userSignedUpEvents.forEach((event: any) => {
-            setTotalTime(
-              totalTime + getDuration(event.startTime, event.endTime)
-            );
-          });
-
-          // Update state with events the user has signed up for
-          setUserEvents(userSignedUpEvents);
-        } else {
-          // Reset the events when user signs out
-          const eventsResponse = await fetch('/api/events');
-          if (!eventsResponse.ok) {
-            throw new Error(
-              `Failed to fetch events: ${eventsResponse.statusText}`
-            );
-          }
-          const allEvents = await eventsResponse.json();
-          const currentDate = new Date();
-
-          // Getting all upcoming events
-          const userEvents = allEvents.filter(
-            (event: any) =>
-              event.volunteerEvent && new Date(event.startTime) >= currentDate
-          );
-
-          console.log(userEvents);
-
-          setUserEvents([]);
-        }
+        await fetchData(startDateTime, endDateTime);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
-        console.log('Events loaded');
         setEventsLoading(false); // Stop loading irrespective of outcome
       }
     };
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded, startDateTime, endDateTime]);
+  }, [isSignedIn, user, isLoaded]);
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
@@ -167,7 +136,9 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
-            onChange={(e) => setStartDateTime(e.target.value)}
+            onChange={async (e) => {
+              fetchData(e.target.value, endDateTime);
+            }}
           />
           <Text display="inline">To:</Text>
           <Input
@@ -176,7 +147,9 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
-            onChange={(e) => setEndDateTime(e.target.value)}
+            onChange={(e) => {
+              fetchData(startDateTime, e.target.value);
+            }}
           />
           <Input
             placeholder="Event Search"

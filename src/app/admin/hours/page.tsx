@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration, getDuration } from '../../lib/dates';
+import { calcHours, calcHoursForAll, filterPastEvents } from '../../lib/hours';
 
 const AttendedEvents = () => {
   //states
@@ -26,62 +27,53 @@ const AttendedEvents = () => {
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [startDateTime, setStartDateTime] = useState("");
-  const [endDateTime, setEndDateTime] = useState("");
+  const [startDateTime, setStartDateTime] = useState(new Date((new Date()).setMonth((new Date()).getMonth() - 1)).toString());
+  const [endDateTime, setEndDateTime] = useState((new Date()).toString());
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
+  
+  async function fetchData(start: string, end: string): Promise<void> {
+    // Fetch all events
+    const eventsResponse = await fetch('/api/events');
+    if (!eventsResponse.ok) {
+      throw new Error(
+        `Failed to fetch events: ${eventsResponse.statusText}`
+      );
+    }
+    const allEvents = await eventsResponse.json();
+
+    setStartDateTime(start);
+    setEndDateTime(end);
+
+    // Filter events where the current user is an attendee
+    const pastEvents = filterPastEvents(allEvents, start, end);
+
+    let hours = calcHoursForAll(pastEvents);
+    setTotalTime(hours);
+
+    // Update state with events the user has signed up for
+    setUserEvents(pastEvents);
+  }
 
   useEffect(() => {
-    console.log('Fetching user events...');
+    
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
       setEventsLoading(true);
 
       try {
-        // Fetch all events
-        const eventsResponse = await fetch('/api/events');
-        if (!eventsResponse.ok) {
-          throw new Error(
-            `Failed to fetch events: ${eventsResponse.statusText}`
-          );
-        }
-        const allEvents = await eventsResponse.json();
-      
-        if (startDateTime === "") {
-          const today = new Date();
-          setStartDateTime(new Date(today.setMonth(today.getMonth() - 1)).toString());
-        }
-        if (endDateTime === "") {
-          const today = new Date();
-          setEndDateTime(today.toString());
-        }
-
-        // Filter events where the current user is an attendee
-        const pastEvents = allEvents.filter(
-          (event: any) =>
-          event.volunteerEvent && new Date(event.endTime) <= new Date(endDateTime) && new Date(event.startTime) >= new Date(startDateTime)
-          );
-
-        pastEvents.forEach((event: any) => {
-          setTotalTime(
-            totalTime + (getDuration(event.startTime, event.endTime) * event.attendeeIds.length)
-          );
-        });
-
-        // Update state with events the user has signed up for
-        setUserEvents(pastEvents);
+        fetchData(startDateTime, endDateTime);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
-        console.log('Events loaded');
         setEventsLoading(false); // Stop loading irrespective of outcome
       }
     };
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded, startDateTime, endDateTime]);
+  }, [isSignedIn, user, isLoaded]);
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
@@ -143,7 +135,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
-            onChange={(e) => setStartDateTime(e.target.value)}
+            onChange={(e) => fetchData(e.target.value, endDateTime)}
           />
           <Text display="inline">To:</Text>
           <Input
@@ -152,7 +144,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
-            onChange={(e) => setEndDateTime(e.target.value)}
+            onChange={(e) => fetchData(startDateTime, e.target.value)}
           />
           <Input
             placeholder='Event Search'
