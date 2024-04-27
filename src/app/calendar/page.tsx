@@ -13,13 +13,14 @@ import {
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 
-export default async function Events() {
+export default async function Page() {
   const events = await getEvents();
   let calEvent = events.map(Calendarify);
 
   //Ievent object to pass into calendar component
   const dbEvent = JSON.parse(JSON.stringify(events));
 
+  
   return (
     <Flex className={style.page} direction="column" align="flex-end">
       {" "}

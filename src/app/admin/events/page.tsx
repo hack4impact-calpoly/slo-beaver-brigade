@@ -7,22 +7,23 @@ import { ObjectId } from "mongoose";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { getEvents } from "app/actions/eventsactions";
+import { IEvent } from "@database/eventSchema";
 
-interface IEvent {
-  _id: string;
-  eventName: string;
-  location: string;
-  description: string;
-  wheelchairAccessible: boolean;
-  spanishSpeakingAccommodation: boolean;
-  startTime: Date;
-  endTime: Date;
-  volunteerEvent: boolean;
-  visitorCount?: number;
-  groupsAllowed: ObjectId[];
-  attendeeIds: ObjectId[];
-  digitalWaiver: string | null;
-}
+// interface IEvent {
+//   _id: string;
+//   eventName: string;
+//   location: string;
+//   description: string;
+//   wheelchairAccessible: boolean;
+//   spanishSpeakingAccommodation: boolean;
+//   startTime: Date;
+//   endTime: Date;
+//   volunteerEvent: boolean;
+//   visitorCount?: number;
+//   groupsAllowed: ObjectId[];
+//   registeredIds: ObjectId[];
+//   digitalWaiver: string | null;
+// }
 
 const EventPreview = () => {
   //states
@@ -130,7 +131,9 @@ const EventPreview = () => {
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
-        <button className={style.yellowButton}>Create new event</button>
+        <Link href={"/admin/events/create"}>
+            <button className={style.yellowButton}>Create new event</button>
+        </Link>
         <div className={style.searchWrapper}>
           <input
             type="text"

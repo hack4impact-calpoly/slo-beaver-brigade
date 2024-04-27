@@ -14,6 +14,7 @@ import {
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSignUp } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { doesUserExist } from 'app/actions/userapi';
 
 export default function SignUp() {
   //clerk consts
@@ -49,7 +50,6 @@ export default function SignUp() {
     //for the frontend, it'll just have the successful submission screen popup
 
     e.preventDefault();
-    setSubmitAttempted(true);
     setEmailError(false);
     setPasswordError(false);
     setEmailErrorMessage('Email is required');
@@ -65,28 +65,12 @@ export default function SignUp() {
     }
 
     try {
-      //creates data object from form data
-      const data = {
-        email: email,
-        phoneNumber: phone,
-        role: 'user',
-        gender: gender,
-        age: age,
-        firstName: firstName,
-        lastName: lastName,
-      };
 
-      const res = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
 
       // If the user is created, update the user metadata in Clerk
-      if (res.ok) {
-        // Get the user's ID from the response
-        const responseData = await res.json();
-        const dbId = responseData._id;
+      // check if user already exists in mongo
+      const userExists = await doesUserExist(email)
+      if (!userExists) {
 
         try {
           //create a clerk user
@@ -96,12 +80,12 @@ export default function SignUp() {
             firstName,
             lastName,
             unsafeMetadata: {
-              dbId: dbId,
               phone,
               zipcode,
               interestQuestions,
             },
           });
+ 
 
           // send the email.
           await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
@@ -120,11 +104,12 @@ export default function SignUp() {
           }
         }
       } else {
-        console.log('Failed to create user in MongoDB');
+        console.log('Email already exists.');
       }
-    } catch (error) {
+    }catch (error) {
       // Handle the error
       console.log('Error:', error);
+        setSubmitAttempted(true);
     }
   };
 
@@ -141,20 +126,40 @@ export default function SignUp() {
         code,
       });
       if (completeSignUp.status !== 'complete') {
+        // create mongoose account
         /*  investigate the response, to see if there was an error
          or if the user needs to complete more steps.*/
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
+        // create mongoose user
+        //creates data object from form data
+        const data = {
+            email: email,
+            phoneNumber: phone,
+            role: 'user',
+            gender: gender,
+            age: age,
+            firstName: firstName,
+            lastName: lastName,
+        };
 
-        // Redirect the user to a post sign-up route
-        if (redirect_url) {
-          router.push(redirect_url);
-        } else {
-          // Redirect the user to a post sign-in route
-          router.push('/');
+        const res = await fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        if (res.ok){
+            await setActive({ session: completeSignUp.createdSessionId });
+            // Redirect the user to a post sign-up route
+            if (redirect_url) {
+            router.push(redirect_url);
+            } else {
+            // Redirect the user to a post sign-in route
+            router.push('/');
+            }
         }
+
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
@@ -310,6 +315,7 @@ export default function SignUp() {
               </Button>
               <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>
             </FormControl>
+     
           </>
         )}
       </Box>

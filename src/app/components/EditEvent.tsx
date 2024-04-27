@@ -111,7 +111,7 @@ import {
         spanishSpeakingAccommodation: span,
         volunteerEvent: vol,
         groupsAllowed: myGrp ? [] : null,
-        attendeeIds: event.attendeeIds ? event.attendeeIds : []
+        registeredIds: event.registeredIds ? event.registeredIds : []
       };
   
       console.log("New Event Data:", eventData);

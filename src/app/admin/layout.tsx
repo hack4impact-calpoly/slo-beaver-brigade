@@ -3,19 +3,32 @@ import { Montserrat } from "next/font/google";
 import Sidebar from "@components/Sidebar";
 import style from "@styles/admin/layout.module.css";
 import TabBar from "../components/TabBar";
+import { getUserDbData } from "app/lib/authentication";
+import { redirect } from "next/navigation";
 type Props = {
   children: ReactNode;
 };
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
-const Layout = (props: Props) => {
+const Layout = async (props: Props) => {
  
+    // get user if possible
 
+    if (process.env.DEV_MODE != "true"){
+        // get user role
+        let user = null
+        const res = await getUserDbData()
+        if (res){
+            user = JSON.parse(res)
+        }
+        if (!user || user?.role != "admin"){
+            redirect("/")
+        }
+    }
 
   return (
     <>
 
-    <TabBar />
       <div className={montserrat.className}>
         <div className={style.adminDash}>
           <main className={style.mainContainer}>

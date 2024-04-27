@@ -22,8 +22,10 @@ import {
 
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon} from "@chakra-ui/icons";
-import MiniCalendar from "../components/MiniCalendar";
+import MiniCalendar from "../../../components/MiniCalendar";
 import { formatISO, parse } from 'date-fns';
+import { useRouter } from "next/navigation";
+import { uploadFileS3Bucket } from "app/actions/useractions";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -32,8 +34,9 @@ type Group = {
 };
 
 
-const CreateEvent = () => {
+export default function Page() {
   const toast = useToast();
+  const router = useRouter()
   const [eventName, setEventName] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -102,7 +105,7 @@ const CreateEvent = () => {
   };
 
   // Handle file selection for the event cover image and set preview
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
@@ -135,9 +138,34 @@ const CreateEvent = () => {
       });
       return;
     }
+   
 
+    // Try to upload image
+    const form = new FormData()
+    const file = fileInputRef?.current?.files?.[0] ?? null;
+    let imageurl = null
+
+    if (file) {
+      form.append("file", file);
+      imageurl = await uploadFileS3Bucket(form);
+      if (!imageurl) {
+        console.error("Failed to create the event: image upload.");
+        toast({
+          title: "Error",
+          description: "Failed to create the event",
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+        });
+        return;
+      }
+      console.log(imageurl);
+    }
+    
     const eventData = {
       eventName,
+      ...(imageurl && { eventImage: imageurl }),
+      eventType: "Beaver Walk",
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
@@ -148,6 +176,7 @@ const CreateEvent = () => {
       groupsAllowed: organizationIds,
     };
     
+
     // Attempt to create event via API and handle response
     try{
       const response = await fetch("/api/events", {
@@ -172,6 +201,7 @@ const CreateEvent = () => {
         duration: 5000,
         isClosable: true,
       });
+      router.push("/" + "admin/events")
     } catch (error) {
       console.error("Failed to create the event:", error);
       toast({
@@ -404,5 +434,3 @@ const CreateEvent = () => {
     </Box>
   );
 };
-
-export default CreateEvent;

@@ -62,10 +62,10 @@ export default function Navbar(props: { name: string }) {
             {(props.name != "Sign In / Log In") &&
               <>
                 <li>
-                  <Link href="/profile">Profile</Link>
-                </li>  
+                  <Link href="/admin/users">User List</Link>
+                </li>
                 <li>
-                  <Link href="/hours">
+                  <Link href="/admin/hours">
                     Volunteer Hours
                   </Link>
                 </li>

@@ -11,6 +11,8 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
     const [eventData, setEventData] = useState<IEvent>({
         _id: '',
         eventName: '',
+        eventImage: null,
+        eventType: '',
         location: '',
         description: '',
         wheelchairAccessible: false,
@@ -19,7 +21,8 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
         endTime: new Date(0),
         volunteerEvent: false,
         groupsAllowed: [],
-        attendeeIds: [],
+        registeredIds: [],
+        attendeeIds:[]
     });
 
     const [groupData, setGroupData] = useState([{

@@ -1,84 +1,123 @@
-'use client'
+"use client";
+"use client";
 
-import { Box, Card, Badge, Text, Button, Flex, Spinner, 
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton, useDisclosure} from '@chakra-ui/react';
-import React, {useState, useEffect} from 'react'
+import {
+  Box,
+  Text,
+  Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Checkbox,
+} from "@chakra-ui/react";
+import React, { useState, useEffect} from "react";
 import styles from "../styles/admin/editEvent.module.css";
-import { IEvent } from '@database/eventSchema';
-import { IUser } from '@database/userSchema';
+import { IEvent } from "@database/eventSchema";
+import { IUser } from "@database/userSchema";
+import { removeAttendee } from "app/actions/serveractions";
+import { addAttendee } from "app/actions/useractions";
 
-
-function SingleVisitorComponent({visitorData} : {visitorData: IUser}){
-    const { isOpen, onOpen, onClose } = useDisclosure() 
-    return (
-      <>
-        <Text onClick={onOpen}>Details</Text>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent style={{width: "60vw", height: "65vh", padding: "0% 5% 5% 5%"}} maxW= "100rem">
-            <ModalHeader style = {{padding: "2% 0% 2% 0%", textAlign: "left",
-            fontSize: "35px", fontWeight: "bold",fontFamily: "Lato",width: "100%"}}>
-                {visitorData.firstName} {visitorData.lastName}</ModalHeader>
-            <ModalCloseButton />
-            <hr/>
-            <ModalBody style={{display: "flex", padding: "0%"}}>
-                <Box style={{paddingRight: "4%", width: "50%"}}>
-                    <Text className={styles.visitorInfoSmallHeader}>
-                        Personal Info
-                    </Text>
-                    <Text className={styles.fieldInfo}>Email: {visitorData.email ? visitorData.email : 'N/A'}</Text>
-                    <Text className={styles.fieldInfo}>Phone: {visitorData.phoneNumber ? visitorData.phoneNumber : 'N/A'}</Text>
-                    <Text className={styles.fieldInfo}>Age: {visitorData.age !== -1 ? visitorData.age : 'N/A'}</Text>
-                    <Text className={styles.fieldInfo}>Gender: {visitorData.gender ? visitorData.gender : 'N/A'}</Text>
-                    <Text className={styles.fieldInfo}>Address: N/A</Text>
-                    <Text className={styles.fieldInfo}>City: N/A</Text>
-                    <Text className={styles.fieldInfo}>Zipcode: N/A</Text>
-                    <Text className={styles.fieldInfo}>Primary Language: N/A</Text>
-                    <Text className={styles.visitorInfoSmallHeader}>
-                        Availability
-                    </Text>
-                    <Text className={styles.fieldInfo}>Available Locations: N/A</Text>
-                </Box>
-                <Box style={{paddingLeft: "4%", width: "50%"}}>
-                    <Text className={styles.visitorInfoSmallHeader}>
-                        Interest Questions
-                    </Text>
-                    <Text className={styles.fieldInfo}>What led you to SLO Beavers: N/A</Text>
-                    <Text className={styles.fieldInfo}>Specialized skills: N/A</Text>
-                    <Text className={styles.fieldInfo}>Why are you interested: N/A</Text>                        
-                </Box>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      </>
-    )
-    
+function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <Text onClick={onOpen}>Details</Text>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent
+          style={{ width: "60vw", height: "65vh", padding: "0% 5% 5% 5%" }}
+          maxW="100rem"
+        >
+          <ModalHeader
+            style={{
+              padding: "2% 0% 2% 0%",
+              textAlign: "left",
+              fontSize: "35px",
+              fontWeight: "bold",
+              fontFamily: "Lato",
+              width: "100%",
+            }}
+          >
+            {visitorData.firstName} {visitorData.lastName}
+          </ModalHeader>
+          <ModalCloseButton />
+          <hr />
+          <ModalBody style={{ display: "flex", padding: "0%" }}>
+            <Box style={{ paddingRight: "4%", width: "50%" }}>
+              <Text className={styles.visitorInfoSmallHeader}>
+                Personal Info
+              </Text>
+              <Text className={styles.fieldInfo}>
+                Email: {visitorData.email ? visitorData.email : "N/A"}
+              </Text>
+              <Text className={styles.fieldInfo}>
+                Phone:{" "}
+                {visitorData.phoneNumber ? visitorData.phoneNumber : "N/A"}
+              </Text>
+              <Text className={styles.fieldInfo}>
+                Age: {visitorData.age !== -1 ? visitorData.age : "N/A"}
+              </Text>
+              <Text className={styles.fieldInfo}>
+                Gender: {visitorData.gender ? visitorData.gender : "N/A"}
+              </Text>
+              <Text className={styles.fieldInfo}>Address: N/A</Text>
+              <Text className={styles.fieldInfo}>City: N/A</Text>
+              <Text className={styles.fieldInfo}>Zipcode: N/A</Text>
+              <Text className={styles.fieldInfo}>Primary Language: N/A</Text>
+              <Text className={styles.visitorInfoSmallHeader}>
+                Availability
+              </Text>
+              <Text className={styles.fieldInfo}>Available Locations: N/A</Text>
+            </Box>
+            <Box style={{ paddingLeft: "4%", width: "50%" }}>
+              <Text className={styles.visitorInfoSmallHeader}>
+                Interest Questions
+              </Text>
+              <Text className={styles.fieldInfo}>
+                What led you to SLO Beavers: N/A
+              </Text>
+              <Text className={styles.fieldInfo}>Specialized skills: N/A</Text>
+              <Text className={styles.fieldInfo}>
+                Why are you interested: N/A
+              </Text>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
 }
 
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
-    const [loading, setLoading] = useState(true);
-    const [visitorData, setVisitorData] = useState<IUser[]>([{
-        _id: '',
-        groupId: null,
-        email: '',
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        age: -1,
-        gender: '',
-        role: 'user',
-        eventsAttended: []
-    }])
+  var mongoose = require('mongoose');
+  const [loading, setLoading] = useState(true);
+  const [attendees,setAttendees] = useState([]);
+  const [visitorData, setVisitorData] = useState<IUser[]>([
+    {
+      _id: "",
+      groupId: null,
+      email: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      age: -1,
+      gender: "",
+      role: "user",
+      eventsAttended: [],
+      eventsRegistered:[],
+      recieveNewsletter: false
+    },
+  ]);
 
     const [eventData, setEventData] = useState<IEvent>({
         _id: '',
         eventName: '',
+        eventImage: null,
+        eventType: '',
         location: '',
         description: '',
         wheelchairAccessible: false,
@@ -87,7 +126,8 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         endTime: new Date(0),
         volunteerEvent: false,
         groupsAllowed: [],
-        attendeeIds: [],
+        registeredIds: [],
+        attendeeIds: []
     });
 
     useEffect(() => {
@@ -111,7 +151,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     useEffect(() => {
         const fetchVisitorData = async() => {
             if(eventData.eventName !== ""){
-                const visitorDataArray = await Promise.all(eventData.attendeeIds.filter(userId => userId !== null).map(async (userId) => {
+                const visitorDataArray = await Promise.all(eventData.registeredIds.filter(userId => userId !== null).map(async (userId) => {
                     const response = await fetch(`/api/user/${userId}`);
                     return response.json();
                 }))
@@ -122,6 +162,15 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         fetchVisitorData()
     }, [eventData]);
     
+    async function handleCheck(checked:boolean,userid: string){
+      
+      if(checked){
+        await addAttendee(userid.toString(),eventId.toString())
+      }
+      else{
+        await removeAttendee(userid.toString(),eventId.toString())
+      }
+    }
    
     return(
         <Box className={styles.eventInformation}>
@@ -138,18 +187,30 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 <div className = {styles.visitorCount}>
                     ({visitorData.length})
                 </div>
+                <button className={styles.emailAllVisitors}>Email All Visitors</button>
             </div>
             <table className = {styles.visitorTable}>
                 <tbody>
-                    {visitorData.map((visitor, index) => (
-                        <tr className = {styles.visitorRow} key={index}>
-                            <td className = {styles.nameColumn}>{visitor.firstName} {visitor.lastName}</td>
-                            <td className = {styles.emailColumn}>{visitor.email}</td>
-                            <td className = {styles.detailsColumn}>
-                                <SingleVisitorComponent visitorData={visitor}/>
-                            </td>
-                        </tr>
-                     ))}
+                {visitorData.map((visitor, index) => (
+                <tr className={styles.visitorRow} key={index}>
+                  <td className={styles.checkBox}>
+                      {eventData.attendeeIds.map(oid => oid.toString()).includes(visitor._id) 
+                      ?
+                      <Checkbox colorScheme="green" defaultChecked onChange={async(e) => await handleCheck(e.target.checked,visitor._id.toString())} />
+                      :
+                      <Checkbox colorScheme="green" onChange={async(e) => await handleCheck(e.target.checked,visitor._id.toString())} />
+                    }
+                      
+                  </td>
+                  <td className={styles.nameColumn}>
+                    {visitor.firstName} {visitor.lastName}
+                  </td>
+                  <td className={styles.emailColumn}>{visitor.email}</td>
+                  <td className={styles.detailsColumn}>
+                    <SingleVisitorComponent visitorData={visitor} />
+                  </td>
+                </tr>
+              ))}
 
                 </tbody>
             </table>
@@ -160,6 +221,6 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         
 }
 
-  
+
 export default EditEventVisitorInfo;
-  
+
