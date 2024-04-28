@@ -12,13 +12,15 @@ import {
   Flex,
   Button,
   Spacer,
-  Text
-  
+  Text,
+  Box,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from 'react';
 import { IEvent } from "@database/eventSchema";
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import EditEvent from "./EditEvent";
+import { CalendarIcon,TimeIcon,CloseIcon} from '@chakra-ui/icons';
+import { fallbackBackgroundImage } from "app/lib/random";
+import { PiMapPinFill } from "react-icons/pi";
+import { MdCloseFullscreen } from "react-icons/md";
 
 interface Props {
   eventDetails: IEvent | null;
@@ -26,10 +28,10 @@ interface Props {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ExpandedViewComponent = ({ eventDetails, showModal, setShowModal }: Props) => {
+function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props)  {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
+
 
   function closeExpandedView() {
     setShowModal(false);
@@ -54,7 +56,6 @@ const ExpandedViewComponent = ({ eventDetails, showModal, setShowModal }: Props)
 
   const formattedDate = new Date(eventDetails.startTime).toLocaleDateString('en-US', {
     weekday: 'long',
-    year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
@@ -71,68 +72,107 @@ const ExpandedViewComponent = ({ eventDetails, showModal, setShowModal }: Props)
     hour12: true,
   });
   
+  const backgroundImage = fallbackBackgroundImage(eventDetails.eventImage)
   return (
   <>
-  <Modal isOpen={showModal} onClose={closeExpandedView} size="xl" isCentered>
+  <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
       <ModalOverlay />
       <ModalContent>
-          <ModalHeader bg="#a3caf0" fontWeight="bold" position="relative">
-              <Flex justify={"right"}>
-                  <>{eventDetails.eventName}</>
+          <ModalHeader bg={backgroundImage} fontWeight="bold" position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"5px 5px 0px 0px"}>
+              <Flex justify={"right"} ml={"5%"}>
+                  <Text fontSize={"5xl"} opacity={"85%"}>{eventDetails.eventName}</Text>
                   <Spacer/>
-                  <Button onClick={onOpen} variant="link" leftIcon={<EditIcon />}></Button>
-                  <Button onClick={closeExpandedView} variant="link" leftIcon={<DeleteIcon />}></Button>
+                  <Button onClick={closeExpandedView} variant="link"  color={"white"} size={"xl"} leftIcon={<MdCloseFullscreen />}></Button>
+              </Flex>
+              <Flex flexDirection={"column"} fontSize={"sm"} opacity={"85%"} mb={"7%"} ml={"5%"}>
+                <Flex>
+                    <Box mt={"5px"}>
+                        <PiMapPinFill/>
+                    </Box>
+                    <Text ml={"5px"}>{eventDetails.location}</Text>
+                </Flex>
+                <Flex>
+                    <CalendarIcon mt={"5px"}/>
+                    <Text ml={"5px"}>{formattedDate}</Text>
+                </Flex>
+                <Flex>
+                    <TimeIcon mt={"5px"}/>
+                    <Text ml={"5px"}>{formattedStartTime} - {formattedEndTime}</Text>
+                </Flex>
               </Flex>
           </ModalHeader>
 
           <ModalBody>
-              <Stack spacing={3}>
-                  <Stack spacing={0}>
-                      <FormLabel color="grey" fontWeight="bold">
-                          Time:
-                      </FormLabel>
-                      <Text>
-                          <strong>{formattedDate} from {formattedStartTime} - {formattedEndTime}</strong>
-                      </Text>
-                  </Stack>
-                  <Stack spacing={0}>
-                      <FormLabel color="grey" fontWeight="bold">
-                          Location:
-                      </FormLabel>
-                      <Text>
-                          <strong>{eventDetails.location}</strong>
-                      </Text>
-                  </Stack>
-                  <Stack spacing={0}>
-                      <FormLabel color="grey" fontWeight="bold">
-                          Description:
-                      </FormLabel>
-                      <Text mb={12}>
-                          {eventDetails.description}
-                      </Text>
-                  </Stack>
+              <Stack spacing={5} width={"100%"}>
+                    <Flex ml={"5%"}>
+                        <Flex direction={"column"} width={"50%"}>
+                            <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                                Description:
+                            </FormLabel>
+                            <Text fontWeight={"bold"} maxW={"90%"}>
+                                {eventDetails.description}
+                            </Text>
+                        </Flex>
+                        <Stack spacing={0}>
+                            <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                                Spanish Speaking:
+                            </FormLabel>
+                            {eventDetails.spanishSpeakingAccommodation ? 
+                                <Text fontWeight={"bold"}>Yes</Text> :
+                                <Text fontWeight={"bold"}>No</Text>
+                            }
+                        </Stack>
+                    </Flex>
+                    <Flex ml={"5%"}>
+                        <Flex direction={"column"} width={"50%"}>
+                            <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                                Checklist:
+                            </FormLabel>
+                            <Text fontWeight={"bold"} maxW={"90%"}>
+                                {eventDetails.description}
+                            </Text>
+                        </Flex>
+                        <Stack spacing={0}>
+                            <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                                Wheelchair Accessible:
+                            </FormLabel>
+                            {eventDetails.wheelchairAccessible ? 
+                                <Text fontWeight={"bold"}>Yes</Text> :
+                                <Text fontWeight={"bold"}>No</Text>
+                            }
+                        </Stack>
+                    </Flex>
+
+
                   <Flex
                       direction={{ base: 'column', md: 'row' }}
                       alignItems={{ base: 'center', md: 'flex-start' }}
                       justifyContent={{ base: 'center', md: 'space-evenly' }}
                       flexWrap="wrap"
-                  >
+                      mt={"10%"}
+                    >
                       <Button
                           onClick={onOpen}
-                          bg="lightblue"
+                          bg="#006d75"
+                          color="white"
+                          fontWeight={"light"}
                           fontSize={{ base: 'xl', md: 'md' }}
                           mb={{ base: 2, md: 5 }}
-                          p={{ base: '2', md: '2' }}
+                          pl={"10"}
+                          pr={"10"}
                           flexBasis={{ base: '100%', md: 'auto' }}
                       >
-                          <strong>Sign Up As Guest</strong>
+                          <strong>Sign Up</strong>
                       </Button>
                       <Button
                           onClick={onOpen}
-                          bg="lightblue"
+                          bg="#006d75"
+                          color="white"
+                          fontWeight={"light"}
                           fontSize={{ base: 'xl', md: 'md' }}
                           ml={{ base: 0, md: 2 }}
-                          p={{ base: '2', md: '2' }}
+                          pl={"5"}
+                          pr={"5"}
                           flexBasis={{ base: '100%', md: 'auto' }}
                       >
                           <strong>Continue With An Account</strong>
