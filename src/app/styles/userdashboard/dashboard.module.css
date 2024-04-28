@@ -1,15 +1,24 @@
 .eventBox {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("/beaver1.jpg");
     background-size: 70% auto;
     background-repeat: no-repeat;
-    background-position: left 25%;
+    background-position: center;
     padding: 20px;
 }
-
-/* @media (max-width: 750px) {
+.eventBox::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 30%;
+    background-color: rgba(4, 17, 106, 0.737);
+}
+@media (max-width: 750px) {
     .eventBox {
-        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-            url("/beaver1.jpg");
-        background-size: cover;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/event_beaver.png");
+        background-size: 100% 100%;
         background-repeat: no-repeat;
         background-position: 55% 50%;
         padding: 20px;
@@ -18,4 +27,4 @@
         content: "";
         width: 0%;
     }
-} */
+}
