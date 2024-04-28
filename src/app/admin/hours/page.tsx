@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration } from '../../lib/dates';
-import { calcHours, calcHoursForAll, filterPastEvents } from '../../lib/hours';
+import { calcHours, calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
 
 const AttendedEvents = () => {
   //states
@@ -25,20 +25,20 @@ const AttendedEvents = () => {
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [startDateTime, setStartDateTime] = useState(new Date((new Date()).setMonth((new Date()).getMonth() - 1)).toString());
-  const [endDateTime, setEndDateTime] = useState((new Date()).toString());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [startDateTime, setStartDateTime] = useState(
+    new Date(new Date().setMonth(new Date().getMonth() - 1)).toString()
+  );
+  const [endDateTime, setEndDateTime] = useState(new Date().toString());
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
-  
+
   async function fetchData(start: string, end: string): Promise<void> {
     // Fetch all events
-    const eventsResponse = await fetch('/api/events');
+    const eventsResponse = await fetch('/api/events/');
     if (!eventsResponse.ok) {
-      throw new Error(
-        `Failed to fetch events: ${eventsResponse.statusText}`
-      );
+      throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
     }
     const allEvents = await eventsResponse.json();
 
@@ -48,6 +48,9 @@ const AttendedEvents = () => {
     // Filter events where the current user is an attendee
     const pastEvents = filterPastEvents(allEvents, start, end);
 
+    console.log(start, end);
+    console.log(allEvents, pastEvents);
+
     let hours = calcHoursForAll(pastEvents);
     setTotalTime(hours);
 
@@ -56,11 +59,9 @@ const AttendedEvents = () => {
   }
 
   useEffect(() => {
-    
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
       setEventsLoading(true);
-
       try {
         fetchData(startDateTime, endDateTime);
       } catch (error) {
@@ -146,11 +147,11 @@ const AttendedEvents = () => {
             onChange={(e) => fetchData(startDateTime, e.target.value)}
           />
           <Input
-            placeholder='Event Search'
-            type='search'
+            placeholder="Event Search"
+            type="search"
             size="md"
-            width='250px'
-            margin='10px'
+            width="250px"
+            margin="10px"
           />
         </Box>
       </Box>
@@ -171,11 +172,11 @@ const AttendedEvents = () => {
                 <Tr key={event._id}>
                   <Td>{event.eventName}</Td>
                   <Td>{event.attendeeIds.length}</Td>
-                  <Td>{formatDuration(event.startTime, event.endTime)}</Td>
+                  <Td>{eventHours(event)}</Td>
                   <Td>{formatDate(event.startTime)}</Td>
                   <Td>
                     <Link
-                      href={`/event/${event._id}`}
+                      href={`events/edit/${event._id}`}
                       className={style.viewDetails}
                     >
                       View Details

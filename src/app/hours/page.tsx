@@ -17,6 +17,10 @@ import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../database/eventSchema';
 import { formatDate, formatDuration } from '../lib/dates';
 import { calcHours, filterUserSignedUpEvents } from '../lib/hours';
+import { get } from 'http';
+import { getUserDbData } from 'app/lib/authentication';
+import { parse } from 'path';
+import { IUser } from '@database/userSchema';
 
 const AttendedEvents = () => {
   //states
@@ -31,12 +35,17 @@ const AttendedEvents = () => {
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
 
-  async function fetchData(start, end): Promise<void> {
+  async function fetchData(start: string, end: string): Promise<void> {
     if (isSignedIn) {
-      const userId = user.unsafeMetadata['dbId']; // Assuming this is the correct ID to match against event attendees
-
+      let userId = '';
+      const userdata = await getUserDbData();
+      if (userdata != null) {
+        const user = JSON.parse(userdata) as IUser;
+        userId = user._id;
+      }
+      
       // Fetch all events
-      const eventsResponse = await fetch('/api/events');
+      const eventsResponse = await fetch('/api/events/');
       if (!eventsResponse.ok) {
         throw new Error(
           `Failed to fetch events: ${eventsResponse.statusText}`

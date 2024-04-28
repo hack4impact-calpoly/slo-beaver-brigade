@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
             ...body,
         });
 
+        newUser.email = newUser.email.toLowerCase();
+
         const savedUser = await newUser.save();
 
         return NextResponse.json({ _id: savedUser._id }, { status: 200 });

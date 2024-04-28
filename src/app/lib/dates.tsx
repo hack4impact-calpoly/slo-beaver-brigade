@@ -14,7 +14,7 @@ export function formatDate(date: Date){
   return date.toLocaleDateString('en-US', options);
 };
 
-// convert date into xx:xx XM - xx:xx XM
+// given two dates convert time range into xxh xx min
 export function formatDuration(start: Date, end: Date){
   if (!(start instanceof Date)) {
     start = new Date(start); // Convert to Date object if not already
@@ -37,7 +37,7 @@ export function formatDuration(start: Date, end: Date){
   return `${hours}h ${remainingMinutes} min`;
 };
 
-// convert date into xx:xx XM - xx:xx XM
+// given a time range calculate the duration in minutes
 export function getDuration(start: Date, end: Date){
   if (!(start instanceof Date)) {
     start = new Date(start); // Convert to Date object if not already
