@@ -130,14 +130,15 @@ export default function Login() {
           </Button>
 
           <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
-          <ChakraLink href="#" fontSize="sm" mt={1} display="block">
+          
+          <ChakraLink href="/forgot-password" fontSize="sm" mt={1} display="block">
             Forgot password?
           </ChakraLink>
         </FormControl>
         <FormControl mb={4}>
 
           <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
-            Log In
+            Log In           
           </Button>
 
         </FormControl>
