@@ -31,12 +31,13 @@ interface IUser {
   groupId: string | null;
 }
 
-// Extending IUser to include totalHours for component state
+// temp property to store total hours for each user
 interface IUserWithHours extends IUser {
-  totalHours?: number;  // Marking as optional since it's computed dynamically
+  totalHours?: number; 
 }
 
 const UserList = () => {
+  // states
   const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
@@ -66,9 +67,7 @@ const UserList = () => {
           }
         }));
         const validEvents = events.filter(event => event);  
-        console.log(`Events for ${user.firstName}:`, user.eventsAttended);
-        const totalHours = calcHours(validEvents);
-        console.log(`hours calculated${user.firstName}:`, totalHours);
+        const totalHours = calcHours(validEvents); 
         return { ...user, totalHours };
       }));
       setUsers(usersWithHours || []);
@@ -107,6 +106,7 @@ const UserList = () => {
     { label: "First Name", key: "firstName" },
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
+    { label: "Phone Number", key: "phoneNumber" }, 
     { label: "Total Hours", key: "totalHours" }  
   ];
 
@@ -164,7 +164,7 @@ const UserList = () => {
                   </Td>
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
-                  <Td>{user.totalHours}</Td>
+                  <Td>{`${Math.floor((user.totalHours || 0) / 60)}h ${(user.totalHours || 0) % 60}min`}</Td>
                   <Td>
                     <Link
                       href={`/user/${user._id}`}
