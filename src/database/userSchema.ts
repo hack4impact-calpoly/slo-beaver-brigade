@@ -16,6 +16,8 @@ Things to include in the schema
 */
 
 import mongoose, { Schema } from "mongoose";
+import Event from "./eventSchema";
+import { calcHours } from "app/lib/hours";
 
 enum Role {
     "user",
@@ -29,6 +31,12 @@ export type EventInfo = {
     digitalWaiver: Schema.Types.ObjectId | null;
 };
 
+export type AttendedEventInfo = {
+    eventId: Schema.Types.ObjectId;
+    startTime: Date;
+    endTime: Date;
+};
+
 export type IUser = {
     _id: string;
     email: string;
@@ -39,7 +47,7 @@ export type IUser = {
     gender: string;
     role: "user" | "supervisor" | "admin" | "guest";
     eventsRegistered: EventInfo[];
-    eventsAttended: Schema.Types.ObjectId[];
+    eventsAttended: AttendedEventInfo[];
     groupId: Schema.Types.ObjectId | null;
     recieveNewsletter: boolean;
 };
@@ -71,7 +79,13 @@ const UserSchema = new Schema({
         required: false,
     },
     eventsAttended: {
-        type: [Schema.Types.ObjectId],
+        type: [
+            {
+                eventId: { type: Schema.Types.ObjectId, required: true },
+                startTime: { type: Date, required: false, default: Date.now },
+                endTime: { type: Date, required: false, default: Date.now },
+            },
+        ],
         default: [],
         required: false,
     },
