@@ -15,6 +15,7 @@ import Image from "next/image";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
+import { calcHours } from "../../lib/hours";
 
 interface IUser {
   _id: string;
@@ -25,22 +26,24 @@ interface IUser {
   age: number;
   gender: string;
   role: "user" | "supervisor" | "admin";
-  eventsAttended: [string];
+  eventsAttended: string[];
   digitalWaiver: string | null;
   groupId: string | null;
 }
 
+// Extending IUser to include totalHours for component state
+interface IUserWithHours extends IUser {
+  totalHours?: number;  // Marking as optional since it's computed dynamically
+}
+
 const UserList = () => {
-  //states
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
   const [loading, setLoading] = useState(true);
 
-  // table format
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
-  // fetch users from route
   const fetchUsers = async () => {
     try {
       const response = await fetch("/api/user");
@@ -48,11 +51,31 @@ const UserList = () => {
         throw new Error("Failed to fetch users");
       }
       const data = await response.json();
-      setUsers(data.users || []);
-      setLoading(false); // Set loading to false after fetching data
+      const usersWithHours = await Promise.all(data.users.map(async (user: IUser) => {
+        const events = await Promise.all(user.eventsAttended.map(async eventId => {
+          try {
+            const eventResponse = await fetch(`/api/events/${eventId}`);
+            if (!eventResponse.ok) {
+              console.error(`Failed to fetch event with ID ${eventId}`);
+              return null;
+            }
+            return await eventResponse.json();
+          } catch (error) {
+            console.error(`Error fetching event with ID ${eventId}:`, error);
+            return null;
+          }
+        }));
+        const validEvents = events.filter(event => event);  
+        console.log(`Events for ${user.firstName}:`, user.eventsAttended);
+        const totalHours = calcHours(validEvents);
+        console.log(`hours calculated${user.firstName}:`, totalHours);
+        return { ...user, totalHours };
+      }));
+      setUsers(usersWithHours || []);
+      setLoading(false);
     } catch (error) {
-      console.error(error);
-      setLoading(false); // Ensure loading is set to false even if an error occurs
+      console.error("Error fetching users:", error);
+      setLoading(false);
     }
   };
 
@@ -60,7 +83,6 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
-  // filter users based on filter settings
   const filteredUsers = users
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
@@ -73,7 +95,6 @@ const UserList = () => {
         : a.lastName.localeCompare(b.lastName)
     );
 
-  //return a loading message while waiting to fetch users
   if (loading) {
     return (
       <Text fontSize="lg" textAlign="center">
@@ -81,6 +102,13 @@ const UserList = () => {
       </Text>
     );
   }
+
+  const headers = [
+    { label: "First Name", key: "firstName" },
+    { label: "Last Name", key: "lastName" },
+    { label: "Email", key: "email" },
+    { label: "Total Hours", key: "totalHours" }  
+  ];
 
   return (
     <div className={style.mainContainer}>
@@ -94,7 +122,7 @@ const UserList = () => {
             <option value="firstName">First Name</option>
             <option value="lastName">Last Name</option>
           </select>
-          <CSVLink data={filteredUsers} className={style.yellowButton}>
+          <CSVLink data={filteredUsers} headers={headers} className={style.yellowButton}>
             Export To CSV
           </CSVLink>
         </div>
@@ -136,6 +164,7 @@ const UserList = () => {
                   </Td>
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
+                  <Td>{user.totalHours}</Td>
                   <Td>
                     <Link
                       href={`/user/${user._id}`}
