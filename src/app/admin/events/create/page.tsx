@@ -49,7 +49,7 @@ export default function Page() {
   const [description, setDescription] = useState("");
   const [accessibilityAccommodation, setAccessibilityAccommodation] =
     useState("");
-  const [requiredItems, setRequiredItems] = useState("");
+  const [checkList, setRequiredItems] = useState("N/A");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
   const [activeDate, setActiveDate] = useState("");
@@ -166,6 +166,7 @@ export default function Page() {
       eventName,
       ...(imageurl && { eventImage: imageurl }),
       eventType: "Beaver Walk",
+      checkList: checkList,
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
