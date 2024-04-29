@@ -17,8 +17,8 @@ import {
   } from '@chakra-ui/react'
   import { IEvent } from '@database/eventSchema';
   import { Button } from '@styles/Button'
-  import React, {useState} from 'react';  
-  
+  import React, {useState, useEffect} from 'react';  
+
   const EditEvent = ({event}: {event: IEvent}) => {
     const { isOpen, onOpen, onClose } = useDisclosure() // button open/close
   
@@ -28,12 +28,27 @@ import {
     const [start, setStart] = useState(getTime(event.startTime))
     const [end, setEnd] = useState(getTime(event.endTime))
     const [desc, setDesc] = useState(event.description)
-    const [type, setType] = useState('')
+    const [type, setType] = useState(event.eventType)
     const [vol, setVol] = useState(event.volunteerEvent)
     const [myGrp, setMyGrp] = useState(false)
     const [wc, setWC] = useState(event.wheelchairAccessible)
     const [span, setSpan] = useState(event.spanishSpeakingAccommodation)
+    const [eventTypes, setEventTypes] = useState<string[]>([])
 
+    useEffect(() => {
+      const fetchEventTypes = async () => {
+        try {
+          const response = await fetch('/api/events/bytype/eventType');
+          const data: string[] = await response.json();
+          const uniqueEventTypes = Array.from(new Set([...data, 'Volunteer', 'Beaver Walk', "Pond Clean Up"]));
+          setEventTypes(uniqueEventTypes);
+        } catch (error) {
+          console.error("Error fetching event types:", error);
+        }
+      };
+  
+      fetchEventTypes();
+    }, []);
   
     const handleNameChange = (e: any) => setName(e.target.value)
     const handleLocationChange = (e: any) => setLoc(e.target.value)
@@ -41,7 +56,7 @@ import {
     const handleStartChange = (e: any) => setStart(e.target.value)
     const handleEndChange = (e: any) => setEnd(e.target.value)
     const handleDescChange = (e: any) => setDesc(e.target.value)
-    const handleTypeChange = (e: any) => setType(e.target.value)
+    
     const handleVolChange = () => {
         setVol(!vol)
         if(vol) {
@@ -61,7 +76,7 @@ import {
       setStart(getTime(event.startTime))
       setEnd(getTime(event.endTime))
       setDesc(event.description)
-      setType('')
+      setType(event.eventType)
       setVol(event.volunteerEvent)
       setMyGrp(false)
       setWC(event.wheelchairAccessible)
@@ -103,6 +118,7 @@ import {
     function HandleSubmit() {
       const eventData = {
         eventName: name,
+        eventType: type,
         location: loc,
         description: desc,
         startTime: new Date(`${date}T${start}`),
@@ -129,6 +145,10 @@ import {
         console.log("Error editing event:", error);
       }
     }
+
+    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setType(e.target.value);
+    };
   
     return (
       <>
@@ -187,10 +207,13 @@ import {
                 <Stack spacing={0}>
                   <FormControl isInvalid={type === '' && isSubmitted}>
                     <FormLabel color='grey' fontWeight='bold'>Event Type</FormLabel>
-                    <Select placeholder='Select option' color='grey' value={type} onChange={handleTypeChange}>
-                        <option value='option1'>Watery Walk</option>
-                        <option value='option2'>Pond Clean Up</option>
-                        <option value='option3'>Habitat Monitoring</option>
+                    <Select
+                      value={type}
+                      onChange={handleTypeChange}
+                    >
+                      {eventTypes.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
                     </Select>
                   </FormControl>
                 </Stack>

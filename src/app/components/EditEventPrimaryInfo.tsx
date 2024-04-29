@@ -95,7 +95,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                         <Text className = {styles.eventField}>Event Location</Text>
                         <Text className={styles.eventEntry}>{eventData.location}</Text>
                         <Text className = {styles.eventField}>Event Type</Text>
-                        <Text className={styles.eventEntry}>{eventData.eventName ? 'Volunteer Event' : 'Not Volunteer Event'}</Text>
+                        <Text className={styles.eventEntry}>{eventData.eventType}</Text>
                     </Box>
                     <Box className = {styles.rightBlock}>
                         <Text className = {styles.eventField}>Event Date</Text>
