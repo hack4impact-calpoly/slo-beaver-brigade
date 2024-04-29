@@ -116,6 +116,8 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const [eventData, setEventData] = useState<IEvent>({
         _id: '',
         eventName: '',
+        eventImage: null,
+        checklist: "N/A",
         eventType: '',
         location: '',
         description: '',

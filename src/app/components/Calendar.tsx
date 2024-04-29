@@ -8,7 +8,6 @@ import listPlugin from "@fullcalendar/list";
 import style from "@styles/calendar/calendar.module.css";
 import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
-import "@styles/calendar/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { IEvent } from "@database/eventSchema";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
@@ -123,7 +122,6 @@ export default function Calendar(props: {
           }}
           initialView="dayGridMonth"
           contentHeight="600px"
-          themeSystem="bootstrap5"
           eventDisplay="block"
         />
       </div>
