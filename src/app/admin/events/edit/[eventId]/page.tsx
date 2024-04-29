@@ -22,6 +22,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent>({
     _id: "",
     eventName: "",
+    eventType: "",
     location: "",
     description: "",
     wheelchairAccessible: false,
@@ -31,20 +32,23 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     volunteerEvent: false,
     groupsAllowed: [],
     attendeeIds: [],
+    registeredIds: []
   });
 
   const [visitorData, setVisitorData] = useState<IUser[]>([
     {
       _id: "",
-      groupId: null,
       email: "",
+      phoneNumber: "",
       firstName: "",
       lastName: "",
-      phoneNumber: "",
       age: -1,
       gender: "",
       role: "user",
+      eventsRegistered: [],
       eventsAttended: [],
+      groupId: null,
+      recieveNewsletter: false
     },
   ]);
 
