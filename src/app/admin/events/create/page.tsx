@@ -49,7 +49,7 @@ export default function Page() {
   const [description, setDescription] = useState("");
   const [accessibilityAccommodation, setAccessibilityAccommodation] =
     useState("");
-  const [requiredItems, setRequiredItems] = useState("");
+  const [checkList, setChecklist] = useState("N/A");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
   const [activeDate, setActiveDate] = useState("");
@@ -166,6 +166,7 @@ export default function Page() {
       eventName,
       ...(imageurl && { eventImage: imageurl }),
       eventType: "Beaver Walk",
+      checkList: checkList,
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
@@ -401,12 +402,12 @@ export default function Page() {
 
           <FormControl>
             <FormLabel htmlFor="required-items" fontWeight="bold">
-              Required Items
+              Checklist
             </FormLabel>
             <Input
               id="required-items"
-              placeholder="Enter required items"
-              onChange={(e) => setRequiredItems(e.target.value)}
+              placeholder="Enter checklist."
+              onChange={(e) => setChecklist(e.target.value)}
             />
           </FormControl>
         </VStack>

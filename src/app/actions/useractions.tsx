@@ -1,7 +1,7 @@
 "use server"
 
 import connectDB from "@database/db";
-import Event from "@database/eventSchema";
+import Event, { IEvent } from "@database/eventSchema";
 import User from "@database/userSchema";
 import { NextResponse } from "next/server";
 import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
@@ -19,21 +19,27 @@ export async function addAttendee(userid : string, eventid : string) {
         console.log("here ", userid, typeof userid, eventid, typeof eventid )
         await connectDB(); // connect to db
 
-        const event = Event.findOne({_id: eventid}).orFail();
+        const event: IEvent = await Event.findOneAndUpdate(
+            { _id: eventid },
+            { $addToSet: { attendeeIds: userid } },
+            { new: true }
+          ).orFail();
 
         // validate inputs
         if (!userid || !eventid) {
-            return NextResponse.json("Invalid Comment.", { status: 400 });
+            return false
         }
 
-        await Event.updateOne({_id: eventid},{$push: {attendeeIds : userid} }).orFail();
-        await User.updateOne({_id:userid},{$push: {eventsAttended : eventid}}).orFail();
+        // get date of event
+        const startTime = event.startTime
+        const endTime = event.endTime
+        await User.updateOne({_id:userid},{$push: {eventsAttended : {eventId: eventid, startTime, endTime}}}).orFail();
 
-        return NextResponse.json("ID Added", { status: 200 });
+        return true 
     }
     catch(err){
         console.log("Error bro", err)
-       return NextResponse.json(err, { status: 400});
+       return false
     }
 }
 export async function addToRegistered(userid : string, eventid : string, waiverId: string) {
@@ -46,7 +52,7 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
 
         // validate inputs
         if (!userid || !eventid) {
-            return NextResponse.json("Invalid Comment.", { status: 400 });
+            return false
         }
 
         await Event.updateOne({_id: eventid},{$push: {registeredIds : userid} }).orFail();

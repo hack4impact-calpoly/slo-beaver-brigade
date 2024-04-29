@@ -12,6 +12,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
         _id: '',
         eventName: '',
         eventImage: null,
+        checklist: "N/A",
         eventType: '',
         location: '',
         description: '',
