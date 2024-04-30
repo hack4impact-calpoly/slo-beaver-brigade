@@ -38,6 +38,13 @@ interface IUserWithHours extends IUser {
   totalHours?: number;
 }
 
+const formatHours = (hours: number): string => {
+  const totalMinutes = Math.floor(hours * 60); // Convert hours to total minutes
+  const displayHours = Math.floor(totalMinutes / 60);
+  const displayMinutes = totalMinutes % 60;
+  return `${displayHours}h ${displayMinutes}min`; // Format string as "Xh Ymin"
+};
+
 const UserList = () => {
   const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,31 +53,24 @@ const UserList = () => {
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
   const calculateTotalHours = (events: EventDuration[]): number => {
-    console.log("Calculating hours for events:", events);
-    const totalHours = events.reduce((total, event) => {
+    return events.reduce((total, event) => {
       const start = new Date(event.startTime);
       const end = new Date(event.endTime);
-      const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-      return total + hours;
+      return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60); // Convert milliseconds to hours
     }, 0);
-    console.log("Total computed hours:", totalHours);
-    return totalHours;
   };
 
   const fetchUsers = async () => {
     try {
-      console.log("Fetching user data...");
       const response = await fetch("/api/user");
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }
       const data = await response.json();
       const usersWithHours = data.users.map((user: IUser) => {
-        console.log(`Processing user ${user.firstName} ${user.lastName}`);
         const totalHours = calculateTotalHours(user.eventsAttended);
-        return { ...user, totalHours };
+        return { ...user, totalHoursFormatted: formatHours(totalHours) };
       });
-      console.log("All users processed", usersWithHours);
       setUsers(usersWithHours);
       setLoading(false);
     } catch (error) {
@@ -108,7 +108,7 @@ const UserList = () => {
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
-    { label: "Total Hours", key: "totalHours" },
+    { label: "Total Hours", key: "totalHoursFormatted" }, // Adjust the key here
   ];
 
   return (
