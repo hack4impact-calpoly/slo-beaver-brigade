@@ -169,7 +169,7 @@ const UserList = () => {
                   </Td>
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
-                  <Td>{`${Math.floor(user.totalHours || 0)}h ${Math.floor(((user.totalHours || 0) % 1) * 60)}min`}</Td>
+                  <Td>{user.totalHoursFormatted}</Td>
                   <Td>
                     <Link
                       href={`/user/${user._id}`}
