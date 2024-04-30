@@ -8,6 +8,7 @@ import {
   Td,
   useBreakpointValue,
   Text,
+  useDisclosure
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
 import Link from "next/link";
@@ -15,13 +16,21 @@ import Image from "next/image";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
+import SingleVisitorComponent from "@components/SingleVisitorComponent";
+import { Schema } from "mongoose";
 
-interface EventDuration {
+export interface EventInfo {
+  eventId: Schema.Types.ObjectId;
+  digitalWaiver: Schema.Types.ObjectId | null;
+}
+
+export interface AttendedEventInfo {
+  eventId: Schema.Types.ObjectId;
   startTime: Date;
   endTime: Date;
 }
 
-interface IUser {
+export interface IUser {
   _id: string;
   email: string;
   phoneNumber: string;
@@ -30,11 +39,13 @@ interface IUser {
   age: number;
   gender: string;
   role: "user" | "supervisor" | "admin" | "guest";
-  eventsAttended: EventDuration[];
-  groupId: string | null;
+  eventsRegistered: EventInfo[];
+  eventsAttended: AttendedEventInfo[];
+  groupId: Schema.Types.ObjectId | null;
+  recieveNewsletter: boolean;
 }
 
-interface IUserWithHours extends IUser {
+export interface IUserWithHours extends IUser {
   totalHoursFormatted: string;
 }
 
@@ -52,7 +63,7 @@ const UserList = () => {
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
-  const calculateTotalHours = (events: EventDuration[]): number => {
+  const calculateTotalHours = (events: AttendedEventInfo[]): number => {
     return events.reduce((total, event) => {
       const start = new Date(event.startTime);
       const end = new Date(event.endTime);
@@ -171,12 +182,8 @@ const UserList = () => {
                   <Td>{user.email}</Td>
                   <Td>{user.totalHoursFormatted}</Td>
                   <Td>
-                    <Link
-                      href={`/user/${user._id}`}
-                      className={style.viewDetails}
-                    >
-                      View Details
-                    </Link>
+              <SingleVisitorComponent
+              visitorData={user}/>
                   </Td>
                 </Tr>
               ))}
