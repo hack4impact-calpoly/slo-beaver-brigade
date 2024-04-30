@@ -24,7 +24,17 @@ const LoadingEvents = () => {
 }
 
 export default async function Page(){
-    const events = await getAllEvents()
+    let events = []
+    const url = getBaseUrl() + "/api/events"
+    const res = await fetch( url, {
+        cache: "force-cache",
+        next: {
+            tags: ['events']
+        }
+    })
+    if (res.ok){
+        events = await res.json()
+    }
 
     const userRes = await getUserDbData()
     let userData = null
