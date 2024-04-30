@@ -10,7 +10,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
-import Link from "next/link";
 import Image from "next/image";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
