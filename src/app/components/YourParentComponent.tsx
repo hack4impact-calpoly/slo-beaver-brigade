@@ -15,6 +15,7 @@ const YourParentComponent: React.FC = () => {
     _id:"sampleid",
     eventType: "",
     eventImage: null,
+    checklist: "N/A",
     eventName: "Watery Walk",
     location: "East Main Street",
     description: "This is a sample event description.",

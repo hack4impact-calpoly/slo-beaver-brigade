@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
+import { revalidateTag } from "next/cache";
 
 export async function GET() {
     await connectDB(); // connect to db
@@ -36,13 +37,14 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     await connectDB();
     console.log("Connected to Db");
+    revalidateTag("events");
 
     const event: IEvent = await req.json();
 
     // create new event or return error
     try {
-        const newEvent = new Event({...event, eventType: "Volunteer"});
-        newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
+        const newEvent = new Event({ ...event, eventType: "Volunteer" });
+        newEvent.volunteerEvent = newEvent.eventType === "Volunteer";
         console.log("New Event Data:", newEvent); // Add this line
 
         await newEvent.save();

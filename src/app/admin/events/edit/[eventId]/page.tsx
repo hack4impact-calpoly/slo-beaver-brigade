@@ -24,6 +24,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     _id: "",
     eventName: "",
     eventImage: null,
+    checklist: "N/A",
     eventType: "",
     location: "",
     description: "",
