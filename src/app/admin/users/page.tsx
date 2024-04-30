@@ -1,4 +1,5 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -8,14 +9,17 @@ import {
   useBreakpointValue,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
 import style from "@styles/admin/users.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
-import { calcHours } from "../../lib/hours";
+
+interface EventDuration {
+  startTime: Date;
+  endTime: Date;
+}
 
 interface IUser {
   _id: string;
@@ -25,52 +29,49 @@ interface IUser {
   lastName: string;
   age: number;
   gender: string;
-  role: "user" | "supervisor" | "admin";
-  eventsAttended: string[];
-  digitalWaiver: string | null;
+  role: "user" | "supervisor" | "admin" | "guest";
+  eventsAttended: EventDuration[];
   groupId: string | null;
 }
 
-// temp property to store total hours for each user
 interface IUserWithHours extends IUser {
-  totalHours?: number; 
+  totalHours?: number;
 }
 
 const UserList = () => {
-  // states
   const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
   const [loading, setLoading] = useState(true);
-
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
+
+  const calculateTotalHours = (events: EventDuration[]): number => {
+    console.log("Calculating hours for events:", events);
+    const totalHours = events.reduce((total, event) => {
+      const start = new Date(event.startTime);
+      const end = new Date(event.endTime);
+      const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+      return total + hours;
+    }, 0);
+    console.log("Total computed hours:", totalHours);
+    return totalHours;
+  };
 
   const fetchUsers = async () => {
     try {
+      console.log("Fetching user data...");
       const response = await fetch("/api/user");
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }
       const data = await response.json();
-      const usersWithHours = await Promise.all(data.users.map(async (user: IUser) => {
-        const events = await Promise.all(user.eventsAttended.map(async eventId => {
-          try {
-            const eventResponse = await fetch(`/api/events/${eventId}`);
-            if (!eventResponse.ok) {
-              console.error(`Failed to fetch event with ID ${eventId}`);
-              return null;
-            }
-            return await eventResponse.json();
-          } catch (error) {
-            console.error(`Error fetching event with ID ${eventId}:`, error);
-            return null;
-          }
-        }));
-        const validEvents = events.filter(event => event);  
-        const totalHours = calcHours(validEvents); 
+      const usersWithHours = data.users.map((user: IUser) => {
+        console.log(`Processing user ${user.firstName} ${user.lastName}`);
+        const totalHours = calculateTotalHours(user.eventsAttended);
         return { ...user, totalHours };
-      }));
-      setUsers(usersWithHours || []);
+      });
+      console.log("All users processed", usersWithHours);
+      setUsers(usersWithHours);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -106,8 +107,8 @@ const UserList = () => {
     { label: "First Name", key: "firstName" },
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
-    { label: "Phone Number", key: "phoneNumber" }, 
-    { label: "Total Hours", key: "totalHours" }  
+    { label: "Phone Number", key: "phoneNumber" },
+    { label: "Total Hours", key: "totalHours" },
   ];
 
   return (
@@ -122,7 +123,11 @@ const UserList = () => {
             <option value="firstName">First Name</option>
             <option value="lastName">Last Name</option>
           </select>
-          <CSVLink data={filteredUsers} headers={headers} className={style.yellowButton}>
+          <CSVLink
+            data={filteredUsers}
+            headers={headers}
+            className={style.yellowButton}
+          >
             Export To CSV
           </CSVLink>
         </div>
@@ -164,7 +169,7 @@ const UserList = () => {
                   </Td>
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
-                  <Td>{`${Math.floor((user.totalHours || 0) / 60)}h ${(user.totalHours || 0) % 60}min`}</Td>
+                  <Td>{`${Math.floor(user.totalHours || 0)}h ${Math.floor(((user.totalHours || 0) % 1) * 60)}min`}</Td>
                   <Td>
                     <Link
                       href={`/user/${user._id}`}
