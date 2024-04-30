@@ -29,6 +29,28 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
         groupees: [],
     }])
 
+    const handleEventUpdated = (updatedEventData) => {
+        try {
+            if (typeof updatedEventData === 'string') {
+                // Assuming the server wraps the JSON data in a "Event updated: <actual data>" string
+                const jsonStartIndex = updatedEventData.indexOf('{');
+                updatedEventData = JSON.parse(updatedEventData.substring(jsonStartIndex));
+            }
+            // Further processing if necessary
+            setEventData({
+                ...eventData,
+                ...updatedEventData,
+                startTime: new Date(updatedEventData.startTime),
+                endTime: new Date(updatedEventData.endTime)
+            });
+            setLoading(false);
+        } catch (error) {
+            console.error('Failed to update event data:', error);
+        }
+    };
+    
+    
+
     useEffect(() => {
         const fetchEventData = async () => {
             try {
@@ -39,7 +61,6 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                 const data = await response.json();
                 data.startTime = new Date(data.startTime);
                 data.endTime = new Date(data.endTime);
-                
                 setEventData(data);
 
             } catch (error) {
@@ -84,7 +105,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                     <Text style={{width: '50%'}}>Primary Information</Text>
                     <Box className = {styles.editEvent}>
                         {eventData.description === '' ? 
-                        <Text className = {styles.originalEditText}>Edit Event Details</Text> : <EditEvent event={eventData}/>}
+                        <Text className = {styles.originalEditText}>Edit Event Details</Text> : <EditEvent event={eventData} onEventUpdate={handleEventUpdated}/>}
                     </Box>
                     <Image src={editButton.src} alt="editButton" className={styles.editButton}/>
                 </Box>

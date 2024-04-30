@@ -19,7 +19,12 @@ import {
   import { Button } from '@styles/Button'
   import React, {useState, useEffect} from 'react';  
 
-  const EditEvent = ({event}: {event: IEvent}) => {
+  interface EditEventProps {
+    event: IEvent;
+    onEventUpdate: (updatedEventData: IEvent) => void;
+}
+
+  const EditEvent = ({ event, onEventUpdate }: EditEventProps) => {
     const { isOpen, onOpen, onClose } = useDisclosure() // button open/close
   
     const [name, setName] = useState(event.eventName) 
@@ -131,19 +136,24 @@ import {
       };
   
       console.log("New Event Data:", eventData);
-      try {
-        const response = fetch(`/api/events/${event._id}/`, {
-          method: "PATCH",
-          headers: {
+      fetch(`/api/events/${event._id}/`, {
+        method: "PATCH",
+        headers: {
             "Content-Type": "application/json",
-          },
-          body: JSON.stringify(eventData),
-        });
+        },
+        body: JSON.stringify(eventData),
+      })
+      .then(response => response.text())  // Parsing JSON response
+      .then(text => {
+        console.log("Server response:", text);
+        const data = text.startsWith('Event updated:') ? JSON.parse(text.substring('Event updated: '.length)) : {};
         setIsSubmitted(true);
+        onEventUpdate(data);
         HandleClose();
-      } catch (error) {
-        console.log("Error editing event:", error);
-      }
+      })
+      .catch(error => {
+          console.error("Error editing event:", error);
+      });
     }
 
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
