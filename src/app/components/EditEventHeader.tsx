@@ -17,6 +17,8 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
     const [eventData, setEventData] = useState<IEvent>({
         _id: '',
         eventName: '',
+        eventImage: null,
+        checklist: "N/A",
         eventType: '',
         location: '',
         description: '',
@@ -27,7 +29,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         volunteerEvent: false,
         groupsAllowed: [],
         registeredIds: [],
-        attendeeIds: []
+        attendeeIds:[]
     });
 
     function DeleteEvent({eventName, onDelete}: {eventName: string, onDelete: () => void}){

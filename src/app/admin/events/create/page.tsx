@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -19,10 +19,13 @@ import {
   Stack,
   Textarea,
   IconButton,
+
 } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import MiniCalendar from "../components/MiniCalendar";
-import { formatISO, parse } from "date-fns";
+import { AddIcon, ChevronDownIcon} from "@chakra-ui/icons";
+import MiniCalendar from "../../../components/MiniCalendar";
+import { formatISO, parse } from 'date-fns';
+import { useRouter } from "next/navigation";
+import { uploadFileS3Bucket } from "app/actions/useractions";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -31,14 +34,13 @@ type Group = {
 };
 
 
-const CreateEvent = () => {
-  const predefinedEventTypes = ['Volunteer', 'Beaver Walk', 'Pond Clean Up'];
+export default function Page() {
   const toast = useToast();
+  const router = useRouter()
   const [eventName, setEventName] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [selectedEventType, setSelectedEventType] = useState("");
-  const [eventTypes, setEventTypes] = useState(predefinedEventTypes);
+  const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
   // Specify type for group to avoid error
   const [groups, setGroups] = useState<Group[]>([]);
@@ -47,22 +49,21 @@ const CreateEvent = () => {
   const [description, setDescription] = useState("");
   const [accessibilityAccommodation, setAccessibilityAccommodation] =
     useState("");
-  const [requiredItems, setRequiredItems] = useState("");
+  const [checkList, setChecklist] = useState("N/A");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
   const [activeDate, setActiveDate] = useState("");
 
-  const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setEventName(e.target.value);
+  const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setEventName(e.target.value);
 
   const handleOrganizationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const groupId = e.target.value;
     const isChekced = e.target.checked;
 
-    setOrganizationIds((prevIds: string[]) => {
-      if (isChekced) {
+    setOrganizationIds ((prevIds: string[]) => {
+      if (isChekced){
         //add to list
-        return [...prevIds, groupId];
+        return [...prevIds,groupId]
       } else {
         //remove from list
         return prevIds.filter((id) => id != groupId);
@@ -73,20 +74,11 @@ const CreateEvent = () => {
   //Parse and format start and end time from user input
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
-    const timeFormat =
-      start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
-
+    const timeFormat = start.includes('AM') || start.includes('PM') ? "h:mm a" : "HH:mm";
+    
     // Parse the start and end times as dates on the active date
-    const parsedStartTime = parse(
-      `${start}`,
-      timeFormat,
-      new Date(`${activeDate}T00:00:00`)
-    );
-    const parsedEndTime = parse(
-      `${end}`,
-      timeFormat,
-      new Date(`${activeDate}T00:00:00`)
-    );
+    const parsedStartTime = parse(`${start}`, timeFormat, new Date(`${activeDate}T00:00:00`));
+    const parsedEndTime = parse(`${end}`, timeFormat, new Date(`${activeDate}T00:00:00`));
 
     // Format the adjusted dates back into ISO strings
     const formattedStartDateTime = formatISO(parsedStartTime);
@@ -100,12 +92,12 @@ const CreateEvent = () => {
   // Update active date upon change from MiniCalendar
   const handleDateChangeFromCalendar = (newDate: string) => {
     setActiveDate(newDate);
-  };
+  };  
 
-  // Create a ref for the file input
+   // Create a ref for the file input
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Function to trigger file input click for image upload
+   // Function to trigger file input click for image upload
   const promptFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -113,12 +105,12 @@ const CreateEvent = () => {
   };
 
   // Handle file selection for the event cover image and set preview
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        if (typeof reader.result === "string") {
+        if (typeof reader.result === 'string') {
           setImagePreview(reader.result);
         }
       };
@@ -132,7 +124,7 @@ const CreateEvent = () => {
     // Form validation before submission
     if (
       !eventName ||
-      !selectedEventType ||
+      !eventType ||
       !accessibilityAccommodation ||
       !location ||
       !description
@@ -146,37 +138,62 @@ const CreateEvent = () => {
       });
       return;
     }
+   
 
+    // Try to upload image
+    const form = new FormData()
+    const file = fileInputRef?.current?.files?.[0] ?? null;
+    let imageurl = null
+
+    if (file) {
+      form.append("file", file);
+      imageurl = await uploadFileS3Bucket(form);
+      if (!imageurl) {
+        console.error("Failed to create the event: image upload.");
+        toast({
+          title: "Error",
+          description: "Failed to create the event",
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+        });
+        return;
+      }
+      console.log(imageurl);
+    }
+    
     const eventData = {
       eventName,
+      ...(imageurl && { eventImage: imageurl }),
+      eventType: "Beaver Walk",
+      checkList: checkList,
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: language === "Yes",
       startTime: eventStart,
       endTime: eventEnd,
-      eventType: selectedEventType,
-      volunteerEvent: selectedEventType === "Volunteer",
+      volunteerEvent: eventType === "Volunteer",
       groupsAllowed: organizationIds,
-      attendeeIds: [],
-      registeredIds: [],
     };
+    
 
     // Attempt to create event via API and handle response
-    try {
+    try{
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(eventData),
       });
 
       if (!response.ok) {
-        throw new Error("HTTP error! status: $(response.status)");
+        throw new Error('HTTP error! status: $(response.status)')
       }
 
-      const result = await response.json();
+      const result = await response.json()
+      console.log(result);
 
       toast({
         title: "Event Created",
@@ -185,6 +202,7 @@ const CreateEvent = () => {
         duration: 5000,
         isClosable: true,
       });
+      router.push("/" + "admin/events")
     } catch (error) {
       console.error("Failed to create the event:", error);
       toast({
@@ -197,47 +215,28 @@ const CreateEvent = () => {
     }
   };
 
-  useEffect(() => {
-    fetchEventTypes();
-    fetchGroups();
-  }, []);
-
   // Fetch groups data on component mount
-  const fetchGroups = async () => {
-    try {
-      const response = await fetch("/api/group");
-      const data = await response.json();
-      setGroups(data);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch groups",
-        status: "error",
-        duration: 2500,
-        isClosable: true,
-      });
-    }
-  };
-
-
-  const fetchEventTypes = async () => {
-    try {
-      const response = await fetch('/api/events/bytype/eventType');
-      const fetchedEventTypes = await response.json();
-      // Filter out any fetched types that are already predefined
-      const uniqueFetchedTypes = fetchedEventTypes.filter((type: string) => !predefinedEventTypes.includes(type));
-      // Combine predefined with unique fetched types
-      setEventTypes([...predefinedEventTypes, ...uniqueFetchedTypes]);
-    } catch (error) {
-      toast({
-        title: "Error fetching event types",
-        description: "Error fetching event types",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
-    }
-  };
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try{
+        const response = await fetch ("/api/group")
+        if (!response.ok) {
+          throw new Error("Failed to fetch groups")
+        }
+        const data = await response.json()
+        setGroups(data)
+      } catch (error){
+        toast({
+          title: "Error",
+          description: "Failed to fetch groups",
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+        });
+      }
+    };
+    fetchGroups();
+  }, [toast]);
 
   return (
     <Box p={8} mx="10">
@@ -311,33 +310,31 @@ const CreateEvent = () => {
               <Select
                 id="event-type"
                 placeholder="Select"
-                onChange={(e) => setSelectedEventType(e.target.value)}
-                value={selectedEventType}
+                onChange={(e) => setEventType(e.target.value)}
               >
-                {eventTypes.map((type) => (
-                <option key={type} value={type}>{type}</option>
-              ))}
+                <option value="Watery Walk">Watery Walk</option>
+                <option value="Volunteer">Volunteer</option>
               </Select>
             </FormControl>
-
+          
             <FormControl width="48%">
               <FormLabel htmlFor="organization" fontWeight="bold">
                 Organization
               </FormLabel>
               <Menu closeOnSelect={false}>
-                <MenuButton
-                  as={Button}
-                  rightIcon={<ChevronDownIcon />}
-                  fontWeight="normal"
-                  bg="white"
-                  borderColor="gray.300"
-                  borderWidth="1px"
-                >
-                  Select Organization
-                </MenuButton>
-                <MenuList>
-                  <Stack pl={4} pr={4}>
-                    {groups.map((group) => (
+                  <MenuButton 
+                    as={Button} 
+                    rightIcon={<ChevronDownIcon/> }
+                    fontWeight="normal" 
+                    bg="white" 
+                    borderColor="gray.300" 
+                    borderWidth="1px"
+                  >
+                    Select Organization
+                  </MenuButton>
+                  <MenuList>
+                    <Stack pl={4} pr={4}>
+                      {groups.map((group) => (
                       <Checkbox
                         key={group._id}
                         value={group._id}
@@ -347,8 +344,8 @@ const CreateEvent = () => {
                         {group.group_name}
                       </Checkbox>
                     ))}
-                  </Stack>
-                </MenuList>
+                    </Stack>
+                  </MenuList>
               </Menu>
             </FormControl>
           </Flex>
@@ -373,8 +370,8 @@ const CreateEvent = () => {
               placeholder="Select"
               onChange={(e) => setLanguage(e.target.value)}
             >
-              <option>Yes</option>
-              <option>No</option>
+              <option >Yes</option>
+              <option >No</option>
             </Select>
           </FormControl>
 
@@ -387,8 +384,8 @@ const CreateEvent = () => {
               placeholder="Select"
               onChange={(e) => setAccessibilityAccommodation(e.target.value)}
             >
-              <option>Yes</option>
-              <option>No</option>
+              <option >Yes</option>
+              <option >No</option>
             </Select>
           </FormControl>
 
@@ -405,12 +402,12 @@ const CreateEvent = () => {
 
           <FormControl>
             <FormLabel htmlFor="required-items" fontWeight="bold">
-              Required Items
+              Checklist
             </FormLabel>
             <Input
               id="required-items"
-              placeholder="Enter required items"
-              onChange={(e) => setRequiredItems(e.target.value)}
+              placeholder="Enter checklist."
+              onChange={(e) => setChecklist(e.target.value)}
             />
           </FormControl>
         </VStack>
@@ -420,10 +417,8 @@ const CreateEvent = () => {
           </Text>
           {/* MiniCalendar */}
           <FormControl isRequired>
-            <MiniCalendar
-              onTimeChange={(start, end) => handleTimeChange(start, end)}
-              onDateChange={(date) => handleDateChangeFromCalendar(date)}
-            />
+            <MiniCalendar onTimeChange={(start, end) => handleTimeChange(start, end)}
+            onDateChange={(date) => handleDateChangeFromCalendar(date)} />
           </FormControl>
         </Box>
       </Flex>
@@ -440,5 +435,3 @@ const CreateEvent = () => {
     </Box>
   );
 };
-
-export default CreateEvent;

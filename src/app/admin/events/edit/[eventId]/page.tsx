@@ -11,6 +11,7 @@ import EditEventHeader from "@components/EditEventHeader";
 import { useEffect, useState } from "react";
 import { IUser } from "@database/userSchema";
 import { IEvent } from "@database/eventSchema";
+import { fallbackBackgroundImage } from "app/lib/random";
 
 type IParams = {
   params: {
@@ -22,6 +23,8 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent>({
     _id: "",
     eventName: "",
+    eventImage: null,
+    checklist: "N/A",
     eventType: "",
     location: "",
     description: "",
@@ -31,6 +34,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     endTime: new Date(0),
     volunteerEvent: false,
     groupsAllowed: [],
+    registeredIds: [],
     attendeeIds: [],
     registeredIds: []
   });
@@ -76,7 +80,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
         const visitorDataArray = await Promise.all(
-          eventData.attendeeIds
+          eventData.registeredIds
             .filter((userId) => userId !== null)
             .map(async (userId) => {
               const response = await fetch(`/api/user/${userId}`);
@@ -113,8 +117,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
-          <Box className={styles.imageContainer}>
-            <Image src={defaultBeaver} alt="eventImage" />
+          <Box style={{background: fallbackBackgroundImage(eventData.eventImage, "/beaver-eventcard.jpeg"), backgroundSize: "cover"}} className={styles.imageContainer}>
           </Box>
           <button
             onClick={handleEmailAllVisitors}
@@ -122,7 +125,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
           >
             Email All Visitors
           </button>
-          <EditEventVisitorInfo visitorData={visitorData} loading={loading} />
+          <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>
           <EditEventPrimaryInfo eventId={eventId} />

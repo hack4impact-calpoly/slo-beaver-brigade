@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "@styles/navbar/navbar.module.css";
-import { HamburgerIcon, Search2Icon, StarIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, Search2Icon, StarIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import { SignOutButton } from "@clerk/clerk-react";
 
@@ -29,7 +29,7 @@ export default function Navbar(props: { name: string }) {
           {(props.name === "Sign In / Log In")? 
             <div className={styles.greeting}>
               <Link href={"/login"}>
-                {props.name}
+                Sign In
               </Link>
             </div>
           :
@@ -39,16 +39,14 @@ export default function Navbar(props: { name: string }) {
           }
 
         </div>
-        <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
-          <HamburgerIcon />
-        </div>
+             
         <div
           className={`${styles.nav_elements}  ${showNavbar && styles.active}`}
         >
           <ul>
             <li>
               <Link href="/">
-                Home
+                Events
               </Link>
             </li>
            <li>
@@ -56,29 +54,38 @@ export default function Navbar(props: { name: string }) {
                 Calendar
               </Link>
             </li>
+            <li>
+              <Link href="https://www.slobeaverbrigade.com">
+                Homepage
+              </Link>
+            </li>
             {(props.name != "Sign In / Log In") &&
-          <>
-            <li>
-              <Link href="/hours">
-                Hours
-              </Link>
-            </li>
-            <li>
-              <Link href="/profile">My Account</Link>
-            </li>  
-            <li>
-                <SignOutButton />
-            </li>
-            </>
-          }
-            <li>
-              <Link href="/">
-                {" "}
-                <Search2Icon className={styles.search_icon} />{" "}
-              </Link>
-            </li>
+              <>
+                <li>
+                  <Link href="/profile">Profile</Link>
+                </li>  
+                <li>
+                  <Link href="/hours">
+                    Volunteer Hours
+                  </Link>
+                </li>
+              </>
+            }
           </ul>
         </div>
+          
+        <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
+          <ul>
+            {(props.name != "Sign In / Log In") &&
+              <li>
+                  <SignOutButton />
+              </li>
+            }
+            </ul>
+          </div>
+          <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
+          <HamburgerIcon />
+          </div> 
       </div>
     </nav>
   );
