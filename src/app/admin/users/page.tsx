@@ -35,7 +35,7 @@ interface IUser {
 }
 
 interface IUserWithHours extends IUser {
-  totalHours?: number;
+  totalHoursFormatted: string;
 }
 
 const formatHours = (hours: number): string => {
