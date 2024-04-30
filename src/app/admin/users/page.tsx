@@ -8,7 +8,6 @@ import {
   Td,
   useBreakpointValue,
   Text,
-  useDisclosure
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
 import Link from "next/link";
