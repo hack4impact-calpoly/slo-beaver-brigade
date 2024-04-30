@@ -80,11 +80,11 @@ export default function Navbar(props: { name: string }) {
                 Homepage
               </Link>
             </li>
-            <li>
-              |
-            </li>
             {(props.name != "Sign In / Log In") &&
               <>
+                <li>
+                  |
+                </li>
                 <li>
                   <SignOutButton/>
                 </li>
