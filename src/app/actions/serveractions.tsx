@@ -3,6 +3,7 @@
 import connectDB from "@database/db";
 import Event from "@database/eventSchema";
 import User from "@database/userSchema";
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function removeAttendee(userid: string, eventid: string ) {
@@ -19,6 +20,7 @@ export async function removeAttendee(userid: string, eventid: string ) {
 
         await Event.updateOne({_id: eventid},{$pull: {attendeeIds : userid} }).orFail();
         await User.updateOne({_id:userid},{$pull: {eventsAttended : eventid}}).orFail();
+        revalidateTag("events")
 
         return true
     }

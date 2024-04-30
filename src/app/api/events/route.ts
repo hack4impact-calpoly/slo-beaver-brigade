@@ -37,7 +37,6 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     await connectDB();
     console.log("Connected to Db");
-    revalidateTag("events");
 
     const event: IEvent = await req.json();
 
@@ -48,6 +47,7 @@ export async function POST(req: NextRequest) {
         console.log("New Event Data:", newEvent); // Add this line
 
         await newEvent.save();
+        revalidateTag("events");
         return NextResponse.json("Event added successfully: " + newEvent, {
             status: 200,
         });
