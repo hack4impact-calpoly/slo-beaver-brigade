@@ -9,6 +9,9 @@ export function fallbackBackgroundImage(image: string | null, fallback: string){
 }
 export function getBaseUrl(){
     if (process.env.DEV_MODE == 'true'){
+        if (!process.env.DEV_BASE_URL){
+            return "http://localhost:3000"
+        }
         return process.env.DEV_BASE_URL
     }
     return process.env.BASE_URL
