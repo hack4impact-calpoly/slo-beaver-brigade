@@ -19,7 +19,7 @@ import Image from 'next/image'
 import NextLink from "next/link";
 import { IUser } from '@database/userSchema';
 import { useNavigate } from 'react-router-dom';
-import { addToRegistered } from "app/actions/useractions";
+import { addToRegistered } from "@app/actions/useractions";
 
 type IParams = {
   params: {

@@ -1,6 +1,6 @@
 import { UserDashboard } from "@components/UserDashboard";
 
-export const getAllEvents = async () => {
+const getAllEvents = async () => {
 
     const res = await fetch("http://localhost:3000/api/events", {
         next: {

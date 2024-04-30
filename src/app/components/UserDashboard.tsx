@@ -21,9 +21,9 @@ import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "../actions/eventsactions";
-import { getUserDbData } from "app/lib/authentication";
+import { getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
-import { fallbackBackgroundImage } from "app/lib/random";
+import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
 
 // logic for letting ts know about css prop
@@ -490,7 +490,6 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
                             backgroundPosition: "left 40%"
                         }}
                   position="relative"
-                  width="70%"
                   borderWidth="1px"
                   p="4"
                   mt="4"
