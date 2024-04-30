@@ -1,4 +1,5 @@
 import { UserDashboard } from "@components/UserDashboard";
+import { Suspense } from "react";
 
 const getAllEvents = async () => {
 
@@ -13,12 +14,19 @@ const getAllEvents = async () => {
     }
     return []
 }
+const LoadingEvents = () => {
+    return (
+        <h1>Loading...</h1>
+    )
+}
 
 export default async function Page(){
     const events = await getAllEvents()
 
     return (
-        <UserDashboard events={events}/>
+        <Suspense fallback={<LoadingEvents />}>
+            <UserDashboard events={events}/>
+        </Suspense>
     )
 }
 

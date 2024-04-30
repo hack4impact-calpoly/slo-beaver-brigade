@@ -120,6 +120,7 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
+        setEventsLoading(true)
       if (!isLoaded) return; //ensure that user data is loaded
         const userRes= await getUserDbData();
         if (userRes) {
@@ -159,6 +160,7 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
     };
   
     fetchUserDataAndEvents();
+    setEventsLoading(false)
   }, [events, isLoaded, isSignedIn])
   
 
