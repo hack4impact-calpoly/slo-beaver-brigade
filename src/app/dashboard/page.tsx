@@ -1,4 +1,5 @@
 import { UserDashboard } from "@components/UserDashboard";
+import { getUserDbData } from "app/lib/authentication";
 import { Suspense } from "react";
 
 const getAllEvents = async () => {
@@ -23,9 +24,15 @@ const LoadingEvents = () => {
 export default async function Page(){
     const events = await getAllEvents()
 
+    const userRes = await getUserDbData()
+    let userData = null
+    if (userRes){
+        userData = JSON.parse(userRes)
+    }
+
     return (
         <Suspense fallback={<LoadingEvents />}>
-            <UserDashboard events={events}/>
+            <UserDashboard events={events} userData={userData}/>
         </Suspense>
     )
 }

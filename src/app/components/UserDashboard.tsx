@@ -49,7 +49,7 @@ const EventPlaceholder = () => {
   );
 };
 
-export const UserDashboard = ({events}: {events: IEvent[]}) => {
+export const UserDashboard = ({events, userData}: {events: IEvent[], userData: IUser | null}) => {
 
 
   const sliderStyles = css`
@@ -62,10 +62,9 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
     }
   `;
 
-  const { isSignedIn, user, isLoaded } = useUser();
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
-  const [eventsLoading, setEventsLoading] = useState(false);
+  const [eventsLoading, setEventsLoading] = useState(true);
   const [showEventList, setShowEventList] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
@@ -118,28 +117,22 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
     return `${formattedStart} - ${formattedEnd}`;
   };
 
-  useEffect(() => {
-    const fetchUserDataAndEvents = async () => {
-        setEventsLoading(true)
-      if (!isLoaded) return; //ensure that user data is loaded
-        const userRes= await getUserDbData();
-        if (userRes) {
-        const dbUser : IUser = JSON.parse(userRes)
 
-          console.log(dbUser);
+  useEffect(() => {
+    if (userData){
           
           const currentDate = new Date();
           console.log(events);
           // Filter events where the current user is an attendee
           const userSignedUpEvents = events.filter(
             (event: any) =>
-              event.registeredIds.includes(dbUser?._id) &&
+              event.registeredIds.includes(userData?._id) &&
               new Date(event.startTime) >= currentDate
           );
           // Filter events where the current user is not an attendee
           const eventsUserHasntRegistered = events.filter(
             (event: any) =>
-              !event.registeredIds.includes(dbUser?._id) &&
+              !event.registeredIds.includes(userData?._id) &&
               new Date(event.startTime) >= currentDate
           );
           // Update state with events the user has signed up for
@@ -157,11 +150,9 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
           setUserEvents([]);
           setUnregisteredEvents(userEvents);
         }
-    };
-  
-    fetchUserDataAndEvents();
-    setEventsLoading(false)
-  }, [events, isLoaded, isSignedIn])
+
+        setEventsLoading(false)
+  }, [events, userData])
   
 
   useEffect(() => {
@@ -221,13 +212,9 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
     infinite: userEvents.length > 3, // Only enable infinite looping if there are more than 3 events
   };
 
-  const allDataLoaded = !eventsLoading && isLoaded;
+  const allDataLoaded = !eventsLoading;
 
-  const displayedEvents =
-    isSignedIn || showAllEvents
-      ? unregisteredEvents
-      : unregisteredEvents.slice(0, 2);
-
+  
   return (
     <div>
       <EventListRegister
@@ -268,7 +255,7 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
               >
                 Loading...
               </Text>
-            ) : !isSignedIn ? (
+            ) : !userData ? (
               <Flex
                 flexDirection={"column"}
                 alignItems={"center"}
@@ -464,7 +451,7 @@ export const UserDashboard = ({events}: {events: IEvent[]}) => {
               >
                 Loading...
               </Text>
-            ) : isSignedIn && unregisteredEvents.length === 0 ? (
+            ) : userData && unregisteredEvents.length === 0 ? (
               <Text
                 fontSize="2xl"
                 fontWeight="bold"
