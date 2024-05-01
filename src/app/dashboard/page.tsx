@@ -25,7 +25,8 @@ const LoadingEvents = () => {
 
 export default async function Page(){
     let events = []
-    const url = getBaseUrl() + "/api/events"
+    const url = new URL(getBaseUrl() + "/api/events")
+    url.searchParams.set("sort_order", "asc")
     const res = await fetch( url, {
         cache: "force-cache",
         next: {

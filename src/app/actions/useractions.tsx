@@ -57,8 +57,8 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
             return false
         }
 
-        await Event.updateOne({_id: eventid},{$push: {registeredIds : userid} }).orFail();
-        await User.updateOne({_id:userid},{$push: {eventsRegistered : {eventId: eventid, digitalWaiver: waiverId }}}).orFail();
+        await Event.updateOne({_id: eventid},{$addToSet: {registeredIds : userid} }).orFail();
+        await User.updateOne({_id:userid},{$addToSet: {eventsRegistered : {eventId: eventid, digitalWaiver: waiverId }}}).orFail();
 
         revalidateTag("events")
         return true
