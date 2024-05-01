@@ -1,6 +1,5 @@
 "use client";
-"use client";
-
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Text,
@@ -11,18 +10,75 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
   useDisclosure,
-  Checkbox,
 } from "@chakra-ui/react";
-import React, { useState, useEffect} from "react";
+import Link from "next/link";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
+import { eventHours } from ".././lib/hours";
+
+interface Event {
+  _id: string;
+  eventName: string;
+  attendeeIds: string[];
+  startTime: Date;
+  endTime: Date;
+}
 
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true);
+      try {
+        const eventIds = visitorData.eventsAttended.map((e) => e.eventId);
+        const fetchedEvents = await Promise.all(
+          eventIds.map((id) =>
+            fetch(`/api/events/${id}`)
+              .then((res) => res.json())
+              .then((data) => {
+                console.log(data);
+                return { ...data, attendeeIds: data.attendeeIds || [] };
+              })
+          )
+        );
+        console.log(fetchedEvents);
+        setEvents(fetchedEvents);
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+      }
+      setLoading(false);
+    };
+
+    if (visitorData.eventsAttended.length > 0) {
+      fetchEvents();
+    }
+  }, [visitorData]);
+
+  const eventHours = (event: Event) => {
+    const duration =
+      new Date(event.endTime).getTime() - new Date(event.startTime).getTime();
+    return (duration / (1000 * 60 * 60)).toFixed(2);
+  };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString();
+  };
+
   return (
     <>
-      <Text onClick={onOpen}>Details</Text>
+      <div className={styles.link}>
+        <Text onClick={onOpen}>Details</Text>
+      </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
@@ -81,6 +137,32 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
               <Text className={styles.fieldInfo}>
                 Why are you interested: N/A
               </Text>
+              <Text className={styles.visitorInfoSmallHeader}>
+                Events Attendeded
+              </Text>
+              <div className={styles.tableContainer}>
+                <Table variant="striped">
+                  <Thead>
+                    <Tr>
+                      <Th>Event Name</Th>
+                      <Th>Duration</Th>
+                      <Th>Date</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {events.map((event) => {
+                      console.log(event);
+                      return (
+                        <Tr key={event._id}>
+                          <Td>{event.eventName}</Td>
+                          <Td>{eventHours(event)}</Td>
+                          <Td>{formatDate(event.startTime)}</Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+              </div>
             </Box>
           </ModalBody>
         </ModalContent>
@@ -89,4 +171,4 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   );
 }
 
-export default SingleVisitorComponent
+export default SingleVisitorComponent;
