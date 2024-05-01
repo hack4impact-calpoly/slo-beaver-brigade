@@ -70,20 +70,37 @@ const UserList = () => {
   };
 
   const fetchUsers = async () => {
+    setLoading(true); // Ensure loading state is reset on each fetch attempt
     try {
       const response = await fetch("/api/user");
       if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        throw new Error(
+          `Failed to fetch users: ${response.status} ${response.statusText}`
+        );
       }
       const data = await response.json();
+
+      console.log("Fetched data:", data);
+
       const usersWithHours = data.users.map((user: IUser) => {
+        if (!Array.isArray(user.eventsAttended)) {
+          console.error("Invalid or missing eventsAttended", user);
+          return {
+            ...user,
+            totalHoursFormatted: "Error: Invalid event data",
+          };
+        }
+
         const totalHours = calculateTotalHours(user.eventsAttended);
         return { ...user, totalHoursFormatted: formatHours(totalHours) };
       });
+
+      console.log("Processed users with hours:", usersWithHours);
+
       setUsers(usersWithHours);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -180,8 +197,7 @@ const UserList = () => {
                   <Td>{user.email}</Td>
                   <Td>{user.totalHoursFormatted}</Td>
                   <Td>
-              <SingleVisitorComponent
-              visitorData={user}/>
+                    <SingleVisitorComponent visitorData={user} />
                   </Td>
                 </Tr>
               ))}

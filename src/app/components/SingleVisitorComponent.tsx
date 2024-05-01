@@ -22,13 +22,24 @@ import Link from "next/link";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
 import { eventHours } from ".././lib/hours";
+import { Schema } from "mongoose";
 
 interface Event {
   _id: string;
   eventName: string;
-  attendeeIds: string[];
+  eventImage: string | null;
+  eventType: string;
+  location: string;
+  description: string;
+  checklist: string;
+  wheelchairAccessible: boolean;
+  spanishSpeakingAccommodation: boolean;
   startTime: Date;
   endTime: Date;
+  volunteerEvent: boolean;
+  groupsAllowed: Schema.Types.ObjectId[] | null;
+  attendeeIds: Schema.Types.ObjectId[];
+  registeredIds: Schema.Types.ObjectId[];
 }
 
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
@@ -63,12 +74,6 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       fetchEvents();
     }
   }, [visitorData]);
-
-  const eventHours = (event: Event) => {
-    const duration =
-      new Date(event.endTime).getTime() - new Date(event.startTime).getTime();
-    return (duration / (1000 * 60 * 60)).toFixed(2);
-  };
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();

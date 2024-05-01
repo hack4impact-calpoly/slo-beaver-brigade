@@ -300,3 +300,8 @@
   color: gray;
   text-decoration: underline;
 }
+
+.tableContainer {
+  height: 50%;
+  overflow: scroll;
+}
