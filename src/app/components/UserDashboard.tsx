@@ -127,13 +127,13 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
           const userSignedUpEvents = events.filter(
             (event: any) =>
               event.registeredIds.includes(userData?._id) &&
-              new Date(event.startTime) >= currentDate
+              new Date(event.endTime) >= currentDate
           );
           // Filter events where the current user is not an attendee
           const eventsUserHasntRegistered = events.filter(
             (event: any) =>
               !event.registeredIds.includes(userData?._id) &&
-              new Date(event.startTime) >= currentDate
+              new Date(event.endTime) >= currentDate
           );
           // Update state with events the user has signed up for
           setUserEvents(userSignedUpEvents);
@@ -144,7 +144,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
           const currentDate = new Date();
           // Getting all upcoming events
           const userEvents = events.filter(
-            (event: any) => new Date(event.startTime) > currentDate
+            (event: any) => new Date(event.endTime) > currentDate
           );
           console.log(userEvents);
           setUserEvents([]);
