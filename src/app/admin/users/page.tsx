@@ -47,30 +47,34 @@ export interface IUserWithHours extends IUser {
   totalHoursFormatted: string;
 }
 
+// format hours
 const formatHours = (hours: number): string => {
-  const totalMinutes = Math.floor(hours * 60); // Convert hours to total minutes
+  const totalMinutes = Math.floor(hours * 60); 
   const displayHours = Math.floor(totalMinutes / 60);
   const displayMinutes = totalMinutes % 60;
-  return `${displayHours}h ${displayMinutes}min`; // Format string as "Xh Ymin"
+  return `${displayHours}h ${displayMinutes}min`; 
 };
 
 const UserList = () => {
+  // states
   const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
+  // calculate hours for each event in user schema
   const calculateTotalHours = (events: AttendedEventInfo[]): number => {
     return events.reduce((total, event) => {
       const start = new Date(event.startTime);
       const end = new Date(event.endTime);
-      return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60); // Convert milliseconds to hours
+      return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60); 
     }, 0);
   };
 
+  // fetch users from db
   const fetchUsers = async () => {
-    setLoading(true); // Ensure loading state is reset on each fetch attempt
+    setLoading(true); 
     try {
       const response = await fetch("/api/user");
       if (!response.ok) {
@@ -129,12 +133,13 @@ const UserList = () => {
     );
   }
 
+  // CSV setup
   const headers = [
     { label: "First Name", key: "firstName" },
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
-    { label: "Total Hours", key: "totalHoursFormatted" }, // Adjust the key here
+    { label: "Total Hours", key: "totalHoursFormatted" },
   ];
 
   return (

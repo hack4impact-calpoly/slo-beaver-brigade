@@ -18,7 +18,6 @@ import {
   Td,
   useDisclosure,
 } from "@chakra-ui/react";
-import Link from "next/link";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
 import { eventHours } from ".././lib/hours";
