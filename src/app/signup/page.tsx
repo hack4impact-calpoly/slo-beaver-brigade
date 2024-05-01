@@ -10,11 +10,13 @@ import {
   Textarea,
   Link as ChakraLink,
   FormErrorMessage,
+  Checkbox,
 } from '@chakra-ui/react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSignUp } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { doesUserExist } from 'app/actions/userapi';
+import { addToNewsletter } from 'app/actions/mailingactions';
 
 export default function SignUp() {
   //clerk consts
@@ -31,6 +33,7 @@ export default function SignUp() {
   const [phone, setPhone] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [interestQuestions, setInterestQuestions] = useState('');
+  const [enableNewsletter, setEnableNewsletter] = useState<boolean>(true);
   //verification consts
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
@@ -137,6 +140,7 @@ export default function SignUp() {
         const data = {
             email: email,
             phoneNumber: phone,
+            recieveNewsletter: enableNewsletter,
             role: 'user',
             gender: gender,
             age: age,
@@ -150,6 +154,11 @@ export default function SignUp() {
             body: JSON.stringify(data),
         });
         if (res.ok){
+
+            const newsRes = await addToNewsletter(email)
+            if (!newsRes){
+                console.log('failed to add to newsletter.')
+            }
             await setActive({ session: completeSignUp.createdSessionId });
             // Redirect the user to a post sign-up route
             if (redirect_url) {
@@ -285,6 +294,13 @@ export default function SignUp() {
                 variant="filled"
                 onChange={(e) => setInterestQuestions(e.target.value)}
               />
+            </FormControl>
+            <FormControl style={{display: "flex", flexDirection:"row"}} mb={4}>
+              <FormLabel>Sign up for newsletter: 
+              <Checkbox style={{verticalAlign: "middle", marginLeft:"10px"}} defaultChecked checked={enableNewsletter} onClick={() => {
+                setEnableNewsletter(!enableNewsletter)
+              }}></Checkbox>
+              </FormLabel>
             </FormControl>
             <FormControl mb={4}>
               <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
