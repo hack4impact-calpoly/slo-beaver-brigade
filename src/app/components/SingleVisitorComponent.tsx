@@ -175,4 +175,5 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   );
 }
 
+
 export default SingleVisitorComponent;
