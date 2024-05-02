@@ -4,7 +4,7 @@ import connectDB from "@database/db";
 import User, { IUser } from "@database/userSchema";
 
 export async function getUserDbData(){
-const clerk_user = await currentUser();
+    const clerk_user = await currentUser();
     if (!clerk_user){
         console.log('clerk user not found')
         return null
