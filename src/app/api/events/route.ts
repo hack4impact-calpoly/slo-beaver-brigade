@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     // create new event or return error
     try {
-        const newEvent = new Event({...event, eventType: "Volunteer"});
+        const newEvent = new Event(event);
         newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
         console.log("New Event Data:", newEvent); // Add this line
 
