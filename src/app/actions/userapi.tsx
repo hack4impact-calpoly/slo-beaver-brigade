@@ -21,6 +21,7 @@ export async function doesUserExist(email: string){
 
 }
 export async function getUserFromEmail(email: string){
+    email = email.toLowerCase()
     try {
             await connectDB();
 
@@ -44,14 +45,33 @@ export async function createGuestFromEmail(email: string, zipcode: string, first
  try {
             await connectDB();
 
-
             // search for user in db
-            const user: IUser = await User.create({email, firstName, lastName, zipcode})
+            const user: IUser = await User.create({role: "guest", email, firstName, lastName, zipcode})
 
+            console.log("Created guest user.", user)
             return JSON.stringify(user)
 
         } catch (error) {
+            console.log(error)
             return null
         }
 }
+
+export async function transitionGuestById(id: string, gender: string, age: number){
+ try {
+            await connectDB();
+
+            // search for user in db
+            const user: IUser = await User.findByIdAndUpdate(id, {role: 'user', gender, age}).orFail()
+
+            console.log("Made user to guest.", user)
+            return JSON.stringify(user)
+
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+}
+
+
 
