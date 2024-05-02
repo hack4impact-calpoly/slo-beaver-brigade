@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
-import type { NextApiRequest, NextApiResponse } from 'next';
 
 type IParams = {
     params: {
