@@ -11,6 +11,7 @@ export default authMiddleware({
         "/events/:id/digitalWavier/1",
         "/dashboard",
         "/events/:id/digitalWaiver/2",
+        "/events/(.*)",
         "/login",
         "/signup",
         "/forgot-password",

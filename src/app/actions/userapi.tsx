@@ -20,3 +20,38 @@ export async function doesUserExist(email: string){
         }
 
 }
+export async function getUserFromEmail(email: string){
+    try {
+            await connectDB();
+
+
+            // search for user in db
+            const user: IUser | null= await User.findOne({email: email});
+
+            // check if user exists
+            if (!user) {
+                return null
+            }
+            return JSON.stringify(user)
+
+        } catch (error) {
+            return null
+        }
+
+}
+
+export async function createGuestFromEmail(email: string, zipcode: string, firstName: string, lastName: string){
+ try {
+            await connectDB();
+
+
+            // search for user in db
+            const user: IUser = await User.create({email, firstName, lastName, zipcode})
+
+            return JSON.stringify(user)
+
+        } catch (error) {
+            return null
+        }
+}
+

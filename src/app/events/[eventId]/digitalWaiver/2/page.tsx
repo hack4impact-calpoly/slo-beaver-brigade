@@ -20,6 +20,8 @@ import NextLink from "next/link";
 import { IUser } from '@database/userSchema';
 import { useNavigate } from 'react-router-dom';
 import { addToRegistered } from "@app/actions/useractions";
+import { getUserDbData } from "app/lib/authentication";
+import { getUserFromEmail } from "app/actions/userapi";
 
 type IParams = {
   params: {
@@ -34,16 +36,36 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const [zipcode, setZipcode] = useState('');
   const [signature, setSignature] = useState('');
   const [validEmail, setValidEmail] = useState(false);
+  const [userData, setUserData] = useState<IUser | null>(null)
+  const [loadingUser, setLoadingUser] = useState<boolean>(true)
   const [emailChecked, setEmailChecked] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement | null>(null);
 
+  // checks if user is signed in
+  useEffect(() => {
+    const fetchUserData = async() => {
+        let res = await getUserDbData()
+        if (res){
+            setUserData(JSON.parse(res))
+            setValidEmail(true)
+            console.log('valid email')
+        }
+        setLoadingUser(false)
+    }
+    fetchUserData()
+  }, [])
 
   useEffect(() => {
     // Check if all required fields are filled
+    if (userData){
+        console.log('form filled')
+        setFormFilled(true)
+        return
+    }
     const isFilled = email.trim() !== '' && zipcode.trim() !== '' && signature.trim() !== '';
     setFormFilled(isFilled);
-  }, [email, zipcode, signature]);
+  }, [email, zipcode, signature, userData]);
 
   const addDependent = () => {
     const emptyFieldCount = dependents.filter(dependent => dependent === '').length;
@@ -68,33 +90,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
       dependents: dependentArray,
     };
 
-    //finds the userId associated with the given email
-    const fetchUser = async (): Promise<string | null> => {
-      try {
-        const res = await fetch(`/api/user`);
-        if (res.ok) {
-          const data = await res.json();
-          const specificUser = data.users.filter((user:IUser) => user.email === email)
-          if(specificUser.length > 0){
-            return specificUser[0]._id;
-          } else{
-            return null;
-          }
-        } else {
-          console.error("Error fetching user:", res.statusText);
-          return null;
-        }
-      } catch (error) {
-        console.error("Error fetching user", error);
-        return null;
-      }
-    };
-    const uId = await fetchUser();
-    
-    //if a user exists for the given email, create a new waiver
-    //returns the waiverId, 
-    if(uId){
-      setValidEmail(true);
+    if (userData){
+    setValidEmail(true);
       try {
         const res = await fetch(`/api/waiver`, {
             method: 'POST',
@@ -117,7 +114,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
             try {
               //call to update the user object
-              const res = await addToRegistered(uId, eventId, waiverId)
+              const res = await addToRegistered(userData._id, eventId, waiverId)
               if (res) {
                 console.log('added')
                 //on success, return to the home page
@@ -135,10 +132,69 @@ export default function Waiver({ params: { eventId } }: IParams) {
       catch (error) {
         console.error("Error creating waiver:", error);
       }
-
     }
+
     else{
-      onOpen();
+        //finds the userId associated with the given email
+        const fetchUser = async () => {
+            let user: IUser | null = null
+            const res = await getUserFromEmail(email)
+            if (res){
+                user = JSON.parse(res)
+            }
+            return user
+        };
+        const user = await fetchUser()
+        
+        //if a user exists for the given email, create a new waiver
+        //returns the waiverId, 
+        if(user && user.role == 'guest'){
+        setValidEmail(true);
+        try {
+            const res = await fetch(`/api/waiver`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            //if the waiver returns successfully
+            if (res.ok) {
+                const responseData = await res.json();
+                const waiverId = responseData._id; 
+                
+                //add digitalWaiverId to user, and add an object that consists of
+                //the eventId and digitalWaiverId to eventsAttended
+                const updatedInfo ={
+                eventsRegistered: {
+                    eventId: eventId,
+                    digitalWaiver: waiverId
+                }
+                }
+
+                try {
+                //call to update the user object
+                const res = await addToRegistered(user._id, eventId, waiverId)
+                if (res) {
+                    console.log('added')
+                    //on success, return to the home page
+                    window.location.href = '/';
+                    
+                } else {
+                    console.error("Error adding info to user");
+                }} 
+                catch (error) {
+                console.error("Error adding info to user", error);
+                }
+            } else {
+                console.error("Error creating waiver", res.statusText);
+            }} 
+        catch (error) {
+            console.error("Error creating waiver:", error);
+        }
+
+        }
+        else{
+        onOpen();
+        }
     }
   };
 
@@ -149,12 +205,18 @@ export default function Waiver({ params: { eventId } }: IParams) {
         <Image src={beaverLogo} alt="beaver"/>
         <form onSubmit={handleSubmit}>
         <Box w="100%" h="60%" mt={20} mb='2.7%' padding='1vw' overflow="auto">
-          <h1 style={{ fontSize: "30px", fontWeight: "bold" } }>Add Members</h1>
-          <h2 className={styles.formHeading}>Contact Information</h2>
-          <input className={styles.inputForm} type="email" id="email" name="email" 
-          placeholder="Email" onChange={(e) => setEmail(e.target.value)} required/>
-          <input className={styles.inputZipcode} type="zipcode" id="zipcode" name="zipcode" 
-          placeholder="Zipcode" onChange={(e) => setZipcode(e.target.value)} required/>
+        {
+            (!userData && !loadingUser) && (
+                <div>
+                    <h1 style={{ fontSize: "30px", fontWeight: "bold" } }>Add Members</h1>
+                    <h2 className={styles.formHeading}>Contact Information</h2>
+                    <input className={styles.inputForm} type="email" id="email" name="email" 
+                    placeholder="Email" onChange={(e) => setEmail(e.target.value)} required/>
+                    <input className={styles.inputZipcode} type="zipcode" id="zipcode" name="zipcode" 
+                    placeholder="Zipcode" onChange={(e) => setZipcode(e.target.value)} required/>
+                </div>
+            )
+        }
           <table width="100%">
             <tbody>
             {dependents.map((name, index) => (

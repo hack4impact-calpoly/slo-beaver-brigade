@@ -57,7 +57,8 @@ export type IUser = {
 //can groupId just be a string and digitalWaiver be a boolean?
 const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
-    phoneNumber: { type: String, required: true },
+    phoneNumber: { type: String, required: false },
+    zipcode: { type: String, required: false },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     age: { type: Number, required: true },
