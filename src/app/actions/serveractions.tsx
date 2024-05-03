@@ -10,7 +10,7 @@ export async function removeAttendee(userid: string, eventid: string ) {
 
         await connectDB(); // connect to db
 
-        const event = Event.findOne({_id: eventid}).orFail();
+        Event.findOne({_id: eventid}).orFail();
 
         // validate inputs
         if (!userid || !eventid) {
@@ -19,6 +19,30 @@ export async function removeAttendee(userid: string, eventid: string ) {
 
         await Event.updateOne({_id: eventid},{$pull: {attendeeIds : userid} }).orFail();
         await User.updateOne({_id:userid},{$pull: {eventsAttended : eventid}}).orFail();
+
+        return NextResponse.json("ID Deleted")
+    }
+    catch(err){
+        return NextResponse.json(err, { status: 400});
+    }
+}
+
+export async function removeRegistered(userid: string, eventid: string ) {
+    try{
+
+        await connectDB(); // connect to db
+
+        Event.findOne({_id: eventid}).orFail();
+
+        // validate inputs
+        if (!userid || !eventid) {
+            return NextResponse.json("Invalid Comment.", { status: 400 });
+        }
+
+        // remove user from event
+        await Event.updateOne({_id: eventid},{$pull: {registeredIds : userid} }).orFail();
+        // remove event from user
+        await User.updateOne({_id:userid},{$pull: {eventsRegistered : eventid}}).orFail();
 
         return NextResponse.json("ID Deleted")
     }
