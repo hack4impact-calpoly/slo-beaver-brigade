@@ -23,10 +23,8 @@ import { fallbackBackgroundImage } from "app/lib/random";
 import { PiMapPinFill } from "react-icons/pi";
 import { MdCloseFullscreen } from "react-icons/md";
 import { useUser } from "@clerk/clerk-react";
-import { currentUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { removeRegistered } from "app/actions/serveractions";
-import { addToRegistered } from "app/actions/useractions";
 import { IUser } from "@database/userSchema";
 
 interface Props {
@@ -40,7 +38,6 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const { isSignedIn, user, isLoaded } = useUser(); 
   const [loaded,setLoaded] = useState(false);
-  const [waiverid, setWaiverid] = useState("");
   const [visitorData, setVisitorData] = useState<IUser>(
     {
       _id: "",
@@ -96,42 +93,19 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
 
   },[visitorData]);
 
-  useEffect(() => {
-    const fetchWaiverData = async () => {
-      if (eventDetails == null) {
-        return;
-      }
-      const response = await fetch(`/api/events/${eventDetails._id}/digitalWaiver/1`);
-      if (!response.ok) {
-        throw new Error(`HTTP error, status: ${response.status}`);
-      }
-      const data = await response.json();
-      setWaiverid(data);
-    }
-    fetchWaiverData();
-  })
-
   if (eventDetails == null){
     return (
         <></>
     )
   }
 
-  async function handleSignUp() {
-    if (user == null || eventDetails == null || user?.externalId == null) {
-      console.log("User or event details are null");
-      return;
-    }
-    await addToRegistered(eventDetails._id, user?.externalId,waiverid);
-    setShowModal(false);  
-  }
-
-  async function handleCancel() {
-    if (user == null || eventDetails == null || user?.externalId == null) {
-      return;
-    }
-    await removeRegistered(eventDetails._id, user?.externalId);
-    setShowModal(false); 
+  async function handleCancel(eventid : string, userid : string) {
+    // if (eventDetails == null || user?.externalId == null) {
+    //   console.log("Event details or user external ID is null");
+    //   return;
+    // }
+    await removeRegistered(eventid, userid);
+    onClose(); 
   }
 
   const formattedDate = new Date(eventDetails.startTime).toLocaleDateString('en-US', {
@@ -153,7 +127,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   });
 
   const backgroundImage = fallbackBackgroundImage(eventDetails.eventImage)
-
+  const url = `/events/${eventDetails._id}/digitalWaiver/1`
   return (
   <>
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
@@ -235,9 +209,9 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                   <>
                     {isSignedIn ? 
                       <>
-                      {visitorData.eventsRegistered.map((oid) => oid.toString()).includes(eventDetails._id) ?
+                      {!eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
                         <Button
-                          onClick={async () => {await handleCancel()}}
+                          onClick={onOpen}
                           bg="#e0af48"
                           color="black"
                           fontWeight={"light"}
@@ -250,21 +224,21 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                           <strong>Cancel Reservation</strong>
                         </Button>
                       :
-                        <Button
-                          onClick={async () => {await handleSignUp()}}
-                          bg="#006d75"
-                          color="white"
-                          fontWeight={"light"}
-                          fontSize={{ base: 'xl', md: 'md' }}
-                          mb={{ base: 2, md: 5 }}
-                          pl={"10%"}
-                          pr={"10%"}
-                          flexBasis={{ base: '100%', md: 'auto' }}
-                        >
-                          <strong>Sign Up</strong>
-                        </Button>
+                        <Link href={url}>
+                          <Button
+                            bg="#006d75"
+                            color="white"
+                            fontWeight={"light"}
+                            fontSize={{ base: 'xl', md: 'md' }}
+                            mb={{ base: 2, md: 5 }}
+                            pl={"100%"}
+                            pr={"100%"}
+                            flexBasis={{ base: '100%', md: 'auto' }}
+                          >
+                            <strong>Sign Up</strong>
+                          </Button>
+                        </Link>
                     }
-                      {}
                       </>
                   : 
                       <Link href="/login">
@@ -294,20 +268,28 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
 
     <Modal
       isOpen={isOpen}
-      onClose={toggleModal}
+      onClose={onClose}
       initialFocusRef={triggerButtonRef}
-      isCentered>
+      isCentered
+      size="lg"
+      >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{eventDetails.eventName}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text>{eventDetails.description}</Text>
+        <ModalHeader bg={"#e0af48"} borderRadius={"5px 5px 0px 0px"}></ModalHeader>
+        <ModalBody  textAlign={"center"} mt={"5%"}>
+          <Text fontWeight={"bold"} fontSize={"xl"}>Cancel This Reservation</Text>
+          <Text fontWeight={"light"} fontSize={"large"}>Are you sure?</Text>
         </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="blue" onClick={onClose}>
-            Close
-          </Button>
+        <ModalFooter justifyContent={"center"} mt={"5%"}>
+          <Flex flexDir={"row"}>
+            <Button  onClick={onClose} mr={"5%"} variant={"outline"} color={"#3b3b3b"}>
+              No, take me back
+            </Button>
+            <Button color={"black"} bg="#e0af48" onClick={async() => handleCancel(eventDetails._id,visitorData._id)} ml={"5%"}>
+              Yes, cancel
+            </Button>
+          </Flex>
+
         </ModalFooter>
       </ModalContent>
     </Modal>
