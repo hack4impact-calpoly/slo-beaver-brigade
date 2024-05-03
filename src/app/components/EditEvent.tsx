@@ -19,12 +19,7 @@ import { Button } from "@styles/Button";
 import React, { useState, useEffect } from "react";
 import { CreatableSelect } from "chakra-react-select";
 
-interface EditEventProps {
-  event: IEvent;
-  onEventUpdate: (updatedEventData: IEvent) => void;
-}
-
-const EditEvent = ({ event, onEventUpdate }: EditEventProps) => {
+const EditEvent = ({event}: {event: IEvent}) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // button open/close
 
   const [name, setName] = useState(event.eventName);
@@ -155,17 +150,13 @@ const EditEvent = ({ event, onEventUpdate }: EditEventProps) => {
           ? JSON.parse(text.substring("Event updated: ".length))
           : {};
         setIsSubmitted(true);
-        onEventUpdate(data);
         HandleClose();
+        location.reload()
       })
       .catch((error) => {
         console.error("Error editing event:", error);
       });
   }
-
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(e.target.value);
-  };
 
   return (
     <>
