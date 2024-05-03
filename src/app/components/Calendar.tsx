@@ -59,23 +59,13 @@ export default function Calendar(props: {
   const [showExpandedView, setShowExpandedView] = useState(false);
   const [getEvent, setEvent] = useState<IEvent | null>(null);
 
-  if (props.admin) {
-    buttonType.myCustomButton = {
+  const customButtons = props.admin ? {
+    myCustomButton: {
       text: "Add Event",
-      click: function () {
-        setShowModal(true);
-      },
+      click: () => setShowModal(true),
       hint: "Add Event Button",
-    };
-  } else {
-    buttonType.myCustomButton = {
-      text: "Sign Up",
-      click: function () {
-        setShowEventList(true);
-      },
-      hint: "Sign Up Button",
-    };
-  }
+    }
+  } : {};
 
   return (
     <div>
