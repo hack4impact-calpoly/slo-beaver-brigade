@@ -50,8 +50,6 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
             console.error('Failed to update event data:', error);
         }
     };
-    
-    
 
     useEffect(() => {
         const fetchEventData = async () => {
@@ -150,4 +148,3 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
 
   
   export default EditEventPrimaryInfo;
-  

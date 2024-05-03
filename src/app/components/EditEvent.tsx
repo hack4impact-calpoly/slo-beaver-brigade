@@ -17,7 +17,7 @@ import {
 import { IEvent } from "@database/eventSchema";
 import { Button } from "@styles/Button";
 import React, { useState, useEffect } from "react";
-import { Select, CreatableSelect } from "chakra-react-select";
+import { CreatableSelect } from "chakra-react-select";
 
 interface EditEventProps {
   event: IEvent;
