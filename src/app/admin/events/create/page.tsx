@@ -16,7 +16,6 @@ import {
   Image,
   Text,
   Flex,
-  Select,
   Stack,
   Textarea,
   IconButton,
@@ -26,7 +25,7 @@ import MiniCalendar from "../../../components/MiniCalendar";
 import { formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/actions/useractions";
-import { CreatableSelect, AsyncSelect } from "chakra-react-select";
+import { Select, CreatableSelect } from "chakra-react-select";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -53,7 +52,7 @@ export default function Page() {
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
   const [activeDate, setActiveDate] = useState("");
-  const [eventTypes, setEventTypes] = useState<string[]>([])
+  const [eventTypes, setEventTypes] = useState<string[]>([]);
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEventName(e.target.value);
@@ -187,8 +186,6 @@ export default function Page() {
       groupsAllowed: organizationIds,
     };
 
-    console.log(eventData)
-
     // Attempt to create event via API and handle response
     try {
       const response = await fetch("/api/events", {
@@ -226,6 +223,60 @@ export default function Page() {
     }
   };
 
+  const handleCreateNewGroup = async (groupName: string) => {
+    const groupData = {
+      group_name: groupName,
+      groupees: [],
+    };
+
+    // Optimistically update UI
+    const optimisticNewGroup = {
+      _id: Date.now().toString(), // Temporary ID
+      group_name: groupName,
+    };
+
+    setGroups((currentGroups) => [...currentGroups, optimisticNewGroup]);
+
+    try {
+      const response = await fetch("/api/group", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(groupData),
+      });
+      if (!response.ok) {
+        // Rollback if the creation failed
+        setGroups((currentGroups) =>
+          currentGroups.filter((group) => group._id !== optimisticNewGroup._id)
+        );
+        throw new Error("Failed to create group");
+      }
+      const newGroup = await response.json();
+      // Update the temporary group with actual _id from the response
+      setGroups((currentGroups) =>
+        currentGroups.map((group) =>
+          group._id === optimisticNewGroup._id
+            ? { ...group, _id: newGroup._id }
+            : group
+        )
+      );
+      toast({
+        title: "Group Created",
+        description: "The new group has been successfully created.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to Create Group",
+        description: "Failed to Create Group",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   // Fetch groups data on component mount
   useEffect(() => {
     const fetchGroups = async () => {
@@ -253,9 +304,11 @@ export default function Page() {
   useEffect(() => {
     const fetchEventTypes = async () => {
       try {
-        const response = await fetch('/api/events/bytype/eventType');
+        const response = await fetch("/api/events/bytype/eventType");
         const data: string[] = await response.json();
-        const uniqueEventTypes = Array.from(new Set([...data, 'Volunteer', 'Beaver Walk', "Pond Clean Up"]));
+        const uniqueEventTypes = Array.from(
+          new Set([...data, "Volunteer", "Beaver Walk", "Pond Clean Up"])
+        );
         setEventTypes(uniqueEventTypes);
       } catch (error) {
         console.error("Error fetching event types:", error);
@@ -336,11 +389,21 @@ export default function Page() {
               </FormLabel>
               <CreatableSelect
                 id="event-type"
-                placeholder="Select or Create"
-                options={eventTypes.map(type => ({ value: type, label: type }))}
+                placeholder="Select or create event type"
+                options={eventTypes.map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
                 onChange={(option) => {
-                  console.log(option)
-                  setEventType(option ? option.value : '')}}
+                  console.log(option);
+                  setEventType(option ? option.value : "");
+                }}
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
                 isClearable
                 isSearchable
               />
@@ -353,10 +416,24 @@ export default function Page() {
               <CreatableSelect
                 id="organization"
                 placeholder="Select or create organization"
-                options={groups.map(group => ({ value: group._id, label: group.group_name }))}
+                options={groups.map((group) => ({
+                  value: group._id,
+                  label: group.group_name,
+                }))}
                 onChange={(selectedOptions) =>
-                  setOrganizationIds(selectedOptions ? selectedOptions.map(option => option.value) : [])
+                  setOrganizationIds(
+                    selectedOptions
+                      ? selectedOptions.map((option) => option.value)
+                      : []
+                  )
                 }
+                onCreateOption={handleCreateNewGroup}
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
                 isMulti
                 isClearable
                 isSearchable
@@ -382,11 +459,18 @@ export default function Page() {
             <Select
               id="accommodation-type"
               placeholder="Select"
-              onChange={(e) => setLanguage(e.target.value)}
-            >
-              <option>Yes</option>
-              <option>No</option>
-            </Select>
+              options={[
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
+              ]}
+              onChange={(option) => setLanguage(option ? option.value : " ")}
+              chakraStyles={{
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
+              }}
+            ></Select>
           </FormControl>
 
           <FormControl isRequired>
@@ -396,11 +480,20 @@ export default function Page() {
             <Select
               id="accessibility"
               placeholder="Select"
-              onChange={(e) => setAccessibilityAccommodation(e.target.value)}
-            >
-              <option>Yes</option>
-              <option>No</option>
-            </Select>
+              options={[
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
+              ]}
+              onChange={(option) =>
+                setAccessibilityAccommodation(option ? option.value : " ")
+              }
+              chakraStyles={{
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
+              }}
+            />
           </FormControl>
 
           <FormControl isRequired>
@@ -426,10 +519,12 @@ export default function Page() {
           </FormControl>
         </VStack>
         <Flex flex="1">
-          <VStack>
-            <Text fontWeight="bold">Date/Time</Text>
+          <VStack alignItems="flex-start">
+            <Text fontWeight="bold" mb="-4">
+              Date/Time
+            </Text>
             {/* MiniCalendar */}
-            <FormControl isRequired>
+            <FormControl ml="-4" isRequired>
               <MiniCalendar
                 onTimeChange={(start, end) => handleTimeChange(start, end)}
                 onDateChange={(date) => handleDateChangeFromCalendar(date)}
