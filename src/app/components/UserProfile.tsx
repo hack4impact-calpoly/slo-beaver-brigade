@@ -1,14 +1,15 @@
-"use client";
-
-
 import React, { useState, useEffect } from "react";
 import styles from "../styles/profile/profile.module.css";
 import { PencilIcon } from "@heroicons/react/16/solid";
 import { useUser } from "@clerk/clerk-react";
 import Link from "next/link"
 import EditProfile from "@components/EditProfile"
+import { getUserDbData } from "app/lib/authentication";
+import { IUser } from "database/userSchema";
 
 
+
+/*
 interface UserData {
  firstName: string;
  lastName: string;
@@ -22,49 +23,37 @@ interface UserData {
  state: string;
  receiveEmails: string;
 }
+*/
 
+export default function UserProfile() {
+  const [userData, setUserData] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
-const UserProfile: React.FC = () => {
- const [userData, setUserData] = useState<UserData>({
-   firstName: "",
-   lastName: "",
-   username: "",
-   email: "",
-   zipcode: "",
-   preferredLanguage: "",
-   phoneNumber: "",
-   password: "",
-   city: "",
-   state: "",
-   receiveEmails: "",
- });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userRes = await getUserDbData();
+        if (userRes) {
+          const userData = JSON.parse(userRes);
+          setUserData(userData);
+          console.log(userData)
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchData();
 
- const { isSignedIn, user, isLoaded } = useUser();
+  }, []); // Empty dependency array ensures this effect runs only once on mount
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
- useEffect(() => {
-   if (isSignedIn && isLoaded) {
-     setUserData({
-       firstName: user.firstName || "",
-       lastName: user.lastName || "",
-       username: user.username || "",
-       email: user.primaryEmailAddress?.emailAddress  || "",
-       zipcode: String(user.unsafeMetadata["zipcode"])  || "",
-       preferredLanguage: "",
-       phoneNumber: String(user.unsafeMetadata["phone"])  || "",
-       password: "",
-       city: "",
-       state: "",
-       receiveEmails: "",
-     });
-   }
- }, [isSignedIn, isLoaded]);
-
-
-
-
- return (
+ return(
    <div className={styles.profileContainer}>
      <div className={styles.formContainer}>
        <div className={`${styles.formGroup} ${styles.accountDetails}`}>
@@ -77,14 +66,14 @@ const UserProfile: React.FC = () => {
            <div>
              <p>
                <strong>Username</strong> <br />
-               {userData.username}
+               
                <button className={styles.editFieldButton}>
                  Edit Username
                </button>
              </p>
              <p>
                <strong>Current Password</strong> <br />
-               {userData.password}
+               
                <button className={styles.editFieldButton}>
                  Edit Password
                </button>
@@ -100,31 +89,31 @@ const UserProfile: React.FC = () => {
              Personal Details
            </h2>
             <PencilIcon className={styles.pencilIcon} />
-            <h2 className={styles.editButton}><EditProfile> </EditProfile></h2> 
+            <h2 className={styles.editButton}> <EditProfile userData={userData}/> </h2> 
          </div>
          <div className={styles.formFields}>
            <div>
              <p>
                <strong>First Name</strong>
-               <br /> {userData.firstName}
+               <br /> {userData?.firstName}
              </p>
              <p>
                <strong>Last Name</strong>
-               <br /> {userData.lastName}
+               <br /> {userData?.lastName}
              </p>
              <p>
                <strong>Preferred Language</strong>
-               <br /> {userData.preferredLanguage}
+               
              </p>
            </div>
            <div>
              <p>
                <strong>Telephone Number</strong>
-               <br /> {userData.phoneNumber}
+               <br /> {userData?.phoneNumber}
              </p>
              <p>
                <strong>Email</strong>
-               <br /> {userData.email}
+               <br /> {userData?.email}
              </p>
            </div>
          </div>
@@ -141,7 +130,7 @@ const UserProfile: React.FC = () => {
            <div>
              <p>
                <strong>City</strong>
-               <br /> {userData.city}
+           
              </p>
              <p>
                <strong>Zipcode</strong>
@@ -151,7 +140,7 @@ const UserProfile: React.FC = () => {
            <div>
              <p>
                <strong>State</strong>
-               <br /> {userData.state}
+
              </p>
            </div>
          </div>
@@ -166,15 +155,16 @@ const UserProfile: React.FC = () => {
            <div>
              <p>
                <strong>Receive Emails from SLO Beaver Brigrade</strong> <br />
-               {userData.receiveEmails}
+               {userData?.recieveNewsletter}
              </p>
            </div>
          </div>
        </div>
      </div>
    </div>
- );
+ )
+
+ 
 };
 
 
-export default UserProfile;

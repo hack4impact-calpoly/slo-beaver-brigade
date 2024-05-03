@@ -17,7 +17,7 @@ import {
     FormControl,
     FormLabel
   } from '@chakra-ui/react'
-import { IEvent } from '@database/eventSchema';
+import { IUser } from '@database/userSchema';
 import { Button } from '@styles/Button'
 import React, {useState, useEffect} from 'react';
 import { useUser } from "@clerk/clerk-react";  
@@ -26,7 +26,7 @@ import { PhoneNumber } from '@clerk/nextjs/server';
 
   //export default function Navbar(props: { name: string }) {
 
-const EditProfile = ({userData}: {userData: User}) => {
+const EditProfile = ({userData}: {userData: IUser}) => {
     const { isSignedIn, user, isLoaded } = useUser(); // get data from Clerk
     /*   
     const [userData, setUserData] = useState({
