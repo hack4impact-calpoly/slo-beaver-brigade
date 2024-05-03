@@ -79,15 +79,20 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   useEffect(() => {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
+        const visitors: IUser[] = []
         const visitorDataArray = await Promise.all(
           eventData.registeredIds
             .filter((userId) => userId !== null)
             .map(async (userId) => {
               const response = await fetch(`/api/user/${userId}`);
-              return response.json();
+              if (response.ok){
+                console.log('ok')
+                visitors.push(await response.json())
+              }
+              return null
             })
         );
-        setVisitorData(visitorDataArray);
+        setVisitorData(visitors);
         setLoading(false);
       }
     };

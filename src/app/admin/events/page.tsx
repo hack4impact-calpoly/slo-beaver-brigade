@@ -60,12 +60,13 @@ const EventPreview = () => {
     const fetchEvents = async () => {
       try {
 
-        const res = await getEvents(0, 10)
+        const res = await getEvents(-1, -1)
         if (!res){
             console.log("Error getting events.")
             return;
         }
         const data = JSON.parse(res)
+        console.log(data)
         setEvents(
           data.map((event: IEvent) => ({
             ...event,

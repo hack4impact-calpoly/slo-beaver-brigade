@@ -5,6 +5,7 @@ import Event, { IEvent } from "@database/eventSchema";
 import User from "@database/userSchema";
 import { NextResponse } from "next/server";
 import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
+import { revalidateTag } from "next/cache";
 
 const s3Client = new S3Client({
     region: process.env.S3_REGION as string,
@@ -35,6 +36,7 @@ export async function addAttendee(userid : string, eventid : string) {
         const endTime = event.endTime
         await User.updateOne({_id:userid},{$push: {eventsAttended : {eventId: eventid, startTime, endTime}}}).orFail();
 
+        revalidateTag("events")
         return true 
     }
     catch(err){
@@ -55,9 +57,10 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
             return false
         }
 
-        await Event.updateOne({_id: eventid},{$push: {registeredIds : userid} }).orFail();
-        await User.updateOne({_id:userid},{$push: {eventsRegistered : {eventId: eventid, digitalWaiver: waiverId }}}).orFail();
+        await Event.updateOne({_id: eventid},{$addToSet: {registeredIds : userid} }).orFail();
+        await User.updateOne({_id:userid},{$addToSet: {eventsRegistered : {eventId: eventid, digitalWaiver: waiverId }}}).orFail();
 
+        revalidateTag("events")
         return true
     }
     catch(err){
