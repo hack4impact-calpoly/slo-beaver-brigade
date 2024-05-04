@@ -4,7 +4,7 @@ import { IEvent } from "@database/eventSchema";
 
 interface EventPreviewProps {
   event: IEvent;
-  groupName: String;
+  groupName: string;
   onClick: () => void;
 }
 
@@ -48,28 +48,29 @@ const EventCard: React.FC<EventPreviewProps> = ({
   return (
     <div
       className={style.eventCard}
+      onClick={onClick}
       style={{
-
         background: 'linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("/beaver-eventcard.jpeg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
         backdropFilter: "brightness(50%)"
       }}
-      onClick={onClick}
     >
       <div className={style.eventTitle}>
         <h2>{event.eventName}</h2>
       </div>
       <div className={style.bottomRow}>
         <div className={style.eventInfo}>
-          <h2>{formatDate(event.startTime)}</h2>
-          <h3>{groupName}</h3>
-          <h3>{event.location}</h3>
-          <h3>{formatTimeRange(event.startTime, event.endTime)}</h3>
+          <div>
+            <h2>{groupName}</h2>
+          </div>
+          <div>
+            <h3>{formatTimeRange(event.startTime, event.endTime)}</h3>
+          </div>
         </div>
         <div className={style.visitorCount}>
           <h2>{event.registeredIds.length}</h2>
-          <h3>{event.registeredIds.length == 1 ? " Visitor" : "Visitors"}</h3>
+          <h3>{event.registeredIds.length === 1 ? " Visitor" : "Visitors"}</h3>
         </div>
       </div>
     </div>

@@ -37,7 +37,7 @@
     "date-fns": "^3.3.1",
     "framer-motion": "^11.0.3",
     "mongodb": "^6.5.0",
-    "mongoose": "^7.6.8",
+    "mongoose": "^7.6.11",
     "next": "^14.0.0",
     "prettier": "^3.2.5",
     "react": "^18",
