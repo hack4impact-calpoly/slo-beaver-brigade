@@ -1,6 +1,6 @@
 "use client"
-import React, { useState, useEffect } from "react";
-import Calendar, { FCEvent } from "@components/Calendar";
+import React, { useState } from "react";
+import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
 import {
@@ -14,53 +14,16 @@ import {
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 
-
-export default function Page() {
-  const [events, setEvents] = useState<FCEvent[]>([]);
+export default async function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      await connectDB(); // Connect to the database
-      try {
-        // Query for events and sort by date
-        const fetchedEvents = await Event.find().sort({ date: -1 }).orFail();
-
-        // Transform IEvent objects to FCEvent objects
-        const convertedEvents: FCEvent[] = fetchedEvents.map((event) => ({
-          id: event._id,
-          title: event.eventName,
-          location: event.location,
-          description: event.description,
-          wheelchairAccessible: event.wheelchairAccessible,
-          spanishSpeakingAccommodation: event.spanishSpeakingAccommodation,
-          start: new Date(event.startTime),
-          end: new Date(event.endTime),
-          startTime: new Date(event.startTime),
-          endTime: new Date(event.endTime),
-          backgroundColor: "", // Add your default color here
-          borderColor: "", // Add your default color here
-          textColor: "", // Add your default color here
-          volunteerEvent: false, // Set default value
-          groupsAllowed: [], // Set default value
-          registeredIds: [], // Set default value
-        }));
-
-        setEvents(convertedEvents); // Set events
-      } catch (err) {
-        console.error("Error fetching events:", err);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  const handleCheckboxChange = (selected: string[]) => {
-    setSelectedFilters(selected);
-  };
-
+  const events = await getEvents(selectedFilters);
+  let calEvent = events.map(Calendarify);
+  //Ievent object to pass into calendar component
+  const dbEvent = JSON.parse(JSON.stringify(events));
   return (
     <Flex className={style.page} direction="column" align="flex-end">
+      {/* Set direction to column and align to flex-end */}
       <Flex width="full">
         <Box flex="1" margin="0" padding="0">
           <Box className={style.header}>
@@ -86,11 +49,7 @@ export default function Page() {
           >
             Filters
           </Heading>
-          <CheckboxGroup
-            colorScheme="green"
-            defaultValue={selectedFilters}
-            onChange={handleCheckboxChange}
-          >
+          <CheckboxGroup colorScheme="green" defaultValue={selectedFilters}>
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
               <Checkbox value="watery_walk" colorScheme="teal">
                 Watery Walk
@@ -101,19 +60,32 @@ export default function Page() {
               <Checkbox value="special_events" colorScheme="green">
                 Special Events
               </Checkbox>
-              <Checkbox value="wheelchair_accessible" colorScheme="blue">
-                Wheelchair Accessible
-              </Checkbox>
-              <Checkbox value="spanish_speaking" colorScheme="orange">
-                Spanish Speaking
-              </Checkbox>
             </Stack>
           </CheckboxGroup>
         </Box>
         <Box flex="2" margin="10" padding="0">
-          <Calendar events={events} admin={false} dbevents={[]} />
+          <Calendar events={calEvent} admin={false} dbevents={dbEvent} />
         </Box>
       </Flex>
     </Flex>
   );
+}
+async function getEvents(selectedFilters: string[]) {
+  await connectDB(); // connect to db
+  try {
+    let query = Event.find().sort({ date: -1 });
+
+    // Apply filters if any selected
+    if (selectedFilters.length > 0) {
+      query = query.where("eventType").in(selectedFilters);
+    }
+
+    // Execute the query
+    const events = await query.exec();
+
+    // returns all events in json format or errors
+    return events;
+  } catch (err) {
+    return [];
+  }
 }
