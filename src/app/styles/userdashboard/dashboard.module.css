@@ -1,12 +1,12 @@
 .eventBox {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/event_beaver.png");
-    background-size: 100% auto;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("/beaver1.jpg");
+    background-size: 70% auto;
     background-repeat: no-repeat;
     background-position: center;
     padding: 20px;
 }
-
-@media (max-width: 1280px) {
+@media (max-width: 750px) {
     .eventBox {
         background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/event_beaver.png");
         background-size: 100% 100%;
