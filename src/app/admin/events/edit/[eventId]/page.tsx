@@ -41,17 +41,17 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   const [visitorData, setVisitorData] = useState<IUser[]>([
     {
       _id: "",
-      groupId: null,
       email: "",
+      phoneNumber: "",
       firstName: "",
       lastName: "",
-      phoneNumber: "",
       age: -1,
       gender: "",
       role: "user",
       eventsRegistered: [],
-      recieveNewsletter: false,
       eventsAttended: [],
+      groupId: null,
+      recieveNewsletter: false
     },
   ]);
 
