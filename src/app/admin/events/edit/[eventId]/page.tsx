@@ -36,7 +36,6 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     groupsAllowed: [],
     registeredIds: [],
     attendeeIds: [],
-    registeredIds: []
   });
 
   const [visitorData, setVisitorData] = useState<IUser[]>([
