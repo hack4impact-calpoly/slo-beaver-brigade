@@ -2,16 +2,20 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "@styles/navbar/navbar.module.css";
-import { HamburgerIcon, Search2Icon, StarIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, Search2Icon, StarIcon, ExternalLinkIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import { SignOutButton } from "@clerk/clerk-react";
 
-export default function NavbarAdmin(props: { name: string }) {
+export default function Navbar(props: { name: string }) {
   const [showNavbar, setShowNavbar] = useState(false);
 
   const handleShowNavbar = () => {
     setShowNavbar(!showNavbar);
   };
+
+  const handleHideNavbar = () => {
+    setShowNavbar(false);
+  };    
 
   return (
     <nav className={`${styles.navbar} ${showNavbar && styles.active}`}>
@@ -29,7 +33,7 @@ export default function NavbarAdmin(props: { name: string }) {
           {(props.name === "Sign In / Log In")? 
             <div className={styles.greeting}>
               <Link href={"/login"}>
-                {props.name}
+                Sign In
               </Link>
             </div>
           :
@@ -37,54 +41,63 @@ export default function NavbarAdmin(props: { name: string }) {
               <p>{props.name}</p>
             </div>
           }
-
-        </div>
-        <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
-          <HamburgerIcon />
-        </div>
+        </div>   
         <div
           className={`${styles.nav_elements}  ${showNavbar && styles.active}`}
         >
           <ul>
             <li>
-              <Link href="/">
-                Home
+              <Link href="/" onClick={handleHideNavbar}>
+                Events
               </Link>
             </li>
-            <li>
-              <Link href="/calendar">
+           <li>
+              <Link href="/calendar" onClick={handleHideNavbar}>
                 Calendar
               </Link>
             </li>
-            <li>
-              <Link href="/admin/users">
-                Users
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/events/hours">
-                Event Logs
-              </Link>
-            </li>
-            
             {(props.name != "Sign In / Log In") &&
-          <>
-            <li>
-              <Link href="/">My Account</Link>
-            </li>
-            <li>
-                <SignOutButton />
-            </li>
-            </>
-          }
-            <li>
-              <Link href="/">
-                {" "}
-                <Search2Icon className={styles.search_icon} />{" "}
-              </Link>
-            </li>
+              <>
+                <li>
+                  <Link href="/admin/users" onClick={handleHideNavbar}>
+                    User List
+                  </Link>
+                </li>  
+                <li>
+                  <Link href="/admin/hours" onClick={handleHideNavbar}>
+                    Hours
+                  </Link>
+                </li>
+              </>
+            }
           </ul>
         </div>
+          
+        <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
+          <ul>
+            <li>
+              <Link href="https://www.slobeaverbrigade.com">
+                Homepage
+              </Link>
+            </li>
+            {(props.name != "Sign In / Log In") &&
+              <>
+                <li>
+                  |
+                </li>
+                <li>
+                  <SignOutButton/>
+                </li>
+              </>
+            }
+            </ul>
+          </div>
+          <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
+            <HamburgerIcon/>
+          </div> 
+          <div className={`${styles.close_icon} ${showNavbar && styles.active}`} onClick={handleHideNavbar}>
+            <CloseIcon/> 
+          </div>
       </div>
     </nav>
   );

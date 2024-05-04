@@ -7,6 +7,7 @@
   justify-content: space-between;
   margin-bottom: 2vh;
 }
+
 .eventTitle {
   font-family: "Lato";
   font-size: 23px;
@@ -289,4 +290,18 @@
 .spinner {
   align-self: right;
   margin: 5px 10px 5px 10px;
+}
+
+.tableContainer {
+  font-size: 0.7rem;
+}
+
+.link {
+  color: gray;
+  text-decoration: underline;
+}
+
+.tableContainer {
+  height: 50%;
+  overflow: scroll;
 }

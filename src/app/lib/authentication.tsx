@@ -4,8 +4,9 @@ import connectDB from "@database/db";
 import User, { IUser } from "@database/userSchema";
 
 export async function getUserDbData(){
-const clerk_user = await currentUser();
+    const clerk_user = await currentUser();
     if (!clerk_user){
+        console.log('clerk user not found')
         return null
     }
     // search db for user with matching email address
@@ -17,7 +18,7 @@ const clerk_user = await currentUser();
         return JSON.stringify(user);
     }
     catch(err){
-        console.log('user not found')
+        console.log('user not found: ' + err)
         return null
     }
 }

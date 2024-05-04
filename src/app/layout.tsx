@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs'
-import "./globals.css";
+import "./styles/globals.css";
 import Providers from "./Providers";
 import NavbarParent from "@components/NavbarParents";
 import { Lato } from "next/font/google";
