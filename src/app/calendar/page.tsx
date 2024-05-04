@@ -13,24 +13,32 @@ import {
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 
+interface FCEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;}
+
 export default function Page() {
-  const [calEvent, setCalEvent] = useState<IEvent[]>([]);
-  const [dbEvent, setDbEvent] = useState<IEvent[]>([]);
+  const [events, setEvents] = useState<FCEvent[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       await connectDB(); // Connect to the database
       try {
         // Query for events and sort by date
-        const events = await Event.find().sort({ date: -1 }).orFail();
-        setDbEvent(events); // Set all events from the database
+        const fetchedEvents = await Event.find().sort({ date: -1 }).orFail();
 
-        // Filter events based on selected filters
-        const filteredEvents = events.filter((event) =>
-          selectedFilters.includes(event.eventType)
-        );
+        // Transform IEvent objects to FCEvent objects
+        const convertedEvents: FCEvent[] = fetchedEvents.map((event) => ({
+          id: event._id,
+          title: event.eventName,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime),
+        }));
 
-        setCalEvent(filteredEvents); // Set filtered events for the calendar
+        setEvents(convertedEvents); // Set events
       } catch (err) {
         console.error("Error fetching events:", err);
       }
@@ -38,8 +46,6 @@ export default function Page() {
 
     fetchData();
   }, []);
-
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const handleCheckboxChange = (selected: string[]) => {
     setSelectedFilters(selected);
@@ -97,7 +103,7 @@ export default function Page() {
           </CheckboxGroup>
         </Box>
         <Box flex="2" margin="10" padding="0">
-          <Calendar events={calEvent} admin={false} dbevents={dbEvent} />
+          <Calendar events={events} admin={false} />
         </Box>
       </Flex>
     </Flex>
