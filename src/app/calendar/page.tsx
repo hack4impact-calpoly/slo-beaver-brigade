@@ -1,5 +1,6 @@
+"use client"
 import React, { useState, useEffect } from "react";
-import Calendar from "@components/Calendar";
+import Calendar, { FCEvent } from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
 import {
@@ -13,11 +14,6 @@ import {
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 
-interface FCEvent {
-  id: string;
-  title: string;
-  start: Date;
-  end: Date;}
 
 export default function Page() {
   const [events, setEvents] = useState<FCEvent[]>([]);
@@ -34,8 +30,20 @@ export default function Page() {
         const convertedEvents: FCEvent[] = fetchedEvents.map((event) => ({
           id: event._id,
           title: event.eventName,
+          location: event.location,
+          description: event.description,
+          wheelchairAccessible: event.wheelchairAccessible,
+          spanishSpeakingAccommodation: event.spanishSpeakingAccommodation,
           start: new Date(event.startTime),
           end: new Date(event.endTime),
+          startTime: new Date(event.startTime),
+          endTime: new Date(event.endTime),
+          backgroundColor: "", // Add your default color here
+          borderColor: "", // Add your default color here
+          textColor: "", // Add your default color here
+          volunteerEvent: false, // Set default value
+          groupsAllowed: [], // Set default value
+          registeredIds: [], // Set default value
         }));
 
         setEvents(convertedEvents); // Set events
@@ -103,7 +111,7 @@ export default function Page() {
           </CheckboxGroup>
         </Box>
         <Box flex="2" margin="10" padding="0">
-          <Calendar events={events} admin={false} />
+          <Calendar events={events} admin={false} dbevents={[]} />
         </Box>
       </Flex>
     </Flex>
