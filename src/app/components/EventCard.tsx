@@ -56,16 +56,18 @@ const EventCard: React.FC<EventPreviewProps> = ({
         backdropFilter: "brightness(50%)"
       }}
     >
-      <div className={style.eventTitle}>
-        <h2>{event.eventName}</h2>
+      <div className={style.eventContent}>
+        <div className={style.eventName}>
+          <h2>{event.eventName}</h2>
+        </div>
+        <div className={style.eventTime}>
+          <h3>{formatTimeRange(event.startTime, event.endTime)}</h3>
+        </div>
       </div>
       <div className={style.bottomRow}>
         <div className={style.eventInfo}>
           <div>
             <h2>{groupName}</h2>
-          </div>
-          <div>
-            <h3>{formatTimeRange(event.startTime, event.endTime)}</h3>
           </div>
         </div>
         <div className={style.visitorCount}>
