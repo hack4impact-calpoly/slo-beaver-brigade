@@ -301,7 +301,26 @@
   text-decoration: underline;
 }
 
+.parentContainer {
+  justify-content: flex-start;
+}
+
+.infoBox {
+  padding-left: 5%;
+  padding-right: 5%;
+  width: 100%;
+}
+
 .tableContainer {
-  height: 50%;
-  overflow: scroll;
+  height: 26vh;
+}
+
+@media (max-width: 1000px) {
+  .parentContainer {
+    flex-direction: column;
+  }
+
+  .tableContainer th, .tableContainer td {
+    padding: 8px;
+  }
 }
