@@ -19,7 +19,7 @@ export async function removeAttendee(userid: string, eventid: string ) {
         }
 
         await Event.updateOne({_id: eventid},{$pull: {attendeeIds : userid} }).orFail();
-        await User.updateOne({_id:userid},{$pull: {eventsAttended : eventid}}).orFail();
+        await User.updateOne({_id:userid},{$pull: {eventsAttended : {eventId: eventid}}}).orFail();
         revalidateTag("events")
 
         return true
