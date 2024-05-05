@@ -34,7 +34,7 @@ export async function addAttendee(userid : string, eventid : string) {
         // get date of event
         const startTime = event.startTime
         const endTime = event.endTime
-        await User.updateOne({_id:userid},{$push: {eventsAttended : {eventId: eventid, startTime, endTime}}}).orFail();
+        await User.updateOne({_id:userid},{$addToSet: {eventsAttended : {eventId: eventid, startTime, endTime}}}).orFail();
 
         revalidateTag("events")
         return true 
