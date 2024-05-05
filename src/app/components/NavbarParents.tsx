@@ -4,6 +4,7 @@ import { currentUser } from "@clerk/nextjs";
 import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
+import { getUserDbData } from "app/lib/authentication";
 
 /** fetch from MongoDB, get user Role */
 async function getUserData(id: string | null){
@@ -22,18 +23,17 @@ export default async function NavbarParent() {
   const user = await currentUser();
   
   if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
-  const dbId: string | null = user?.unsafeMetadata["dbId"] as string
-  const dbuser = await getUserData(dbId)
   const name = `Hi ${user?.firstName}!`;
-  console.log(dbuser)
-
-    if(dbuser?.role == "admin"){
-        console.log('admin')
-        // get user role
+  const userRes = await getUserDbData()
+    if (userRes){
+        const user = JSON.parse(userRes)
+        if (user?.role == "admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
+        }
     }
 
     return <Navbar name={name}></Navbar>;
   }
 
+  //process.env.DEV_MODE == "true" ||
   

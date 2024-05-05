@@ -52,7 +52,7 @@ export default function Waiver() {
           </Textarea>
         </Box>
         <Flex flexDirection="row">
-          <NextLink href = "/">
+          <NextLink href = "/dashboard">
             <Button sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
             backgroundColor: 'white', border: '2px solid #B5B5B5', color: '#B5B5B5',
             borderRadius: '10px', '&:hover': { backgroundColor: 'gray.200', border: '2px solid gray.200' }

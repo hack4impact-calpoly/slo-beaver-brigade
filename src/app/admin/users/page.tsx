@@ -1,4 +1,5 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -8,15 +9,26 @@ import {
   useBreakpointValue,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
 import style from "@styles/admin/users.module.css";
-import Link from "next/link";
 import Image from "next/image";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
+import SingleVisitorComponent from "@components/SingleVisitorComponent";
+import { Schema } from "mongoose";
 
-interface IUser {
+export interface EventInfo {
+  eventId: Schema.Types.ObjectId;
+  digitalWaiver: Schema.Types.ObjectId | null;
+}
+
+export interface AttendedEventInfo {
+  eventId: Schema.Types.ObjectId;
+  startTime: Date;
+  endTime: Date;
+}
+
+export interface IUser {
   _id: string;
   email: string;
   phoneNumber: string;
@@ -24,35 +36,76 @@ interface IUser {
   lastName: string;
   age: number;
   gender: string;
-  role: "user" | "supervisor" | "admin";
-  eventsAttended: [string];
-  digitalWaiver: string | null;
-  groupId: string | null;
+  role: "user" | "supervisor" | "admin" | "guest";
+  eventsRegistered: EventInfo[];
+  eventsAttended: AttendedEventInfo[];
+  groupId: Schema.Types.ObjectId | null;
+  recieveNewsletter: boolean;
 }
 
+export interface IUserWithHours extends IUser {
+  totalHoursFormatted: string;
+}
+
+// format hours
+const formatHours = (hours: number): string => {
+  const totalMinutes = Math.floor(hours * 60); 
+  const displayHours = Math.floor(totalMinutes / 60);
+  const displayMinutes = totalMinutes % 60;
+  return `${displayHours}h ${displayMinutes}min`; 
+};
+
 const UserList = () => {
-  //states
-  const [users, setUsers] = useState<IUser[]>([]);
+  // states
+  const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
   const [loading, setLoading] = useState(true);
-
-  // table format
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
-  // fetch users from route
+  // calculate hours for each event in user schema
+  const calculateTotalHours = (events: AttendedEventInfo[]): number => {
+    return events.reduce((total, event) => {
+      const start = new Date(event.startTime);
+      const end = new Date(event.endTime);
+      return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60); 
+    }, 0);
+  };
+
+  // fetch users from db
   const fetchUsers = async () => {
+    setLoading(true); 
     try {
       const response = await fetch("/api/user");
       if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        throw new Error(
+          `Failed to fetch users: ${response.status} ${response.statusText}`
+        );
       }
       const data = await response.json();
-      setUsers(data.users || []);
-      setLoading(false); // Set loading to false after fetching data
+
+      console.log("Fetched data:", data);
+
+      const usersWithHours = data.users.map((user: IUser) => {
+        if (!Array.isArray(user.eventsAttended)) {
+          console.error("Invalid or missing eventsAttended", user);
+          return {
+            ...user,
+            totalHoursFormatted: "Error: Invalid event data",
+          };
+        }
+
+        const totalHours = calculateTotalHours(user.eventsAttended);
+        return { ...user, totalHoursFormatted: formatHours(totalHours) };
+      });
+
+      console.log("Processed users with hours:", usersWithHours);
+
+      setUsers(usersWithHours);
     } catch (error) {
-      console.error(error);
-      setLoading(false); // Ensure loading is set to false even if an error occurs
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,7 +113,6 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
-  // filter users based on filter settings
   const filteredUsers = users
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
@@ -73,7 +125,6 @@ const UserList = () => {
         : a.lastName.localeCompare(b.lastName)
     );
 
-  //return a loading message while waiting to fetch users
   if (loading) {
     return (
       <Text fontSize="lg" textAlign="center">
@@ -81,6 +132,15 @@ const UserList = () => {
       </Text>
     );
   }
+
+  // CSV setup
+  const headers = [
+    { label: "First Name", key: "firstName" },
+    { label: "Last Name", key: "lastName" },
+    { label: "Email", key: "email" },
+    { label: "Phone Number", key: "phoneNumber" },
+    { label: "Total Hours", key: "totalHoursFormatted" },
+  ];
 
   return (
     <div className={style.mainContainer}>
@@ -94,7 +154,11 @@ const UserList = () => {
             <option value="firstName">First Name</option>
             <option value="lastName">Last Name</option>
           </select>
-          <CSVLink data={filteredUsers} className={style.yellowButton}>
+          <CSVLink
+            data={filteredUsers}
+            headers={headers}
+            className={style.yellowButton}
+          >
             Export To CSV
           </CSVLink>
         </div>
@@ -136,13 +200,9 @@ const UserList = () => {
                   </Td>
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
+                  <Td>{user.totalHoursFormatted}</Td>
                   <Td>
-                    <Link
-                      href={`/user/${user._id}`}
-                      className={style.viewDetails}
-                    >
-                      View Details
-                    </Link>
+                    <SingleVisitorComponent visitorData={user} />
                   </Td>
                 </Tr>
               ))}
