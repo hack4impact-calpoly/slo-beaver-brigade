@@ -474,7 +474,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
             style={{
                           //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                           background: backgroundImage,
-                          backgroundSize: "100% auto",
+                          backgroundSize: "cover",
                           backgroundRepeat: "no-repeat",
                             backgroundPosition: "left 40%"
                         }}
