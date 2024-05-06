@@ -41,17 +41,17 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   const [visitorData, setVisitorData] = useState<IUser[]>([
     {
       _id: "",
-      groupId: null,
       email: "",
+      phoneNumber: "",
       firstName: "",
       lastName: "",
-      phoneNumber: "",
       age: -1,
       gender: "",
       role: "user",
       eventsRegistered: [],
-      recieveNewsletter: false,
       eventsAttended: [],
+      groupId: null,
+      recieveNewsletter: false
     },
   ]);
 
@@ -121,14 +121,9 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
-          <Box style={{background: fallbackBackgroundImage(eventData.eventImage, "/beaver-eventcard.jpeg"), backgroundSize: "cover"}} className={styles.imageContainer}>
+          <Box className={styles.imageContainer}>
+            <img src={eventData.eventImage || "/beaver-eventcard.jpeg"} alt="cover"></img>
           </Box>
-          <button
-            onClick={handleEmailAllVisitors}
-            className={styles.emailAllVisitors}
-          >
-            Email All Visitors
-          </button>
           <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>

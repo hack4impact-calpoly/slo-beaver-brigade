@@ -52,29 +52,11 @@ export default function Calendar(props: {
     groupsAllowed: [],
     registeredIds: [],
   };
-  const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);
   const [showEventList, setShowEventList] = useState(false);
   const [showExpandedView, setShowExpandedView] = useState(false);
   const [getEvent, setEvent] = useState<IEvent | null>(null);
 
-  if (props.admin) {
-    buttonType.myCustomButton = {
-      text: "Add Event",
-      click: function () {
-        setShowModal(true);
-      },
-      hint: "Add Event Button",
-    };
-  } else {
-    buttonType.myCustomButton = {
-      text: "Sign Up",
-      click: function () {
-        setShowEventList(true);
-      },
-      hint: "Sign Up Button",
-    };
-  }
 
   return (
     <div>
@@ -91,7 +73,6 @@ export default function Calendar(props: {
           setShowModal={setShowExpandedView}
         ></ExpandedViewComponent>
         <FullCalendar
-          customButtons={buttonType}
           plugins={[
             dayGridPlugin,
             ineractionPlugin,

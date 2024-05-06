@@ -88,25 +88,26 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
-          style={{ width: "60vw", height: "65vh", padding: "0% 5% 5% 5%" }}
+          style={{ width: "60vw", height: "65vh", overflow: "auto"}}
           maxW="100rem"
         >
           <ModalHeader
             style={{
-              padding: "2% 0% 2% 0%",
+              padding: "1% 5%",
               textAlign: "left",
               fontSize: "35px",
               fontWeight: "bold",
               fontFamily: "Lato",
               width: "100%",
+
             }}
           >
             {visitorData.firstName} {visitorData.lastName}
           </ModalHeader>
           <ModalCloseButton />
           <hr />
-          <ModalBody style={{ display: "flex", padding: "0%" }}>
-            <Box style={{ paddingRight: "4%", width: "50%" }}>
+          <ModalBody style={{ display: "flex", padding: "0%" }} className={styles.parentContainer}>
+            <Box className={styles.infoBox}>
               <Text className={styles.visitorInfoSmallHeader}>
                 Personal Info
               </Text>
@@ -132,7 +133,7 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
               </Text>
               <Text className={styles.fieldInfo}>Available Locations: N/A</Text>
             </Box>
-            <Box style={{ paddingLeft: "4%", width: "50%" }}>
+            <Box className={styles.infoBox}>
               <Text className={styles.visitorInfoSmallHeader}>
                 Interest Questions
               </Text>
@@ -176,6 +177,5 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
     </>
   );
 }
-
 
 export default SingleVisitorComponent;
