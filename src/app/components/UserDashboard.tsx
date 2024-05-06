@@ -413,7 +413,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
               >
                 Find More Opportunities
               </Text>
-              {/*<Select
+              <Select
                 defaultValue="event-type"
                 size="md"
                 ml={2}
@@ -424,7 +424,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 </option>
                 <option value="watery-walk">Watery Walk</option>
                 <option value="volunteer">Volunteer</option>
-          </Select>*/}
+          </Select>
             </Flex>
             <Divider
               size="sm"
