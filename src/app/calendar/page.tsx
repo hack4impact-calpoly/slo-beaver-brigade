@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
@@ -13,11 +13,20 @@ import {
 } from "@chakra-ui/react";
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
+import { getSelectedEvents } from "app/actions/eventsactions";
 
-export default async function Page() {
+export default  function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [events, setEvents] = useState<IEvent[]>([])
 
-  const events = await getEvents(selectedFilters);
+  useEffect(() => {
+    const fetchEvents = async () => {
+        const events = await getSelectedEvents(selectedFilters);
+        setEvents(JSON.parse(events))
+
+    }
+    fetchEvents()
+  }, [selectedFilters])
   let calEvent = events.map(Calendarify);
   //Ievent object to pass into calendar component
   const dbEvent = JSON.parse(JSON.stringify(events));
@@ -69,23 +78,4 @@ export default async function Page() {
       </Flex>
     </Flex>
   );
-}
-async function getEvents(selectedFilters: string[]) {
-  await connectDB(); // connect to db
-  try {
-    let query = Event.find().sort({ date: -1 });
-
-    // Apply filters if any selected
-    if (selectedFilters.length > 0) {
-      query = query.where("eventType").in(selectedFilters);
-    }
-
-    // Execute the query
-    const events = await query.exec();
-
-    // returns all events in json format or errors
-    return events;
-  } catch (err) {
-    return [];
-  }
 }
