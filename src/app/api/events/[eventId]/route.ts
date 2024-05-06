@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
+import { revalidateTag } from "next/cache";
 
 type IParams = {
     params: {
@@ -28,6 +29,8 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
 
     try {
         const event = await Event.findByIdAndDelete(eventId).orFail();
+        revalidateTag("events");
+
         return NextResponse.json("Event deleted: " + eventId, {
             status: 200,
         });
@@ -48,6 +51,7 @@ export async function PUT(req: NextRequest, { params }: IParams) {
         const event = await Event.findById(eventId).orFail();
         event.registeredIds.push(userId);
         await event.save();
+        revalidateTag("events");
         return NextResponse.json("User added to event: " + event, {
             status: 200,
         });
@@ -117,6 +121,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             }
         }
         await event.save();
+        revalidateTag("events");
         return NextResponse.json("Event updated: " + event, { status: 200 });
     } catch (err) {
         console.error("Error updating event (EventId = " + eventId + "):", err);

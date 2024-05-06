@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+* {
+    margin: 0px;
+}
+
+:root {
+    .fc-myCustomButton-button {
+        background-color: #3498db !important;
+    }
+
+    @media (max-width: 1090px) {
+        .fc .fc-toolbar.fc-header-toolbar {
+            display: block;
+            text-align: center;
+        }
+
+        .fc-header-toolbar .fc-toolbar-chunk {
+            display: block;
+        }
+    }
+}
