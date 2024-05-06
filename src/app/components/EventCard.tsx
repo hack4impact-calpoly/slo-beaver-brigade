@@ -52,11 +52,7 @@ const EventCard: React.FC<EventPreviewProps> = ({
       className={style.eventCard}
       onClick={onClick}
       style={{
-<<<<<<< HEAD
         background: 'linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("/beaver-eventcard.jpeg")',
-=======
-        background: backgroundImage,
->>>>>>> origin/main
         backgroundSize: "cover",
         backgroundPosition: "center",
         backdropFilter: "brightness(50%)"
