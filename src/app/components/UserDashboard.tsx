@@ -229,13 +229,6 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 Your Upcoming Events
               </Text>
               <Heading as="h2" fontSize="xl">
-                <Button
-                  onClick={() => setShowEventList(true)}
-                  colorScheme="yellow"
-                  fontSize={eventDetailSize}
-                >
-                  Book Event
-                </Button>
               </Heading>
             </Flex>
             <Divider
@@ -265,15 +258,15 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                   fontWeight="bold"
                   color="black"
                   textAlign="center"
-                  marginRight={"3%"}
+                  mt="60px"
                 >
-                  Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
+                  Sign in to see all your upcoming events！
                 </Text>
                 <Link href="/login">
                   <Button
                     width="200px"
                     colorScheme="yellow"
-                    variant="outline"
+                    
                     mt="5"
                   >
                     Sign in
@@ -288,7 +281,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 textAlign="center"
                 mt={5}
               >
-                Register more events below！ ʕง•ᴥ•ʔง
+                Check out the events below！
               </Text>
             ) : null}
           </Stack>
@@ -418,7 +411,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 mb={3}
                 mt={5}
               >
-                Find More Volunteer Opportunities
+                Find More Opportunities
               </Text>
               <Select
                 defaultValue="event-type"
@@ -431,7 +424,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 </option>
                 <option value="watery-walk">Watery Walk</option>
                 <option value="volunteer">Volunteer</option>
-              </Select>
+          </Select>
             </Flex>
             <Divider
               size="sm"
@@ -554,7 +547,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                             fontSize={eventDetailSize}
                             mt={14}
                         >
-                            Register Event
+                            Register
                         </Button>
                       </Link>
                     </Heading>
