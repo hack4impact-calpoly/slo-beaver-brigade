@@ -83,6 +83,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
     await removeRegistered(userid, eventid);
     onClose(); 
     closeExpandedView();
+    setSignedIn(false);
   }
 
   const formattedDate = new Date(eventDetails.startTime).toLocaleDateString('en-US', {
