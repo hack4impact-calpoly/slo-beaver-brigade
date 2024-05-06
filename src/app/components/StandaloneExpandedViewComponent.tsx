@@ -82,6 +82,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   async function handleCancel(eventid : string, userid : string) {
     await removeRegistered(userid, eventid);
     onClose(); 
+    closeExpandedView();
   }
 
   const formattedDate = new Date(eventDetails.startTime).toLocaleDateString('en-US', {
