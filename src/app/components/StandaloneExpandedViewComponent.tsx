@@ -5,7 +5,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
   Stack,
   FormLabel,
@@ -14,7 +13,6 @@ import {
   Spacer,
   Text,
   Box,
-  Spinner
 } from "@chakra-ui/react";
 import React, { useRef, useState,useEffect } from 'react';
 import { IEvent } from "@database/eventSchema";
@@ -58,21 +56,6 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
     setShowModal(false);
   }
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     if (user == null || user?.externalId == null) {
-  //       return;
-  //     }
-  //     const response = await fetch(`/api/users/${user?.externalId}`);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error, status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-  //     setVisitorData(data);
-  //   };
-  //   fetchUserData();
-
-  // },[visitorData]);
   useEffect(() => {
     const fetchUserData = async () => {
       if (signedIn) {
@@ -97,8 +80,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   }
 
   async function handleCancel(eventid : string, userid : string) {
-    console.log(eventid, userid);
-    await removeRegistered(eventid, userid);
+    await removeRegistered(userid, eventid);
     onClose(); 
   }
 
@@ -126,7 +108,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   <>
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
       <ModalOverlay/>
-      <ModalContent mt={"5%"}>
+      <ModalContent mt={"10%"}>
         <ModalHeader bg={backgroundImage} fontWeight="bold" position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"5px 5px 0px 0px"}>
           <Flex justify={"right"} ml={"5%"}>
             <Text fontSize={"5xl"} opacity={"85%"}>{eventDetails.eventName}</Text>
@@ -178,7 +160,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                   Checklist:
                 </FormLabel>
                   <Text fontWeight={"bold"} maxW={"90%"}>
-                    {eventDetails.description}
+                    {eventDetails.checklist}
                   </Text>
               </Flex>
               <Stack spacing={0}>
@@ -274,7 +256,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
             <Button  onClick={onClose} mr={"5%"} variant={"outline"} color={"#3b3b3b"}>
               No, take me back
             </Button>
-            <Button color={"black"} bg="#e0af48" onClick={async() => await handleCancel(eventDetails._id.toString(),visitorData._id.toString())} ml={"5%"}>
+            <Button color={"black"} bg="#e0af48" onClick={async() => await handleCancel(eventDetails._id,visitorData._id)} ml={"5%"}>
               Yes, cancel
             </Button>
           </Flex>

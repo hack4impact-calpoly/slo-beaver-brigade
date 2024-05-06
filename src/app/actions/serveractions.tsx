@@ -38,17 +38,18 @@ export async function removeRegistered(userid: string, eventid: string ) {
 
         // validate inputs
         if (!userid || !eventid) {
-            return NextResponse.json("Invalid Comment.", { status: 400 });
+            return false
         }
 
         // remove user from event
         await Event.updateOne({_id: eventid},{$pull: {registeredIds : userid} }).orFail();
         // remove event from user
-        await User.updateOne({_id:userid},{$pull: {eventsRegistered : eventid}}).orFail();
-
-        return NextResponse.json("ID Deleted")
+        await User.updateOne({_id:userid},{$pull: {eventsRegistered : {eventId: eventid}}}).orFail();
+    
+        return true
     }
     catch(err){
-        return NextResponse.json(err, { status: 400});
+        console.log(err);
+        return false
     }
 }
