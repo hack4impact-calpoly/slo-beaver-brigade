@@ -64,7 +64,7 @@ export default function Navbar(props: { name: string }) {
                   </Link>
                 </li>  
                 <li>
-                  <Link href="/volunteer" onClick={handleHideNavbar}>
+                  <Link href="/hours" onClick={handleHideNavbar}>
                     Volunteer
                   </Link>
                 </li>
