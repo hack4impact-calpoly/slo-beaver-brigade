@@ -129,7 +129,7 @@ const ResetPasswordPage: NextPage = () => {
         )}
       </form>
       <Box textAlign="center" mt={4}>
-        <ChakraLink href="/login">Back to Profile</ChakraLink>
+        <ChakraLink href="/profile">Back to Profile</ChakraLink>
       </Box>
     </Box>
   );

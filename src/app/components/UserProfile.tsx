@@ -32,10 +32,6 @@ export default function UserProfile() {
 
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
  return(
    <div className={styles.profileContainer}>
      <div className={styles.formContainer}>
