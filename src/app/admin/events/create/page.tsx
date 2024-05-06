@@ -24,7 +24,7 @@ import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/MiniCalendar";
 import { formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
-import { uploadFileS3Bucket } from "app/actions/useractions";
+import { uploadFileS3Bucket } from "app/lib/clientActions";
 import { Select, CreatableSelect } from "chakra-react-select";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
@@ -150,13 +150,11 @@ export default function Page() {
     }
 
     // Try to upload image
-    const form = new FormData();
     const file = fileInputRef?.current?.files?.[0] ?? null;
     let imageurl = null;
 
     if (file) {
-      form.append("file", file);
-      imageurl = await uploadFileS3Bucket(form);
+      imageurl = await uploadFileS3Bucket(file);
       if (!imageurl) {
         console.error("Failed to create the event: image upload.");
         toast({
