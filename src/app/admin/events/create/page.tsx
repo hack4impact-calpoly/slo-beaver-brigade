@@ -75,30 +75,36 @@ export default function Page() {
   //Parse and format start and end time from user input
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
-    const timeFormat =
+    if(start && end){
+      const timeFormat =
       start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
 
-    // Parse the start and end times as dates on the active date
-    const parsedStartTime = parse(
-      `${start}`,
-      timeFormat,
-      new Date(`${activeDate}T00:00:00`)
-    );
-    const parsedEndTime = parse(
-      `${end}`,
-      timeFormat,
-      new Date(`${activeDate}T00:00:00`)
-    );
-
-    // Format the adjusted dates back into ISO strings
-    const formattedStartDateTime = formatISO(parsedStartTime);
-    const formattedEndDateTime = formatISO(parsedEndTime);
-
-    // Update the state with the formatted date times
-    setEventStart(formattedStartDateTime);
-    setEventEnd(formattedEndDateTime);
+      // Parse the start and end times as dates on the active date
+      const parsedStartTime = parse(
+        `${start}`,
+        timeFormat,
+        new Date(`${activeDate}T00:00:00`)
+      );
+      const parsedEndTime = parse(
+        `${end}`,
+        timeFormat,
+        new Date(`${activeDate}T00:00:00`)
+      );
+        
+      // Format the adjusted dates back into ISO strings
+      const formattedStartDateTime = formatISO(parsedStartTime);
+      const formattedEndDateTime = formatISO(parsedEndTime);
+      // Update the state with the formatted date times
+      setEventStart(formattedStartDateTime);
+      setEventEnd(formattedEndDateTime);
+    };
+    if(!start){
+      setEventStart("");
+    };
+    if(!end){
+      setEventEnd("");
+    };
   };
-
   // Update active date upon change from MiniCalendar
   const handleDateChangeFromCalendar = (newDate: string) => {
     setActiveDate(newDate);
@@ -129,6 +135,7 @@ export default function Page() {
     }
   };
 
+
   // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
     // Form validation before submission
@@ -142,6 +149,30 @@ export default function Page() {
       toast({
         title: "Error",
         description: "Event details are not complete",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+      return;
+    }
+    else if (
+      eventStart === "" || eventEnd === "" || activeDate === ""
+    ){
+      toast({
+        title: "Error",
+        description: "Event date and time are not set",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+      return;
+    }
+    else if(
+      eventEnd < eventStart
+    ){
+      toast({
+        title: "Error",
+        description: "End time is before start time",
         status: "error",
         duration: 2500,
         isClosable: true,
@@ -165,9 +196,7 @@ export default function Page() {
           isClosable: true,
         });
         return;
-      }
-      console.log(imageurl);
-    }
+      }    }
 
     const eventData = {
       eventName,
@@ -199,7 +228,6 @@ export default function Page() {
       }
 
       const result = await response.json();
-      console.log(result);
 
       toast({
         title: "Event Created",
@@ -316,6 +344,8 @@ export default function Page() {
     fetchEventTypes();
   }, []);
 
+  
+  
   return (
     <Box p={8} mx="10">
       <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
@@ -509,7 +539,7 @@ export default function Page() {
             <FormLabel htmlFor="required-items" fontWeight="bold">
               Checklist
             </FormLabel>
-            <Input
+            <Textarea
               id="required-items"
               placeholder="Enter checklist."
               onChange={(e) => setChecklist(e.target.value)}
