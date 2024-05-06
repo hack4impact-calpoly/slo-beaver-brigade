@@ -64,24 +64,22 @@ export default function Page() {
           <CheckboxGroup
             colorScheme="green"
             value={selectedFilters}
-            onChange={(values) =>
-              setSelectedFilters(values.map((value) => String(value)))
-            }
+            onChange={(values) => setSelectedFilters(values.map((value) => String(value)))}
           >
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
-              <Checkbox value="watery_walk" colorScheme="teal">
+              <Checkbox value="Watery Walk" colorScheme="teal">
                 Watery Walk
               </Checkbox>
-              <Checkbox value="volunteer" colorScheme="yellow">
+              <Checkbox value="Volunteer" colorScheme="yellow">
                 Volunteer
               </Checkbox>
-              <Checkbox value="special_events" colorScheme="green">
+              <Checkbox value="Special Events" colorScheme="green">
                 Special Events
               </Checkbox>
-              <Checkbox value="spanish_speaking" colorScheme="blue">
+              <Checkbox value="spanishSpeakingAccommodation" colorScheme="blue">
                 Spanish Speaking
               </Checkbox>
-              <Checkbox value="wheelchair_accessible" colorScheme="orange">
+              <Checkbox value="wheelchairAccessible" colorScheme="orange">
                 Wheelchair Accessible
               </Checkbox>
             </Stack>

@@ -28,21 +28,30 @@ export const getEvents = async (offset: number, limit: number) => {
 }
 
 export async function getSelectedEvents(selectedFilters: string[]) {
-  await connectDB(); // connect to db
+  await connectDB(); 
+
   try {
     let query = Event.find().sort({ date: -1 });
 
-    // Apply filters if any selected
     if (selectedFilters.length > 0) {
       query = query.where("eventType").in(selectedFilters);
+
+      if (selectedFilters.includes("spanishSpeakingAccommodation")) {
+        query = query.where("spanishSpeakingAccommodation").equals(true);
+      }
+
+      if (selectedFilters.includes("wheelchairAccessible")) {
+        query = query.where("wheelchairAccessible").equals(true);
+      }
     }
 
-    // Execute the query
     const events = await query.exec();
 
-    // returns all events in json format or errors
     return JSON.stringify(events);
   } catch (err) {
+    console.error("Error fetching events:", err);
     return "[]";
   }
 }
+
+
