@@ -71,11 +71,12 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
 
 
 export async function uploadFileS3Bucket(formData: FormData){
+    console.log("formData", formData)
     const file: File | null = formData.get("file") as File
     if (!file){
         return null
     }
-    
+    console.log("file", file)
     const fileBuffer = Buffer.from(await file.arrayBuffer())
     const urlEncodedFilename = encodeURI(file.name)
     console.log(file)
@@ -92,6 +93,7 @@ export async function uploadFileS3Bucket(formData: FormData){
         return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${urlEncodedFilename}`
     }
     catch(err){
+        console.log("err: ", err)
         return null
     }
     
