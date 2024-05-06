@@ -82,7 +82,7 @@ export default function UserProfile() {
              </p>
              <p>
                <strong>Zipcode</strong>
-               <br /> {userData?.zipcode}              
+               {/*<br /> {userData?.zipcode}*/}              
              </p>     
            </div>
            <div>

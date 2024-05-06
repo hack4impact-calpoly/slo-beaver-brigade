@@ -21,7 +21,7 @@ import { IUser } from '@database/userSchema';
 import { Button } from '@styles/Button'
 import React, {useState, useEffect} from 'react';
 
-const EditProfile = ({userData}: {userData: IUser}) => {   
+const EditProfile = ({userData}: {userData: IUser | null}) => {   
   
   const { isOpen, onOpen, onClose } = useDisclosure();
       
@@ -38,7 +38,7 @@ const EditProfile = ({userData}: {userData: IUser}) => {
           setLastName(userData.lastName || '');
           setEmail(userData.email || '');
           setPhoneNumber(userData.phoneNumber || '');
-          setReceiveNewsletter(userData.receiveNewsletter || false);
+          setReceiveNewsletter(userData.recieveNewsletter || false);
       }
   }, [userData]);
 
@@ -56,11 +56,11 @@ const EditProfile = ({userData}: {userData: IUser}) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   
   function handleClose() {
-      setFirstName(userData.firstName || '');
-      setLastName(userData.lastName || '');
-      setEmail(userData.email || '');
-      setPhoneNumber(userData.phoneNumber || '');
-      setReceiveNewsletter(userData.receiveNewsletter || false);
+      setFirstName(userData?.firstName || '');
+      setLastName(userData?.lastName || '');
+      setEmail(userData?.email || '');
+      setPhoneNumber(userData?.phoneNumber || '');
+      setReceiveNewsletter(userData?.recieveNewsletter || false);
       setIsSubmitted(false);
       onClose();
   };
@@ -76,7 +76,7 @@ const EditProfile = ({userData}: {userData: IUser}) => {
   
       console.log("New User Data:", updatedUserData);
       try {
-        const response = await fetch(`/api/profile/${userData._id}/`, {
+        const response = await fetch(`/api/profile/${userData?._id}/`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
