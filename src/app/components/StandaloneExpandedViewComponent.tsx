@@ -13,6 +13,7 @@ import {
   Spacer,
   Text,
   Box,
+  useMediaQuery
 } from "@chakra-ui/react";
 import React, { useRef, useState,useEffect } from 'react';
 import { IEvent } from "@database/eventSchema";
@@ -25,6 +26,7 @@ import { removeRegistered } from "app/actions/serveractions";
 import { IUser } from "@database/userSchema";
 import { getUserDbData } from "app/lib/authentication";
 
+
 interface Props {
   eventDetails: IEvent | null;
   showModal: boolean;
@@ -35,6 +37,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   const { isOpen, onOpen, onClose } = useDisclosure();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const [signedIn, setSignedIn] = useState(false);
+  const [isLargerThan768] = useMediaQuery("(min-width: 550px)");
   const [visitorData, setVisitorData] = useState<IUser>(
     {
       _id: "",
@@ -110,7 +113,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   <>
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
       <ModalOverlay/>
-      <ModalContent mt={"10%"}>
+      <ModalContent mt={"5rem"}>
         <ModalHeader bg={backgroundImage} fontWeight="bold" position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"5px 5px 0px 0px"}>
           <Flex justify={"right"} ml={"5%"}>
             <Text fontSize={"5xl"} opacity={"85%"}>{eventDetails.eventName}</Text>
@@ -136,7 +139,10 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
         </ModalHeader>
 
         <ModalBody>
+          
           <Stack spacing={5} width={"100%"}>
+            {isLargerThan768 ?
+            <>
             <Flex ml={"5%"}>
               <Flex direction={"column"} width={"50%"}>
                 <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
@@ -174,7 +180,46 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                   <Text fontWeight={"bold"}>No</Text>
                 }
               </Stack>
-            </Flex>
+            </Flex> 
+            </>
+            : 
+              <Flex ml={"5%"} direction={"column"}>
+                <Flex direction={"column"} width={"50%"}>
+                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                    Description:
+                  </FormLabel>
+                  <Text fontWeight={"bold"} maxW={"90%"}>
+                    {eventDetails.description}
+                  </Text>
+                </Flex>
+                <Flex direction={"column"} width={"50%"}>
+                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                    Checklist:
+                  </FormLabel>
+                  <Text fontWeight={"bold"} maxW={"90%"}>
+                    {eventDetails.checklist}
+                  </Text>
+                </Flex>
+                <Stack spacing={0}>
+                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                    Spanish Speaking:
+                  </FormLabel>
+                  {eventDetails.spanishSpeakingAccommodation ? 
+                    <Text fontWeight={"bold"}>Yes</Text> :
+                    <Text fontWeight={"bold"}>No</Text>
+                  }
+                </Stack>
+                <Stack spacing={0}>
+                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                    Wheelchair Accessible:
+                  </FormLabel>
+                  {eventDetails.wheelchairAccessible ? 
+                    <Text fontWeight={"bold"}>Yes</Text> :
+                    <Text fontWeight={"bold"}>No</Text>
+                  }
+                </Stack> 
+              </Flex>
+            }
             <Flex
               direction={{ base: 'column', md: 'row' }}
               alignItems={{ base: 'center', md: 'flex-start' }}
@@ -247,7 +292,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
       size="lg"
       >
       <ModalOverlay />
-      <ModalContent mt={"15%"}>
+      <ModalContent mt={"15rem"}>
         <ModalHeader bg={"#e0af48"} borderRadius={"5px 5px 0px 0px"}></ModalHeader>
         <ModalBody  textAlign={"center"} mt={"5%"}>
           <Text fontWeight={"bold"} fontSize={"xl"}>Cancel This Reservation</Text>
