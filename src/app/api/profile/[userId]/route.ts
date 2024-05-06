@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 lastName,
                 email,
                 phoneNumber,
-                receiveNewsletter // Be careful here, in IUser this param is mispelled "recieveNewsletter"
+                recieveNewsletter // Be careful here, in IUser this param is mispelled "recieveNewsletter"
             }: IUser = await req.json()
             if (firstName) {
                 user.firstName = firstName;
@@ -39,7 +39,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (phoneNumber) {
                 user.phoneNumber = phoneNumber;
             }
-            user.recieveNewsletter = receiveNewsletter;
+            user.recieveNewsletter = recieveNewsletter;
             
         }
         await user.save();
