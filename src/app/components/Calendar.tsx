@@ -86,7 +86,7 @@ export default function Calendar(props: {
         <EventListRegister showModal={showEventList} setShowModal={setShowEventList}>
         </EventListRegister>
         <ExpandedViewComponent
-          eventDetails={getEvent}
+          eventDetails={JSON.parse(JSON.stringify(getEvent))}
           showModal={showExpandedView}
           setShowModal={setShowExpandedView}
         ></ExpandedViewComponent>
