@@ -72,6 +72,7 @@ const UserSchema = new Schema({
     eventsRegistered: {
         type: [
             {
+                _id: false,
                 eventId: { type: Schema.Types.ObjectId, required: true },
                 digitalWaiver: { type: Schema.Types.ObjectId, required: false },
             },
@@ -82,6 +83,7 @@ const UserSchema = new Schema({
     eventsAttended: {
         type: [
             {
+                _id: false,
                 eventId: { type: Schema.Types.ObjectId, required: true },
                 startTime: { type: Date, required: false, default: Date.now },
                 endTime: { type: Date, required: false, default: Date.now },
