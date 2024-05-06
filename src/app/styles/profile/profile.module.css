@@ -21,7 +21,7 @@
  
  
  .accountDetails {
-  width: 35%;
+  width: 25%;
   float: left;
  }
  
@@ -29,7 +29,7 @@
  .accountDetails .formFields > div > p {
   margin-top: 35px;
   margin-left: 15px;
-  display: flex;
+  
   align-items: center;
   justify-content: space-between;
   white-space: nowrap;
@@ -37,8 +37,7 @@
  
  
  .accountDetails .formFields > div > p button {
-  margin-left: 100px;
-  padding: 5px 10px;
+  padding: 5px 5px;
  
  
  }
@@ -65,9 +64,10 @@
  
  .personalDetails,
  .savedAddress {
-  width: 60%;
+  width: 70%;
   float: right;
   margin-bottom: 80px;
+
  }
  
  
@@ -116,8 +116,8 @@
  
  .formFields {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
  }
  
  
@@ -144,8 +144,8 @@
  
  
  .pencilIcon {
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
   margin-left: auto;
  }
  
@@ -162,7 +162,7 @@
  
  @media (min-width: 768px) {
   .formFields {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
  }
  

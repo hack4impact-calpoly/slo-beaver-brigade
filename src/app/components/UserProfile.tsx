@@ -8,27 +8,10 @@ import { getUserDbData } from "app/lib/authentication";
 import { IUser } from "database/userSchema";
 
 
-
-/*
-interface UserData {
- firstName: string;
- lastName: string;
- username: string;
- email: string;
- zipcode: string;
- preferredLanguage: string;
- phoneNumber: string;
- password: string;
- city: string;
- state: string;
- receiveEmails: string;
-}
-*/
-
 export default function UserProfile() {
   const [userData, setUserData] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,7 +30,7 @@ export default function UserProfile() {
 
     fetchData();
 
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -59,25 +42,23 @@ export default function UserProfile() {
        <div className={`${styles.formGroup} ${styles.accountDetails}`}>
          <div className={`${styles.highlight} ${styles.accountHeader}`}>
            <h2 className={`${styles.title} ${styles.biggerTitle}`}>
-             Account Details
+             Account
            </h2>
          </div>
          <div className={styles.formFields}>
            <div>
-             <p>
-               <strong>Username</strong> <br />
-               
-               <button className={styles.editFieldButton}>
-                 Edit Username
-               </button>
+            <p>
+               <strong>Email Address</strong>
+               <br /> {userData?.email}
              </p>
              <p>
-               <strong>Current Password</strong> <br />
+             
                
                <button className={styles.editFieldButton}>
-                 Edit Password
+                 <Link href ="/reset-password">Reset Password</Link>
                </button>
              </p>
+            
         
             
            </div>
@@ -88,8 +69,9 @@ export default function UserProfile() {
            <h2 className={`${styles.title} ${styles.biggerTitle}`}>
              Personal Details
            </h2>
+            <h2 className={styles.editButton}> <EditProfile userData={userData}/>             
             <PencilIcon className={styles.pencilIcon} />
-            <h2 className={styles.editButton}> <EditProfile userData={userData}/> </h2> 
+            </h2> 
          </div>
          <div className={styles.formFields}>
            <div>
@@ -101,67 +83,38 @@ export default function UserProfile() {
                <strong>Last Name</strong>
                <br /> {userData?.lastName}
              </p>
-             <p>
-               <strong>Preferred Language</strong>
-               
-             </p>
+             
+             
            </div>
            <div>
              <p>
-               <strong>Telephone Number</strong>
+               <strong>Phone Number</strong>
                <br /> {userData?.phoneNumber}
              </p>
              <p>
-               <strong>Email</strong>
-               <br /> {userData?.email}
-             </p>
-           </div>
-         </div>
-       </div>
-       <div className={`${styles.formGroup} ${styles.savedAddress}`}>
-         <div className={`${styles.highlight} ${styles.savedAddressHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}>
-             Saved Address
-           </h2>
-           <PencilIcon className={styles.pencilIcon} />
-           <h2 className={styles.editButton}>Edit Details</h2>
-         </div>
-         <div className={styles.formFields}>
-           <div>
-             <p>
-               <strong>City</strong>
-           
-             </p>
-             <p>
                <strong>Zipcode</strong>
-               <br /> {userData.zipcode}
+               <br /> {userData?.zipcode}
+               
              </p>
+             
+           
            </div>
            <div>
-             <p>
-               <strong>State</strong>
-
+           <p>
+               <strong>Receive Newsletter</strong> <br />
+               
+            <span className={userData?.recieveNewsletter ? 'yes' : 'no'}>
+              {userData?.recieveNewsletter ? 'Yes' : 'No'}
+            </span>
+        
              </p>
            </div>
          </div>
        </div>
-       <div className={`${styles.formGroup} ${styles.savedAddress}`}>
-         <div className={`${styles.highlight} ${styles.personalHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}></h2>
-           <PencilIcon className={styles.pencilIcon} />
-           <h2 className={styles.editButton}>Edit Details</h2>
-         </div>
-         <div className={styles.formFields}>
-           <div>
-             <p>
-               <strong>Receive Emails from SLO Beaver Brigrade</strong> <br />
-               {userData?.recieveNewsletter}
-             </p>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
+       
+      </div>
+    </div>
+  
  )
 
  

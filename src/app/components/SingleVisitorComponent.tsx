@@ -42,6 +42,7 @@ interface Event {
 }
 
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +50,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
+     
       try {
         const eventIds = visitorData.eventsAttended.map((e) => e.eventId);
         const fetchedEvents = await Promise.all(
@@ -69,7 +71,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       setLoading(false);
     };
 
-    if (visitorData.eventsAttended.length > 0) {
+if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.length > 0) {
       fetchEvents();
     }
   }, [visitorData]);
