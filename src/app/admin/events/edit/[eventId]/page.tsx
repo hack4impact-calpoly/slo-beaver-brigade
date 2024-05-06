@@ -121,7 +121,8 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
-          <Box style={{background: fallbackBackgroundImage(eventData.eventImage, "/beaver-eventcard.jpeg"), backgroundSize: "cover"}} className={styles.imageContainer}>
+          <Box className={styles.imageContainer}>
+            <img src={eventData.eventImage || "/beaver-eventcard.jpeg"} alt="cover"></img>
           </Box>
           <button
             onClick={handleEmailAllVisitors}
