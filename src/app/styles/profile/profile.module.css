@@ -38,6 +38,8 @@
  
  .accountDetails .formFields > div > p button {
   padding: 5px 5px;
+  margin-top: 5px;
+
  
  
  }
@@ -176,7 +178,42 @@
  
   .accountDetails .formFields > div > p button {
     margin-left: 0;
-    margin-top: 10px;
+    margin-top: 5px;
   }
  }
- 
+@media (max-width: 670px){
+ /* Define a wrapper for both personal details and account details */
+.detailsWrapper {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to next line */
+}
+
+.personalDetails {
+  width: 100%;
+  margin-bottom: 20px; /* Adjust margin as needed */
+}
+
+.accountDetails {
+  width: 100%; /* Set width to 100% for smaller screens */
+}
+
+@media (min-width: 768px) {
+  .formFields {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1050px) {
+  /* Adjust layout for larger screens */
+  .detailsWrapper {
+    flex-wrap: nowrap; /* Prevent items from wrapping */
+  }
+  .personalDetails {
+    width: 70%;
+    margin-right: 20px; /* Adjust margin between sections */
+  }
+  .accountDetails {
+    width: 30%;
+  }
+}
+}

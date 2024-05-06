@@ -48,19 +48,14 @@ export default function UserProfile() {
          <div className={styles.formFields}>
            <div>
             <p>
-               <strong>Email Address</strong>
-               <br /> {userData?.email}
-             </p>
-             <p>
-             
-               
-               <button className={styles.editFieldButton}>
-                 <Link href ="/reset-password">Reset Password</Link>
-               </button>
-             </p>
-            
-        
-            
+              <strong>Email Address</strong>
+              <br /> {userData?.email}
+            </p>
+            <p>
+              <button className={styles.editFieldButton}>
+                <Link href ="/reset-password">Reset Password</Link>
+              </button>
+             </p>  
            </div>
          </div>
        </div>
@@ -82,9 +77,7 @@ export default function UserProfile() {
              <p>
                <strong>Last Name</strong>
                <br /> {userData?.lastName}
-             </p>
-             
-             
+             </p>            
            </div>
            <div>
              <p>
@@ -93,31 +86,22 @@ export default function UserProfile() {
              </p>
              <p>
                <strong>Zipcode</strong>
-               <br /> {userData?.zipcode}
-               
-             </p>
-             
-           
+               <br /> {userData?.zipcode}              
+             </p>     
            </div>
            <div>
-           <p>
-               <strong>Receive Newsletter</strong> <br />
-               
-            <span className={userData?.recieveNewsletter ? 'yes' : 'no'}>
-              {userData?.recieveNewsletter ? 'Yes' : 'No'}
-            </span>
-        
-             </p>
-           </div>
+            <p>
+              <strong>Receive Newsletter</strong> <br />
+              <span className={userData?.recieveNewsletter ? 'yes' : 'no'}>
+                {userData?.recieveNewsletter ? 'Yes' : 'No'}
+              </span>
+            </p>
+          </div>
          </div>
-       </div>
-       
+       </div>      
       </div>
-    </div>
-  
+    </div> 
  )
-
- 
 };
 
 
