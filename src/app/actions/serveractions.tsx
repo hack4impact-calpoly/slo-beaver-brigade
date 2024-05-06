@@ -46,6 +46,7 @@ export async function removeRegistered(userid: string, eventid: string ) {
         // remove event from user
         await User.updateOne({_id:userid},{$pull: {eventsRegistered : {eventId: eventid}}}).orFail();
     
+        revalidateTag("events")
         return true
     }
     catch(err){
