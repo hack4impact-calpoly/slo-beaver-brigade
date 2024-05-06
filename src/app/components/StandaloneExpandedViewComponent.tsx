@@ -74,7 +74,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
     };
     fetchUserData();
 
-  },[visitorData]);
+  },[signedIn,visitorData]);
 
   if (eventDetails == null){
     return (
