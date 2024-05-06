@@ -22,10 +22,10 @@ import { CalendarIcon,TimeIcon} from '@chakra-ui/icons';
 import { fallbackBackgroundImage } from "app/lib/random";
 import { PiMapPinFill } from "react-icons/pi";
 import { MdCloseFullscreen } from "react-icons/md";
-import { useUser } from "@clerk/clerk-react";
 import Link from "next/link";
 import { removeRegistered } from "app/actions/serveractions";
 import { IUser } from "@database/userSchema";
+import { getUserDbData } from "app/lib/authentication";
 
 interface Props {
   eventDetails: IEvent | null;
@@ -36,8 +36,7 @@ interface Props {
 function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props)  {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
-  const { isSignedIn, user, isLoaded } = useUser(); 
-  const [loaded,setLoaded] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
   const [visitorData, setVisitorData] = useState<IUser>(
     {
       _id: "",
@@ -59,35 +58,33 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
     setShowModal(false);
   }
 
-  const toggleModal = () => {
-    if (isOpen) {
-      onClose();
-      if (triggerButtonRef.current) {
-        triggerButtonRef.current.focus();
-      }
-    } else {
-      onOpen();
-    }
-  };
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     if (user == null || user?.externalId == null) {
+  //       return;
+  //     }
+  //     const response = await fetch(`/api/users/${user?.externalId}`);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error, status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     setVisitorData(data);
+  //   };
+  //   fetchUserData();
 
-  useEffect(() => {
-    if(isLoaded){
-      setLoaded(true);
-    }
-  }
-  ,[isLoaded])
-
+  // },[visitorData]);
   useEffect(() => {
     const fetchUserData = async () => {
-      if (user == null || user?.externalId == null) {
+      if (signedIn) {
         return;
       }
-      const response = await fetch(`/api/users/${user?.externalId}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error, status: ${response.status}`);
+      const user = await getUserDbData();
+      if(!user){
+        return;
       }
-      const data = await response.json();
-      setVisitorData(data);
+
+      setSignedIn(true);
+      setVisitorData(JSON.parse(user));
     };
     fetchUserData();
 
@@ -100,10 +97,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   }
 
   async function handleCancel(eventid : string, userid : string) {
-    // if (eventDetails == null || user?.externalId == null) {
-    //   console.log("Event details or user external ID is null");
-    //   return;
-    // }
+    console.log(eventid, userid);
     await removeRegistered(eventid, userid);
     onClose(); 
   }
@@ -131,8 +125,8 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   return (
   <>
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
-      <ModalOverlay />
-      <ModalContent>
+      <ModalOverlay/>
+      <ModalContent mt={"5%"}>
         <ModalHeader bg={backgroundImage} fontWeight="bold" position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"5px 5px 0px 0px"}>
           <Flex justify={"right"} ml={"5%"}>
             <Text fontSize={"5xl"} opacity={"85%"}>{eventDetails.eventName}</Text>
@@ -205,11 +199,10 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
               mt={"10%"}
               ml={"5%"}
               >
-              {loaded ? 
-                  <>
-                    {isSignedIn ? 
+
+                    {signedIn ? 
                       <>
-                      {!eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
+                      {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
                         <Button
                           onClick={onOpen}
                           bg="#e0af48"
@@ -256,10 +249,6 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                         </Button>
                       </Link>
                     }
-                  </>
-                : 
-                  <Spinner speed="0.8s" thickness="3px"/>
-              }
             </Flex>
           </Stack>
         </ModalBody>
@@ -274,7 +263,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
       size="lg"
       >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mt={"15%"}>
         <ModalHeader bg={"#e0af48"} borderRadius={"5px 5px 0px 0px"}></ModalHeader>
         <ModalBody  textAlign={"center"} mt={"5%"}>
           <Text fontWeight={"bold"} fontSize={"xl"}>Cancel This Reservation</Text>
@@ -285,7 +274,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
             <Button  onClick={onClose} mr={"5%"} variant={"outline"} color={"#3b3b3b"}>
               No, take me back
             </Button>
-            <Button color={"black"} bg="#e0af48" onClick={async() => handleCancel(eventDetails._id,visitorData._id)} ml={"5%"}>
+            <Button color={"black"} bg="#e0af48" onClick={async() => await handleCancel(eventDetails._id.toString(),visitorData._id.toString())} ml={"5%"}>
               Yes, cancel
             </Button>
           </Flex>
