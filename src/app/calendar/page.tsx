@@ -15,24 +15,27 @@ import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 import { getSelectedEvents } from "app/actions/eventsactions";
 
-export default  function Page() {
+export default function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [events, setEvents] = useState<IEvent[]>([])
+  const [events, setEvents] = useState<IEvent[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
-        const events = await getSelectedEvents(selectedFilters);
-        setEvents(JSON.parse(events))
+      try {
+        const selectedEventsString = await getSelectedEvents(selectedFilters);
+        const parsedEvents: IEvent[] = JSON.parse(selectedEventsString);
+        setEvents(parsedEvents);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
+  }, [selectedFilters]);
 
-    }
-    fetchEvents()
-  }, [selectedFilters])
-  let calEvent = events.map(Calendarify);
-  //Ievent object to pass into calendar component
-  const dbEvent = JSON.parse(JSON.stringify(events));
+  const calEvent = events.map(Calendarify);
+
   return (
     <Flex className={style.page} direction="column" align="flex-end">
-      {/* Set direction to column and align to flex-end */}
       <Flex width="full">
         <Box flex="1" margin="0" padding="0">
           <Box className={style.header}>
@@ -58,7 +61,13 @@ export default  function Page() {
           >
             Filters
           </Heading>
-          <CheckboxGroup colorScheme="green" defaultValue={selectedFilters}>
+          <CheckboxGroup
+            colorScheme="green"
+            value={selectedFilters}
+            onChange={(values) =>
+              setSelectedFilters(values.map((value) => String(value)))
+            }
+          >
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
               <Checkbox value="watery_walk" colorScheme="teal">
                 Watery Walk
@@ -69,11 +78,17 @@ export default  function Page() {
               <Checkbox value="special_events" colorScheme="green">
                 Special Events
               </Checkbox>
+              <Checkbox value="spanish_speaking" colorScheme="blue">
+                Spanish Speaking
+              </Checkbox>
+              <Checkbox value="wheelchair_accessible" colorScheme="orange">
+                Wheelchair Accessible
+              </Checkbox>
             </Stack>
           </CheckboxGroup>
         </Box>
         <Box flex="2" margin="10" padding="0">
-          <Calendar events={calEvent} admin={false} dbevents={dbEvent} />
+          <Calendar events={calEvent} admin={false} dbevents={events} />
         </Box>
       </Flex>
     </Flex>

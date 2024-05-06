@@ -3,8 +3,10 @@ const nextConfig = {
     compiler: {
         styledComponents: true,
     },
-    serverActions: {
-        bodySizeLimit: "5mb",
+    experimental: {
+        serverActions: {
+            bodySizeLimit: "10mb",
+        },
     },
 };
 module.exports = nextConfig;
