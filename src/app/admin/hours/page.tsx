@@ -18,6 +18,9 @@ import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration } from '../../lib/dates';
 import { calcHours, calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import { getUserDbData } from 'app/lib/authentication';
+import { IUser } from '@database/userSchema';
+
 
 const AttendedEvents = () => {
   //states
@@ -30,6 +33,8 @@ const AttendedEvents = () => {
     new Date(new Date().setMonth(new Date().getMonth() - 1)).toString()
   );
   const [endDateTime, setEndDateTime] = useState(new Date().toString());
+  const [userFirstName, setUserFirstName] = useState('');
+
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
@@ -56,7 +61,19 @@ const AttendedEvents = () => {
 
     // Update state with events the user has signed up for
     setUserEvents(pastEvents);
+
+    if (isSignedIn) {
+      let userId = '';
+      let userFirstName = '';
+      const userdata = await getUserDbData();
+      if (userdata != null) {
+        const user = JSON.parse(userdata) as IUser;
+        userId = user._id;
+        userFirstName = user.firstName;
+      }
+      setUserFirstName(userFirstName)
   }
+}
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
@@ -101,7 +118,7 @@ const AttendedEvents = () => {
         </Text>
       ):(
       <Text fontWeight="500" fontSize="32px" textAlign="center">
-      🎉 Amazing work, Beaver Brigade team  🎉
+      🎉 The beavers appreciate your amazing work, {userFirstName}  🎉
       </Text>
       )
       }

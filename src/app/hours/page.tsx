@@ -44,11 +44,10 @@ const AttendedEvents = () => {
       if (userdata != null) {
         const user = JSON.parse(userdata) as IUser;
         userId = user._id;
-        
-
         userFirstName = user.firstName;
       }
-      
+      setUserFirstName(userFirstName)
+
       // Fetch all events
       const eventsResponse = await fetch('/api/events/');
       if (!eventsResponse.ok) {
@@ -70,7 +69,6 @@ const AttendedEvents = () => {
       // Update state with events the user has signed up for
       setUserEvents(userSignedUpEvents);
 
-      setUserFirstName(userFirstName)
     }
   }
 
