@@ -114,7 +114,7 @@ const AttendedEvents = () => {
       > 
       { Math.floor(totalTime / 60) === 0 && Math.floor(totalTime % 60) == 0 ? (
         <Text fontWeight="500" fontSize="32px" textAlign="center">
-        Host volunteering events to track hours!
+        Schedule volunteering events to track hours!
         </Text>
       ):(
       <Text fontWeight="500" fontSize="32px" textAlign="center">
