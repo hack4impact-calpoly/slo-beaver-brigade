@@ -86,6 +86,7 @@ const AttendedEvents = () => {
 
   return (
     <div className={style.mainContainer}>
+      
       <Box
         display="flex"
         justifyContent="center"
@@ -93,10 +94,17 @@ const AttendedEvents = () => {
         flexDirection="column"
         marginLeft="20px"
         marginRight="20px"
-      >
+      > 
+      { Math.floor(totalTime / 60) === 0 && Math.floor(totalTime % 60) == 0 ? (
         <Text fontWeight="500" fontSize="32px" textAlign="center">
-          Congrats SLO Beaver Brigade You’ve done great this month! 🎉
+        Host volunteering events to track hours!
         </Text>
+      ):(
+      <Text fontWeight="500" fontSize="32px" textAlign="center">
+      🎉 Amazing work, Beaver Brigade team  🎉
+      </Text>
+      )
+      }
         <Box
           borderRadius="10.21px"
           m="4"
@@ -115,7 +123,7 @@ const AttendedEvents = () => {
             justifyContent="center"
             textAlign="center"
           >
-            Total Volunteer Hours Accumulated
+            Volunteer Hours
           </Text>
           <Text
             fontWeight="600"
@@ -127,6 +135,8 @@ const AttendedEvents = () => {
             {Math.floor(totalTime / 60)} h {totalTime % 60} min
           </Text>
         </Box>
+  
+
         <Box>
           <Text display="inline">From:</Text>
           <Input
