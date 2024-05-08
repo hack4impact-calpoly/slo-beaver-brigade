@@ -66,7 +66,6 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        await getAllImagesS3()
         const res = await getEvents(-1, -1)
         if (!res){
             console.log("Error getting events.")
