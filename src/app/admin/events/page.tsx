@@ -13,6 +13,7 @@ import {
   CheckboxGroup,
   Stack,
 } from "@chakra-ui/react";
+import { getAllImagesS3 } from "app/actions/imageactions";
 
 // interface IEvent {
 //   _id: string;
@@ -65,7 +66,6 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-
         const res = await getEvents(-1, -1)
         if (!res){
             console.log("Error getting events.")
