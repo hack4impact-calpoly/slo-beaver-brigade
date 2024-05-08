@@ -42,6 +42,8 @@ export default async function Page(){
     if (userRes){
         userData = JSON.parse(userRes)
     }
+    console.log(userData)
+
 
     return (
         <Suspense fallback={<LoadingEvents />}>
