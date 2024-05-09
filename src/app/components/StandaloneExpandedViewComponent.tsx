@@ -25,6 +25,7 @@ import Link from "next/link";
 import { removeRegistered } from "app/actions/serveractions";
 import { IUser } from "@database/userSchema";
 import { getUserDbData } from "app/lib/authentication";
+import Markdown from "react-markdown"
 
 
 interface Props {
@@ -189,6 +190,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                     Description:
                   </FormLabel>
                   <Text fontWeight={"bold"} maxW={"90%"}>
+                    
                     {eventDetails.description}
                   </Text>
                 </Flex>
@@ -228,10 +230,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
               mt={"10%"}
               ml={"5%"}
               >
-
-                    {signedIn ? 
-                      <>
-                      {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
+                       {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
                         <Button
                           onClick={onOpen}
                           bg="#e0af48"
@@ -261,23 +260,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                           </Button>
                         </Link>
                     }
-                      </>
-                  : 
-                      <Link href="/login">
-                        <Button
-                          bg="#006d75"
-                          color="white"
-                          fontWeight={"light"}
-                          fontSize={{ base: 'xl', md: 'md' }}
-                          mb={{ base: 2, md: 5 }}
-                          pl={"100%"}
-                          pr={"100%"}
-                          flexBasis={{ base: '100%', md: 'auto' }}
-                        >
-                          <strong>Login</strong>
-                        </Button>
-                      </Link>
-                    }
+                 
             </Flex>
           </Stack>
         </ModalBody>
