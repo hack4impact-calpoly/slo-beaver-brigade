@@ -22,47 +22,55 @@ async function send(emails: string[], event: IEvent) {
     const encodedDescription = encodeURIComponent(event.description);
     const encodedLocation = encodeURIComponent(event.location);
 
-    try {
-        const result = await transporter.sendMail({
-            from: process.env.GMAIL_USER,
-            to: emails,
-            subject: `${event.eventName} Signup Confirmation`,
-            html: `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Confirmation</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; }
-        .container { width: 80%; margin: 0 auto; padding: 20px; }
-        .button { padding: 10px 20px; color: white; background-color: #007BFF; text-decoration: none; border-radius: 5px; }
-        .footer { margin-top: 20px; font-size: 0.8em; color: #777; }
-    </style>
-    </head>
-    <body>
-    <div class="container">
-        <h1>${event.eventName} Signup Confirmation</h1>
-        <p>Thank you for signing up for our event! We are excited to have you join us.</p>
-        <p>Date: <strong>${formatDate(event.startTime)}</strong></p>
-        <p>Time: <strong>${formatDateTimeRange(event.startTime, event.endTime)}</strong></p>
-        <p>Please add this event to your calendar:</p>
-        <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=${urlEncodedName}&dates=${startTime}/${endTime}&details=${encodedDescription}&location=${encodedLocation}" class="button">Add to Google Calendar</a>
-        
-        <div class="footer">
-            <p>If you have any questions, please do not hesitate to contact us at <a href="mailto:info@example.com">info@example.com</a>.</p>
-        </div>
+    const result = await new Promise((resolve, reject) => {
+        transporter.sendMail(
+            {
+                from: process.env.GMAIL_USER,
+                to: emails,
+                subject: `${event.eventName} Signup Confirmation`,
+                html: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Confirmation</title>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { width: 80%; margin: 0 auto; padding: 20px; }
+    .button { padding: 10px 20px; color: white; background-color: #007BFF; text-decoration: none; border-radius: 5px; }
+    .footer { margin-top: 20px; font-size: 0.8em; color: #777; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>${event.eventName} Signup Confirmation</h1>
+    <p>Thank you for signing up for our event! We are excited to have you join us.</p>
+    <p>Date: <strong>${formatDate(event.startTime)}</strong></p>
+    <p>Time: <strong>${formatDateTimeRange(event.startTime, event.endTime)}</strong></p>
+    <p>Please add this event to your calendar:</p>
+    <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=${urlEncodedName}&dates=${startTime}/${endTime}&details=${encodedDescription}&location=${encodedLocation}" class="button">Add to Google Calendar</a>
+    
+    <div class="footer">
+        <p>If you have any questions, please do not hesitate to contact us at <a href="mailto:info@example.com">info@example.com</a>.</p>
     </div>
-    </body>
-    </html>
+</div>
+</body>
+</html>
 
-        `,
-        });
-        console.log(result.accepted, result.rejected, result.response);
-    } catch (err) {
-        console.log("did not send email, ", err);
-    }
+    `,
+            },
+            (err, info) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    console.log("sent: ", info);
+                    resolve(info);
+                }
+            }
+        );
+    });
 }
 
 export async function POST(
@@ -83,4 +91,7 @@ export async function POST(
     } catch (err) {
         return NextResponse.json("Failed to get event.", { status: 500 });
     }
+}
+function reject(err: Error) {
+    throw new Error("Function not implemented.");
 }
