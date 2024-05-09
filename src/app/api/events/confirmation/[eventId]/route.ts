@@ -59,6 +59,7 @@ async function send(emails: string[], event: IEvent) {
 
         `,
         });
+        console.log(result.accepted, result.rejected, result.response);
     } catch (err) {
         console.log("did not send email, ", err);
     }
