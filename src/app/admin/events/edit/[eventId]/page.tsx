@@ -98,20 +98,6 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     fetchVisitorData();
   }, [eventData]);
 
-  const emailLink = () => {
-    const emails = visitorData
-      .map((visitor) => visitor.email)
-      .filter((email) => !!email);
-    const subject = encodeURIComponent(eventData.eventName + " Update");
-    return `mailto:${emails.join(",")}?subject=${subject}`;
-  };
-
-  const handleEmailAllVisitors = () => {
-    const mailtoLink = emailLink();
-    console.log(mailtoLink);
-    window.location.href = mailtoLink;
-  };
-
   return (
     <Box className={styles.eventPage}>
       <EditEventHeader eventId={eventId} />

@@ -39,11 +39,24 @@ export default function Calendar(props: {
   admin: boolean; // Updated admin to boolean
   dbevents: IEvent[];
 }) {
+  const placeHolderEvent = {
+    _id: "",
+    eventName: "",
+    location: "",
+    description: "",
+    wheelchairAccessible: false,
+    spanishSpeakingAccommodation: false,
+    startTime: new Date("2024-02-17T17:30:00.000+00:00"),
+    endTime: new Date("2024-02-17T17:30:00.000+00:00"),
+    volunteerEvent: false,
+    groupsAllowed: [],
+    registeredIds: [],
+  };
   const [showModal, setShowModal] = useState(false);
   const [showEventList, setShowEventList] = useState(false);
   const [showExpandedView, setShowExpandedView] = useState(false);
   const [getEvent, setEvent] = useState<IEvent | null>(null);
-
+  
   return (
     <div>
       <div className={style.wrapper}>
@@ -61,13 +74,6 @@ export default function Calendar(props: {
           setShowModal={setShowExpandedView}
         />
         <FullCalendar
-          customButtons={{
-            myCustomButton: {
-              text: "Add Event",
-              click: () => setShowModal(true),
-              hint: "Add Event Button",
-            },
-          }}
           plugins={[
             dayGridPlugin,
             interactionPlugin,
