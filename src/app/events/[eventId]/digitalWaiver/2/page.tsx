@@ -187,6 +187,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 const res = await addToRegistered(user._id, eventId, waiverId)
                 if (res) {
                     console.log('added')
+                    const emailBody = {"email": user.email}
+                    await fetch("/api/confirmation/" + eventId, {
+                        body: JSON.stringify(emailBody)
+                    })
                     //on success, return to the home page
                     window.location.href = '/dashboard';
                     

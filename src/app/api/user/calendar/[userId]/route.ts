@@ -1,11 +1,21 @@
 import Event, { IEvent } from "database/eventSchema";
+import User, { IUser } from "database/userSchema";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(
+    req: NextRequest,
+    { params }: { params: { userId: string } }
+) {
     const ICAL = require("ical.js");
 
     try {
-        const events: IEvent[] = await Event.find().orFail();
+        // get all events to corresponding user - all registered events
+        const user: IUser = await User.findById(params.userId).orFail();
+        const events: IEvent[] = await Promise.all(
+            user.eventsRegistered.map((event) => {
+                return Event.findById(event.eventId);
+            })
+        );
 
         const comp = new ICAL.Component(["vcalendar", [], []]);
         comp.updatePropertyWithValue("prodid", "SLO Beaver Brigade");
