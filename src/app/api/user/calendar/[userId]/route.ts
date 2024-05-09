@@ -22,24 +22,40 @@ export async function GET(
         comp.updatePropertyWithValue("version", "2.0"); // Add version for compatibility
 
         events.forEach((event) => {
-            const vevent = new ICAL.Component("vevent");
-            const dtstart = ICAL.Time.fromJSDate(event.startTime, false); // false to use local time
-            const dtend = ICAL.Time.fromJSDate(event.endTime, false); // Adjust if time zone handling is needed
+            if (event) {
+                const vevent = new ICAL.Component("vevent");
+                const dtstart = ICAL.Time.fromJSDate(event.startTime, false); // false to use local time
+                const dtend = ICAL.Time.fromJSDate(event.endTime, false); // Adjust if time zone handling is needed
 
-            vevent.updatePropertyWithValue("summary", event.eventName);
-            vevent.updatePropertyWithValue("dtstart", dtstart);
-            vevent.updatePropertyWithValue("dtend", dtend);
-            vevent.updatePropertyWithValue("description", event.description);
-            console.log(event);
+                vevent.updatePropertyWithValue("summary", event.eventName);
+                vevent.updatePropertyWithValue("dtstart", dtstart);
+                vevent.updatePropertyWithValue("dtend", dtend);
+                vevent.updatePropertyWithValue(
+                    "description",
+                    event.description
+                );
+                console.log(event);
 
-            comp.addSubcomponent(vevent);
+                comp.addSubcomponent(vevent);
+            }
         });
 
         // Set correct headers for content type
 
-        // Serialize and return the iCalendar data
-        return new NextResponse(comp.toString());
-    } catch {
-        return NextResponse.json("Failed to get events", { status: 500 });
+        const icsData = comp.toString();
+
+        // Set headers for content type and to prompt file download
+        const headers = new Headers({
+            "Content-Type": "text/calendar",
+            "Content-Disposition": `attachment; filename="user-calendar.ics"`,
+        });
+
+        return new NextResponse(icsData, { headers });
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        return NextResponse.json(
+            { error: "Failed to get events" },
+            { status: 500 }
+        );
     }
 }

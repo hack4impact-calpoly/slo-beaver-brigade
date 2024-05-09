@@ -84,6 +84,7 @@ export default function Page() {
               </Checkbox>
             </Stack>
           </CheckboxGroup>
+          <a href="/api/events/calendar" target="_blank">Add to calendar!</a>
         </Box>
         <Box flex="2" margin="10" padding="0">
           <Calendar events={calEvent} admin={false} dbevents={events} />

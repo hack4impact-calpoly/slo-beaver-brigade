@@ -413,6 +413,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
               >
                 Find More Opportunities
               </Text>
+              {userData && 
+              <a href={"/api/user/calendar/" + userData?._id}>Add to calendar!</a>}
               <Select
                 defaultValue="event-type"
                 size="md"

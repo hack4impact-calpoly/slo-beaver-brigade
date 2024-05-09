@@ -5,7 +5,7 @@ import { fallbackBackgroundImage } from "app/lib/random";
 
 interface EventPreviewProps {
   event: IEvent;
-  groupName: string;
+  groupName: String;
   onClick: () => void;
 }
 
@@ -50,31 +50,27 @@ const EventCard: React.FC<EventPreviewProps> = ({
   return (
     <div
       className={style.eventCard}
-      onClick={onClick}
       style={{
         background: backgroundImage,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backdropFilter: "brightness(50%)"
       }}
+      onClick={onClick}
     >
-      <div className={style.eventContent}>
-        <div className={style.eventName}>
-          <h2>{event.eventName}</h2>
-        </div>
-        <div className={style.eventTime}>
-          <h3>{formatTimeRange(event.startTime, event.endTime)}</h3>
-        </div>
+      <div className={style.eventTitle}>
+        <h2>{event.eventName}</h2>
       </div>
       <div className={style.bottomRow}>
         <div className={style.eventInfo}>
-          <div>
-            <h2>{groupName}</h2>
-          </div>
+          <h2>{formatDate(event.startTime)}</h2>
+          <h3>{groupName}</h3>
+          <h3>{event.location}</h3>
+          <h3>{formatTimeRange(event.startTime, event.endTime)}</h3>
         </div>
         <div className={style.visitorCount}>
           <h2>{event.registeredIds.length}</h2>
-          <h3>{event.registeredIds.length === 1 ? " Visitor" : "Visitors"}</h3>
+          <h3>{event.registeredIds.length == 1 ? " Visitor" : "Visitors"}</h3>
         </div>
       </div>
     </div>
