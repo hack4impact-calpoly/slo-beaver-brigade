@@ -5,3 +5,8 @@
    list-style-type: circle;
    padding-left: 2rem;
  }
+
+ .preview ol{
+   list-style-type: decimal;
+   padding-left: 2rem;
+ }
