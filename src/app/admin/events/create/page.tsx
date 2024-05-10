@@ -26,6 +26,8 @@ import { formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
 import { Select, CreatableSelect } from "chakra-react-select";
+import MDEditor from "@uiw/react-md-editor";
+import style from "@styles/calendar/calendar.module.css";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -46,8 +48,7 @@ export default function Page() {
   const [location, setLocation] = useState("");
   const [language, setLanguage] = useState("");
   const [description, setDescription] = useState("");
-  const [accessibilityAccommodation, setAccessibilityAccommodation] =
-    useState("");
+  const [accessibilityAccommodation, setAccessibilityAccommodation] = useState("");
   const [checkList, setChecklist] = useState("N/A");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
@@ -202,7 +203,7 @@ export default function Page() {
       eventName,
       ...(imageurl && { eventImage: imageurl }),
       eventType,
-      checkList: checkList,
+      checklist: checkList,
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
@@ -528,22 +529,14 @@ export default function Page() {
             <FormLabel htmlFor="description" fontWeight="bold">
               Description
             </FormLabel>
-            <Textarea
-              id="description"
-              placeholder="Enter event description"
-              onChange={(e) => setDescription(e.target.value)}
-            />
+            <MDEditor className={style.preview} value={description} onChange={(e) => setDescription(e || "")} data-color-mode="light"/>
           </FormControl>
 
           <FormControl>
             <FormLabel htmlFor="required-items" fontWeight="bold">
               Checklist
             </FormLabel>
-            <Textarea
-              id="required-items"
-              placeholder="Enter checklist."
-              onChange={(e) => setChecklist(e.target.value)}
-            />
+            <MDEditor className={style.preview} value={checkList} onChange={(e) => setChecklist(e || "")} data-color-mode="light"/>
           </FormControl>
         </VStack>
         <Flex flex="1">

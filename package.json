@@ -33,6 +33,8 @@
     "@fullcalendar/timegrid": "^6.1.10",
     "@heroicons/react": "^2.1.1",
     "@mailchimp/mailchimp_marketing": "^3.0.80",
+    "@uiw/react-markdown-preview": "^5.1.1",
+    "@uiw/react-md-editor": "^4.0.4",
     "aws-sdk": "^2.1613.0",
     "aws4": "^1.12.0",
     "axios": "^1.6.8",

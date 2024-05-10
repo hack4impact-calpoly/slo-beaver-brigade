@@ -25,7 +25,8 @@ import Link from "next/link";
 import { removeRegistered } from "app/actions/serveractions";
 import { IUser } from "@database/userSchema";
 import { getUserDbData } from "app/lib/authentication";
-
+import MarkdownPreview from '@uiw/react-markdown-preview';
+import style from "@styles/calendar/calendar.module.css";
 
 interface Props {
   eventDetails: IEvent | null;
@@ -143,33 +144,33 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
           <Stack spacing={5} width={"100%"}>
             {isLargerThan768 ?
             <>
-            <Flex ml={"5%"}>
-              <Flex direction={"column"} width={"50%"}>
-                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+            <Flex direction={"column"}>
+              <Flex direction={"column"} >
+                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"} ml={"5%"}>
                   Description:
                 </FormLabel>
-                <Text fontWeight={"bold"} maxW={"90%"}>
-                  {eventDetails.description}
+                <Text fontWeight={"bold"}  ml={"3.5%"}>
+                  <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
                 </Text>
               </Flex>
-              <Stack spacing={0}>
-                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                  Spanish Speaking:
+              <Flex direction={"column"}>
+              <FormLabel color="grey" fontWeight="light" fontSize={"2xl"} ml={"5%"}>
+                  Checklist:
                 </FormLabel>
+                  <Text fontWeight={"bold"} maxW={"90%"} ml={"3.5%"}>
+                  <MarkdownPreview className= {style.preview} source={eventDetails.checklist} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
+                  </Text>
+              </Flex>
+            </Flex>
+            <Flex ml={"5%"}>
+              <Flex direction={"column"} width={"50%"}>
+                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+                  Spanish Speaking:
+                  </FormLabel>
                   {eventDetails.spanishSpeakingAccommodation ? 
                     <Text fontWeight={"bold"}>Yes</Text> :
                     <Text fontWeight={"bold"}>No</Text>
                   }
-              </Stack>
-            </Flex>
-            <Flex ml={"5%"}>
-              <Flex direction={"column"} width={"50%"}>
-                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                  Checklist:
-                </FormLabel>
-                  <Text fontWeight={"bold"} maxW={"90%"}>
-                    {eventDetails.checklist}
-                  </Text>
               </Flex>
               <Stack spacing={0}>
                 <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
