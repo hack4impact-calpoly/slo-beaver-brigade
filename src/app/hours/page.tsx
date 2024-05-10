@@ -31,6 +31,7 @@ const AttendedEvents = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDateTime, setStartDateTime] = useState(new Date((new Date).setMonth((new Date).getMonth() - 1)).toString());
   const [endDateTime, setEndDateTime] = useState((new Date).toString());
+  const [userFirstName, setUserFirstName] = useState('');
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
@@ -38,12 +39,15 @@ const AttendedEvents = () => {
   async function fetchData(start: string, end: string): Promise<void> {
     if (isSignedIn) {
       let userId = '';
+      let userFirstName = '';
       const userdata = await getUserDbData();
       if (userdata != null) {
         const user = JSON.parse(userdata) as IUser;
         userId = user._id;
+        userFirstName = user.firstName;
       }
-      
+      setUserFirstName(userFirstName)
+
       // Fetch all events
       const eventsResponse = await fetch('/api/events/');
       if (!eventsResponse.ok) {
@@ -64,6 +68,7 @@ const AttendedEvents = () => {
 
       // Update state with events the user has signed up for
       setUserEvents(userSignedUpEvents);
+
     }
   }
 
@@ -104,9 +109,16 @@ const AttendedEvents = () => {
         flexDirection="column"
         margin="20px"
       >
-        <Text fontWeight="500" fontSize="32px" textAlign="center" margin="20px">
-          Congrats, You’ve done great this month! 🎉
+        { Math.floor(totalTime / 60) === 0 && Math.floor(totalTime % 60) == 0 ? (
+        <Text fontWeight="500" fontSize="32px" textAlign="center">
+        Sign up for volunteering events to track your hours!
         </Text>
+      ):(
+      <Text fontWeight="500" fontSize="32px" textAlign="center">
+      🎉 The beavers appreciate your amazing work, {userFirstName}  🎉
+      </Text>
+      )
+      }
         <Box
           borderRadius="10.21px"
           m="4"
