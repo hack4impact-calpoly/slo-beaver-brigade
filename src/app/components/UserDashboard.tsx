@@ -25,6 +25,7 @@ import { getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
+import { EmailRSSComponent } from "./EmailComponent";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -221,6 +222,12 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
         setShowModal={setShowEventList}
         showModal={showEventList}
       ></EventListRegister>
+    
+     {userData && 
+     <div className="px-[3rem] pt-3">
+              <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
+    </div>
+              /*<a href=>Add to calendar!</a>*/}
       <div css={sliderStyles}>
         <Box p="4">
           <Stack spacing={2} px="10" mb={6}>
@@ -413,6 +420,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
               >
                 Find More Opportunities
               </Text>
+         
               <Select
                 defaultValue="event-type"
                 size="md"

@@ -55,10 +55,9 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
         console.log("here ", userid, typeof userid, eventid, typeof eventid )
         await connectDB(); // connect to db
 
-        const event = Event.findOne({_id: eventid}).orFail();
 
         // validate inputs
-        if (!userid || !eventid) {
+        if (!userid || !eventid || !waiverId) {
             return false
         }
 

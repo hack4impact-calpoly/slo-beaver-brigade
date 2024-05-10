@@ -28,7 +28,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
         // Set correct headers for content type
 
         // Serialize and return the iCalendar data
-        console.log(comp.toString());
         return new NextResponse(comp.toString());
     } catch {
         return NextResponse.json("Failed to get events", { status: 500 });

@@ -15,6 +15,19 @@ const nextConfig = {
                     },
                 ],
             },
+            {
+                source: "/api/user/calendar/[userId]",
+                headers: [
+                    {
+                        key: "Content-Type",
+                        value: "text/calendar;charset=utf-8",
+                    },
+                    {
+                        key: "Content-Disposition",
+                        value: 'attachment; filename="user_calendar.ics"',
+                    },
+                ],
+            },
         ];
     },
     compiler: {
