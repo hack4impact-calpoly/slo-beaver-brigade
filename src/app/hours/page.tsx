@@ -29,8 +29,8 @@ const AttendedEvents = () => {
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [startDateTime, setStartDateTime] = useState(new Date((new Date).setMonth((new Date).getMonth() - 1)).toString());
-  const [endDateTime, setEndDateTime] = useState((new Date).toString());
+  const [startDateTime, setStartDateTime] = useState(new Date((new Date).setMonth((new Date).getMonth() - 1)).toISOString().substring(0, 16));
+  const [endDateTime, setEndDateTime] = useState((new Date).toISOString().substring(0, 16));
   const [userFirstName, setUserFirstName] = useState('');
 
   // table format
@@ -61,7 +61,7 @@ const AttendedEvents = () => {
       setEndDateTime(end);
 
       // Filter events where the current user is an attendee
-      const userSignedUpEvents = filterUserSignedUpEvents(allEvents, userId, start, end);
+      const userSignedUpEvents = filterUserSignedUpEvents(allEvents, userId, start, end, searchTerm);
 
       const hours = calcHours(userSignedUpEvents);
       setTotalTime(hours);
@@ -73,11 +73,9 @@ const AttendedEvents = () => {
   }
 
   useEffect(() => {
-    console.log('Fetching user events...');
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
       setEventsLoading(true);
-
       try {
         await fetchData(startDateTime, endDateTime);
       } catch (error) {
@@ -89,10 +87,10 @@ const AttendedEvents = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isSignedIn, user, isLoaded, searchTerm]);
 
   //return a loading message while waiting to fetch events
-  if (!isLoaded || eventsLoading) {
+  if (!isLoaded) {
     return (
       <Text fontSize="lg" textAlign="center">
         Loading events...
@@ -156,6 +154,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
+            value={startDateTime}
             onChange={async (e) => {
               fetchData(e.target.value, endDateTime);
             }}
@@ -167,6 +166,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
+            value={endDateTime}
             onChange={(e) => {
               fetchData(startDateTime, e.target.value);
             }}
@@ -176,6 +176,7 @@ const AttendedEvents = () => {
             size="md"
             width="250px"
             margin="10px"
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </Box>
       </Box>

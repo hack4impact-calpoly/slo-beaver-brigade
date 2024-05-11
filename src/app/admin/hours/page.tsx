@@ -17,10 +17,13 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration } from '../../lib/dates';
-import { calcHours, calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import {
+  calcHoursForAll,
+  eventHours,
+  filterPastEvents,
+} from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
-
 
 const AttendedEvents = () => {
   //states
@@ -30,11 +33,14 @@ const AttendedEvents = () => {
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [startDateTime, setStartDateTime] = useState(
-    new Date(new Date().setMonth(new Date().getMonth() - 1)).toString()
+    new Date(new Date().setMonth(new Date().getMonth() - 1))
+      .toISOString()
+      .substring(0, 16)
   );
-  const [endDateTime, setEndDateTime] = useState(new Date().toString());
+  const [endDateTime, setEndDateTime] = useState(
+    new Date().toISOString().substring(0, 16)
+  );
   const [userFirstName, setUserFirstName] = useState('');
-
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
@@ -51,10 +57,7 @@ const AttendedEvents = () => {
     setEndDateTime(end);
 
     // Filter events where the current user is an attendee
-    const pastEvents = filterPastEvents(allEvents, start, end);
-
-    console.log(start, end);
-    console.log(allEvents, pastEvents);
+    const pastEvents = filterPastEvents(allEvents, start, end, searchTerm);
 
     let hours = calcHoursForAll(pastEvents);
     setTotalTime(hours);
@@ -71,9 +74,9 @@ const AttendedEvents = () => {
         userId = user._id;
         userFirstName = user.firstName;
       }
-      setUserFirstName(userFirstName)
+      setUserFirstName(userFirstName);
+    }
   }
-}
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
@@ -90,10 +93,10 @@ const AttendedEvents = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isSignedIn, user, isLoaded, searchTerm]);
 
   //return a loading message while waiting to fetch events
-  if (!isLoaded || eventsLoading) {
+  if (!isLoaded) {
     return (
       <Text fontSize="lg" textAlign="center">
         Loading events...
@@ -103,7 +106,6 @@ const AttendedEvents = () => {
 
   return (
     <div className={style.mainContainer}>
-      
       <Box
         display="flex"
         justifyContent="center"
@@ -111,17 +113,16 @@ const AttendedEvents = () => {
         flexDirection="column"
         marginLeft="20px"
         marginRight="20px"
-      > 
-      { Math.floor(totalTime / 60) === 0 && Math.floor(totalTime % 60) == 0 ? (
-        <Text fontWeight="500" fontSize="32px" textAlign="center">
-        Schedule volunteering events to track hours!
-        </Text>
-      ):(
-      <Text fontWeight="500" fontSize="32px" textAlign="center">
-      🎉 The beavers appreciate your amazing work, {userFirstName}  🎉
-      </Text>
-      )
-      }
+      >
+        {Math.floor(totalTime / 60) === 0 && Math.floor(totalTime % 60) == 0 ? (
+          <Text fontWeight="500" fontSize="32px" textAlign="center">
+            Schedule volunteering events to track hours!
+          </Text>
+        ) : (
+          <Text fontWeight="500" fontSize="32px" textAlign="center">
+            🎉 The beavers appreciate your amazing work, {userFirstName} 🎉
+          </Text>
+        )}
         <Box
           borderRadius="10.21px"
           m="4"
@@ -140,7 +141,7 @@ const AttendedEvents = () => {
             justifyContent="center"
             textAlign="center"
           >
-            Volunteer Hours
+            Total Volunteer Hours
           </Text>
           <Text
             fontWeight="600"
@@ -152,7 +153,6 @@ const AttendedEvents = () => {
             {Math.floor(totalTime / 60)} h {totalTime % 60} min
           </Text>
         </Box>
-  
 
         <Box>
           <Text display="inline">From:</Text>
@@ -162,6 +162,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
+            value={startDateTime}
             onChange={(e) => fetchData(e.target.value, endDateTime)}
           />
           <Text display="inline">To:</Text>
@@ -171,6 +172,7 @@ const AttendedEvents = () => {
             type="datetime-local"
             width="250px"
             margin="10px"
+            value={endDateTime}
             onChange={(e) => fetchData(startDateTime, e.target.value)}
           />
           <Input
@@ -179,6 +181,7 @@ const AttendedEvents = () => {
             size="md"
             width="250px"
             margin="10px"
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </Box>
       </Box>
@@ -188,8 +191,9 @@ const AttendedEvents = () => {
             <Thead>
               <Tr>
                 <Th>Event Name</Th>
-                <Th>Num Attendees</Th>
                 <Th>Duration</Th>
+                <Th>Num Attendees</Th>
+                <Th>Total Hours From Event</Th>
                 <Th>Date</Th>
                 <Th></Th>
               </Tr>
@@ -198,6 +202,7 @@ const AttendedEvents = () => {
               {userEvents.map((event) => (
                 <Tr key={event._id}>
                   <Td>{event.eventName}</Td>
+                  <Td>{formatDuration(event.startTime, event.endTime)}</Td>
                   <Td>{event.attendeeIds.length}</Td>
                   <Td>{eventHours(event)}</Td>
                   <Td>{formatDate(event.startTime)}</Td>
