@@ -73,7 +73,7 @@ const UserList = () => {
     }, 0);
   };
 
-  //fetch event name
+  //fetch event name for each user based on event id
   const fetchEventName = async (
     eventId: Schema.Types.ObjectId
   ): Promise<string> => {
