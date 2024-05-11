@@ -121,6 +121,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
 
   useEffect(() => {
     if (userData) {
+      console.log("useData:" + userData)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       const filteredEvents = events.filter(event =>
@@ -128,10 +129,10 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
         (!selectedEventType || event.eventType === selectedEventType) // Filter by event type if selected
       );
       const userSignedUpEvents = filteredEvents.filter(
-        event => event.registeredIds.includes(userData?._id)
+        event => event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
       );
       const eventsUserHasntRegistered = filteredEvents.filter(
-        event => !event.registeredIds.includes(userData?._id)
+        event => !event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
       );
       setUserEvents(userSignedUpEvents);
       setUnregisteredEvents(eventsUserHasntRegistered);
