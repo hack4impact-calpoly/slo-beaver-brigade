@@ -32,12 +32,12 @@ const AttendedEvents = () => {
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [startDateTime, setStartDateTime] = useState(
-    new Date(new Date().setMonth(new Date().getMonth() - 1))
+    new Date(new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(new Date().getHours() - 8))
       .toISOString()
-      .substring(0, 16)
+      .substring(0, 10)
   );
   const [endDateTime, setEndDateTime] = useState(
-    new Date().toISOString().substring(0, 16)
+    new Date(new Date().setHours(new Date().getHours() - 8)).toISOString().substring(0, 10)
   );
   const [userFirstName, setUserFirstName] = useState('');
 
@@ -167,7 +167,7 @@ const AttendedEvents = () => {
             <Text display="inline">From:</Text>
             <Input
               size="md"
-              type="datetime-local"
+              type="date"
               width="250px"
               margin="10px"
               value={startDateTime}
@@ -180,7 +180,7 @@ const AttendedEvents = () => {
             <Text display="inline">To:</Text>
             <Input
               size="md"
-              type="datetime-local"
+              type="date"
               width="250px"
               margin="10px"
               value={endDateTime}

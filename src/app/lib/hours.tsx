@@ -40,7 +40,7 @@ export function filterUserSignedUpEvents(
       event.attendeeIds.includes(userId) &&
       event.volunteerEvent &&
       new Date(event.startTime) >= new Date(startDateTime) &&
-      new Date(event.endTime) <= new Date(endDateTime) &&
+      new Date(event.endTime.substring(0, 10)) <= new Date(endDateTime) &&
       event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
   ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
@@ -56,7 +56,7 @@ export function filterPastEvents(
   const filteredEvents = events.filter((event: any) => 
     event.volunteerEvent &&
     (new Date(event.startTime) >= new Date(startDateTime)) &&
-    (new Date(event.endTime) <= new Date(endDateTime)) &&
+    (new Date(event.endTime.substring(0, 10)) <= new Date(endDateTime)) &&
     event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
   ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
