@@ -128,7 +128,7 @@ const AttendedEvents = () => {
         ) : (
           <Box>
             <Text fontWeight="500" fontSize="32px" textAlign="center">
-              🎉 Way to go Beaver Brigage!!! 🎉
+              🎉 Way to go Beaver Brigade!!! 🎉
             </Text>
             <Box
               borderRadius="10.21px"
