@@ -90,7 +90,7 @@ const AttendedEvents = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isSignedIn, user, isLoaded, startDateTime, endDateTime]);
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
