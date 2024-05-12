@@ -3,7 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import "./styles/globals.css";
 import Providers from "./Providers";
 import NavbarParent from "@components/NavbarParents";
-import { Lato } from "next/font/google";
+import { Lato, Montserrat } from "next/font/google";
 import { redirect, useRouter } from "next/navigation";
 import { getUserDbData } from "./lib/authentication";
 
@@ -13,11 +13,8 @@ export const metadata: Metadata = {
   description: "Created with love.",
 };
 
-const lato = Lato({
-  weight: '400',
-  subsets: ['latin'],
-})
 
+const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
 
 export default function RootLayout({
   children,
@@ -27,7 +24,7 @@ export default function RootLayout({
     
   return (
       <html lang="en">
-        <body  className={lato.className}>
+        <body  className={montserrat.className}>
           <Providers>
               <NavbarParent/>
               {children}

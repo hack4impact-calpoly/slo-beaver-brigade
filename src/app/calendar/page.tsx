@@ -14,6 +14,7 @@ import {
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 import { getSelectedEvents } from "app/actions/eventsactions";
+import { EmailRSSComponent } from "app/components/EmailComponent";
 
 export default function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -84,7 +85,9 @@ export default function Page() {
               </Checkbox>
             </Stack>
           </CheckboxGroup>
-          <a href="/api/events/calendar" target="_blank">Add to calendar!</a>
+          <div className="ml-[40px] mt-10">
+            <EmailRSSComponent calendarURL="/api/events/calendar"/>
+        </div>
         </Box>
         <Box flex="2" margin="10" padding="0">
           <Calendar events={calEvent} admin={false} dbevents={events} />

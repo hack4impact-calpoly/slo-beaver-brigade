@@ -5,6 +5,11 @@ import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
+    tls: {
+        ciphers: "SSLv3",
+    },
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASS,
@@ -22,12 +27,14 @@ async function send(emails: string[], event: IEvent) {
     const encodedDescription = encodeURIComponent(event.description);
     const encodedLocation = encodeURIComponent(event.location);
 
-    const result = await transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to: emails,
-        subject: `${event.eventName} Signup Confirmation`,
-        html: `
-  <!DOCTYPE html>
+    const result = await new Promise((resolve, reject) => {
+        transporter.sendMail(
+            {
+                from: process.env.GMAIL_USER,
+                to: emails,
+                subject: `${event.eventName} Signup Confirmation`,
+                html: `
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -57,9 +64,18 @@ async function send(emails: string[], event: IEvent) {
 </html>
 
     `,
+            },
+            (err, info) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    console.log("sent: ", info);
+                    resolve(info);
+                }
+            }
+        );
     });
-
-    console.log(JSON.stringify(result, null, 4));
 }
 
 export async function POST(
@@ -75,8 +91,12 @@ export async function POST(
     try {
         const event = await Event.findById(params.eventId).orFail();
         send([email], event);
+        console.log("sent email.");
         return NextResponse.json("Sent email.");
     } catch (err) {
         return NextResponse.json("Failed to get event.", { status: 500 });
     }
+}
+function reject(err: Error) {
+    throw new Error("Function not implemented.");
 }
