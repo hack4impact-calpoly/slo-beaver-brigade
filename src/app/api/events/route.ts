@@ -2,13 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
 import { revalidateTag } from "next/cache";
+import { SortOrder } from "mongoose";
 
-export async function GET() {
+export async function GET(request: Request) {
     await connectDB(); // connect to db
+    const { searchParams } = new URL(request.url);
+    const sort_order = searchParams.get("sort_order");
+    let sort: SortOrder = -1;
+
+    if (sort_order && sort_order == "asc") {
+        sort = 1;
+    }
 
     try {
         // query for all events and sort by date
-        const events = await Event.find().sort({ date: -1 }).orFail();
+        const events = await Event.find().sort({ startTime: sort }).orFail();
         // returns all events in json format or errors
         return NextResponse.json(events, { status: 200 });
     } catch (err) {
@@ -37,17 +45,17 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     await connectDB();
     console.log("Connected to Db");
-    revalidateTag("events");
 
     const event: IEvent = await req.json();
 
     // create new event or return error
     try {
-        const newEvent = new Event({ ...event, eventType: "Volunteer" });
-        newEvent.volunteerEvent = newEvent.eventType === "Volunteer";
+        const newEvent = new Event(event);
+        newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
         console.log("New Event Data:", newEvent); // Add this line
 
         await newEvent.save();
+        revalidateTag("events");
         return NextResponse.json("Event added successfully: " + newEvent, {
             status: 200,
         });

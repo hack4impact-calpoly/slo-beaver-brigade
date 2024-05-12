@@ -18,6 +18,9 @@ import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration } from '../../lib/dates';
 import { calcHours, calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import { getUserDbData } from 'app/lib/authentication';
+import { IUser } from '@database/userSchema';
+
 
 const AttendedEvents = () => {
   //states
@@ -30,6 +33,8 @@ const AttendedEvents = () => {
     new Date(new Date().setMonth(new Date().getMonth() - 1)).toString()
   );
   const [endDateTime, setEndDateTime] = useState(new Date().toString());
+  const [userFirstName, setUserFirstName] = useState('');
+
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
@@ -56,7 +61,19 @@ const AttendedEvents = () => {
 
     // Update state with events the user has signed up for
     setUserEvents(pastEvents);
+
+    if (isSignedIn) {
+      let userId = '';
+      let userFirstName = '';
+      const userdata = await getUserDbData();
+      if (userdata != null) {
+        const user = JSON.parse(userdata) as IUser;
+        userId = user._id;
+        userFirstName = user.firstName;
+      }
+      setUserFirstName(userFirstName)
   }
+}
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
@@ -73,7 +90,7 @@ const AttendedEvents = () => {
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isSignedIn, user, isLoaded, startDateTime, endDateTime]);
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
@@ -86,6 +103,7 @@ const AttendedEvents = () => {
 
   return (
     <div className={style.mainContainer}>
+      
       <Box
         display="flex"
         justifyContent="center"
@@ -93,10 +111,17 @@ const AttendedEvents = () => {
         flexDirection="column"
         marginLeft="20px"
         marginRight="20px"
-      >
+      > 
+      { Math.floor(totalTime / 60) === 0 && Math.floor(totalTime % 60) == 0 ? (
         <Text fontWeight="500" fontSize="32px" textAlign="center">
-          Congrats SLO Beaver Brigade You’ve done great this month! 🎉
+        Schedule volunteering events to track hours!
         </Text>
+      ):(
+      <Text fontWeight="500" fontSize="32px" textAlign="center">
+      🎉 The beavers appreciate your amazing work, {userFirstName}  🎉
+      </Text>
+      )
+      }
         <Box
           borderRadius="10.21px"
           m="4"
@@ -115,7 +140,7 @@ const AttendedEvents = () => {
             justifyContent="center"
             textAlign="center"
           >
-            Total Volunteer Hours Accumulated
+            Volunteer Hours
           </Text>
           <Text
             fontWeight="600"
@@ -127,6 +152,8 @@ const AttendedEvents = () => {
             {Math.floor(totalTime / 60)} h {totalTime % 60} min
           </Text>
         </Box>
+  
+
         <Box>
           <Text display="inline">From:</Text>
           <Input

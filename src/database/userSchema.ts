@@ -56,12 +56,14 @@ export type IUser = {
 //currently there is no schema for them so I am leaving them as null for now
 //can groupId just be a string and digitalWaiver be a boolean?
 const UserSchema = new Schema({
+    _id: { type: Schema.Types.ObjectId, required: false },
     email: { type: String, required: true, unique: true },
-    phoneNumber: { type: String, required: true },
+    phoneNumber: { type: String, required: false },
+    zipcode: { type: String, required: false },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    age: { type: Number, required: true },
-    gender: { type: String, required: true },
+    age: { type: Number, required: false },
+    gender: { type: String, required: false },
     role: {
         type: String,
         enum: Role,
@@ -71,6 +73,7 @@ const UserSchema = new Schema({
     eventsRegistered: {
         type: [
             {
+                _id: false,
                 eventId: { type: Schema.Types.ObjectId, required: true },
                 digitalWaiver: { type: Schema.Types.ObjectId, required: false },
             },
@@ -81,6 +84,7 @@ const UserSchema = new Schema({
     eventsAttended: {
         type: [
             {
+                _id: false,
                 eventId: { type: Schema.Types.ObjectId, required: true },
                 startTime: { type: Date, required: false, default: Date.now },
                 endTime: { type: Date, required: false, default: Date.now },

@@ -4,13 +4,13 @@ import {
   Box,
   Divider,
   Heading,
-  Select,
   Stack,
   Text,
   Flex,
   Button,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 import Slider from "react-slick";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
@@ -25,6 +25,7 @@ import { getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
+import { EmailRSSComponent } from "./EmailComponent";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -64,10 +65,12 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
 
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
+  const [eventTypes, setEventTypes] = useState<string[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [showEventList, setShowEventList] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [selectedEventType, setSelectedEventType] = useState('');
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({
@@ -117,43 +120,49 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
     return `${formattedStart} - ${formattedEnd}`;
   };
 
+  useEffect(() => {
+    if (userData) {
+      console.log("useData:" + userData)
+      const currentDate = new Date();
+      // Filter events based on user registration and selected event type
+      const filteredEvents = events.filter(event =>
+        new Date(event.endTime) >= currentDate &&
+        (!selectedEventType || event.eventType === selectedEventType) // Filter by event type if selected
+      );
+      const userSignedUpEvents = filteredEvents.filter(
+        event => event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+      );
+      const eventsUserHasntRegistered = filteredEvents.filter(
+        event => !event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+      );
+      setUserEvents(userSignedUpEvents);
+      setUnregisteredEvents(eventsUserHasntRegistered);
+    } else {
+      const currentDate = new Date();
+      const upcomingEvents = events.filter(
+        event => new Date(event.endTime) > currentDate &&
+        (!selectedEventType || event.eventType === selectedEventType) // Filter by event type if selected
+      );
+      setUserEvents([]);
+      setUnregisteredEvents(upcomingEvents);
+    }
+    setEventsLoading(false);
+  }, [events, userData, selectedEventType]); // Include selectedEventType in the dependency array
+  
 
   useEffect(() => {
-    if (userData){
-          
-          const currentDate = new Date();
-          console.log(events);
-          // Filter events where the current user is an attendee
-          const userSignedUpEvents = events.filter(
-            (event: any) =>
-              event.registeredIds.includes(userData?._id) &&
-              new Date(event.startTime) >= currentDate
-          );
-          // Filter events where the current user is not an attendee
-          const eventsUserHasntRegistered = events.filter(
-            (event: any) =>
-              !event.registeredIds.includes(userData?._id) &&
-              new Date(event.startTime) >= currentDate
-          );
-          // Update state with events the user has signed up for
-          setUserEvents(userSignedUpEvents);
-          setUnregisteredEvents(eventsUserHasntRegistered);
-        } else {
-          // Reset the events when user signs out
-       
-          const currentDate = new Date();
-          // Getting all upcoming events
-          const userEvents = events.filter(
-            (event: any) => new Date(event.startTime) > currentDate
-          );
-          console.log(userEvents);
-          setUserEvents([]);
-          setUnregisteredEvents(userEvents);
-        }
+    const fetchEventTypes = async () => {
+      try {
+        const response = await fetch("/api/events/bytype/eventType");
+        const data: string[] = await response.json();
+        setEventTypes(data);
+      } catch (error) {
+        console.error("Error fetching event types:", error);
+      }
+    };
 
-        setEventsLoading(false)
-  }, [events, userData])
-  
+    fetchEventTypes();
+  }, []);
 
   useEffect(() => {
     // Handler to call on window resize
@@ -221,6 +230,12 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
         setShowModal={setShowEventList}
         showModal={showEventList}
       ></EventListRegister>
+    
+     {userData && 
+     <div className="px-[3rem] pt-3">
+              <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
+    </div>
+              /*<a href=>Add to calendar!</a>*/}
       <div css={sliderStyles}>
         <Box p="4">
           <Stack spacing={2} px="10" mb={6}>
@@ -229,13 +244,6 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 Your Upcoming Events
               </Text>
               <Heading as="h2" fontSize="xl">
-                <Button
-                  onClick={() => setShowEventList(true)}
-                  colorScheme="yellow"
-                  fontSize={eventDetailSize}
-                >
-                  Book Event
-                </Button>
               </Heading>
             </Flex>
             <Divider
@@ -265,15 +273,15 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                   fontWeight="bold"
                   color="black"
                   textAlign="center"
-                  marginRight={"3%"}
+                  mt="60px"
                 >
-                  Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
+                  Sign in to see all your upcoming events！
                 </Text>
                 <Link href="/login">
                   <Button
                     width="200px"
                     colorScheme="yellow"
-                    variant="outline"
+                    
                     mt="5"
                   >
                     Sign in
@@ -288,7 +296,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 textAlign="center"
                 mt={5}
               >
-                Register more events below！ ʕง•ᴥ•ʔง
+                Check out the events below！
               </Text>
             ) : null}
           </Stack>
@@ -418,20 +426,20 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 mb={3}
                 mt={5}
               >
-                Find More Volunteer Opportunities
+                Find More Opportunities
               </Text>
+         
               <Select
-                defaultValue="event-type"
-                size="md"
-                ml={2}
-                w="fit-content"
-              >
-                <option value="event-type" disabled>
-                  Event Type
-                </option>
-                <option value="watery-walk">Watery Walk</option>
-                <option value="volunteer">Volunteer</option>
-              </Select>
+                id="event-type"
+                placeholder="Select Event Types"
+                options={eventTypes.map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
+                className={style.selectContainer}
+                onChange={(selectedOption) => setSelectedEventType(selectedOption ? selectedOption.value : '')}
+                isClearable
+              />
             </Flex>
             <Divider
               size="sm"
@@ -474,7 +482,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
             style={{
                           //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                           background: backgroundImage,
-                          backgroundSize: "100% auto",
+                          backgroundSize: "cover",
                           backgroundRepeat: "no-repeat",
                             backgroundPosition: "left 40%"
                         }}
@@ -554,7 +562,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                             fontSize={eventDetailSize}
                             mt={14}
                         >
-                            Register Event
+                            Register
                         </Button>
                       </Link>
                     </Heading>

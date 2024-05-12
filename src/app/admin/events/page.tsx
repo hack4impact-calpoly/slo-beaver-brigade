@@ -8,6 +8,12 @@ import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { getEvents } from "app/actions/eventsactions";
 import { IEvent } from "@database/eventSchema";
+import {
+  Checkbox,
+  CheckboxGroup,
+  Stack,
+} from "@chakra-ui/react";
+import { getAllImagesS3 } from "app/actions/imageactions";
 
 // interface IEvent {
 //   _id: string;
@@ -32,6 +38,7 @@ const EventPreview = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
+  const [wheelchairAccessible, setWheelchairAccessible] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
   const [showFutureEvents, setShowFutureEvents] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -59,7 +66,6 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-
         const res = await getEvents(-1, -1)
         if (!res){
             console.log("Error getting events.")
@@ -108,6 +114,9 @@ const EventPreview = () => {
   const filteredEvents = events
     .filter((event) =>
       spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
+    )
+    .filter((event) =>
+      wheelchairAccessible ? event.wheelchairAccessible : true
     )
     .filter((event) => {
       const eventDate = new Date(event.startTime);
@@ -163,32 +172,27 @@ const EventPreview = () => {
           <option value="earliest">Earliest First</option>
           <option value="latest">Latest First</option>
         </select>
-        <div className={style.checkBoxes}>
-          <div>
-            <input
-              type="checkbox"
-              checked={showFutureEvents}
-              onChange={() => setShowFutureEvents(!showFutureEvents)}
-            />{" "}
-            Future Events
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              checked={showPastEvents}
-              onChange={() => setShowPastEvents(!showPastEvents)}
-            />{" "}
-            Past Events
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              checked={spanishSpeakingOnly}
-              onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}
-            />{" "}
-            Spanish
-          </div>
-        </div>
+        <CheckboxGroup colorScheme="green" defaultValue={[]}>
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="3">
+              <Checkbox value="watery_walk" colorScheme="teal"
+              onChange={() => setShowFutureEvents(!showFutureEvents)}>
+                Future Events
+              </Checkbox>
+              <Checkbox value="volunteer" colorScheme="yellow"
+              onChange={() => setShowPastEvents(!showPastEvents)}>
+                Past Events
+              </Checkbox>
+              <Checkbox value="special_events" colorScheme="green"
+              onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}>
+                Spanish Speaking
+              </Checkbox>
+              <Checkbox value="wheelchair_accessible" colorScheme="blue"
+              onChange={() => setWheelchairAccessible(!wheelchairAccessible)}>
+                Wheelchair Accessible
+              </Checkbox>
+            </Stack>
+          </CheckboxGroup>
+        
       </aside>
       {loading ? (
         <div className={style.cardContainer}>Loading events...</div>

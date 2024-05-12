@@ -6,6 +6,12 @@
     background-position: center;
     padding: 20px;
 }
+
+.selectContainer {
+    position: relative; /* Make sure container has position to anchor z-index */
+    z-index: 10; /* Higher than any underlying elements */
+}
+
 @media (max-width: 750px) {
     .eventBox {
         background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/event_beaver.png");

@@ -24,13 +24,26 @@ const LoadingEvents = () => {
 }
 
 export default async function Page(){
-    const events = await getAllEvents()
+    let events = []
+    const url = new URL(getBaseUrl() + "/api/events")
+    url.searchParams.set("sort_order", "asc")
+    const res = await fetch( url, {
+        cache: "force-cache",
+        next: {
+            tags: ['events']
+        }
+    })
+    if (res.ok){
+        events = await res.json()
+    }
 
     const userRes = await getUserDbData()
     let userData = null
     if (userRes){
         userData = JSON.parse(userRes)
     }
+    console.log(userData)
+
 
     return (
         <Suspense fallback={<LoadingEvents />}>

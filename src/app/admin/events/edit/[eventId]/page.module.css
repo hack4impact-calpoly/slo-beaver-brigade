@@ -1,76 +1,76 @@
-.eventPage{
-    padding: 3vh 5vw 10vh 5vw
+.eventPage {
+    padding: 3vh 5vw 10vh 5vw;
 }
 
-.header{
+.header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 2vh;
 }
-.eventTitle{
-    font-family: 'Lato';
+.eventTitle {
+    font-family: "Lato";
     font-size: 23px;
 }
 
-.deleteButton{
+.deleteButton {
     padding: 5px 30px 5px 30px;
-    border: 2px solid #D93636;
-    color: #D93636;
+    border: 2px solid #d93636;
+    color: #d93636;
     border-radius: 7px;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-weight: bold;
-
 }
 
-.deleteButton:hover{
+.deleteButton:hover {
     background-color: #f2b3b3;
     color: white;
 }
 
-.temp{
+.temp {
     width: 100%;
     display: flex;
 }
 
-.leftColumn{
+.leftColumn {
     height: 100%;
     margin-bottom: 5%;
 }
 
-.rightColumn{
+.rightColumn {
     height: 100%;
-    margin-bottom: 5%
+    margin-bottom: 5%;
 }
 
-.imageContainer{
+.imageContainer {
     width: 100%;
     height: 35vh;
     overflow: hidden;
     border-radius: 10px;
     margin-bottom: 5%;
+    background-size: cover;
 }
 
-.imageContainer img{
+.imageContainer img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.eventInformation{
-    background-color: #FBF9F9;
+.eventInformation {
+    background-color: #fbf9f9;
     width: 100%;
     height: 100%;
     border-radius: 10px;
     padding-bottom: 4%;
 }
 
-.visitorHeading{
+.visitorHeading {
     background-color: #337774;
     color: white;
     width: 100%;
     height: 45px;
     border-radius: 10px 10px 0px 0px;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-weight: bold;
     font-size: 23px;
     padding-left: 4%;
@@ -82,70 +82,70 @@
     text-overflow: ellipsis;
 }
 
-.emailAllVisitors{
+.emailAllVisitors {
     width: 100%;
     text-align: right;
     background-color: none;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-size: 17px;
     margin-bottom: 2%;
 }
 
-.emailAllVisitors:hover{
+.emailAllVisitors:hover {
     text-decoration-line: underline;
 }
 
-.topBlock{
-    display: flex
+.topBlock {
+    display: flex;
 }
 
-.leftBlock{
+.leftBlock {
     width: 60%;
     padding-left: 4%;
 }
 
-.rightBlock{
+.rightBlock {
     width: 40%;
     padding-left: 5%;
 }
 
-.eventField{
-    font-family: 'Lato';
+.eventField {
+    font-family: "Lato";
     font-weight: bold;
     text-align: left;
     font-size: 16px;
-    margin: 1.5vh 0vw 1.5vh 0vw
-
+    margin: 1.5vh 0vw 1.5vh 0vw;
 }
 
-.eventEntry{
-    font-family: 'Lato';
+.eventEntry {
+    font-family: "Lato";
     text-align: left;
     font-size: 16px;
 }
 
-.bottomBlock{
+.bottomBlock {
     width: 100%;
     padding-left: 4%;
-    padding-right: 4%;}
+    padding-right: 4%;
+}
 
-.visitorCount{
-    font-family: 'Lato';
+.visitorCount {
+    font-family: "Lato";
     font-weight: normal;
     margin-left: 1.5%;
 }
 
-.nameColumn{
+.nameColumn {
     padding: 1.5% 3% 1.5% 3%;
     text-align: left;
     width: 30%;
     font-size: 15px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space:nowrap;
+    white-space: nowrap;
 }
 
-.emailColumn{
+.emailColumn {
     padding: 1.5% 3% 1.5% 3%;
     text-align: left;
     width: 60%;
@@ -153,10 +153,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
 }
 
-.detailsColumn{
+.detailsColumn {
     padding: 1.5% 0% 1.5% 3%;
     text-align: left;
     width: 20%;
@@ -167,35 +166,35 @@
     margin-right: 3%;
 }
 
-.detailsColumn:hover{
+.detailsColumn:hover {
     text-decoration-line: underline;
 }
 
-.visitorTable{
+.visitorTable {
     width: 100%;
     table-layout: fixed;
 }
 
-.visitorInfoSmallHeader{
+.visitorInfoSmallHeader {
     background-color: #337774;
     color: white;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-weight: bold;
     font-size: 15px;
     border-radius: 10px;
     text-align: left;
     padding: 2%;
-    margin: 7% 0% 3% 0%;;
+    margin: 7% 0% 3% 0%;
 }
 
-.fieldInfo{
+.fieldInfo {
     text-align: left;
     margin: 3% 5% 3% 5%;
     font-size: 14px;
-    font-family: 'Lato'
+    font-family: "Lato";
 }
 
-.editEvent{
+.editEvent {
     width: 45%;
     height: 100%;
     font-size: 17px;
@@ -206,33 +205,32 @@
     justify-content: flex-end;
 }
 
-.editEvent:hover{
+.editEvent:hover {
     text-decoration-line: underline;
 }
 
-.originalEditText{
+.originalEditText {
     margin: 5px;
 }
 
-.editButton{
+.editButton {
     position: relative;
     margin: 0.25% 1.5% 0.5% 0.5%;
     width: 23px;
-
 }
 
-.confirmDeletion{
+.confirmDeletion {
     width: 30%;
     height: 35%;
     padding: 70px;
     border-radius: 15px;
     background-color: white;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-weight: bold;
     font-size: 25px;
 }
 
-.cancelOrDelete{
+.cancelOrDelete {
     display: flex;
     width: 100%;
     margin-top: 5%;
@@ -240,20 +238,18 @@
     justify-content: space-between;
 }
 
-.cancelButton{
+.cancelButton {
     padding: 5px 30px 5px 30px;
     border: 2px solid #989898;
     color: #989898;
     background-color: white;
     border-radius: 7px;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-weight: bold;
-
 }
 
-.cancelButton:hover{
+.cancelButton:hover {
     background-color: #ffffff;
-    color: #4a4848;;
+    color: #4a4848;
     border: 2px solid #4a4848;
 }
-
