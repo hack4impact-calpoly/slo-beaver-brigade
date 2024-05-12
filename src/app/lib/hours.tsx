@@ -32,16 +32,17 @@ export function filterUserSignedUpEvents(
   events: IEvent[],
   userId: string,
   startDateTime: string,
-  endDateTime: string
+  endDateTime: string,
+  searchTerm: string
 ) {
   const filteredEvents = events.filter(
     (event: any) =>
       event.attendeeIds.includes(userId) &&
-      event.eventType == 'Volunteer' &&
+      event.volunteerEvent &&
       new Date(event.startTime) >= new Date(startDateTime) &&
-      new Date(event.endTime) <= new Date(endDateTime)
-  );
-  console.log(events, filteredEvents);
+      new Date(event.endTime.substring(0, 10)) <= new Date(endDateTime) &&
+      event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+  ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
 }
 
@@ -49,13 +50,14 @@ export function filterUserSignedUpEvents(
 export function filterPastEvents(
   events: IEvent[],
   startDateTime: string,
-  endDateTime: string
+  endDateTime: string,
+  searchTerm: string
 ) {
   const filteredEvents = events.filter((event: any) => 
-    (event.eventType == 'Volunteer') &&
-      (new Date(event.endTime) <= new Date(endDateTime)) &&
-      (new Date(event.startTime) >= new Date(startDateTime))
-  );
-  console.log(filteredEvents);
+    event.volunteerEvent &&
+    (new Date(event.startTime) >= new Date(startDateTime)) &&
+    (new Date(event.endTime.substring(0, 10)) <= new Date(endDateTime)) &&
+    event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+  ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
 }
