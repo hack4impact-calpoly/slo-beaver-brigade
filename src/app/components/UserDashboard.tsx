@@ -53,6 +53,22 @@ const EventPlaceholder = () => {
  );
 };
 
+const UnregisteredEventPlaceholder = () => {
+  return (
+    <Box
+      borderWidth="1px"
+      p="4"
+      mb="4"
+      h="64"
+      mx="4"
+      textAlign="left"
+      opacity="0" // Invisible but maintains layout; adjust as needed
+    >
+      {/* Placeholder content if desired */}
+    </Box>
+  );
+ };
+
 
 export const UserDashboard = ({events, userData}: {events: IEvent[], userData: IUser | null}) => {
 
@@ -202,7 +218,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
 
  // settings for slider
  const settings = {
-   dots: userEvents.length > 1,
+   dots: userEvents.length > 3,
    infinite: userEvents.length > 3,
    speed: 1000,
    slidesToShow: 3,
@@ -221,6 +237,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
          slidesToShow: 2, // Show 2 slides for widths of 1024px or less
          slidesToScroll: 2,
          infinite: userEvents.length > 2,
+         dots: userEvents.length > 2,
        },
      },
      {
@@ -229,6 +246,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
          slidesToShow: 1, // Only show 1 slide for widths of 600px or less
          slidesToScroll: 1,
          infinite: userEvents.length > 1,
+         dots: userEvents.length > 1
          
        },
      },
@@ -243,8 +261,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
  };
 
  const unregisteredEventSettings = {
-  dots: unregisteredEvents.length > 1,
-  infinite: unregisteredEvents.length > 3,
+  dots: unregisteredEvents.length > 2,
+  infinite: unregisteredEvents.length > 2,
   speed: 1000,
   slidesToShow: 2,
   slidesToScroll: 2,
@@ -254,6 +272,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
       settings: {
         slidesToShow: 2, // Show 3 slides for widths of 1280px or less
         slidesToScroll: 2,
+        dots: unregisteredEvents.length > 2,
+
       },
     },
     {
@@ -262,6 +282,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
         slidesToShow: 2, // Show 2 slides for widths of 1024px or less
         slidesToScroll: 2,
         infinite: unregisteredEvents.length > 2,
+        dots: unregisteredEvents.length > 2,
       },
     },
     {
@@ -270,6 +291,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
         slidesToShow: 1, // Only show 1 slide for widths of 600px or less
         slidesToScroll: 1,
         infinite: unregisteredEvents.length > 1,
+        dots: unregisteredEvents.length > 1,
+
       },
     },
   ],
@@ -633,24 +656,24 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                           </Box>
                           )})
                ) : (
-                 <EventPlaceholder />
+                 <UnregisteredEventPlaceholder />
                )}
-                {userEvents.length < 3 &&
+                {unregisteredEvents.length < 2 &&
                   (window.innerWidth <= 600
                     ? Array.from({ length: 0 }, (_, i) => (
-                        <EventPlaceholder key={`placeholder-${i}`} />
+                        <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
                       ))
                     : window.innerWidth <= 1024
                       ? Array.from(
-                          { length: 3 - (userEvents.length === 2 ? 3 : 2) },
+                          { length: 2 - (unregisteredEvents.length === 1 ? 1 : 0) },
                           (_, i) => (
-                            <EventPlaceholder key={`placeholder-${i}`} />
+                            <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
                           )
                         )
                       : Array.from(
-                          { length: 3 - userEvents.length },
+                          { length: 2 - unregisteredEvents.length },
                           (_, i) => (
-                            <EventPlaceholder key={`placeholder-${i}`} />
+                            <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
                           )
                         ))}
               </Slider>
