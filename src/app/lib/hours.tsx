@@ -54,10 +54,10 @@ export function filterPastEvents(
   searchTerm: string
 ) {
   const filteredEvents = events.filter((event: any) => 
-    (event.volunteerEvent) &&
-      (new Date(event.endTime) <= new Date(endDateTime)) &&
-      (new Date(event.startTime) >= new Date(startDateTime)) &&
-      event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+    event.volunteerEvent &&
+    (new Date(event.startTime) >= new Date(startDateTime)) &&
+    (new Date(event.endTime) <= new Date(endDateTime)) &&
+    event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
   ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
 }
