@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { addToRegistered } from "@app/actions/useractions";
 import { getUserDbData } from "app/lib/authentication";
 import { createGuestFromEmail, getUserFromEmail } from "app/actions/userapi";
+import { useRouter } from "next/navigation";
 
 type IParams = {
   params: {
@@ -43,6 +44,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const [emailChecked, setEmailChecked] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement | null>(null);
+  const router = useRouter()
 
   // checks if user is signed in
   useEffect(() => {
@@ -119,8 +121,15 @@ export default function Waiver({ params: { eventId } }: IParams) {
               const res = await addToRegistered(userData._id, eventId, waiverId)
               if (res) {
                 console.log('added')
+                const emailBody = {"email": userData.email}
+                const confirmRes = await fetch("/api/events/confirmation/" + eventId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(emailBody)
+                })
+                console.log(confirmRes.status)
                 //on success, return to the home page
-                window.location.href = '/';
+                router.push("/dashboard")
                 
               } else {
                   console.error("Error adding info to user");
@@ -187,8 +196,14 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 const res = await addToRegistered(user._id, eventId, waiverId)
                 if (res) {
                     console.log('added')
+                    const emailBody = {"email": user.email}
+                    await fetch("/api/confirmation/" + eventId, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(emailBody)
+                    })
                     //on success, return to the home page
-                    window.location.href = '/dashboard';
+                    router.push("/dashboard")
                     
                 } else {
                     console.error("Error adding info to user");

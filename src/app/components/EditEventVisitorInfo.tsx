@@ -42,6 +42,19 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       recieveNewsletter: false
     },
   ]);
+  const emailLink = () => {
+    const emails = visitorData
+      .map((visitor) => visitor.email)
+      .filter((email) => !!email);
+    const subject = encodeURIComponent(eventData.eventName + " Update");
+    return `mailto:${emails.join(",")}?subject=${subject}`;
+  };
+
+  const handleEmailAllVisitors = () => {
+    const mailtoLink = emailLink();
+    console.log(mailtoLink);
+    window.location.href = mailtoLink;
+  };
 
     const [eventData, setEventData] = useState<IEvent>({
         _id: '',
@@ -118,7 +131,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 <div className = {styles.visitorCount}>
                     ({visitorData.length})
                 </div>
-                <button className={styles.emailAllVisitors}>Email All Visitors</button>
+                <button onClick={handleEmailAllVisitors} className={styles.emailAllVisitors}>Email All Visitors</button>
             </div>
             <table className = {styles.visitorTable}>
                 <tbody>

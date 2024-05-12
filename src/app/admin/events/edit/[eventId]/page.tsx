@@ -98,20 +98,6 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
     fetchVisitorData();
   }, [eventData]);
 
-  const emailLink = () => {
-    const emails = visitorData
-      .map((visitor) => visitor.email)
-      .filter((email) => !!email);
-    const subject = encodeURIComponent(eventData.eventName + " Update");
-    return `mailto:${emails.join(",")}?subject=${subject}`;
-  };
-
-  const handleEmailAllVisitors = () => {
-    const mailtoLink = emailLink();
-    console.log(mailtoLink);
-    window.location.href = mailtoLink;
-  };
-
   return (
     <Box className={styles.eventPage}>
       <EditEventHeader eventId={eventId} />
@@ -121,14 +107,9 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
-          <Box style={{background: fallbackBackgroundImage(eventData.eventImage, "/beaver-eventcard.jpeg"), backgroundSize: "cover"}} className={styles.imageContainer}>
+          <Box className={styles.imageContainer}>
+            <img src={eventData.eventImage || "/beaver-eventcard.jpeg"} alt="cover"></img>
           </Box>
-          <button
-            onClick={handleEmailAllVisitors}
-            className={styles.emailAllVisitors}
-          >
-            Email All Visitors
-          </button>
           <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>

@@ -25,6 +25,7 @@ import { getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
+import { EmailRSSComponent } from "./EmailComponent";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -229,6 +230,12 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
         setShowModal={setShowEventList}
         showModal={showEventList}
       ></EventListRegister>
+    
+     {userData && 
+     <div className="px-[3rem] pt-3">
+              <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
+    </div>
+              /*<a href=>Add to calendar!</a>*/}
       <div css={sliderStyles}>
         <Box p="4">
           <Stack spacing={2} px="10" mb={6}>
@@ -237,13 +244,6 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 Your Upcoming Events
               </Text>
               <Heading as="h2" fontSize="xl">
-                <Button
-                  onClick={() => setShowEventList(true)}
-                  colorScheme="yellow"
-                  fontSize={eventDetailSize}
-                >
-                  Book Event
-                </Button>
               </Heading>
             </Flex>
             <Divider
@@ -273,15 +273,15 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                   fontWeight="bold"
                   color="black"
                   textAlign="center"
-                  marginRight={"3%"}
+                  mt="60px"
                 >
-                  Sign in/sign up to see all your upcoming events！ ʕ•ᴥ•ʔ
+                  Sign in to see all your upcoming events！
                 </Text>
                 <Link href="/login">
                   <Button
                     width="200px"
                     colorScheme="yellow"
-                    variant="outline"
+                    
                     mt="5"
                   >
                     Sign in
@@ -296,7 +296,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 textAlign="center"
                 mt={5}
               >
-                Register more events below！ ʕง•ᴥ•ʔง
+                Check out the events below！
               </Text>
             ) : null}
           </Stack>
@@ -426,8 +426,9 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                 mb={3}
                 mt={5}
               >
-                Find More Volunteer Opportunities
+                Find More Opportunities
               </Text>
+         
               <Select
                 id="event-type"
                 placeholder="Select Event Types"
@@ -481,7 +482,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
             style={{
                           //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                           background: backgroundImage,
-                          backgroundSize: "100% auto",
+                          backgroundSize: "cover",
                           backgroundRepeat: "no-repeat",
                             backgroundPosition: "left 40%"
                         }}
@@ -561,7 +562,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                             fontSize={eventDetailSize}
                             mt={14}
                         >
-                            Register Event
+                            Register
                         </Button>
                       </Link>
                     </Heading>
