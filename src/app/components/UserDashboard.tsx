@@ -5,12 +5,12 @@ import {
   Divider,
   Heading,
   Stack,
+  Select,
   Text,
   Flex,
   Button,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { Select } from "chakra-react-select";
 import Slider from "react-slick";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
