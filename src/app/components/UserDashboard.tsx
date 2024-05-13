@@ -541,7 +541,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                     zIndex={2}
                   >
                     <Heading as="h2" fontSize="xl">
-                        <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
+                        <Link href={"/" + event._id + "/digitalWaiver/1"}>
                         <Button
                             colorScheme="yellow"
                             fontSize={eventDetailSize}

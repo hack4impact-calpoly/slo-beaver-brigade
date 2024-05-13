@@ -108,7 +108,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   });
 
   const backgroundImage = fallbackBackgroundImage(eventDetails.eventImage)
-  const url = `/events/${eventDetails._id}/digitalWaiver/1`
+  const url = `/${eventDetails._id}/digitalWaiver/1`
   return (
   <>
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>

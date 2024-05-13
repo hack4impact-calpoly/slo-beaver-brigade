@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -13,20 +13,24 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useSignIn } from '@clerk/nextjs';
-import { useRouter, useSearchParams} from 'next/navigation';
+import { useSignIn } from "@clerk/nextjs";
+import { redirect, useRouter, RedirectType, useSearchParams } from "next/navigation";
+import { revalidatePath } from "next/cache"; // Import revalidatePath
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const { isLoaded, signIn, setActive } = useSignIn();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect_url = searchParams.get('redirect_url');
+  const redirect_url = searchParams.get("redirect_url");
   const [submitAttempted, setSubmitAttempted] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('Password is required');
-  const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required');
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState(
+    "Password is required"
+  );
+  const [emailErrorMessage, setEmailErrorMessage] =
+    useState("Email is required");
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
 
@@ -35,8 +39,8 @@ export default function Login() {
     setSubmitAttempted(true);
     setEmailError(false);
     setPasswordError(false);
-    setEmailErrorMessage('Email is required');
-    setPasswordErrorMessage('Password is required');
+    setEmailErrorMessage("Email is required");
+    setPasswordErrorMessage("Password is required");
 
     if (!isLoaded) {
       return;
@@ -47,39 +51,44 @@ export default function Login() {
     }
 
     try {
-      const completeSignIn = await signIn.create({identifier: email, strategy: "password", password });
-      if (completeSignIn.status !== 'complete') {
+      const completeSignIn = await signIn.create({
+        identifier: email,
+        strategy: "password",
+        password,
+      });
+      if (completeSignIn.status !== "complete") {
         // The status can also be `needs_factor_on', 'needs_factor_two', or 'needs_identifier'
         // Please see https://clerk.com/docs/references/react/use-sign-in#result-status for  more information
         console.log(JSON.stringify(completeSignIn, null, 2));
       }
 
-      if (completeSignIn.status === 'complete') {
+      if (completeSignIn.status === "complete") {
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
 
         // Redirect the user to a post sign-in route
-        if (redirect_url){
-            router.push(redirect_url);
-        }
-        else{
-            // Redirect the user to a post sign-in route
-            router.push('/');
+        if (redirect_url) {
+          router.push(redirect_url);
+        } else {
+          // Redirect the user to a post sign-in route
+          window.location.href = "/";
+          router.push("/dashboard");
         }
       }
     } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
-      let error = err.errors[0];
-      if (error.code.includes('password')){
-        setPasswordErrorMessage(error.message);
-        setPasswordError(true);
-      } else {
-        setEmailErrorMessage(error.message);
-        setEmailError(true);
-      }
+      console.log(err);
+      // console.error(JSON.stringify(err, null, 2));
+      // let error = err.errors[0];
+      // if (error.code.includes("password")) {
+      //   setPasswordErrorMessage(error.message);
+      //   setPasswordError(true);
+      // } else {
+      //   setEmailErrorMessage(error.message);
+      //   setEmailError(true);
+      // }
     }
 
-      //setSubmitted(true);
+    //setSubmitted(true);
   };
 
   const handleTogglePassword = () => {
@@ -90,24 +99,29 @@ export default function Login() {
     <>
       <Box p={4} maxWidth="400px" mx="auto">
         <Box mb={6}>
-          <Heading 
-            as="h1" 
-            fontSize="xl" 
-            textAlign="center">
+          <Heading as="h1" fontSize="xl" textAlign="center">
             Log In
           </Heading>
         </Box>
-        <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
+        <FormControl
+          mb={4}
+          isRequired
+          isInvalid={emailError || (email === "" && submitAttempted)}
+        >
           <FormLabel>Email</FormLabel>
-          <Input 
-            type="text" 
-            placeholder="Email" 
-            variant="filled" 
+          <Input
+            type="text"
+            placeholder="Email"
+            variant="filled"
             onChange={(e) => setEmail(e.target.value)}
           />
           <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
         </FormControl>
-        <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
+        <FormControl
+          mb={4}
+          isRequired
+          isInvalid={passwordError || (password === "" && submitAttempted)}
+        >
           <FormLabel>Password</FormLabel>
           <Input
             type={showPassword ? "text" : "password"}
@@ -130,20 +144,25 @@ export default function Login() {
           </Button>
 
           <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
-          
-          <ChakraLink href="/forgot-password" fontSize="sm" mt={1} display="block">
+
+          <ChakraLink
+            href="/forgot-password"
+            fontSize="sm"
+            mt={1}
+            display="block"
+          >
             Forgot password?
           </ChakraLink>
         </FormControl>
         <FormControl mb={4}>
-
           <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
-            Log In           
+            Log In
           </Button>
-
         </FormControl>
         <Box textAlign="center">
-        <ChakraLink href="/signup" fontSize="sm">Create new account</ChakraLink>
+          <ChakraLink href="/signup" fontSize="sm">
+            Create new account
+          </ChakraLink>
         </Box>
       </Box>
     </>
