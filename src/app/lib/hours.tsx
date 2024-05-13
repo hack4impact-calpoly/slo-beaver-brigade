@@ -27,6 +27,11 @@ export function eventHours(event: IEvent) {
   return Math.floor(totalTime / 60) + 'h ' + totalTime % 60 + 'min';
 }
 
+export function eventHoursIndividual(event: IEvent){
+ let totalTime = getDuration(event.startTime, event.endTime);
+  return Math.floor(totalTime / 60) + 'h ' + totalTime % 60 + 'min';
+}
+
 // This function takes a list of events and filters out events where the current user isnt an attendee
 export function filterUserSignedUpEvents(
   events: IEvent[],
