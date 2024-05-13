@@ -5,29 +5,38 @@ import { currentUser, useUser } from "@clerk/nextjs";
 import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
-import { getUserDbData } from "app/lib/authentication";
+import { getUserDataFromEmail, getUserDbData } from "app/lib/authentication";
 
 
 
 export default function NavbarParent() {
     const [userData, setUserData] = useState<IUser | null>(null)
-    const {isLoaded, user} = useUser()
+    const {isLoaded,isSignedIn, user} = useUser()
     useEffect(() => {
 
         const fetchUser = async () => {
-        const userRes = await getUserDbData()
+            if (user){
+                await user.reload()
+            }
+        const userRes = await getUserDataFromEmail(user?.emailAddresses[0].emailAddress || "")
             if (userRes){
                 const user = JSON.parse(userRes)
                 console.log(user)
                 setUserData(user)
             }
         }
-        fetchUser()
-    }, [isLoaded])
+        if (isSignedIn){
+            setUserData(null)
+            fetchUser()
+        }
+    }, [isSignedIn])
 
   
-  if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
+  if (!user || !isSignedIn || !userData || !isLoaded) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
+  console.log(
+    'user data', userData
+  )
     if (userData){
         if (userData?.role == "admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
