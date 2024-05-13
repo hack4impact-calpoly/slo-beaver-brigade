@@ -25,14 +25,14 @@ export default function NavbarParent() {
                 setUserData(user)
             }
         }
+        setUserData(null)
         if (isSignedIn){
-            setUserData(null)
             fetchUser()
         }
     }, [isSignedIn, isLoaded])
 
   
-  if (!userData || !isSignedIn) return <Navbar name="Sign In / Log In"></Navbar>;
+  if (!userData && !isSignedIn) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
   console.log(
     'user data', userData, isSignedIn, isLoaded
