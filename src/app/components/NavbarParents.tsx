@@ -29,13 +29,13 @@ export default function NavbarParent() {
             setUserData(null)
             fetchUser()
         }
-    }, [isSignedIn])
+    }, [isSignedIn, isLoaded])
 
   
   if (!userData || !isSignedIn) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
   console.log(
-    'user data', userData
+    'user data', userData, isSignedIn, isLoaded
   )
     if (userData){
         if (userData?.role == "admin"){
