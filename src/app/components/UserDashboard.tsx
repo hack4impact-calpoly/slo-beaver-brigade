@@ -5,12 +5,12 @@ import {
   Divider,
   Heading,
   Stack,
-  Select,
   Text,
   Flex,
   Button,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 import Slider from "react-slick";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
@@ -511,18 +511,16 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
              </Text>
        
              <Select
-               defaultValue="event-type"
-               size="md"
-               ml={2}
-               w="fit-content"
-             >
-               <option value="event-type" disabled>
-                 Event Type
-               </option>
-               <option value="watery-walk">Watery Walk</option>
-               <option value="volunteer">Volunteer</option>
-               <option value="volunteer">Special Events</option>
-         </Select>
+                id='event-type'
+                placeholder='Select Event Types'
+                options={eventTypes.map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
+                className={style.selectContainer}
+                onChange={(selectedOption) => setSelectedEventType(selectedOption ? selectedOption.value : ``)}
+                isClearable
+              />
            </Flex>
            <Divider
              size="sm"
