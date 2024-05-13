@@ -26,42 +26,66 @@ import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
 import { EmailRSSComponent } from "./EmailComponent";
+import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
+
 
 // logic for letting ts know about css prop
 declare module "react" {
-  interface Attributes {
-    css?: any;
-  }
+ interface Attributes {
+   css?: any;
+ }
 }
+
 
 // placeholder to ensure format consistency when there is only 1-2 events
 const EventPlaceholder = () => {
+ return (
+   <Box
+     borderWidth="1px"
+     p="4"
+     mb="4"
+     h="60"
+     textAlign="left"
+     opacity="0" // Invisible but maintains layout; adjust as needed
+   >
+     {/* Placeholder content if desired */}
+   </Box>
+ );
+};
+
+const UnregisteredEventPlaceholder = () => {
   return (
     <Box
       borderWidth="1px"
       p="4"
       mb="4"
-      h="60"
+      h="64"
+      mx="4"
       textAlign="left"
       opacity="0" // Invisible but maintains layout; adjust as needed
     >
       {/* Placeholder content if desired */}
     </Box>
   );
-};
+ };
+
 
 export const UserDashboard = ({events, userData}: {events: IEvent[], userData: IUser | null}) => {
 
 
-  const sliderStyles = css`
-    .slick-dots li button:before {
-    }
 
-    .slick-prev:before,
-    .slick-next:before {
-      color: teal; // Your desired color for arrows
-    }
-  `;
+
+ const sliderStyles = css`
+   .slick-dots li button:before {
+   }
+
+
+   .slick-prev:before,
+   .slick-next:before {
+     color: black; // Your desired color for arrows
+   }
+ `;
+
 
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
@@ -72,50 +96,57 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
   const [windowWidth, setWindowWidth] = useState(0);
   const [selectedEventType, setSelectedEventType] = useState('');
 
-  // breakpoint for different viewport size
-  const eventNameSize = useBreakpointValue({
-    base: "lg",
-    md: "2xl",
-    lg: "3xl",
-  });
-  const eventDetailSize = useBreakpointValue({
-    base: "md",
-    md: "lg",
-    lg: "xl",
-  });
-  const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
+ // breakpoint for different viewport size
+ const eventNameSize = useBreakpointValue({
+   base: "lg",
+   md: "2xl",
+   lg: "3xl",
+ });
+ const eventDetailSize = useBreakpointValue({
+   base: "md",
+   md: "lg",
+   lg: "xl",
+ });
+ const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
 
-  //convert date into format Dayofweek, Month
-  const formatDate = (date: Date) => {
-    if (!(date instanceof Date)) {
-      date = new Date(date); // Convert to Date object if not already
-    }
 
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    };
-    return date.toLocaleDateString("en-US", options);
-  };
+ //convert date into format Dayofweek, Month
+ const formatDate = (date: Date) => {
+   if (!(date instanceof Date)) {
+     date = new Date(date); // Convert to Date object if not already
+   }
 
-  // convert date into xx:xx XM - xx:xx XM
-  const formatDateTimeRange = (start: Date, end: Date) => {
-    if (!(start instanceof Date)) {
-      start = new Date(start); // Convert to Date object if not already
-    }
 
-    if (!(end instanceof Date)) {
-      end = new Date(end); // Convert to Date object if not already
-    }
+   const options: Intl.DateTimeFormatOptions = {
+     weekday: "long",
+     month: "long",
+     day: "numeric",
+   };
+   return date.toLocaleDateString("en-US", options);
+ };
 
-    const options: Intl.DateTimeFormatOptions = {
-      hour: "numeric", // "numeric" or "2-digit"
-      minute: "numeric", // "numeric" or "2-digit"
-    };
 
-    const formattedStart = start.toLocaleTimeString("en-US", options);
-    const formattedEnd = end.toLocaleTimeString("en-US", options);
+ // convert date into xx:xx XM - xx:xx XM
+ const formatDateTimeRange = (start: Date, end: Date) => {
+   if (!(start instanceof Date)) {
+     start = new Date(start); // Convert to Date object if not already
+   }
+
+
+   if (!(end instanceof Date)) {
+     end = new Date(end); // Convert to Date object if not already
+   }
+
+
+   const options: Intl.DateTimeFormatOptions = {
+     hour: "numeric", // "numeric" or "2-digit"
+     minute: "numeric", // "numeric" or "2-digit"
+   };
+
+
+   const formattedStart = start.toLocaleTimeString("en-US", options);
+   const formattedEnd = end.toLocaleTimeString("en-US", options);
+
 
     return `${formattedStart} - ${formattedEnd}`;
   };
@@ -164,435 +195,489 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
     fetchEventTypes();
   }, []);
 
-  useEffect(() => {
-    // Handler to call on window resize
-    const handleResize = () => {
-      // Set window width to state
-      setWindowWidth(window.innerWidth);
-    };
+ useEffect(() => {
+   // Handler to call on window resize
+   const handleResize = () => {
+     // Set window width to state
+     setWindowWidth(window.innerWidth);
+   };
 
-    // Add event listener
-    window.addEventListener("resize", handleResize);
 
-    // Call handler right away so state gets updated with initial window size
-    handleResize();
+   // Add event listener
+   window.addEventListener("resize", handleResize);
 
-    // Remove event listener on cleanup
-    return () => window.removeEventListener("resize", handleResize);
-  }, []); // Empty array ensures that effect is only run on mount and unmount
 
-  // settings for slider
-  const settings = {
-    dots: true,
-    infinite: userEvents.length > 3,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
-    responsive: [
-      {
-        breakpoint: 1280,
-        settings: {
-          slidesToShow: 3, // Show 3 slides for widths of 1280px or less
-          slidesToScroll: 3,
-        },
+   // Call handler right away so state gets updated with initial window size
+   handleResize();
+
+
+   // Remove event listener on cleanup
+   return () => window.removeEventListener("resize", handleResize);
+ }, []); // Empty array ensures that effect is only run on mount and unmount
+
+
+ // settings for slider
+ const settings = {
+   dots: userEvents.length > 3,
+   infinite: userEvents.length > 3,
+   speed: 1000,
+   slidesToShow: 3,
+   slidesToScroll: 3,
+   responsive: [
+     {
+       breakpoint: 1280,
+       settings: {
+         slidesToShow: 3, // Show 3 slides for widths of 1280px or less
+         slidesToScroll: 3,
+       },
+     },
+     {
+       breakpoint: 1024,
+       settings: {
+         slidesToShow: 2, // Show 2 slides for widths of 1024px or less
+         slidesToScroll: 2,
+         infinite: userEvents.length > 2,
+         dots: userEvents.length > 2,
+       },
+     },
+     {
+       breakpoint: 600,
+       settings: {
+         slidesToShow: 1, // Only show 1 slide for widths of 600px or less
+         slidesToScroll: 1,
+         infinite: userEvents.length > 1,
+         dots: userEvents.length > 1
+         
+       },
+     },
+   ],
+ };
+
+
+ const adjustedSettings = {
+   ...settings,
+   slidesToShow: Math.min(userEvents.length, 3), // Show up to 3 slides, or less if there aren't enough events
+   infinite: userEvents.length > 3, // Only enable infinite looping if there are more than 3 events
+ };
+
+ const unregisteredEventSettings = {
+  dots: unregisteredEvents.length > 2,
+  infinite: unregisteredEvents.length > 2,
+  speed: 1000,
+  slidesToShow: 2,
+  slidesToScroll: 2,
+  responsive: [
+    {
+      breakpoint: 1280,
+      settings: {
+        slidesToShow: 2, // Show 3 slides for widths of 1280px or less
+        slidesToScroll: 2,
+        dots: unregisteredEvents.length > 2,
+
       },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2, // Show 2 slides for widths of 1024px or less
-          slidesToScroll: 2,
-          infinite: userEvents.length > 2,
-        },
+    },
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2, // Show 2 slides for widths of 1024px or less
+        slidesToScroll: 2,
+        infinite: unregisteredEvents.length > 2,
+        dots: unregisteredEvents.length > 2,
       },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1, // Only show 1 slide for widths of 600px or less
-          slidesToScroll: 1,
-          infinite: userEvents.length > 1,
-        },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1, // Only show 1 slide for widths of 600px or less
+        slidesToScroll: 1,
+        infinite: unregisteredEvents.length > 1,
+        dots: unregisteredEvents.length > 1,
+
       },
-    ],
-  };
+    },
+  ],
+};
 
-  const adjustedSettings = {
-    ...settings,
-    slidesToShow: Math.min(userEvents.length, 3), // Show up to 3 slides, or less if there aren't enough events
-    infinite: userEvents.length > 3, // Only enable infinite looping if there are more than 3 events
-  };
+ const allDataLoaded = !eventsLoading;
 
-  const allDataLoaded = !eventsLoading;
 
-  
+
+
+
+
   return (
     <div>
-      <EventListRegister
-        setShowModal={setShowEventList}
-        showModal={showEventList}
-      ></EventListRegister>
-    
-     {userData && 
-     <div className="px-[3rem] pt-3">
-              <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
-    </div>
-              /*<a href=>Add to calendar!</a>*/}
-      <div css={sliderStyles}>
-        <Box p="4">
-          <Stack spacing={2} px="10" mb={6}>
-            <Flex alignItems="center" justifyContent="space-between">
-              <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
-                Your Upcoming Events
-              </Text>
-              <Heading as="h2" fontSize="xl">
-              </Heading>
-            </Flex>
-            <Divider
-              size="sm"
-              borderWidth="1px"
-              borderColor="black"
-              alignSelf="center"
-              w="100%"
-            />
-            {!allDataLoaded ? (
-              <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                color="black"
-                textAlign="center"
-                mt={5}
-              >
-                Loading...
-              </Text>
-            ) : !userData ? (
-              <Flex
-                flexDirection={"column"}
-                alignItems={"center"}
-              >
-                <Text
-                  fontSize="2xl"
-                  fontWeight="bold"
-                  color="black"
-                  textAlign="center"
-                  mt="60px"
-                >
-                  Sign in to see all your upcoming events！
-                </Text>
-                <Link href="/login">
-                  <Button
-                    width="200px"
-                    colorScheme="yellow"
-                    
-                    mt="5"
-                  >
-                    Sign in
-                  </Button>
-                </Link>
-              </Flex>
-            ) : userEvents.length === 0 ? (
-              <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                color="black"
-                textAlign="center"
-                mt={5}
-              >
-                Check out the events below！
-              </Text>
-            ) : null}
-          </Stack>
-          <Box px={6}>
-            {userEvents.length > 0 ? (
-              <Slider {...settings}>
-                {userEvents.length > 0 ? (
-                  userEvents.map((event) => {
-                    const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
-                    return (
-                    <Box key={event._id} textAlign="center" px="4" mb="4">
+     <EventListRegister
+       setShowModal={setShowEventList}
+       showModal={showEventList}
+     ></EventListRegister>
+  
+    {userData &&
+    <div className="px-[3rem] pt-3">
+             <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
+   </div>
+             /*<a href=>Add to calendar!</a>*/}
+     <div css={sliderStyles}>
+       <Box p="4">
+         <Stack spacing={2} px="10" mb={6}>
+           <Flex alignItems="center" justifyContent="space-between">
+             <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
+               Your Upcoming Events
+             </Text>
+             <Heading as="h2" fontSize="xl">
+             </Heading>
+           </Flex>
+           <Divider
+             size="sm"
+             borderWidth="1px"
+             borderColor="black"
+             alignSelf="center"
+             w="100%"
+           />
+           {!allDataLoaded ? (
+             <Text
+               fontSize="2xl"
+               fontWeight="bold"
+               color="black"
+               textAlign="center"
+               mt={5}
+             >
+               Loading...
+             </Text>
+           ) : !userData ? (
+             <Flex
+               flexDirection={"column"}
+               alignItems={"center"}
+             >
+               <Text
+                 fontSize="2xl"
+                 fontWeight="bold"
+                 color="black"
+                 textAlign="center"
+                 mt="60px"
+               >
+                 Sign in to see all your upcoming events！
+               </Text>
+               <Link href="/login">
+                 <Button
+                   width="200px"
+                   colorScheme="yellow"
+                  
+                   mt="5"
+                 >
+                   Sign in
+                 </Button>
+               </Link>
+             </Flex>
+           ) : userEvents.length === 0 ? (
+             <Text
+               fontSize="2xl"
+               fontWeight="bold"
+               color="black"
+               textAlign="center"
+               mt={5}
+             >
+               Check out the events below！
+             </Text>
+           ) : null}
+         </Stack>
+         <Box px={6}>
+           {userEvents.length > 0 ? (
+             <Slider {...settings}>
+               {userEvents.length > 0 ? (
+                 userEvents.map((event) => {
+                   const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
+                   return (
+                   <Box key={event._id} textAlign="center" px="4" mb="4">
+                     <Box
+                       position="relative"
+                       borderWidth="1px"
+                       p="4"
+                       h="60"
+                       textAlign="left"
+                       borderRadius="20px"
+                       style={{
+                         //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
+                         background: backgroundImage,
+                         backgroundSize: "cover",
+                         backgroundRepeat: "no-repeat",
+                         backgroundPosition: "center",
+                       }}
+                     >
+                       <Heading
+                         as="h1"
+                         size="2xl"
+                         zIndex={2}
+                         position={"relative"}
+                       >
+                         <Text
+                           fontSize={eventNameSize}
+                           fontWeight="black"
+                           color="white"
+                           className="bold-text"
+                           mx={2}
+                           zIndex={2}
+                         >
+                           {event.eventName}
+                         </Text>
+                       </Heading>
+                       <Box
+                         position="absolute"
+                         bottom="0"
+                         left="0"
+                         right="0"
+                         p={2}
+                         mx="2"
+                         my="2"
+                         backdropBlur={2}
+                         backdropFilter={"blur(2px)"}
+                         zIndex={2}
+                       >
+                         <Text
+                           fontSize={eventDetailSize}
+                           fontWeight="bold"
+                           color="white"
+                           className="bold-text"
+                           mx={2}
+                           zIndex={2}
+                           alignContent="left-bottom"
+                         >
+                           {formatDate(event.startTime)}
+                         </Text>
+                         <Text
+                           fontSize={eventTimeSize}
+                           fontWeight="semibold"
+                           color="white"
+                           className="bold-text"
+                           mx={2}
+                           zIndex={2}
+                           alignContent="left-bottom"
+                         >
+                           {event.location}
+                         </Text>
+                         <Text
+                           fontSize={eventTimeSize}
+                           fontWeight="semibold"
+                           color="white"
+                           className="bold-text"
+                           mx={2}
+                           alignContent="left-bottom"
+                           zIndex={2}
+                         >
+                           {formatDateTimeRange(
+                             event.startTime,
+                             event.endTime
+                           )}
+                         </Text>
+                       </Box>
+                     </Box>
+                   </Box>
+                 )})
+               ) : (
+                 <EventPlaceholder />
+               )}
+               {userEvents.length < 3 &&
+                 (window.innerWidth <= 600
+                   ? Array.from({ length: 0 }, (_, i) => (
+                       <EventPlaceholder key={`placeholder-${i}`} />
+                     ))
+                   : window.innerWidth <= 1024
+                     ? Array.from(
+                         { length: 3 - (userEvents.length === 2 ? 3 : 2) },
+                         (_, i) => (
+                           <EventPlaceholder key={`placeholder-${i}`} />
+                         )
+                       )
+                     : Array.from(
+                         { length: 3 - userEvents.length },
+                         (_, i) => (
+                           <EventPlaceholder key={`placeholder-${i}`} />
+                         )
+                       ))}
+             </Slider>
+           ) : null}
+         </Box>
+         {/* Re-include the omitted bottom section here */}
+         <Box px="10" mb={6}>
+           <Flex alignItems="center" justifyContent="space-between">
+             <Text
+               fontSize="2xl"
+               fontWeight="bold"
+               color="black"
+               mb={3}
+               mt={5}
+             >
+               Other Events
+             </Text>
+       
+             <Select
+                id='event-type'
+                placeholder='Select Event Types'
+                options={eventTypes.map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
+                className={style.selectContainer}
+                onChange={(selectedOption) => setSelectedEventType(selectedOption ? selectedOption.value : ``)}
+                isClearable
+              />
+           </Flex>
+           <Divider
+             size="sm"
+             borderWidth="1px"
+             borderColor="black"
+             alignSelf="center"
+             w="100%"
+             my={2}
+           />
+           {!allDataLoaded ? (
+             <Text
+               fontSize="2xl"
+               fontWeight="bold"
+               color="black"
+               textAlign="center"
+               mt={5}
+             >
+               Loading...
+             </Text>
+           ) : userData && unregisteredEvents.length === 0 ? (
+             <Text
+               fontSize="2xl"
+               fontWeight="bold"
+               color="black"
+               textAlign="center"
+               mt={5}
+             >
+               No events at the moment!
+             </Text>
+           ) : null}
+         </Box>
+         <Box mt={6} px={6} >
+           {unregisteredEvents.length > 0 ? (
+            <Slider {...unregisteredEventSettings}>
+              {unregisteredEvents.length > 0 ? (
+                unregisteredEvents.map((event) => {
+                  const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
+                  return (
+                    <Box key={event._id} textAlign="center" px="0" mb="4">
                       <Box
-                        position="relative"
-                        borderWidth="1px"
-                        p="4"
-                        h="60"
-                        textAlign="left"
-                        borderRadius="20px"
+                        key={event._id}
                         style={{
                           //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                           background: backgroundImage,
                           backgroundSize: "cover",
                           backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
+                          backgroundPosition: "left 40%"
                         }}
+                        position="relative"
+                        borderWidth="1px"
+                        p="4"
+                        mt="4"
+                        textAlign="left"
+                        h="64"
+                        mx="4"
+                        borderRadius="20px"
+                        className={style.eventBox}
+                        flex="1 0 40%" // Adjust the width as needed
+                        
                       >
                         <Heading
                           as="h1"
-                          size="2xl"
-                          zIndex={2}
+                          size="3xl"
+                          mb="1"
                           position={"relative"}
+                          zIndex={2}
                         >
                           <Text
                             fontSize={eventNameSize}
-                            fontWeight="black"
+                            fontWeight="custom"
                             color="white"
                             className="bold-text"
-                            mx={2}
                             zIndex={2}
                           >
                             {event.eventName}
                           </Text>
                         </Heading>
                         <Box
-                          position="absolute"
-                          bottom="0"
-                          left="0"
-                          right="0"
-                          p={2}
-                          mx="2"
-                          my="2"
-                          backdropBlur={2}
-                          backdropFilter={"blur(2px)"}
+                          position={"relative"}
                           zIndex={2}
+                          fontSize={eventDetailSize}
                         >
                           <Text
-                            fontSize={eventDetailSize}
-                            fontWeight="bold"
+                            fontWeight="custom"
                             color="white"
                             className="bold-text"
-                            mx={2}
                             zIndex={2}
-                            alignContent="left-bottom"
-                          >
-                            {formatDate(event.startTime)}
-                          </Text>
-                          <Text
-                            fontSize={eventTimeSize}
-                            fontWeight="semibold"
-                            color="white"
-                            className="bold-text"
-                            mx={2}
-                            zIndex={2}
-                            alignContent="left-bottom"
                           >
                             {event.location}
                           </Text>
                           <Text
-                            fontSize={eventTimeSize}
-                            fontWeight="semibold"
+                            fontWeight="custom"
                             color="white"
                             className="bold-text"
-                            mx={2}
-                            alignContent="left-bottom"
                             zIndex={2}
                           >
-                            {formatDateTimeRange(
-                              event.startTime,
-                              event.endTime
-                            )}
+                            {formatDate(event.startTime)}
+                          </Text>
+                          <Text
+                            fontWeight="custom"
+                            color="white"
+                            className="bold-text"
+                            zIndex={2}
+                          >
+                            {formatDateTimeRange(event.startTime, event.endTime)}
                           </Text>
                         </Box>
-                      </Box>
-                    </Box>
-                  )})
-                ) : (
-                  <EventPlaceholder />
-                )}
-                {userEvents.length < 3 &&
+                              <Box
+                                position="absolute"
+                                bottom="0"
+                                left="0"
+                                right="0"
+                                p={2}
+                                mx="2"
+                                my="2"
+                                zIndex={2}
+                              >
+                                <Heading as="h2" fontSize="xl">
+                                    <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
+                                    <Button
+                                        colorScheme="yellow"
+                                        fontSize={eventDetailSize}
+                                        mt={14}
+                                    >
+                                        Register
+                                    </Button>
+                                  </Link>
+                                </Heading>
+                              </Box> 
+                            </Box>
+                          </Box>
+                          )})
+               ) : (
+                 <UnregisteredEventPlaceholder />
+               )}
+                {unregisteredEvents.length < 2 &&
                   (window.innerWidth <= 600
                     ? Array.from({ length: 0 }, (_, i) => (
-                        <EventPlaceholder key={`placeholder-${i}`} />
+                        <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
                       ))
                     : window.innerWidth <= 1024
                       ? Array.from(
-                          { length: 3 - (userEvents.length === 2 ? 3 : 2) },
+                          { length: 2 - (unregisteredEvents.length === 1 ? 1 : 0) },
                           (_, i) => (
-                            <EventPlaceholder key={`placeholder-${i}`} />
+                            <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
                           )
                         )
                       : Array.from(
-                          { length: 3 - userEvents.length },
+                          { length: 2 - unregisteredEvents.length },
                           (_, i) => (
-                            <EventPlaceholder key={`placeholder-${i}`} />
+                            <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
                           )
                         ))}
               </Slider>
             ) : null}
           </Box>
-          {/* Re-include the omitted bottom section here */}
-          <Box px="10" mb={6}>
-            <Flex alignItems="center" justifyContent="space-between">
-              <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                color="black"
-                mb={3}
-                mt={5}
-              >
-                Find More Opportunities
-              </Text>
-         
-              <Select
-                id="event-type"
-                placeholder="Select Event Types"
-                options={eventTypes.map((type) => ({
-                  value: type,
-                  label: type,
-                }))}
-                className={style.selectContainer}
-                onChange={(selectedOption) => setSelectedEventType(selectedOption ? selectedOption.value : '')}
-                isClearable
-              />
-            </Flex>
-            <Divider
-              size="sm"
-              borderWidth="1px"
-              borderColor="black"
-              alignSelf="center"
-              w="100%"
-              my={2}
-            />
-            {!allDataLoaded ? (
-              <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                color="black"
-                textAlign="center"
-                mt={5}
-              >
-                Loading...
-              </Text>
-            ) : userData && unregisteredEvents.length === 0 ? (
-              <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                color="black"
-                textAlign="center"
-                mt={5}
-              >
-                No volunteer opportunities at the moment！ʕ•ᴥ•ʔ
-              </Text>
-            ) : null}
-          </Box>
-          <Box mt={6}>
-            {unregisteredEvents
-              .slice(0, showAllEvents ? unregisteredEvents.length : 2)
-              .map((event) => {
-                const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
-                return(
-                <Box
-                  key={event._id}
-            style={{
-                          //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                          background: backgroundImage,
-                          backgroundSize: "cover",
-                          backgroundRepeat: "no-repeat",
-                            backgroundPosition: "left 40%"
-                        }}
-                  position="relative"
-                  borderWidth="1px"
-                  p="4"
-                  mt="4"
-                  textAlign="left"
-                  h="64"
-                  mx="10"
-                  borderRadius="20px"
-                  className={style.eventBox}
-                
-                >
-                  <Heading
-                    as="h1"
-                    size="3xl"
-                    mb="1"
-                    position={"relative"}
-                    zIndex={2}
-                  >
-                    <Text
-                      fontSize={eventNameSize}
-                      fontWeight="custom"
-                      color="white"
-                      className="bold-text"
-                      zIndex={2}
-                    >
-                      {event.eventName}
-                    </Text>
-                  </Heading>
-                  <Box
-                    position={"relative"}
-                    zIndex={2}
-                    fontSize={eventDetailSize}
-                  >
-                    <Text
-                      fontWeight="custom"
-                      color="white"
-                      className="bold-text"
-                      zIndex={2}
-                    >
-                      {event.location}
-                    </Text>
-                    <Text
-                      fontWeight="custom"
-                      color="white"
-                      className="bold-text"
-                      zIndex={2}
-                    >
-                      {formatDate(event.startTime)}
-                    </Text>
-                    <Text
-                      fontWeight="custom"
-                      color="white"
-                      className="bold-text"
-                      zIndex={2}
-                    >
-                      {formatDateTimeRange(event.startTime, event.endTime)}
-                    </Text>
-                  </Box>
-                  {/* positions the stuff to the left buttom when the parent box has relative position*/}
-                  <Box
-                    position="absolute"
-                    bottom="0"
-                    left="0"
-                    right="0"
-                    p={2}
-                    mx="2"
-                    my="2"
-                    zIndex={2}
-                  >
-                    <Heading as="h2" fontSize="xl">
-                        <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
-                        <Button
-                            colorScheme="yellow"
-                            fontSize={eventDetailSize}
-                            mt={14}
-                        >
-                            Register
-                        </Button>
-                      </Link>
-                    </Heading>
-                  </Box>
-                </Box>
-              )})}
-            {unregisteredEvents.length > 2 && !showAllEvents ? (
-              <Flex justifyContent="center" mt="4">
-                <Button
-                  colorScheme="yellow"
-                  variant="outline"
-                  onClick={() => setShowAllEvents(true)}
-                >
-                  View More
-                </Button>
-              </Flex>
-            ) : unregisteredEvents.length > 2 ? (
-              <Flex justifyContent="center" mt="4">
-                <Button
-                  colorScheme="yellow"
-                  variant="outline"
-                  onClick={() => setShowAllEvents(false)}
-                >
-                  Collapse
-                </Button>
-              </Flex>
-            ) : null}
-          </Box>
         </Box>
-      </div>
+     </div>
     </div>
-  );
-};
+    )};
