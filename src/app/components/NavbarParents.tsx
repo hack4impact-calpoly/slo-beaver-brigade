@@ -32,7 +32,7 @@ export default function NavbarParent() {
     }, [isSignedIn])
 
   
-  if (!userData) return <Navbar name="Sign In / Log In"></Navbar>;
+  if (!userData || !isSignedIn) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
   console.log(
     'user data', userData
