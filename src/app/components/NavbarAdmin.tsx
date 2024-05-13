@@ -59,13 +59,23 @@ export default function Navbar(props: { name: string }) {
             {(props.name != "Sign In / Log In") &&
               <>
                 <li>
+                  <Link href="/profile" onClick={handleHideNavbar}>
+                    Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard" onClick={handleHideNavbar}>
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
                   <Link href="/admin/users" onClick={handleHideNavbar}>
                     User List
                   </Link>
                 </li>  
                 <li>
                   <Link href="/admin/hours" onClick={handleHideNavbar}>
-                    Hours
+                    Hour Log
                   </Link>
                 </li>
               </>
@@ -86,7 +96,9 @@ export default function Navbar(props: { name: string }) {
                   |
                 </li>
                 <li>
-                  <SignOutButton/>
+                  <SignOutButton>
+                    <button>Sign Out</button>
+                  </SignOutButton>
                 </li>
               </>
             }
