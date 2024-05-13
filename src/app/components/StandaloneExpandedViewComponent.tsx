@@ -114,7 +114,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   <>
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
       <ModalOverlay/>
-      <ModalContent mt={"5rem"}>
+      <ModalContent mt={"5rem"} mb={"1rem"}>
         <ModalHeader bg={backgroundImage} fontWeight="bold" position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"5px 5px 0px 0px"}>
           <Flex justify={"right"} ml={"5%"}>
             <Text fontSize={"5xl"} opacity={"85%"}>{eventDetails.eventName}</Text>
@@ -139,18 +139,22 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
           </Flex>
         </ModalHeader>
 
-        <ModalBody>
+        <ModalBody pb={"5%"}>
           
           <Stack spacing={5} width={"100%"}>
-          <Flex
-              direction={{ base: 'column', md: 'row' }}
-              alignItems={{ base: 'center', md: 'flex-start' }}
-              justifyContent='right'
-              flexWrap="wrap"
-              mt={"1%"}
-              mr={"15%"}
-
-              >
+            {isLargerThan768 ?
+            <>
+            <Flex direction={"column"} mt={"3%"} >
+              <Flex>
+                <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"} mt={"2%"}>
+                  Description:
+                </FormLabel>
+                <Flex
+                  justifyContent='right'
+                  flexWrap="wrap"
+                  mr={"15%"}
+                  ml={"auto"}
+                >
 
                     {signedIn ? 
                       <>
@@ -200,12 +204,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                       </Link>
                     }
             </Flex>
-            {isLargerThan768 ?
-            <>
-            <Flex direction={"column"} >
-              <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"}>
-                Description:
-              </FormLabel>
+              </Flex>
               <Text ml={"3.5%"} fontWeight={"light"}>
                 <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
               </Text>
@@ -224,11 +223,21 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                   Accomodations:
                 </FormLabel>
                 {eventDetails.wheelchairAccessible ? 
-                  <Text fontWeight={"light"} ml={"6.5%"}>Wheelchair Accessible</Text> :
+                  <Text  fontWeight={"light"}>
+                    <MarkdownPreview className= {style.preview} source={"- Wheelchair Accessible"}  wrapperElement={{"data-color-mode": "light"}} />
+                  </Text> :
                   <></>
                 }
                 {eventDetails.spanishSpeakingAccommodation ? 
-                  <Text fontWeight={"light"} ml={"6.5%"}>Spanish-Speaking</Text> :
+                  <Text fontWeight={"light"}>
+                    <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"}  wrapperElement={{"data-color-mode": "light"}} />
+                  </Text> :
+                  <></>
+                }
+                {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible? 
+                  <Text ml={"6.5%"} fontWeight={"light"}>
+                    <MarkdownPreview className= {style.preview} source={"N/A"}  wrapperElement={{"data-color-mode": "light"}} />
+                  </Text> :
                   <></>
                 }
               </Stack>
@@ -237,7 +246,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
             : 
               <Flex ml={"5%"} direction={"column"}>
                 <Flex direction={"column"} width={"50%"}>
-                  <FormLabel color="grey" fontWeight="bold" fontSize={"2xl"}>
+                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
                     Description:
                   </FormLabel>
                   <Text ml={"3.5%"}>
@@ -245,7 +254,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                   </Text>
                 </Flex>
                 <Flex direction={"column"} width={"50%"}>
-                  <FormLabel color="grey" fontWeight="bold" fontSize={"2xl"}>
+                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
                     Checklist:
                   </FormLabel>
                   <Text ml={"3.5%"}>
@@ -253,15 +262,25 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                   </Text>
                 </Flex>
                 <Stack spacing={5}>
-                  <FormLabel color="grey" fontWeight="bold" fontSize={"2xl"}>
+                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
                     Accomodations:
                   </FormLabel>
                   {eventDetails.wheelchairAccessible ? 
-                    <Text >Wheelchair Accessible</Text> :
+                    <Text ml={"5%"}>
+                      <MarkdownPreview className= {style.preview} source={"- Wheelchair Accesible"} wrapperElement={{"data-color-mode": "light"}} />
+                    </Text>:
                     <></>
                   }
                   {eventDetails.spanishSpeakingAccommodation ? 
-                    <Text >Spanish-Speaking</Text> :
+                    <Text ml={"5%"}>
+                      <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"} wrapperElement={{"data-color-mode": "light"}} />
+                    </Text>:
+                    <></>
+                  }
+                  {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible? 
+                    <Text ml={"5%"}>
+                      <MarkdownPreview className= {style.preview} source={"N/A"} wrapperElement={{"data-color-mode": "light"}} />
+                    </Text>:
                     <></>
                   }
                 </Stack> 
