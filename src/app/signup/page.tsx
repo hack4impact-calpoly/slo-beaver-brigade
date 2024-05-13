@@ -158,6 +158,7 @@ export default function SignUp() {
 
         }
         else{
+            console.log('creating user in mongo')
             res = await fetch('/api/user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -167,8 +168,11 @@ export default function SignUp() {
 
         if ((res && res.ok) || userRes){
 
+            console.log('waiting redirect')
             if (enableNewsletter){
+                console.log('adding to newsletter')
                 const newsRes = await addToNewsletter(email)
+                console.log('res news, ', newsRes)
                 if (!newsRes){
                     console.log('failed to add to newsletter.')
                 }
