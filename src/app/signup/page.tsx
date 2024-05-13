@@ -18,6 +18,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { doesUserExist, getUserFromEmail, transitionGuestById } from 'app/actions/userapi';
 import { addToNewsletter } from 'app/actions/mailingactions';
 import { IUser } from 'database/userSchema';
+import { revalidatePathServer } from 'app/actions/serveractions';
 
 export default function SignUp() {
   //clerk consts
@@ -178,6 +179,7 @@ export default function SignUp() {
                 }
             }
 
+            await revalidatePathServer("/dashboard")
             // Redirect the user to a post sign-up route
             if (redirect_url) {
             router.push(redirect_url);

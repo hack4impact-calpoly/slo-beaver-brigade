@@ -15,6 +15,7 @@ import NextLink from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter, useSearchParams} from 'next/navigation';
+import { revalidatePathServer } from "app/actions/serveractions";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,6 +59,7 @@ export default function Login() {
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
 
+        await revalidatePathServer("/dashboard")
         // Redirect the user to a post sign-in route
         if (redirect_url){
             router.push(redirect_url);
