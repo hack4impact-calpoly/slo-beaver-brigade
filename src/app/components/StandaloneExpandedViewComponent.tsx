@@ -140,21 +140,20 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
         </ModalHeader>
 
         <ModalBody pb={"5%"}>
-          
           <Stack spacing={5} width={"100%"}>
             {isLargerThan768 ?
-            <>
-            <Flex direction={"column"} mt={"3%"} >
-              <Flex>
-                <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"} mt={"2%"}>
-                  Description:
-                </FormLabel>
-                <Flex
-                  justifyContent='right'
-                  flexWrap="wrap"
-                  mr={"15%"}
-                  ml={"auto"}
-                >
+              <>
+              <Flex direction={"column"} mt={"3%"} >
+                <Flex>
+                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"} mt={"2%"}>
+                    Description:
+                  </FormLabel>
+                  <Flex
+                    justifyContent='right'
+                    flexWrap="wrap"
+                    mr={"15%"}
+                    ml={"auto"}
+                  >
 
                     {signedIn ? 
                       <>
@@ -186,9 +185,9 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                             <strong>Sign Up</strong>
                           </Button>
                         </Link>
-                    }
+                      }
                       </>
-                  : 
+                    : 
                       <Link href="/login">
                         <Button
                           bg="#006d75"
@@ -203,12 +202,12 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                         </Button>
                       </Link>
                     }
-            </Flex>
+                  </Flex>
+                </Flex>
+                <Text ml={"3.5%"} fontWeight={"light"}>
+                  <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
+                </Text>
               </Flex>
-              <Text ml={"3.5%"} fontWeight={"light"}>
-                <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
-              </Text>
-            </Flex>
             <Flex>
               <Flex direction={"column"} width={"50%"}>
                   <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"10%"}>
@@ -246,9 +245,67 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
             : 
               <Flex ml={"5%"} direction={"column"}>
                 <Flex direction={"column"} width={"50%"}>
-                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
-                    Description:
-                  </FormLabel>
+                  <Flex mt={"3%"}>
+                    <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} mt={"2%"}>
+                      Description:
+                    </FormLabel>
+                    <Flex
+                    justifyContent='right'
+                    flexWrap="wrap"
+                    mr={"15%"}
+                    ml={"auto"}
+                  >
+
+                    {signedIn ? 
+                      <>
+                      {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
+                        <Button
+                          onClick={onOpen}
+                          bg="#e0af48"
+                          color="black"
+                          fontWeight={"light"}
+                          fontSize={{ base: 'xl', md: 'md' }}
+                          pl={"5%"}
+                          pr={"5%"}
+                          flexBasis={{ base: '100%', md: 'auto' }}
+                        >
+                          <strong>Cancel Reservation</strong>
+                        </Button>
+                      :
+                        <Link href={url}>
+                          <Button
+                            bg="#006d75"
+                            color="white"
+                            fontWeight={"light"}
+                            fontSize={{ base: 'xl', md: 'md' }}
+                          
+                            pl={"100%"}
+                            pr={"100%"}
+                            flexBasis={{ base: '100%', md: 'auto' }}
+                          >
+                            <strong>Sign Up</strong>
+                          </Button>
+                        </Link>
+                      }
+                      </>
+                    : 
+                      <Link href="/login">
+                        <Button
+                          bg="#006d75"
+                          color="white"
+                          fontWeight={"light"}
+                          fontSize={{ base: 'xl', md: 'md' }}
+                          pl={"100%"}
+                          pr={"100%"}
+                          flexBasis={{ base: '100%', md: 'auto' }}
+                        >
+                          <strong>Login</strong>
+                        </Button>
+                      </Link>
+                    }
+                  </Flex>
+                  </Flex>
+
                   <Text ml={"3.5%"}>
                     <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
                   </Text>
