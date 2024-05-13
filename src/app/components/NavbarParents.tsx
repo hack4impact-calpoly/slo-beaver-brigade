@@ -1,33 +1,35 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import { currentUser } from "@clerk/nextjs";
+import { currentUser, useUser } from "@clerk/nextjs";
 import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
 import { getUserDbData } from "app/lib/authentication";
 
-/** fetch from MongoDB, get user Role */
-async function getUserData(id: string | null){
-  await connectDB()
-  
-  try{
-    const user: IUser | null = await User.findById(id).orFail();
-    return user;
-  }
-  catch(err){
-    return null
-  }
-}
 
-export default async function NavbarParent() {
-  const user = await currentUser();
+
+export default function NavbarParent() {
+    const [userData, setUserData] = useState<IUser | null>(null)
+    const {isLoaded, user} = useUser()
+    useEffect(() => {
+
+        const fetchUser = async () => {
+        const userRes = await getUserDbData()
+            if (userRes){
+                const user = JSON.parse(userRes)
+                console.log(user)
+                setUserData(user)
+            }
+        }
+        fetchUser()
+    }, [isLoaded])
+
   
   if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
-  const userRes = await getUserDbData()
-    if (userRes){
-        const user = JSON.parse(userRes)
-        if (user?.role == "admin"){
+    if (userData){
+        if (userData?.role == "admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
         }
     }
