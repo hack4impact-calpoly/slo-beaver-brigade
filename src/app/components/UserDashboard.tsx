@@ -680,7 +680,6 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
             ) : null}
           </Box>
         </Box>
-
      </div>
-     </div>
+    </div>
     )};
