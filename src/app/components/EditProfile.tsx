@@ -1,178 +1,165 @@
-"use client";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Input,
+  Textarea,
+  Select,
+  Switch,
+  Stack,
+  Spacer,
+  Flex,
+  FormControl,
+  FormLabel
+} from '@chakra-ui/react'
+import { IUser } from '@database/userSchema';
+import { Button } from '@styles/Button'
+import React, {useState, useEffect} from 'react';
 
+const EditProfile = ({userData}: {userData: IUser | null}) => {   
+  
+  const { isOpen, onOpen, onClose } = useDisclosure();
+      
+  const [user_firstName, setFirstName] = useState('');
+  const [user_lastName, setLastName] = useState('');
+  const [user_email, setEmail] = useState('');
+  const [user_phoneNumber, setPhoneNumber] = useState('');
+  const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
 
-import React, { useState, useEffect } from "react";
-import styles from "../styles/profile/profile.module.css";
-import { PencilIcon } from "@heroicons/react/16/solid";
-import { useUser } from "@clerk/clerk-react";
+  // Update state when userData changes
+  useEffect(() => {
+      if (userData) {
+          setFirstName(userData.firstName || '');
+          setLastName(userData.lastName || '');
+          setEmail(userData.email || '');
+          setPhoneNumber(userData.phoneNumber || '');
+          setReceiveNewsletter(userData.recieveNewsletter || false);
+      }
+  }, [userData]);
 
+  const handleFirstNameChange = (e: any) => setFirstName(e.target.value);
+  const handleLastNameChange = (e: any) => setLastName(e.target.value);
+  const handleEmailChange = (e: any) => setEmail(e.target.value);
+  const handlePhoneNumberChange = (e: any) => setPhoneNumber(e.target.value);
+  
+  const handleReceiveNewsletter = (e: any) => {
+    const selectedOption = e.target.value;
+    const receiveNewsletter = selectedOption === 'yes';
+    setReceiveNewsletter(receiveNewsletter);
+  };      
 
-interface UserData {
- firstName: string;
- lastName: string;
- username: string;
- email: string;
- zipcode: string;
- preferredLanguage: string;
- phoneNumber: string;
- password: string;
- city: string;
- state: string;
- receiveEmails: string;
-}
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  function handleClose() {
+      setFirstName(userData?.firstName || '');
+      setLastName(userData?.lastName || '');
+      setEmail(userData?.email || '');
+      setPhoneNumber(userData?.phoneNumber || '');
+      setReceiveNewsletter(userData?.recieveNewsletter || false);
+      setIsSubmitted(false);
+      onClose();
+  };
 
+  async function HandleSubmit() {
+      const updatedUserData = {
+        firstName: user_firstName,
+        lastName: user_lastName,
+        email: user_email,
+        phoneNumber: user_phoneNumber,
+        receiveNewsletter: user_receiveNewsletter
+      };
+  
+      console.log("New User Data:", updatedUserData);
+      try {
+        const response = await fetch(`/api/profile/${userData?._id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedUserData),
+        });
+        if (response.ok) {
+          setIsSubmitted(true);
+          handleClose();
+          window.location.reload();
+        } else {
+          console.error("Failed to update user data");
+        }
+      } catch (error) {
+        console.log("Error editing user:", error);
+      }
+    }
 
-const ProfileEdit: React.FC = () => {
- const [userData, setUserData] = useState<UserData>({
-   firstName: "",
-   lastName: "",
-   username: "",
-   email: "",
-   zipcode: "",
-   preferredLanguage: "",
-   phoneNumber: "",
-   password: "",
-   city: "",
-   state: "",
-   receiveEmails: "",
- });
+  return(
+      <>
+        <Button onClick={onOpen} style = {{border: 'none', color: 'white', fontWeight: 'normal', padding: '0%', margin: '5px',
+                                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '16px'}}>
+          Edit Details
+        </Button>
+  
+        <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader bg='#006d75' color='white' fontWeight='bold' position='relative'>
+              Edit Profile
+            </ModalHeader>
+            <ModalCloseButton color='white' size='l' marginTop='15px' marginRight='5px'/>    
+  
+            <ModalBody>
+              <Stack spacing={4}>
+  
+                <FormControl isInvalid={user_firstName === '' && isSubmitted}>
+                  <FormLabel color='grey' fontWeight='bold'>First Name</FormLabel>
+                  <Input placeholder='' fontWeight='bold' value={user_firstName} onChange={handleFirstNameChange}/>
+                </FormControl>
+  
+                <FormControl isInvalid={user_lastName === '' && isSubmitted}> 
+                  <FormLabel color='grey' fontWeight='bold'>Last Name</FormLabel>             
+                  <Input placeholder='' fontWeight='bold' value={user_lastName} onChange={handleLastNameChange}/>
+                </FormControl>
 
-
- const { isSignedIn, user, isLoaded } = useUser();
-
-
- useEffect(() => {
-   if (isSignedIn && isLoaded) {
-     setUserData({
-       firstName: user.firstName || "",
-       lastName: user.lastName || "",
-       username: user.username || "",
-       email: user.primaryEmailAddress?.emailAddress  || "",
-       zipcode: String(user.unsafeMetadata["zipcode"])  || "",
-       preferredLanguage: "",
-       phoneNumber: String(user.unsafeMetadata["phone"])  || "",
-       password: "",
-       city: "",
-       state: "",
-       receiveEmails: "",
-     });
-   }
- }, [isSignedIn, isLoaded]);
-
-
-
-
- return (
-   <div className={styles.profileContainer}>
-     <div className={styles.formContainer}>
-       <div className={`${styles.formGroup} ${styles.accountDetails}`}>
-         <div className={`${styles.highlight} ${styles.accountHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}>
-             Account Details
-           </h2>
-         </div>
-         <div className={styles.formFields}>
-           <div>
-             <p>
-               <strong>Username</strong> <br />
-               {userData.username}
-               <button className={styles.editFieldButton}>
-                 Edit Username
-               </button>
-             </p>
-             <p>
-               <strong>Current Password</strong> <br />
-               {userData.password}
-               <button className={styles.editFieldButton}>
-                 Edit Password
-               </button>
-             </p>
-        
-            
-           </div>
-         </div>
-       </div>
-       <div className={`${styles.formGroup} ${styles.personalDetails}`}>
-         <div className={`${styles.highlight} ${styles.personalHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}>
-             Personal Details
-           </h2>
-           <PencilIcon className={styles.pencilIcon} />
-           <h2 className={styles.editButton}>Edit Details</h2>
-         </div>
-         <div className={styles.formFields}>
-           <div>
-             <p>
-               <strong>First Name</strong>
-               <br /> {userData.firstName}
-             </p>
-             <p>
-               <strong>Last Name</strong>
-               <br /> {userData.lastName}
-             </p>
-             <p>
-               <strong>Preferred Language</strong>
-               <br /> {userData.preferredLanguage}
-             </p>
-           </div>
-           <div>
-             <p>
-               <strong>Telephone Number</strong>
-               <br /> {userData.phoneNumber}
-             </p>
-             <p>
-               <strong>Email</strong>
-               <br /> {userData.email}
-             </p>
-           </div>
-         </div>
-       </div>
-       <div className={`${styles.formGroup} ${styles.savedAddress}`}>
-         <div className={`${styles.highlight} ${styles.savedAddressHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}>
-             Saved Address
-           </h2>
-           <PencilIcon className={styles.pencilIcon} />
-           <h2 className={styles.editButton}>Edit Details</h2>
-         </div>
-         <div className={styles.formFields}>
-           <div>
-             <p>
-               <strong>City</strong>
-               <br /> {userData.city}
-             </p>
-             <p>
-               <strong>Zipcode</strong>
-               <br /> {userData.zipcode}
-             </p>
-           </div>
-           <div>
-             <p>
-               <strong>State</strong>
-               <br /> {userData.state}
-             </p>
-           </div>
-         </div>
-       </div>
-       <div className={`${styles.formGroup} ${styles.savedAddress}`}>
-         <div className={`${styles.highlight} ${styles.personalHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}></h2>
-           <PencilIcon className={styles.pencilIcon} />
-           <h2 className={styles.editButton}>Edit Details</h2>
-         </div>
-         <div className={styles.formFields}>
-           <div>
-             <p>
-               <strong>Receive Emails from SLO Beaver Brigrade</strong> <br />
-               {userData.receiveEmails}
-             </p>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
- );
+                <Stack spacing={0}>
+                  <FormControl isInvalid={user_phoneNumber === '' && isSubmitted}>
+                    <FormLabel color='grey' fontWeight='bold'>Phone Number</FormLabel>
+                    <Input placeholder='' fontWeight='bold' value={user_phoneNumber} onChange={handlePhoneNumberChange}/>
+                  </FormControl>
+                </Stack>
+              
+                <Stack spacing={0}>
+                  <FormControl isInvalid={user_receiveNewsletter && isSubmitted}>
+                    <FormLabel color='grey' fontWeight='bold'>Receive Newsletter Email</FormLabel>
+                    <Select
+                      placeholder='Select option'
+                      color='grey'
+                      value={user_receiveNewsletter ? 'yes' : 'no'}
+                      onChange={handleReceiveNewsletter}
+                    >
+                      <option value='yes'>Yes</option>
+                      <option value='no'>No</option>
+                    </Select>
+                  </FormControl>
+                </Stack>
+  
+              </Stack>
+            </ModalBody>
+  
+            <ModalFooter>
+              <Button onClick={handleClose}>
+                Close
+              </Button>
+              <Button onClick={HandleSubmit}>
+                  Confirm
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>      
+    )
 };
 
-
-export default ProfileEdit;
+export default EditProfile;

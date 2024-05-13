@@ -1,11 +1,12 @@
 "use client"
 import React from 'react';
-import EditProfile from '../components/EditProfile'; 
+import EditProfile from '../components/UserProfile'; 
+import UserProfile from '../components/UserProfile';
 
 export default function Page() {
   return (
     <div>
-      <EditProfile /> 
+      <UserProfile /> 
     </div>
   );
 };

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
@@ -12,19 +13,30 @@ import {
 } from "@chakra-ui/react";
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
+import { getSelectedEvents } from "app/actions/eventsactions";
+import { EmailRSSComponent } from "app/components/EmailComponent";
 
-export default async function Page() {
-  const events = await getEvents();
-  let calEvent = events.map(Calendarify);
+export default function Page() {
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [events, setEvents] = useState<IEvent[]>([]);
 
-  //Ievent object to pass into calendar component
-  const dbEvent = JSON.parse(JSON.stringify(events));
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const selectedEventsString = await getSelectedEvents(selectedFilters);
+        const parsedEvents: IEvent[] = JSON.parse(selectedEventsString);
+        setEvents(parsedEvents);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
+  }, [selectedFilters]);
 
-  
+  const calEvent = events.map(Calendarify);
+
   return (
     <Flex className={style.page} direction="column" align="flex-end">
-      {" "}
-      {/* Set direction to column and align to flex-end */}
       <Flex width="full">
         <Box flex="1" margin="0" padding="0">
           <Box className={style.header}>
@@ -50,39 +62,37 @@ export default async function Page() {
           >
             Filters
           </Heading>
-          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+          <CheckboxGroup
+            colorScheme="green"
+            value={selectedFilters}
+            onChange={(values) => setSelectedFilters(values.map((value) => String(value)))}
+          >
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
-              <Checkbox value="watery_walk" colorScheme="teal">
+              <Checkbox value="Watery Walk" colorScheme="teal">
                 Watery Walk
               </Checkbox>
-              <Checkbox value="volunteer" colorScheme="yellow">
+              <Checkbox value="Volunteer" colorScheme="yellow">
                 Volunteer
               </Checkbox>
-              <Checkbox value="special_events" colorScheme="green">
+              <Checkbox value="Special Events" colorScheme="green">
                 Special Events
+              </Checkbox>
+              <Checkbox value="spanishSpeakingAccommodation" colorScheme="blue">
+                Spanish Speaking
+              </Checkbox>
+              <Checkbox value="wheelchairAccessible" colorScheme="orange">
+                Wheelchair Accessible
               </Checkbox>
             </Stack>
           </CheckboxGroup>
+          <div className="ml-[40px] mt-10">
+            <EmailRSSComponent calendarURL="/api/events/calendar"/>
+        </div>
         </Box>
         <Box flex="2" margin="10" padding="0">
-          {" "}
-          {/* Switch flex values for the calendar box */}
-          <Calendar events={calEvent} admin={false} dbevents={dbEvent} />
+          <Calendar events={calEvent} admin={false} dbevents={events} />
         </Box>
       </Flex>
     </Flex>
   );
 }
-
-async function getEvents() {
-  await connectDB(); // connect to db
-  try {
-    // query for all events and sort by date
-    const events = await Event.find().sort({ date: -1 }).orFail();
-    // returns all events in json format or errors
-    return events;
-  } catch (err) {
-    return [];
-  }
-}
-

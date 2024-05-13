@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
-import { eventDuration } from ".././lib/hours";
+import { eventHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 
 interface Event {
@@ -42,6 +42,7 @@ interface Event {
 }
 
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,19 +50,20 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
+     
       try {
         const eventIds = visitorData.eventsAttended.map((e) => e.eventId);
         const fetchedEvents = await Promise.all(
-          eventIds.map((id) =>
+          eventIds.map((id, idx) =>
             fetch(`/api/events/${id}`)
               .then((res) => res.json())
               .then((data) => {
                 console.log(data);
-                return { ...data, attendeeIds: data.attendeeIds || [] };
+                return { ...data, attendeeIds: data.attendeeIds || [], startTime:  visitorData.eventsAttended[idx].startTime, endTime: visitorData.eventsAttended[idx].endTime};
               })
           )
         );
-        console.log(fetchedEvents);
+        console.log('fetched', fetchedEvents);
         setEvents(fetchedEvents);
       } catch (error) {
         console.error("Failed to fetch events:", error);
@@ -69,7 +71,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       setLoading(false);
     };
 
-    if (visitorData.eventsAttended.length > 0) {
+if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.length > 0) {
       fetchEvents();
     }
   }, [visitorData]);
@@ -159,7 +161,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                       return (
                         <Tr key={event._id}>
                           <Td>{event.eventName}</Td>
-                          <Td>{eventDuration(event)}</Td>
+                          <Td>{eventHours(event)}</Td>
                           <Td>{formatDate(event.startTime)}</Td>
                         </Tr>
                       );

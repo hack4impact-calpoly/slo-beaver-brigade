@@ -69,6 +69,7 @@ const UserList = () => {
     return events.reduce((total, event) => {
       const start = new Date(event.startTime);
       const end = new Date(event.endTime);
+      console.log(event.startTime, event.endTime, total)
       return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
     }, 0);
   };

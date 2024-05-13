@@ -41,17 +41,17 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   const [visitorData, setVisitorData] = useState<IUser[]>([
     {
       _id: "",
-      groupId: null,
       email: "",
+      phoneNumber: "",
       firstName: "",
       lastName: "",
-      phoneNumber: "",
       age: -1,
       gender: "",
       role: "user",
       eventsRegistered: [],
-      recieveNewsletter: false,
       eventsAttended: [],
+      groupId: null,
+      recieveNewsletter: false
     },
   ]);
 
@@ -78,34 +78,25 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   useEffect(() => {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
+        const visitors: IUser[] = []
         const visitorDataArray = await Promise.all(
           eventData.registeredIds
             .filter((userId) => userId !== null)
             .map(async (userId) => {
               const response = await fetch(`/api/user/${userId}`);
-              return response.json();
+              if (response.ok){
+                console.log('ok')
+                visitors.push(await response.json())
+              }
+              return null
             })
         );
-        setVisitorData(visitorDataArray);
+        setVisitorData(visitors);
         setLoading(false);
       }
     };
     fetchVisitorData();
   }, [eventData]);
-
-  const emailLink = () => {
-    const emails = visitorData
-      .map((visitor) => visitor.email)
-      .filter((email) => !!email);
-    const subject = encodeURIComponent(eventData.eventName + " Update");
-    return `mailto:${emails.join(",")}?subject=${subject}`;
-  };
-
-  const handleEmailAllVisitors = () => {
-    const mailtoLink = emailLink();
-    console.log(mailtoLink);
-    window.location.href = mailtoLink;
-  };
 
   return (
     <Box className={styles.eventPage}>
@@ -116,14 +107,9 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
-          <Box style={{background: fallbackBackgroundImage(eventData.eventImage, "/beaver-eventcard.jpeg"), backgroundSize: "cover"}} className={styles.imageContainer}>
+          <Box className={styles.imageContainer}>
+            <img src={eventData.eventImage || "/beaver-eventcard.jpeg"} alt="cover"></img>
           </Box>
-          <button
-            onClick={handleEmailAllVisitors}
-            className={styles.emailAllVisitors}
-          >
-            Email All Visitors
-          </button>
           <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>

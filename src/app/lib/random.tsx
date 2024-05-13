@@ -1,5 +1,4 @@
-
-export function fallbackBackgroundImage(image: string | null, fallback: string){
+export function fallbackBackgroundImage(image: string | null, fallback: string = '/beaver-eventcard.jpeg'){
     if (!image){
 
         return `linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url("${fallback}")`
@@ -8,8 +7,7 @@ export function fallbackBackgroundImage(image: string | null, fallback: string){
     return `linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(${image})`
 }
 export function getBaseUrl(){
-    console.log(process.env)
-    console.log(process.env.BASE_URL)
+   
     if (process.env.DEV_MODE == 'true'){
         if (!process.env.DEV_BASE_URL){
             return "http://localhost:3000"
