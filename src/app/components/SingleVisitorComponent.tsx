@@ -59,6 +59,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
               .then((res) => res.json())
               .then((data) => {
                 console.log(data);
+
                 return { ...data, attendeeIds: data.attendeeIds || [], startTime:  visitorData.eventsAttended[idx].startTime, endTime: visitorData.eventsAttended[idx].endTime};
               })
           )
