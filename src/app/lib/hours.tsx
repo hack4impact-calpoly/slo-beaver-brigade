@@ -27,6 +27,7 @@ export function eventHours(event: IEvent) {
   return totalTime / 60 + 'h ' + totalTime % 60 + 'min';
 }
 
+// This function takes an event and calculates the volunteer hours for the event
 export function eventIndividualHours(event: IEvent) {
   let totalTime = getDuration(event.startTime, event.endTime);
   let hours = Math.floor(totalTime / 60);
