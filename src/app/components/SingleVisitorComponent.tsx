@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
-import { eventHours } from ".././lib/hours";
+import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 
 interface Event {
@@ -162,7 +162,7 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
                       return (
                         <Tr key={event._id}>
                           <Td>{event.eventName}</Td>
-                          <Td>{eventHours(event)}</Td>
+                          <Td>{eventIndividualHours(event)}</Td>
                           <Td>{formatDate(event.startTime)}</Td>
                         </Tr>
                       );
