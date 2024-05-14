@@ -12,6 +12,7 @@ import {
   Checkbox,
   CheckboxGroup,
   Stack,
+  Box
 } from "@chakra-ui/react";
 import { getAllImagesS3 } from "app/actions/imageactions";
 
@@ -36,14 +37,19 @@ const EventPreview = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("latest");
+  const [sortOrder, setSortOrder] = useState("earliest");
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [wheelchairAccessible, setWheelchairAccessible] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
-  const [showFutureEvents, setShowFutureEvents] = useState(false);
+  const [showFutureEvents, setShowFutureEvents] = useState(true);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
+  
+  const [volunteerEvents, setVolunteerEvents] = useState(false);
+  const [wateryWalk, setWateryWalk] = useState(false);
+  const [specialEvents, setSpecialEvents] = useState(false);
+
 
   // get string for some group based on id
   const fetchGroupName = async (groupId: ObjectId): Promise<string> => {
@@ -118,6 +124,19 @@ const EventPreview = () => {
     .filter((event) =>
       wheelchairAccessible ? event.wheelchairAccessible : true
     )
+    .filter((event) =>
+      volunteerEvents ? event.eventType === "Volunteer" : true
+    )
+
+    .filter((event) =>
+      wateryWalk ? event.eventType === "Watery Walk" : true
+    )
+
+    .filter((event) =>
+      specialEvents ? event.eventType === "Special Events" : true
+    )
+
+    
     .filter((event) => {
       const eventDate = new Date(event.startTime);
       const now = new Date();
@@ -141,61 +160,100 @@ const EventPreview = () => {
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
-        <Link href={"/admin/events/create"}>
-            <button className={style.yellowButton}>Create new event</button>
-        </Link>
-        <div className={style.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search events"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={style.searchBar}
-          />
-          <MagnifyingGlassIcon
-            style={{
-              width: "15px",
-              height: "15px",
-              position: "absolute",
-              margin: "auto",
-              top: 0,
-              bottom: 0,
-              right: "20px",
-            }}
-          />
+        <div className={style.createAndSearchContainer}>
+          <Link href={"/admin/events/create"}>
+            <button className={style.yellowButton}>Create Event</button>
+          </Link>
+          <div className={style.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search Events"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={style.searchBar}
+            />
+            <MagnifyingGlassIcon
+              style={{
+                width: "15px",
+                height: "15px",
+                position: "absolute",
+                margin: "auto",
+                bottom: "11px",
+                right: "10px",
+                color: "#337774"
+              }}
+            />
+          </div>
         </div>
-        <select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
-          className={style.sortSelect}
-        >
-          <option value="earliest">Earliest First</option>
-          <option value="latest">Latest First</option>
-        </select>
-        <CheckboxGroup colorScheme="green" defaultValue={[]}>
-            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="3">
-              <Checkbox value="watery_walk" colorScheme="teal"
-              onChange={() => setShowFutureEvents(!showFutureEvents)}>
-                Future Events
-              </Checkbox>
-              <Checkbox value="volunteer" colorScheme="yellow"
-              onChange={() => setShowPastEvents(!showPastEvents)}>
-                Past Events
-              </Checkbox>
-              <Checkbox value="special_events" colorScheme="green"
-              onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}>
-                Spanish Speaking
-              </Checkbox>
-              <Checkbox value="wheelchair_accessible" colorScheme="blue"
-              onChange={() => setWheelchairAccessible(!wheelchairAccessible)}>
-                Wheelchair Accessible
-              </Checkbox>
-            </Stack>
-          </CheckboxGroup>
+        <div>
+          <div className={style.filterContainer}>
+            <div className={style.filterHeader}>Event Timeframe</div>
+            <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
+              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+                  {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
+                <Checkbox value="true" colorScheme="teal"
+                  onChange={() => setShowFutureEvents(!showFutureEvents)}>
+                    <div className={style.checkboxLabel}>Future Events</div>
+                </Checkbox>
+                <Checkbox value="false" colorScheme="yellow"
+                  onChange={() => setShowPastEvents(!showPastEvents)}>
+                    <div className={style.checkboxLabel}>Past Events</div>
+                </Checkbox>
+                <select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className={style.sortSelect}
+                  >
+                    <option value="earliest">From Earliest</option>
+                    <option value="latest">From Latest</option>
+                </select>
+              </Stack>
+            </CheckboxGroup>
+          </div>
+          <div className={style.filterContainer}>
+            <div className={style.filterHeader}>Event Type</div>
+            <CheckboxGroup colorScheme="green" defaultValue={[]}>
+              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+                <Checkbox value="watery walk" colorScheme="teal"
+                  onChange={() => setWateryWalk(!wateryWalk)}>
+                    <div className={style.checkboxLabel}>Watery Walk</div>
+                </Checkbox>
+                <Checkbox value="volunteer" colorScheme="yellow"
+                  onChange={() => setVolunteerEvents(!volunteerEvents)}>
+                    <div className={style.checkboxLabel}>Volunteer</div>
+                </Checkbox>
+                <Checkbox value="special events" colorScheme="green"
+                  onChange={() => setSpecialEvents(!specialEvents)}>
+                    <div className={style.checkboxLabel}>Special Events</div>
+                </Checkbox>
+              </Stack>
+            </CheckboxGroup>
+          </div>
+          <div className={style.filterContainer}>
+            <div className={style.filterHeader}>Accessibility</div>
+            <CheckboxGroup colorScheme="green" defaultValue={[]}>
+              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+
+                <Checkbox value="spanish" colorScheme="teal"
+                  onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}>
+                    <div className={style.checkboxLabel}>Spanish Speaking</div>
+                </Checkbox>
+                <Checkbox value="wheelchair accessible" colorScheme="yellow"
+                  onChange={() => setWheelchairAccessible(!wheelchairAccessible)}>
+                    <div className={style.checkboxLabel}>Wheelchair Accessible</div>
+                </Checkbox>
+              </Stack>
+            </CheckboxGroup>
+          </div>
+        </div> 
         
       </aside>
       {loading ? (
-        <div className={style.cardContainer}>Loading events...</div>
+        <div className={style.cardContainer}>
+          <div className={style.emptyStateText}>
+          Loading events...
+          </div>
+        </div>
       ) : filteredEvents.length > 0 ? (
         <div className={style.cardContainer}>
           <ul className={style.eventsList}>
@@ -212,7 +270,9 @@ const EventPreview = () => {
           </ul>
         </div>
       ) : (
-        <div className={style.cardContainer}>No events to show</div>
+        <div className={style.cardContainer}>
+          <div className={style.emptyStateText}>No events to show</div>
+        </div>
       )}
       {selectedEvent && (
         <ExpandedTest
