@@ -23,13 +23,15 @@ export default function RootLayout({
 }) {
     
   return (
+    <ClerkProvider>
       <html lang="en">
         <body  className={montserrat.className}>
-          <Providers>
+            <Providers>
               <NavbarParent/>
               {children}
-          </Providers>
+              </Providers>
           </body>
       </html>
+      </ClerkProvider>
   );
 }
