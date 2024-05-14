@@ -112,7 +112,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   const url = `/events/${eventDetails._id}/digitalWaiver/1`
   return (
   <>
-    <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
+    <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" >
       <ModalOverlay/>
       <ModalContent mt={"5rem"} mb={"1rem"}>
         <ModalHeader bg={backgroundImage} fontWeight="bold" position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"5px 5px 0px 0px"}>
