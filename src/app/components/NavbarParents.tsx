@@ -1,3 +1,4 @@
+
 import React from "react";
 import Navbar from "./Navbar";
 import { currentUser } from "@clerk/nextjs";
@@ -6,6 +7,7 @@ import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
 import { getUserDbData } from "app/lib/authentication";
 
+export const dynamic = "force-dynamic";
 /** fetch from MongoDB, get user Role */
 async function getUserData(id: string | null){
   await connectDB()

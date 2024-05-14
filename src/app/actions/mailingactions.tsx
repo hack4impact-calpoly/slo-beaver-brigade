@@ -19,19 +19,25 @@ export async function getLists(){
 }
 
 export async function addToNewsletter(email_address: string) {
-    const newletterid = process.env.NEWSLETTER_ID
-    if (!newletterid){
-        console.log('issue occured with api key, mailchimp newsletter id.')
+    try{
+        const newletterid = process.env.NEWSLETTER_ID
+        if (!newletterid){
+            console.log('issue occured with api key, mailchimp newsletter id.')
+            return false
+        }
+        
+        const response = await mailchimp.lists.addListMember(newletterid, {email_address, status: "subscribed"})
+        console.log(response);
+        console.log('added')
+        if (response.status == 200){
+            return true
+        }
         return false
     }
-    
-    const response = await mailchimp.lists.addListMember(newletterid, {email_address, status: "subscribed"})
-    console.log(response);
-    console.log('added')
-    if (response.status == 200){
-        return true
+    catch(err){
+        console.log(err)
+        return false
     }
-    return false
 }
 
 export async function removeFromNewsletter(email_address: string) {
