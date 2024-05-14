@@ -104,7 +104,11 @@ const ForgotPasswordPage: NextPage = () => {
             <Button type="submit" width="full">
               Send password reset code
             </Button>
-            {error && <FormErrorMessage>{error}</FormErrorMessage>}
+            {error && (
+              <Box mt={2} color="red.500" textAlign="center">
+                {error}
+              </Box>
+            )}
           </>
         )}
         {successfulCreation && (
@@ -128,7 +132,11 @@ const ForgotPasswordPage: NextPage = () => {
             <Button type="submit" width="full">
               Reset Password
             </Button>
-            {error && <FormErrorMessage>{error}</FormErrorMessage>}
+            {error && (
+              <Box mt={2} color="red.500" textAlign="center">
+                {error}
+              </Box>
+            )}
           </>
         )}
       </form>
