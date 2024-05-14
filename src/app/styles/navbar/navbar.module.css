@@ -151,11 +151,13 @@
 }
 
 @media (max-width: 1180px) {
-    .nav_elements ul a {
-        font-size: 12px;
+    .nav_elements ul li {
+        font-size: 14px;
+        margin-right: 10px;
+        margin-left: 10px;
     }
     .nav_right ul {
-        font-size: 12px;
+        font-size: 14px;
     }
 }
 
@@ -163,6 +165,7 @@
     .nav_elements ul li {
         margin-right: 10px;
         margin-left: 10px;
+        font-size: 12px;
     }
     .nav_right ul {
         font-size: 12px;
@@ -170,7 +173,7 @@
 
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1010px) {
     .menu_icon {
         display: block;
         cursor: pointer;

@@ -144,6 +144,15 @@
         align-items: center;
         gap: 10px;
     }
+
+    .filterGroupContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        gap: 50px;
+
+    }
+
 }
 
 @media (max-width: 768px) {
@@ -160,12 +169,14 @@
 
     .searchBar,
     .sortSelect {
-        padding: 10px;
+        padding: 5px;
+        font-size: 12px;
     }
-
-    .checkBoxes label {
-        display: block;
-        margin-bottom: 5px;
+    .filterHeader {
+        font-size: 12px;
+    }
+    .checkboxLabel {
+        font-size: 12px;
     }
 
     .checkBoxes input[type="checkbox"] {

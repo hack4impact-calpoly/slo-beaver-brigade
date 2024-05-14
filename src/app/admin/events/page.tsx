@@ -185,7 +185,7 @@ const EventPreview = () => {
             />
           </div>
         </div>
-        <div>
+        <div className={style.filterGroupContainer}>
           <div className={style.filterContainer}>
             <div className={style.filterHeader}>Event Timeframe</div>
             <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
