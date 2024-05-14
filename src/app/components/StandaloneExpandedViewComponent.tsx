@@ -38,7 +38,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   const { isOpen, onOpen, onClose } = useDisclosure();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const [signedIn, setSignedIn] = useState(false);
-  const [isLargerThan768] = useMediaQuery("(min-width: 550px)");
+  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [visitorData, setVisitorData] = useState<IUser>(
     {
       _id: "",
@@ -141,8 +141,6 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
 
         <ModalBody pb={"5%"}>
           <Stack spacing={5} width={"100%"}>
-            {isLargerThan768 ?
-              <>
               <Flex direction={"column"} mt={"3%"} >
                 <Flex>
                   <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"} mt={"2%"}>
@@ -208,141 +206,77 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                   <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
                 </Text>
               </Flex>
-            <Flex>
-              <Flex direction={"column"} width={"50%"}>
-                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"10%"}>
-                  Checklist:
-                  </FormLabel>
-                  <Text ml={"6.5%"} fontWeight={"light"}>
-                    <MarkdownPreview className= {style.preview} source={eventDetails.checklist} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
-                  </Text>
-              </Flex>
-              <Stack spacing={5}>
-                <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
-                  Accomodations:
-                </FormLabel>
-                {eventDetails.wheelchairAccessible ? 
-                  <Text  fontWeight={"light"}>
-                    <MarkdownPreview className= {style.preview} source={"- Wheelchair Accessible"}  wrapperElement={{"data-color-mode": "light"}} />
-                  </Text> :
-                  <></>
-                }
-                {eventDetails.spanishSpeakingAccommodation ? 
-                  <Text fontWeight={"light"}>
-                    <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"}  wrapperElement={{"data-color-mode": "light"}} />
-                  </Text> :
-                  <></>
-                }
-                {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible? 
-                  <Text ml={"6.5%"} fontWeight={"light"}>
-                    <MarkdownPreview className= {style.preview} source={"N/A"}  wrapperElement={{"data-color-mode": "light"}} />
-                  </Text> :
-                  <></>
-                }
-              </Stack>
-            </Flex> 
-            </>
-            : 
-              <Flex ml={"5%"} direction={"column"}>
+              {isLargerThan550 ?
+                   <Flex>
+                   <Flex direction={"column"} width={"50%"}>
+                       <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"10%"}>
+                       Checklist:
+                       </FormLabel>
+                       <Text ml={"6.5%"} fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={eventDetails.checklist} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
+                       </Text>
+                   </Flex>
+                   <Stack spacing={5}>
+                     <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
+                       Accomodations:
+                     </FormLabel>
+                     {eventDetails.wheelchairAccessible ? 
+                       <Text  fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={"- Wheelchair Accessible"}  wrapperElement={{"data-color-mode": "light"}} />
+                       </Text> :
+                       <></>
+                     }
+                     {eventDetails.spanishSpeakingAccommodation ? 
+                       <Text fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"}  wrapperElement={{"data-color-mode": "light"}} />
+                       </Text> :
+                       <></>
+                     }
+                     {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible? 
+                       <Text ml={"6.5%"} fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={"N/A"}  wrapperElement={{"data-color-mode": "light"}} />
+                       </Text> :
+                       <></>
+                     }
+                   </Stack>
+                 </Flex> 
+              :
+              <Flex direction={"column"} ml={"5%"}>
                 <Flex direction={"column"} width={"50%"}>
-                  <Flex mt={"3%"}>
-                    <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} mt={"2%"}>
-                      Description:
-                    </FormLabel>
-                    <Flex
-                    justifyContent='right'
-                    flexWrap="wrap"
-                    mr={"15%"}
-                    ml={"auto"}
-                  >
-
-                    {signedIn ? 
-                      <>
-                      {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
-                        <Button
-                          onClick={onOpen}
-                          bg="#e0af48"
-                          color="black"
-                          fontWeight={"light"}
-                          fontSize={{ base: 'xl', md: 'md' }}
-                          pl={"5%"}
-                          pr={"5%"}
-                          flexBasis={{ base: '100%', md: 'auto' }}
-                        >
-                          <strong>Cancel Reservation</strong>
-                        </Button>
-                      :
-                        <Link href={url}>
-                          <Button
-                            bg="#006d75"
-                            color="white"
-                            fontWeight={"light"}
-                            fontSize={{ base: 'xl', md: 'md' }}
-                          
-                            pl={"100%"}
-                            pr={"100%"}
-                            flexBasis={{ base: '100%', md: 'auto' }}
-                          >
-                            <strong>Sign Up</strong>
-                          </Button>
-                        </Link>
-                      }
-                      </>
-                    : 
-                      <Link href="/login">
-                        <Button
-                          bg="#006d75"
-                          color="white"
-                          fontWeight={"light"}
-                          fontSize={{ base: 'xl', md: 'md' }}
-                          pl={"100%"}
-                          pr={"100%"}
-                          flexBasis={{ base: '100%', md: 'auto' }}
-                        >
-                          <strong>Login</strong>
-                        </Button>
-                      </Link>
-                    }
-                  </Flex>
-                  </Flex>
-
-                  <Text ml={"3.5%"}>
-                    <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
-                  </Text>
-                </Flex>
-                <Flex direction={"column"} width={"50%"}>
-                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
+                    <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
                     Checklist:
-                  </FormLabel>
-                  <Text ml={"3.5%"}>
-                    <MarkdownPreview className= {style.preview} source={eventDetails.checklist} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
-                  </Text>
+                    </FormLabel>
+                    <Text ml={"6.5%"} fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={eventDetails.checklist} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
+                    </Text>
                 </Flex>
                 <Stack spacing={5}>
                   <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
                     Accomodations:
                   </FormLabel>
                   {eventDetails.wheelchairAccessible ? 
-                    <Text ml={"5%"}>
-                      <MarkdownPreview className= {style.preview} source={"- Wheelchair Accesible"} wrapperElement={{"data-color-mode": "light"}} />
-                    </Text>:
+                    <Text  fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={"- Wheelchair Accessible"}  wrapperElement={{"data-color-mode": "light"}} />
+                    </Text> :
                     <></>
                   }
                   {eventDetails.spanishSpeakingAccommodation ? 
-                    <Text ml={"5%"}>
-                      <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"} wrapperElement={{"data-color-mode": "light"}} />
-                    </Text>:
+                    <Text fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"}  wrapperElement={{"data-color-mode": "light"}} />
+                    </Text> :
                     <></>
                   }
                   {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible? 
-                    <Text ml={"5%"}>
-                      <MarkdownPreview className= {style.preview} source={"N/A"} wrapperElement={{"data-color-mode": "light"}} />
-                    </Text>:
+                    <Text ml={"6.5%"} fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={"N/A"}  wrapperElement={{"data-color-mode": "light"}} />
+                    </Text> :
                     <></>
                   }
-                </Stack> 
-              </Flex>
+                </Stack>
+            </Flex> 
+            
             }
+         
           </Stack>
         </ModalBody>
       </ModalContent>
