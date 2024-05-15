@@ -190,10 +190,10 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                           bg="#006d75"
                           color="white"
                           fontWeight={"light"}
-                          fontSize={{ base: 'xl', md: 'md' }}
                           pl={"100%"}
                           pr={"100%"}
                           flexBasis={{ base: '100%', md: 'auto' }}
+                          width={{ base: '100%', md: 'auto' }}
                         >
                           <strong>Login</strong>
                         </Button>
