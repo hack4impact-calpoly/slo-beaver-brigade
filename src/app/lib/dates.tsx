@@ -55,3 +55,23 @@ export function getDuration(start: Date, end: Date){
 
   return minutes;
 };
+  // convert date into xx:xx XM - xx:xx XM
+  export const formatDateTimeRange = (start: Date, end: Date) => {
+    if (!(start instanceof Date)) {
+      start = new Date(start); // Convert to Date object if not already
+    }
+
+    if (!(end instanceof Date)) {
+      end = new Date(end); // Convert to Date object if not already
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "numeric", // "numeric" or "2-digit"
+      minute: "numeric", // "numeric" or "2-digit"
+    };
+
+    const formattedStart = start.toLocaleTimeString("en-US", options);
+    const formattedEnd = end.toLocaleTimeString("en-US", options);
+
+    return `${formattedStart} - ${formattedEnd}`;
+  };

@@ -3,7 +3,7 @@
 import connectDB from "@database/db";
 import Event from "@database/eventSchema";
 import User from "@database/userSchema";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function removeAttendee(userid: string, eventid: string ) {
@@ -46,10 +46,20 @@ export async function removeRegistered(userid: string, eventid: string ) {
         // remove event from user
         await User.updateOne({_id:userid},{$pull: {eventsRegistered : {eventId: eventid}}}).orFail();
     
+        revalidateTag("events")
         return true
     }
     catch(err){
         console.log(err);
         return false
     }
+}
+
+export async function revalidatePathServer(path: string){
+    let BASE_URL = process.env.BASE_URL
+    if (process.env.DEV_MODE){
+        BASE_URL = process.env.DEV_BASE_URL
+    }
+    revalidatePath(path)
+    console.log('revalidated path')
 }
