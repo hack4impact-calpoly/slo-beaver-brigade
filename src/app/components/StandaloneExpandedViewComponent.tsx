@@ -142,17 +142,11 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
         <ModalBody pb={"5%"}>
           <Stack spacing={5} width={"100%"}>
               <Flex direction={"column"} mt={"3%"} >
-                <Flex>
+                <Flex justifyContent={"space-between"} > 
                   <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"} mt={"2%"}>
                     Description:
                   </FormLabel>
-                  <Flex
-                    justifyContent='right'
-                    flexWrap="wrap"
-                    mr={"15%"}
-                    ml={"auto"}
-                  >
-
+                  <Flex pr={{base:"5%",md:"10%"}}>
                     {signedIn ? 
                       <>
                       {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
@@ -185,7 +179,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                       }
                       </>
                     : 
-                      <Link href="/login">
+                      <Link href="/login" className={style.login_button} >
                         <Button
                           bg="#006d75"
                           color="white"
