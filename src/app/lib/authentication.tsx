@@ -22,3 +22,19 @@ export async function getUserDbData(){
         return null
     }
 }
+
+export async function getUserDataFromEmail(email: string){
+    // search db for user with matching email address
+    await connectDB()
+    console.log(email)
+    try{
+        const user: IUser | null = await User.findOne({email: email}).orFail();
+        console.log("user found")
+        return JSON.stringify(user);
+    }
+    catch(err){
+        console.log('user not found: ' + err)
+        return null
+    }
+
+}
