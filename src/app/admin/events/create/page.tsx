@@ -412,7 +412,7 @@ export default function Page() {
           </FormControl>
 
           <HStack justifyContent="space-between">
-            <FormControl isRequired width="48%">
+            <FormControl width="48%">
               <FormLabel htmlFor="event-type" fontWeight="bold">
                 Event Type
               </FormLabel>
@@ -481,7 +481,7 @@ export default function Page() {
             />
           </FormControl>
 
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
               Spanish Speaking Accommodation
             </FormLabel>
@@ -502,7 +502,7 @@ export default function Page() {
             ></Select>
           </FormControl>
 
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel htmlFor="accessibility" fontWeight="bold">
               Accessibility Accommodation
             </FormLabel>
