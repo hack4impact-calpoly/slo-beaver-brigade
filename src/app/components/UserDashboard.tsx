@@ -96,6 +96,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
   const [windowWidth, setWindowWidth] = useState(0);
   const [selectedEventType, setSelectedEventType] = useState('');
   const [isExpandedViewComponentOpen, setExpandedViewComponentOpen] = useState(false);
+  const [eventForExpandedViewComponent, setEventForExpandedViewComponent] = useState<IEvent | null>(null);
 
  // breakpoint for different viewport size
  const eventNameSize = useBreakpointValue({
@@ -306,6 +307,10 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
 };
 
 
+function setupViewEventModal(event: IEvent){
+  setEventForExpandedViewComponent(event);
+}
+
 
 
 
@@ -315,7 +320,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
        setShowModal={setShowEventList}
        showModal={showEventList}
      ></EventListRegister>
-  
+
     {userData &&
     <div className="px-[3rem] pt-3">
              <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
@@ -392,13 +397,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                  userEvents.map((event) => {
                    const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
                    return (
-                   <Box key={event._id} textAlign="center" px="4" mb="4" onClick={toggleExpandedViewComponentOpen}>
-                     {isExpandedViewComponentOpen && 
-                      (<ExpandedViewComponent 
-                        eventDetails={event}
-                        showModal={true} 
-                        setShowModal={toggleExpandedViewComponentOpen} 
-                        />)}
+                   <Box key={event._id} textAlign="center" px="4" mb="4" onClick={() => setupViewEventModal(event)}>
+                     
                      <Box
                        position="relative"
                        borderWidth="1px"
@@ -567,10 +567,9 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
             <Slider {...unregisteredEventSettings}>
               {unregisteredEvents.length > 0 ? (
                 unregisteredEvents.map((event) => {
-                  console.log(event)
                   const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
                   return (
-                    <Box key={event._id} textAlign="center" px="0" mb="4" >
+                    <Box key={event._id} textAlign="center" px="0" mb="4" onClick={() => setupViewEventModal(event)}>
                       
                       <Box
                         key={event._id}
@@ -594,12 +593,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                         onClick={toggleExpandedViewComponentOpen}
                       >
                         
-                        {isExpandedViewComponentOpen && 
-                      (<ExpandedViewComponent 
-                        eventDetails={event}
-                        showModal={true} 
-                        setShowModal={toggleExpandedViewComponentOpen} 
-                        />)}
+                        
                         <Heading
                           as="h1"
                           size="3xl"
@@ -622,6 +616,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                           zIndex={2}
                           fontSize={eventDetailSize}
                         >
+                          
                           <Text
                             fontWeight="custom"
                             color="white"
@@ -672,6 +667,9 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                             </Box>
                           </Box>
                           )})
+                          
+                      
+
                ) : (
                  <UnregisteredEventPlaceholder />
                )}
@@ -693,10 +691,17 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                             <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
                           )
                         ))}
+                        
               </Slider>
             ) : null}
           </Box>
         </Box>
      </div>
+     <ExpandedViewComponent
+        eventDetails={eventForExpandedViewComponent}
+        showModal={isExpandedViewComponentOpen}
+        setShowModal={toggleExpandedViewComponentOpen}
+      />
     </div>
+    
     )};
