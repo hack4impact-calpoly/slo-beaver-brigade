@@ -45,7 +45,6 @@ const EventPreview = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
-  
   const [volunteerEvents, setVolunteerEvents] = useState(false);
   const [wateryWalk, setWateryWalk] = useState(false);
   const [specialEvents, setSpecialEvents] = useState(false);
@@ -124,19 +123,23 @@ const EventPreview = () => {
     .filter((event) =>
       wheelchairAccessible ? event.wheelchairAccessible : true
     )
-    .filter((event) =>
-      volunteerEvents ? event.eventType === "Volunteer" : true
-    )
-
-    .filter((event) =>
-      wateryWalk ? event.eventType === "Watery Walk" : true
-    )
-
-    .filter((event) =>
-      specialEvents ? event.eventType === "Special Events" : true
-    )
-
     
+    .filter((event) => {
+      // display event if the checkbox is toggled and event type is toggled
+      // if multiple checkboxes are toggled, display events for any of the types that are toggled
+      if ((volunteerEvents && event.eventType === "Volunteer") ||
+         (wateryWalk && event.eventType === "Watery Walk") ||
+         (specialEvents && event.eventType === "Special Events")) 
+        {
+         return true;
+        }
+      // if none of the checkboxes are toggled, display all events
+      else if (!volunteerEvents && !wateryWalk && !specialEvents )
+        {
+         return true;
+        }
+      })
+        
     .filter((event) => {
       const eventDate = new Date(event.startTime);
       const now = new Date();
@@ -191,11 +194,11 @@ const EventPreview = () => {
             <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
               <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
                   {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
-                <Checkbox value="true" colorScheme="teal"
+                <Checkbox value="true" colorScheme="blue"
                   onChange={() => setShowFutureEvents(!showFutureEvents)}>
                     <div className={style.checkboxLabel}>Future Events</div>
                 </Checkbox>
-                <Checkbox value="false" colorScheme="yellow"
+                <Checkbox value="false" colorScheme="blue"
                   onChange={() => setShowPastEvents(!showPastEvents)}>
                     <div className={style.checkboxLabel}>Past Events</div>
                 </Checkbox>
@@ -234,11 +237,11 @@ const EventPreview = () => {
             <CheckboxGroup colorScheme="green" defaultValue={[]}>
               <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
 
-                <Checkbox value="spanish" colorScheme="teal"
+                <Checkbox value="spanish" colorScheme="blue"
                   onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}>
                     <div className={style.checkboxLabel}>Spanish Speaking</div>
                 </Checkbox>
-                <Checkbox value="wheelchair accessible" colorScheme="yellow"
+                <Checkbox value="wheelchair accessible" colorScheme="blue"
                   onChange={() => setWheelchairAccessible(!wheelchairAccessible)}>
                     <div className={style.checkboxLabel}>Wheelchair Accessible</div>
                 </Checkbox>
