@@ -161,10 +161,10 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                           bg="#e0af48"
                           color="black"
                           fontWeight={"light"}
-                          fontSize={{ base: 'xl', md: 'md' }}
-                          pl={"5%"}
-                          pr={"5%"}
-                          flexBasis={{ base: '100%', md: 'auto' }}
+                          pl={"70%"}
+                          pr={"70%"}
+                          width={{ base: '100px', md: 'auto' }}
+                          fontSize={{ base: 'sm', md: 'md' }}
                         >
                           <strong>Cancel Reservation</strong>
                         </Button>
