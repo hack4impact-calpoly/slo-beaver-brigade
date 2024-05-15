@@ -21,10 +21,18 @@ export function calcHoursForAll(events: IEvent[]) {
   return totalTime;
 }
 
-// This function takes a list of events and calculates the total volunteer hours accumulated by all attendees
+// This function takes an event and calculates the total volunteer hours accumulated by all attendees
 export function eventHours(event: IEvent) {
   let totalTime = getDuration(event.startTime, event.endTime) * event.attendeeIds.length;
   return Math.floor(totalTime / 60) + 'h ' + totalTime % 60 + 'min';
+}
+
+// This function takes an event and calculates the volunteer hours for the event
+export function eventIndividualHours(event: IEvent) {
+  let totalTime = getDuration(event.startTime, event.endTime);
+  let hours = Math.floor(totalTime / 60);
+  let minutes = totalTime % 60;
+  return hours + 'h ' + minutes + 'min';
 }
 
 // This function takes a list of events and filters out events where the current user isnt an attendee

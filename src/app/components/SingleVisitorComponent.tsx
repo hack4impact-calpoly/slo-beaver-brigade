@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
-import { eventHours } from ".././lib/hours";
+import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 
 interface Event {
@@ -54,16 +54,17 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       try {
         const eventIds = visitorData.eventsAttended.map((e) => e.eventId);
         const fetchedEvents = await Promise.all(
-          eventIds.map((id) =>
+          eventIds.map((id, idx) =>
             fetch(`/api/events/${id}`)
               .then((res) => res.json())
               .then((data) => {
                 console.log(data);
-                return { ...data, attendeeIds: data.attendeeIds || [] };
+
+                return { ...data, attendeeIds: data.attendeeIds || [], startTime:  visitorData.eventsAttended[idx].startTime, endTime: visitorData.eventsAttended[idx].endTime};
               })
           )
         );
-        console.log(fetchedEvents);
+        console.log('fetched', fetchedEvents);
         setEvents(fetchedEvents);
       } catch (error) {
         console.error("Failed to fetch events:", error);
@@ -158,11 +159,10 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
                   </Thead>
                   <Tbody>
                     {events.map((event) => {
-                      console.log(event);
                       return (
                         <Tr key={event._id}>
                           <Td>{event.eventName}</Td>
-                          <Td>{eventHours(event)}</Td>
+                          <Td>{eventIndividualHours(event)}</Td>
                           <Td>{formatDate(event.startTime)}</Td>
                         </Tr>
                       );

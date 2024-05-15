@@ -6,13 +6,11 @@ import  theme from "../themes/theme"
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     
-    <ClerkProvider>
     <StyledComponentsRegistry>
       <ChakraProvider theme={theme}>
         {children}
       </ChakraProvider>
     </StyledComponentsRegistry>
-    </ClerkProvider>
     
   )
 }
