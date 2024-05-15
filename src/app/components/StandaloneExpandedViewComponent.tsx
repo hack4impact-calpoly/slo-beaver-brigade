@@ -57,6 +57,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   );
 
   function closeExpandedView() {
+    console.log(eventDetails)
     setShowModal(false);
   }
 
