@@ -169,16 +169,15 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                           <strong>Cancel Reservation</strong>
                         </Button>
                       :
-                        <Link href={url}>
+                        <Link href={url} className={style.signup_button}>
                           <Button
                             bg="#006d75"
                             color="white"
                             fontWeight={"light"}
-                            fontSize={{ base: 'xl', md: 'md' }}
-                          
                             pl={"100%"}
                             pr={"100%"}
                             flexBasis={{ base: '100%', md: 'auto' }}
+                            width={{ base: '100%', md: 'auto' }}
                           >
                             <strong>Sign Up</strong>
                           </Button>
