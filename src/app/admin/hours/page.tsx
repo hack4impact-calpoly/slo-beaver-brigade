@@ -18,6 +18,7 @@ import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration } from '../../lib/dates';
 import { calcHours, calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import ViewEventDetailsHours from '../../components/ViewEventDetailsHours'
 
 const AttendedEvents = () => {
   //states
@@ -175,12 +176,7 @@ const AttendedEvents = () => {
                   <Td>{eventHours(event)}</Td>
                   <Td>{formatDate(event.startTime)}</Td>
                   <Td>
-                    <Link
-                      href={`events/edit/${event._id}`}
-                      className={style.viewDetails}
-                    >
-                      View Details
-                    </Link>
+                    <ViewEventDetailsHours event={event}></ViewEventDetailsHours>
                   </Td>
                 </Tr>
               ))}

@@ -14,6 +14,33 @@ export function formatDate(date: Date){
   return date.toLocaleDateString('en-US', options);
 };
 
+export function formatDateWeekday(date: Date){
+  if (!(date instanceof Date)) {
+    date = new Date(date); // Convert to Date object if not already
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  };
+  return date.toLocaleDateString('en-US', options);
+};
+
+export function formatDateTime(date: Date){
+  if (!(date instanceof Date)) {
+    date = new Date(date); // Convert to Date object if not already
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  };
+  return date.toLocaleTimeString('en-US', options);
+};
+
 // given two dates convert time range into xxh xx min
 export function formatDuration(start: Date, end: Date){
   if (!(start instanceof Date)) {
