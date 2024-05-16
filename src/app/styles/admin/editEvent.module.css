@@ -75,7 +75,7 @@
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  padding-bottom: 4%;
+  margin-bottom: 3%;
 }
 
 .visitorHeading {
@@ -217,9 +217,21 @@
   text-decoration-line: underline;
 }
 
+.tableContainer {
+  height: 26vh;
+  overflow: auto;
+  
+}
+
 .visitorTable {
   width: 100%;
   table-layout: fixed;
+}
+
+.visitorTable th,
+.visitorTable td {
+  padding: 7px; 
+  margin: 2px;  
 }
 
 .visitorInfoSmallHeader {
