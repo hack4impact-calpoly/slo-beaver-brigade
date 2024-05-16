@@ -4,7 +4,7 @@ export type IEvent = {
     _id: string;
     eventName: string;
     eventImage: string | null;
-    eventType: string;
+    eventType: string | null;
     location: string;
     description: string;
     checklist: string;
@@ -26,8 +26,8 @@ const eventSchema = new Schema({
     location: { type: String, required: true },
     description: { type: String, required: true },
     checklist: { type: String, required: false, default: "N/A" },
-    wheelchairAccessible: { type: Boolean, required: false },
-    spanishSpeakingAccommodation: { type: Boolean, required: false },
+    wheelchairAccessible: { type: Boolean, required: false, default: false},
+    spanishSpeakingAccommodation: { type: Boolean, required: false, default: false},
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     volunteerEvent: { type: Boolean, required: true },
