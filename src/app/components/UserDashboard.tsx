@@ -112,6 +112,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
  const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
 
 
+
  //convert date into format Dayofweek, Month
  const formatDate = (date: Date) => {
    if (!(date instanceof Date)) {
@@ -309,8 +310,12 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
 
 function setupViewEventModal(event: IEvent){
   setEventForExpandedViewComponent(event);
+  setExpandedViewComponentOpen(!isExpandedViewComponentOpen);
 }
 
+const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonElement>) => {
+  event.stopPropagation();
+};
 
 
 
@@ -590,7 +595,6 @@ function setupViewEventModal(event: IEvent){
                         borderRadius="20px"
                         className={style.eventBox}
                         flex="1 0 40%" // Adjust the width as needed
-                        onClick={toggleExpandedViewComponentOpen}
                       >
                         
                         
@@ -658,6 +662,7 @@ function setupViewEventModal(event: IEvent){
                                         colorScheme="yellow"
                                         fontSize={eventDetailSize}
                                         mt={14}
+                                        onClick={handleButtonClickToStopPropogation}
                                     >
                                         Register
                                     </Button>
