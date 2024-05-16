@@ -51,9 +51,7 @@ export async function POST(req: NextRequest) {
     // create new event or return error
     try {
         const newEvent = new Event(event);
-        console.log("Event Data Before:", newEvent);
         newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
-        console.log("New Event Data:", newEvent); // Add this line
 
         await newEvent.save();
         revalidateTag("events");
