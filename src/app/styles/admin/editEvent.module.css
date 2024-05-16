@@ -27,6 +27,20 @@
   color: white;
 }
 
+.backButton {
+  padding: 5px 30px 5px 30px;
+  border: 2px solid #337774;
+  color: #337774;
+  border-radius: 7px;
+  font-family: "Lato";
+  font-weight: bold;
+}
+
+.backButton:hover {
+  background-color: #e6f7f6;
+  color: black;
+}
+
 .temp {
   width: 100%;
   display: flex;
