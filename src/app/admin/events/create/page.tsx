@@ -26,6 +26,8 @@ import { formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
 import { Select, CreatableSelect } from "chakra-react-select";
+import styles from "../../../styles/userdashboard/MiniCalendar.module.css";
+
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -72,43 +74,55 @@ export default function Page() {
     });
   };
 
-  //Parse and format start and end time from user input
-  const handleTimeChange = (start: string, end: string) => {
-    // Format for parsing input times (handle both 12-hour and 24-hour formats)
-    if(start && end){
-      const timeFormat =
-      start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
+  const handleTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
+    const value = event.target.value;
+    if (type === "start") {
+      setEventStart(value);
+    } else {
+      setEventEnd(value);
+  }
+  };
 
-      // Parse the start and end times as dates on the active date
-      const parsedStartTime = parse(
-        `${start}`,
-        timeFormat,
-        new Date(`${activeDate}T00:00:00`)
-      );
-      const parsedEndTime = parse(
-        `${end}`,
-        timeFormat,
-        new Date(`${activeDate}T00:00:00`)
-      );
+  //Parse and format start and end time from user input
+  // const handleTimeChange = (start: string, end: string) => {
+  //   // Format for parsing input times (handle both 12-hour and 24-hour formats)
+  //   if(start && end){
+  //     const timeFormat =
+  //     start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
+
+  //     // Parse the start and end times as dates on the active date
+  //     const parsedStartTime = parse(
+  //       `${start}`,
+  //       timeFormat,
+  //       new Date(`${activeDate}T00:00:00`)
+  //     );
+  //     const parsedEndTime = parse(
+  //       `${end}`,
+  //       timeFormat,
+  //       new Date(`${activeDate}T00:00:00`)
+  //     );
         
-      // Format the adjusted dates back into ISO strings
-      const formattedStartDateTime = formatISO(parsedStartTime);
-      const formattedEndDateTime = formatISO(parsedEndTime);
-      // Update the state with the formatted date times
-      setEventStart(formattedStartDateTime);
-      setEventEnd(formattedEndDateTime);
-    };
-    if(!start){
-      setEventStart("");
-    };
-    if(!end){
-      setEventEnd("");
-    };
-  };
-  // Update active date upon change from MiniCalendar
-  const handleDateChangeFromCalendar = (newDate: string) => {
-    setActiveDate(newDate);
-  };
+  //     // Format the adjusted dates back into ISO strings
+  //     const formattedStartDateTime = formatISO(parsedStartTime);
+  //     const formattedEndDateTime = formatISO(parsedEndTime);
+  //     // Update the state with the formatted date times
+  //     setEventStart(formattedStartDateTime);
+  //     setEventEnd(formattedEndDateTime);
+  //   };
+  //   if(!start){
+  //     setEventStart("");
+  //   };
+  //   if(!end){
+  //     setEventEnd("");
+  //   };
+  // };
+  // // Update active date upon change from MiniCalendar
+  // const handleDateChangeFromCalendar = (newDate: string) => {
+  //   setActiveDate(newDate);
+  // };
 
   // Create a ref for the file input
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -351,7 +365,6 @@ export default function Page() {
       <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
         Create New Event
       </Text>
-
       <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
         <Input
           id="cover-image"
@@ -553,10 +566,39 @@ export default function Page() {
             </Text>
             {/* MiniCalendar */}
             <FormControl ml="-4" isRequired>
-              <MiniCalendar
+              {/* <MiniCalendar
                 onTimeChange={(start, end) => handleTimeChange(start, end)}
                 onDateChange={(date) => handleDateChangeFromCalendar(date)}
-              />
+              /> */}
+              <div className={styles.timeSelector}>
+                <div>
+                  &nbsp;&nbsp;Date :{" "}
+                  <input
+                    type="date"
+                    className={styles.timeInput}
+                    value={activeDate}
+                    onChange={(e) => setActiveDate(e.target.value)}
+                  />
+                </div>
+                <div>
+                  Start Time :{" "}
+                  <input
+                    type="time"
+                    className={styles.timeInput}
+                    value={eventStart}
+                    onChange={(e) => handleTimeChange(e, "start")}
+                  />
+                </div>
+                <div>
+                  &nbsp;&nbsp;End Time :{" "}
+                  <input
+                    type="time"
+                    className={styles.timeInput}
+                    value={eventEnd}
+                    onChange={(e) => handleTimeChange(e, "end")}
+                 />
+                </div>
+              </div>
             </FormControl>
           </VStack>
         </Flex>
