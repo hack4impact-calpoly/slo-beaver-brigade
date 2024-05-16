@@ -44,15 +44,14 @@ export async function GET(request: Request) {
 
 export async function POST(req: NextRequest) {
     await connectDB();
-    console.log("Connected to Db");
 
     const event: IEvent = await req.json();
+
 
     // create new event or return error
     try {
         const newEvent = new Event(event);
         newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
-        console.log("New Event Data:", newEvent); // Add this line
 
         await newEvent.save();
         revalidateTag("events");
@@ -60,7 +59,6 @@ export async function POST(req: NextRequest) {
             status: 200,
         });
     } catch (err: any) {
-        console.error("Error creating event:", err); // Add this line
 
         if (err.name === "ValidationError") {
             // Handle validation errors
