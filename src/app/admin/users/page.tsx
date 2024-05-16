@@ -45,14 +45,15 @@ export interface IUser {
 
 export interface IUserWithHours extends IUser {
   totalHoursFormatted: string;
+  eventsAttendedNames: string[];
 }
 
 // format hours
 const formatHours = (hours: number): string => {
-  const totalMinutes = Math.floor(hours * 60); 
+  const totalMinutes = Math.floor(hours * 60);
   const displayHours = Math.floor(totalMinutes / 60);
   const displayMinutes = totalMinutes % 60;
-  return `${displayHours}h ${displayMinutes}min`; 
+  return `${displayHours}h ${displayMinutes}min`;
 };
 
 const UserList = () => {
@@ -68,13 +69,33 @@ const UserList = () => {
     return events.reduce((total, event) => {
       const start = new Date(event.startTime);
       const end = new Date(event.endTime);
-      return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60); 
+      console.log(event.startTime, event.endTime, total)
+      return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
     }, 0);
+  };
+
+  //fetch event name for each user based on event id
+  const fetchEventName = async (
+    eventId: Schema.Types.ObjectId
+  ): Promise<string> => {
+    try {
+      const response = await fetch(`/api/events/${eventId}`);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch event details: ${response.statusText}`
+        );
+      }
+      const event = await response.json();
+      return event.eventName;
+    } catch (error) {
+      console.error("Failed to fetch event name:", error);
+      return "Unknown Event";
+    }
   };
 
   // fetch users from db
   const fetchUsers = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const response = await fetch("/api/user");
       if (!response.ok) {
@@ -84,24 +105,23 @@ const UserList = () => {
       }
       const data = await response.json();
 
-      console.log("Fetched data:", data);
+      const usersWithEventNames = await Promise.all(
+        data.users.map(async (user: IUser) => {
+          const eventsAttendedNames = await Promise.all(
+            user.eventsAttended.map((event) => fetchEventName(event.eventId))
+          );
 
-      const usersWithHours = data.users.map((user: IUser) => {
-        if (!Array.isArray(user.eventsAttended)) {
-          console.error("Invalid or missing eventsAttended", user);
           return {
             ...user,
-            totalHoursFormatted: "Error: Invalid event data",
+            totalHoursFormatted: formatHours(
+              calculateTotalHours(user.eventsAttended)
+            ),
+            eventsAttendedNames,
           };
-        }
+        })
+      );
 
-        const totalHours = calculateTotalHours(user.eventsAttended);
-        return { ...user, totalHoursFormatted: formatHours(totalHours) };
-      });
-
-      console.log("Processed users with hours:", usersWithHours);
-
-      setUsers(usersWithHours);
+      setUsers(usersWithEventNames as IUserWithHours[]);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -133,12 +153,26 @@ const UserList = () => {
     );
   }
 
-  // CSV setup
+  const csvData = users.map((user) => ({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    eventsAttended:
+      user.eventsAttendedNames.length > 0
+        ? user.eventsAttendedNames.join(", ")
+        : "None",
+    eventsAttendedCount: user.eventsAttendedNames.length,
+    totalHoursFormatted: user.totalHoursFormatted,
+  }));
+
   const headers = [
     { label: "First Name", key: "firstName" },
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
+    { label: "Events Attended", key: "eventsAttended" },
+    { label: "Number of Events Attended", key: "eventsAttendedCount" },
     { label: "Total Hours", key: "totalHoursFormatted" },
   ];
 
@@ -155,9 +189,11 @@ const UserList = () => {
             <option value="lastName">Last Name</option>
           </select>
           <CSVLink
-            data={filteredUsers}
+            data={csvData}
             headers={headers}
+            filename="user-data.csv"
             className={style.yellowButton}
+            target="_blank"
           >
             Export To CSV
           </CSVLink>
