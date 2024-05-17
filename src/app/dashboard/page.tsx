@@ -1,3 +1,4 @@
+import { position } from "@chakra-ui/react";
 import { UserDashboard } from "@components/UserDashboard";
 import { getUserDbData } from "app/lib/authentication";
 import { getBaseUrl } from "app/lib/random";
@@ -17,6 +18,7 @@ const getAllEvents = async () => {
     }
     return []
 }
+
 const LoadingEvents = () => {
     return (
         <h1>Loading...</h1>
@@ -46,7 +48,10 @@ export default async function Page(){
 
 
     return (
-        <Suspense fallback={<LoadingEvents />}>
+        <Suspense 
+        //fallback={<LoadingEvents />}
+        // Removed because loading is already shown for event cards
+        >
             <UserDashboard events={events} userData={userData}/>
         </Suspense>
     )

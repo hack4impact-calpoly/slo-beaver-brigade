@@ -1,12 +1,27 @@
 .eventBox {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-        url("/beaver1.jpg");
     background-size: 70% auto;
     background-repeat: no-repeat;
     background-position: center;
     padding: 20px;
+    transition: transform 0.3s ease;
+
 }
 
+.eventBox:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.registeredEventBox {
+    transition: transform 0.3s ease;
+}
+
+.registeredEventBox:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
 .selectContainer {
     position: relative; /* Make sure container has position to anchor z-index */
     z-index: 10; /* Higher than any underlying elements */
