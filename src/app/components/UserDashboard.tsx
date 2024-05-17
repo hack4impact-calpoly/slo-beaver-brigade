@@ -27,6 +27,8 @@ import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
 import { EmailRSSComponent } from "./EmailComponent";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
+import "../fonts/fonts.css";
+
 
 
 // logic for letting ts know about css prop
@@ -156,18 +158,23 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
       console.log("useData:" + userData)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
-      const filteredEvents = events.filter(event =>
+      
+      const userSignedUpEvents = events.filter(
+        event => event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+      );
+      
+      const eventsUserHasntRegistered = events.filter(
+        event => !event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+      
+      );
+
+      const filteredEvents = eventsUserHasntRegistered.filter(event =>
         new Date(event.endTime) >= currentDate &&
         (!selectedEventType || event.eventType === selectedEventType) // Filter by event type if selected
       );
-      const userSignedUpEvents = filteredEvents.filter(
-        event => event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
-      );
-      const eventsUserHasntRegistered = filteredEvents.filter(
-        event => !event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
-      );
+
       setUserEvents(userSignedUpEvents);
-      setUnregisteredEvents(eventsUserHasntRegistered);
+      setUnregisteredEvents(filteredEvents);
     } else {
       const currentDate = new Date();
       const upcomingEvents = events.filter(
@@ -312,17 +319,17 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
        showModal={showEventList}
      ></EventListRegister>
   
-    {userData &&
+    {/*{userData &&
     <div className="px-[3rem] pt-3">
              <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
-   </div>
+    </div>
              /*<a href=>Add to calendar!</a>*/}
      <div css={sliderStyles}>
        <Box p="4">
          <Stack spacing={2} px="10" mb={6}>
            <Flex alignItems="center" justifyContent="space-between">
-             <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
-               Your Upcoming Events
+             <Text fontSize="2xl" fontWeight="light" color="black" mb={3}>
+               Your Events
              </Text>
              <Heading as="h2" fontSize="xl">
              </Heading>
@@ -330,7 +337,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
            <Divider
              size="sm"
              borderWidth="1px"
-             borderColor="black"
+             borderColor="grey"
              alignSelf="center"
              w="100%"
            />
@@ -412,7 +419,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                        >
                          <Text
                            fontSize={eventNameSize}
-                           fontWeight="black"
+                           fontWeight="800"
                            color="white"
                            className="bold-text"
                            mx={2}
@@ -435,7 +442,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                        >
                          <Text
                            fontSize={eventDetailSize}
-                           fontWeight="bold"
+                           fontFamily="Lato"
+                           fontWeight="500"
                            color="white"
                            className="bold-text"
                            mx={2}
@@ -446,18 +454,9 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                          </Text>
                          <Text
                            fontSize={eventTimeSize}
-                           fontWeight="semibold"
-                           color="white"
-                           className="bold-text"
-                           mx={2}
-                           zIndex={2}
-                           alignContent="left-bottom"
-                         >
-                           {event.location}
-                         </Text>
-                         <Text
-                           fontSize={eventTimeSize}
-                           fontWeight="semibold"
+                           fontFamily="Lato"
+
+                           fontWeight="500"
                            color="white"
                            className="bold-text"
                            mx={2}
@@ -468,6 +467,18 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                              event.startTime,
                              event.endTime
                            )}
+                         </Text>
+                         <Text
+                           fontSize={eventTimeSize}
+                           fontFamily="Lato"
+                           fontWeight="500"
+                           color="white"
+                           className="bold-text"
+                           mx={2}
+                           zIndex={2}
+                           alignContent="left-bottom"
+                         >
+                           {event.location}
                          </Text>
                        </Box>
                      </Box>
@@ -502,17 +513,17 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
            <Flex alignItems="center" justifyContent="space-between">
              <Text
                fontSize="2xl"
-               fontWeight="bold"
+               fontWeight="light"
                color="black"
                mb={3}
                mt={5}
              >
-               Other Events
+               Upcoming Events
              </Text>
        
              <Select
                 id='event-type'
-                placeholder='Select Event Types'
+                placeholder='Select Event Type'
                 options={eventTypes.map((type) => ({
                   value: type,
                   label: type,
@@ -525,7 +536,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
            <Divider
              size="sm"
              borderWidth="1px"
-             borderColor="black"
+             borderColor="grey"
              alignSelf="center"
              w="100%"
              my={2}
@@ -604,15 +615,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                           fontSize={eventDetailSize}
                         >
                           <Text
-                            fontWeight="custom"
-                            color="white"
-                            className="bold-text"
-                            zIndex={2}
-                          >
-                            {event.location}
-                          </Text>
-                          <Text
-                            fontWeight="custom"
+                            fontFamily="Lato"
+                            fontWeight="500"
                             color="white"
                             className="bold-text"
                             zIndex={2}
@@ -620,12 +624,22 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                             {formatDate(event.startTime)}
                           </Text>
                           <Text
-                            fontWeight="custom"
+                            fontFamily="Lato"
+                            fontWeight="500"
                             color="white"
                             className="bold-text"
                             zIndex={2}
                           >
                             {formatDateTimeRange(event.startTime, event.endTime)}
+                          </Text>
+                          <Text
+                            fontFamily="Lato"
+                            fontWeight="500"
+                            color="white"
+                            className="bold-text"
+                            zIndex={2}
+                          >
+                            {event.location}
                           </Text>
                         </Box>
                               <Box
