@@ -367,8 +367,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                <Link href="/login">
                  <Button
                    width="200px"
-                   colorScheme="yellow"
-                  
+                   colorScheme="yellow"   
                    mt="5"
                  >
                    Sign in
@@ -394,7 +393,13 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                  userEvents.map((event) => {
                    const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
                    return (
-                   <Box key={event._id} textAlign="center" px="4" mb="4" onClick={() => setupViewEventModal(event)}>
+                   <Box 
+                      key={event._id} 
+                      textAlign="center" 
+                      px="4" 
+                      pt="20px"
+                      pb="20px" 
+                      onClick={() => setupViewEventModal(event)}>
                      
                      <Box
                        position="relative"
@@ -403,6 +408,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                        h="60"
                        textAlign="left"
                        borderRadius="20px"
+                       className={style.registeredEventBox}
                        style={{
                          //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                          background: backgroundImage,
@@ -509,13 +515,12 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
          </Box>
          {/* Re-include the omitted bottom section here */}
          <Box px="10" mb={6}>
-           <Flex alignItems="center" justifyContent="space-between">
+           <Flex alignItems="center" justifyContent="space-between" mt={6}>
              <Text
                fontSize="2xl"
                fontWeight="light"
                color="black"
                mb={3}
-               mt={5}
              >
                Upcoming Events
              </Text>
@@ -562,7 +567,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              </Text>
            ) : null}
          </Box>
-         <Box mt={6} px={6} >
+         <Box mt={7} px={6} >
            {unregisteredEvents.length > 0 ? (
             <Slider {...unregisteredEventSettings}>
               {unregisteredEvents.length > 0 ? (
