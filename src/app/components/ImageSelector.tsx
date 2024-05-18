@@ -8,6 +8,7 @@ import { fallbackBackgroundImage } from "app/lib/random";
 
 type Props = {
     setImageURL: Dispatch<SetStateAction<string | null>>, 
+    setPreselected: Dispatch<SetStateAction<boolean>>, 
 
 }
 
@@ -42,7 +43,7 @@ const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
 
 // TODO: add parent that loads images and passes to selector
 
-export default function ImageSelector({setImageURL}: Props) {
+export default function ImageSelector({setImageURL, setPreselected}: Props) {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [images, setImages] = useState<string[]>([])
@@ -51,6 +52,7 @@ export default function ImageSelector({setImageURL}: Props) {
         const loadImages = async () => {
             const res = await getAllImagesS3()
             const imageRes = JSON.parse(res)
+            console.log(imageRes)
             setImages(imageRes)
         } 
         loadImages()
@@ -86,7 +88,7 @@ export default function ImageSelector({setImageURL}: Props) {
             <ModalCloseButton />
             <ModalBody style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
             {images.map((image, idx) => (
-                <ImageCard onClick={() => setImageURL(image)} key={idx} image={image} />
+                <ImageCard onClick={() => {setImageURL(image); setPreselected(true)}} key={idx} image={image} />
             ))}
             </ModalBody>
             <ModalFooter>

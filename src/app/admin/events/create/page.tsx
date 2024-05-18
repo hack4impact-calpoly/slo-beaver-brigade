@@ -46,6 +46,7 @@ export default function Page() {
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
   // Specify type for group to avoid error
   const [groups, setGroups] = useState<Group[]>([]);
+  const [preselected, setPreselected] = useState<boolean>(false);
   const [location, setLocation] = useState("");
   const [language, setLanguage] = useState("Yes");
   const [description, setDescription] = useState("");
@@ -124,6 +125,7 @@ export default function Page() {
 
   // Handle file selection for the event cover image and set preview
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPreselected(false)
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
@@ -186,9 +188,9 @@ export default function Page() {
     // Try to upload image
     const file = fileInputRef?.current?.files?.[0] ?? null;
     let imageurl = null;
-    console.log('image preview', imagePreview)
-    if (file || imagePreview) {
-        if (!imagePreview){
+    console.log('image preview', preselected)
+    if (file || preselected) {
+        if (!preselected){
     imageurl = await uploadFileS3Bucket(file);
         if (!imageurl) {
             console.error("Failed to create the event: image upload.");
@@ -409,7 +411,7 @@ export default function Page() {
             )}
             </Box>
         </FormControl>
-        <ImageSelector setImageURL={setImagePreview}></ImageSelector>
+        <ImageSelector setPreselected={setPreselected} setImageURL={setImagePreview}></ImageSelector>
       </Flex>
 
       <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
