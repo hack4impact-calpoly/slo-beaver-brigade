@@ -2,60 +2,21 @@
 
 import {
   Box,
-  Text,
   Spinner,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
   Checkbox,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from "@database/eventSchema";
 import { IUser } from "@database/userSchema";
+import { IWaiver } from "database/digitalWaiverSchema";
 import { removeAttendee } from "app/actions/serveractions";
 import { addAttendee } from "app/actions/useractions";
 import SingleVisitorComponent from "./SingleVisitorComponent";
 
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
-  var mongoose = require('mongoose');
   const [loading, setLoading] = useState(true);
-  const [attendees, setAttendees] = useState([]);
-  const [visitorData, setVisitorData] = useState<IUser[]>([
-    {
-      _id: "",
-      groupId: null,
-      email: "",
-      firstName: "",
-      lastName: "",
-      phoneNumber: "",
-      age: -1,
-      gender: "",
-      role: "user",
-      eventsAttended: [],
-      eventsRegistered: [],
-      recieveNewsletter: false
-    },
-  ]);
-
-  const emailLink = () => {
-    const emails = visitorData
-      .map((visitor) => visitor.email)
-      .filter((email) => !!email);
-    const subject = encodeURIComponent(eventData.eventName + " Update");
-    return `mailto:${emails.join(",")}?subject=${subject}`;
-  };
-
-  const handleEmailAllVisitors = () => {
-    const mailtoLink = emailLink();
-    console.log(mailtoLink);
-    window.location.href = mailtoLink;
-  };
-
+  const [visitorData, setVisitorData] = useState<IUser[]>([]);
   const [eventData, setEventData] = useState<IEvent>({
     _id: '',
     eventName: '',
@@ -73,6 +34,20 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     registeredIds: [],
     attendeeIds: []
   });
+
+  const emailLink = () => {
+    const emails = visitorData
+      .map((visitor) => visitor.email)
+      .filter((email) => !!email);
+    const subject = encodeURIComponent(eventData.eventName + " Update");
+    return `mailto:${emails.join(",")}?subject=${subject}`;
+  };
+
+  const handleEmailAllVisitors = () => {
+    const mailtoLink = emailLink();
+    console.log(mailtoLink);
+    window.location.href = mailtoLink;
+  };
 
   useEffect(() => {
     const fetchEventData = async () => {
@@ -95,16 +70,72 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   useEffect(() => {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
-        const visitorDataArray = await Promise.all(eventData.registeredIds.filter(userId => userId !== null).map(async (userId) => {
-          const response = await fetch(`/api/user/${userId}`);
-          return response.json();
-        }));
-        setVisitorData(visitorDataArray);
+        const visitors: IUser[] = [];
+        const dependents: string[] = [];
+
+        // Fetch waivers for the event
+        try {
+          const waiverResponse = await fetch(`/api/waiver/${eventId}`);
+          if (waiverResponse.ok) {
+            const waivers = await waiverResponse.json();
+            console.log("Waiver data:", waivers);
+            waivers.forEach((waiver: IWaiver) => {
+              waiver.dependents.forEach((dependent) => {
+                dependents.push(`${dependent} (Dependent)`);
+              });
+            });
+            console.log("Dependents collected:", dependents);
+          } else {
+            console.error("Error fetching waivers:", await waiverResponse.json());
+          }
+        } catch (error) {
+          console.error('Error fetching waivers:', error);
+        }
+
+        // Fetch user data for registered IDs
+        try {
+          await Promise.all(
+            eventData.registeredIds
+              .filter((userId) => userId !== null)
+              .map(async (userId) => {
+                const response = await fetch(`/api/user/${userId}`);
+                if (response.ok) {
+                  visitors.push(await response.json());
+                } else {
+                  console.error("Error fetching user:", await response.json());
+                }
+              })
+          );
+          console.log("Visitors collected:", visitors);
+        } catch (error) {
+          console.error('Error fetching users:', error);
+        }
+
+        // Add dependents to the visitor data directly
+        dependents.forEach((dependent) => {
+          visitors.push({
+            _id: dependent, // Unique identifier for the row
+            groupId: null,
+            email: "",
+            firstName: dependent,
+            lastName: "",
+            phoneNumber: "",
+            age: -1,
+            gender: "",
+            role: "guest",
+            eventsAttended: [],
+            eventsRegistered: [],
+            recieveNewsletter: false,
+          });
+        });
+        console.log("Final visitor data with dependents:", visitors);
+
+        setVisitorData(visitors);
         setLoading(false);
       }
     };
     fetchVisitorData();
-  }, [eventData]);
+  }, [eventData, eventId]);
 
   async function handleCheck(checked: boolean, userid: string) {
     if (checked) {
