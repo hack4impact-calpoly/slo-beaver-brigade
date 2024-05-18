@@ -20,7 +20,8 @@ export async function getAllImagesS3(){
     }
     const image_keys = res.Contents?.map((content) => {
         if (content.Key){
-            return`https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${content.Key}`
+            const file_name = encodeURI(content.Key)
+            return`https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${file_name}`
         }
     })
     return JSON.stringify(image_keys)

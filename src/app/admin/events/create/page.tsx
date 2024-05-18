@@ -226,7 +226,7 @@ export default function Page() {
 
     // Attempt to create event via API and handle response
     try {
-        console.log('images', imagePreview)
+        console.log('images', imageurl)
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
