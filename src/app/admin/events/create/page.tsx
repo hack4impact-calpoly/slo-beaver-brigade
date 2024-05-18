@@ -47,9 +47,9 @@ export default function Page() {
   // Specify type for group to avoid error
   const [groups, setGroups] = useState<Group[]>([]);
   const [location, setLocation] = useState("");
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState("Yes");
   const [description, setDescription] = useState("");
-  const [accessibilityAccommodation, setAccessibilityAccommodation] = useState("");
+  const [accessibilityAccommodation, setAccessibilityAccommodation] = useState("Yes");
   const [checkList, setChecklist] = useState("N/A");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
