@@ -78,13 +78,11 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
             const waivers = await waiverResponse.json();
-            console.log("Waiver data:", waivers);
             waivers.forEach((waiver: IWaiver) => {
               waiver.dependents.forEach((dependent) => {
                 dependents.push(`${dependent} (Dependent)`);
               });
             });
-            console.log("Dependents collected:", dependents);
           } else {
             console.error("Error fetching waivers:", await waiverResponse.json());
           }
