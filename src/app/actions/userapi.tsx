@@ -57,12 +57,12 @@ export async function createGuestFromEmail(email: string, zipcode: string, first
         }
 }
 
-export async function transitionGuestById(id: string, gender: string, age: number){
+export async function transitionGuestById(id: string){
  try {
             await connectDB();
 
             // search for user in db
-            const user: IUser = await User.findByIdAndUpdate(id, {role: 'user', gender, age}).orFail()
+            const user: IUser = await User.findByIdAndUpdate(id, {role: 'user'}).orFail()
 
             console.log("Made user to guest.", user)
             return JSON.stringify(user)
