@@ -33,6 +33,7 @@
         "@mailchimp/mailchimp_marketing": "^3.0.80",
         "@uiw/react-markdown-preview": "^5.1.1",
         "@uiw/react-md-editor": "^4.0.4",
+        "@vercel/speed-insights": "^1.0.10",
         "aws-sdk": "^2.1613.0",
         "aws4": "^1.12.0",
         "axios": "^1.6.8",

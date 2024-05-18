@@ -506,6 +506,7 @@ export default function Page() {
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
+              defaultInputValue="Yes"
               onChange={(option) => setLanguage(option ? option.value : " ")}
               chakraStyles={{
                 control: (provided) => ({
@@ -527,6 +528,7 @@ export default function Page() {
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
+              defaultInputValue="Yes"
               onChange={(option) =>
                 setAccessibilityAccommodation(option ? option.value : " ")
               }
