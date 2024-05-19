@@ -116,9 +116,9 @@
 }
 
 .emailAllVisitors {
-  border:none;
+  border: none;
   font-weight: bold;
-  padding:0%;
+  padding: 0%;
   width: 100%;
   text-align: right;
   background-color: none;
@@ -130,9 +130,9 @@
   white-space: nowrap;
 }
 
-.emailAllVisitors:hover{
-    text-decoration-line: underline;
-    cursor: pointer;
+.emailAllVisitors:hover {
+  text-decoration-line: underline;
+  cursor: pointer;
 }
 
 .topBlock {
@@ -170,7 +170,7 @@
 }
 
 .checkBox {
-  padding: 2.10% 3% 1.5% 1.5%;
+  padding: 2.10% 3% 1.5% 20px;
   text-align: left;
   width: 5%;
   font-size: 15px;
@@ -220,6 +220,8 @@
 .tableContainer {
   height: 30vh;
   overflow: auto;
+  max-width: 800px; 
+  margin: 0 auto;
 }
 
 .visitorTable {
@@ -229,8 +231,8 @@
 
 .visitorTable th,
 .visitorTable td {
-  padding: 7px; 
-  margin: 2px;  
+  padding: 7px;
+  margin: 2px;
 }
 
 .visitorInfoSmallHeader {
@@ -336,8 +338,12 @@
   width: 100%;
 }
 
-.tableContainer {
-  height: 26vh;
+.noVisitorsMessage {
+  text-align: center;
+  padding: 20px;
+  font-family: "Lato";
+  font-size: 16px;
+  color: #555;
 }
 
 @media (max-width: 1000px) {

@@ -161,32 +161,36 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             </div>
             <button onClick={handleEmailAllVisitors} className={styles.emailAllVisitors}>Email All Visitors</button>
           </div>
-          <div className={styles.tableContainer}>
-            <table className={styles.visitorTable}>
-              <tbody>
-                {visitorData.map((visitor, index) => (
-                  <tr className={styles.visitorRow} key={index}>
-                    <td className={styles.checkBox}>
-                      {eventData.attendeeIds.map(oid => oid.toString()).includes(visitor._id) ?
-                        <Checkbox colorScheme="green" defaultChecked onChange={async (e) => await handleCheck(e.target.checked, visitor._id.toString())} />
-                        :
-                        <Checkbox colorScheme="green" onChange={async (e) => await handleCheck(e.target.checked, visitor._id.toString())} />
-                      }
-                    </td>
-                    <td className={styles.nameColumn}>
-                      {visitor.firstName} {visitor.lastName}
-                    </td>
-                    <td className={styles.emailColumn}>
-                      {visitor.email.includes("(Dependent)") ? <span className={styles.dependent}>{visitor.email}</span> : visitor.email}
-                    </td>
-                    <td className={styles.detailsColumn}>
-                      <SingleVisitorComponent visitorData={visitor} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {visitorData.length === 0 ? (
+            <div className={styles.noVisitorsMessage}>No visitors registered for this event.</div>
+          ) : (
+            <div className={styles.tableContainer}>
+              <table className={styles.visitorTable}>
+                <tbody>
+                  {visitorData.map((visitor, index) => (
+                    <tr className={styles.visitorRow} key={index}>
+                      <td className={styles.checkBox}>
+                        {eventData.attendeeIds.map(oid => oid.toString()).includes(visitor._id) ?
+                          <Checkbox colorScheme="green" defaultChecked onChange={async (e) => await handleCheck(e.target.checked, visitor._id.toString())} />
+                          :
+                          <Checkbox colorScheme="green" onChange={async (e) => await handleCheck(e.target.checked, visitor._id.toString())} />
+                        }
+                      </td>
+                      <td className={styles.nameColumn}>
+                        {visitor.firstName} {visitor.lastName}
+                      </td>
+                      <td className={styles.emailColumn}>
+                        {visitor.email.includes("(Dependent)") ? <span className={styles.dependent}>{visitor.email}</span> : visitor.email}
+                      </td>
+                      <td className={styles.detailsColumn}>
+                        <SingleVisitorComponent visitorData={visitor} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </>
       )}
     </Box>
