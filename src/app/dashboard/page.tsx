@@ -4,6 +4,9 @@ import { getUserDbData } from "app/lib/authentication";
 import { getBaseUrl } from "app/lib/random";
 import { Suspense } from "react";
 
+
+export const dynamic = "force-dynamic";
+
 const getAllEvents = async () => {
 
     const res = await fetch(getBaseUrl() + "/api/events", {
@@ -42,10 +45,10 @@ export default async function Page(){
     console.log('events loaded.')
 
     console.log('getting user data')
-    const userRes = await getUserDbData()
+    const userRes = await fetch(getBaseUrl() + "/api/user/default")
     let userData = null
-    if (userRes){
-        userData = JSON.parse(userRes)
+    if (userRes.ok){
+        userData = await userRes.json() 
     }
     console.log('parsed user data')
 

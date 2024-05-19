@@ -6,6 +6,7 @@ import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
 import { getUserDbData } from "app/lib/authentication";
+import { getBaseUrl } from "app/lib/random";
 
 export const dynamic = "force-dynamic";
 /** fetch from MongoDB, get user Role */
@@ -29,9 +30,10 @@ export default async function NavbarParent() {
   if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
   console.log('navbar: getting user data')
-  const userRes = await getUserDbData()
-    if (userRes){
-        const user = JSON.parse(userRes)
+    const userRes = await fetch(getBaseUrl() + "/api/user/default")
+    
+    if (userRes.ok){
+        const user = await userRes.json()
         console.log('parsed user data')
         if (user?.role == "admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
