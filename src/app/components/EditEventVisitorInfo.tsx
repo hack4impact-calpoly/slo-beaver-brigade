@@ -71,7 +71,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
         const visitors: IUser[] = [];
-        const dependents: string[] = [];
+        const dependents: IUser[] = [];
 
         // Fetch waivers for the event
         try {
@@ -80,7 +80,20 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             const waivers = await waiverResponse.json();
             waivers.forEach((waiver: IWaiver) => {
               waiver.dependents.forEach((dependent) => {
-                dependents.push(`${dependent} (Dependent)`);
+                dependents.push({
+                  _id: `${dependent} (Dependent)`,
+                  groupId: null,
+                  email: "(Dependent)",
+                  firstName: dependent,
+                  lastName: "",
+                  phoneNumber: "",
+                  age: -1,
+                  gender: "",
+                  role: "guest",
+                  eventsAttended: [],
+                  eventsRegistered: [],
+                  recieveNewsletter: false,
+                });
               });
             });
           } else {
@@ -109,26 +122,15 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           console.error('Error fetching users:', error);
         }
 
-        // Add dependents to the visitor data directly
-        dependents.forEach((dependent) => {
-          visitors.push({
-            _id: dependent, // Unique identifier for the row
-            groupId: null,
-            email: "",
-            firstName: dependent,
-            lastName: "",
-            phoneNumber: "",
-            age: -1,
-            gender: "",
-            role: "guest",
-            eventsAttended: [],
-            eventsRegistered: [],
-            recieveNewsletter: false,
-          });
-        });
-        console.log("Final visitor data with dependents:", visitors);
+        // Sort visitors by firstName and ensure dependents appear last
+        const sortedVisitors = [
+          ...visitors.sort((a, b) => a.firstName.localeCompare(b.firstName)),
+          ...dependents,
+        ];
 
-        setVisitorData(visitors);
+        console.log("Final visitor data with dependents:", sortedVisitors);
+
+        setVisitorData(sortedVisitors);
         setLoading(false);
       }
     };
@@ -174,7 +176,9 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                     <td className={styles.nameColumn}>
                       {visitor.firstName} {visitor.lastName}
                     </td>
-                    <td className={styles.emailColumn}>{visitor.email}</td>
+                    <td className={styles.emailColumn}>
+                      {visitor.email.includes("(Dependent)") ? <span className={styles.dependent}>{visitor.email}</span> : visitor.email}
+                    </td>
                     <td className={styles.detailsColumn}>
                       <SingleVisitorComponent visitorData={visitor} />
                     </td>

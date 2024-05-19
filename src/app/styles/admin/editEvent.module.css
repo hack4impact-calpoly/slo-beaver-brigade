@@ -170,7 +170,7 @@
 }
 
 .checkBox {
-  padding: 2.25% 3% 1.5% 1.5%;
+  padding: 2.10% 3% 1.5% 1.5%;
   text-align: left;
   width: 5%;
   font-size: 15px;
@@ -218,9 +218,8 @@
 }
 
 .tableContainer {
-  height: 26vh;
+  height: 30vh;
   overflow: auto;
-  
 }
 
 .visitorTable {
