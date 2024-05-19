@@ -5,6 +5,7 @@ import style from "@styles/admin/layout.module.css";
 import TabBar from "../components/TabBar";
 import { getUserDbData } from "app/lib/authentication";
 import { redirect } from "next/navigation";
+import { getUserDbDataRevamp } from "app/dashboard/page";
 type Props = {
   children: ReactNode;
 };
@@ -16,11 +17,7 @@ const Layout = async (props: Props) => {
 
     if (process.env.DEV_MODE != "true"){
         // get user role
-        let user = null
-        const res = await getUserDbData()
-        if (res){
-            user = JSON.parse(res)
-        }
+        const user = await getUserDbDataRevamp()
         if (!user || user?.role != "admin"){
             redirect("/")
         }

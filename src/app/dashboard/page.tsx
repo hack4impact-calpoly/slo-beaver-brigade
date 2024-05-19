@@ -27,7 +27,7 @@ const LoadingEvents = () => {
         <h1>Loading...</h1>
     )
 }
-const getUserDbDataRevamp = async() => {
+export const getUserDbDataRevamp = async() => {
 
     const clerk_user = await currentUser();
     if (!clerk_user){
