@@ -1,6 +1,6 @@
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Text,  Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Box, IconButton } from "@chakra-ui/react";
-import { getAllImagesS3 } from "app/actions/imageactions";
+import { getAllImagesS3, removeImageS3 } from "app/actions/imageactions";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
@@ -15,30 +15,56 @@ type Props = {
 
 
 const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
-  const backgroundImage = fallbackBackgroundImage(image, "/beaver-eventcard.jpeg") 
-  return (
-    <div
-      className={style.imageCard}
-      style={{
-        background: backgroundImage,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backdropFilter: "brightness(50%)"
-      }}
+    const [isVisible, setIsVisible] = useState(true);
+    const backgroundImage = fallbackBackgroundImage(image, "/beaver-eventcard.jpeg");
+
+    const handleDeleteClick = async (e: React.MouseEvent<SVGElement, MouseEvent>) => {
+        e.stopPropagation()
+        e.preventDefault();
+        await removeImageS3(image); // Ensure this is an async function call
+        setIsVisible(false); // Hide the card after deletion
+    };
+
+    if (!isVisible) {
+        return null; // Don't render anything if the card is not visible
+    }
+
+    return (
+        <div
+        role="group"
+        className={style.imageCard}
+        style={{
+            background: backgroundImage,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backdropFilter: "brightness(50%)",
+        }}
         onClick={onClick}
-    >
-      <div className={style.eventTitle}>
-        <h2>Your Event Name</h2>
-      </div>
-      <div className={style.bottomRow}>
-        <div className={style.eventInfo}>
+        >
+        <div className={style.eventTitle} style={{ display: 'flex', flexDirection: "row" }}>
+            <h2>Your Event Name</h2>
+
+            <DeleteIcon 
+            onClick={handleDeleteClick}
+            opacity="75%"
+            fontSize={'25px'}
+            visibility={"hidden"}
+            _groupHover={{ visibility: "visible" }}
+            />
         </div>
-        <div className={style.visitorCount}>
+        <div className={style.bottomRow}>
+            <div className={style.eventInfo}>
+            {/* Additional event info can go here */}
+            </div>
+            <div className={style.visitorCount}>
+            {/* Visitor count or other info can go here */}
+            </div>
         </div>
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
+
+
 
 
 // TODO: add parent that loads images and passes to selector
