@@ -6,7 +6,6 @@ import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
 import { getUserDataFromEmail, getUserDbData } from "app/lib/authentication";
-import { getUserFromEmail } from "app/actions/userapi";
 
 export const dynamic = "force-dynamic";
 /** fetch from MongoDB, get user Role */
@@ -22,6 +21,21 @@ async function getUserData(id: string | null){
   }
 }
 
+const getUserFromEmail = async (email: string) => {    // search db for user with matching email address
+    await connectDB()
+    console.log(email)
+    try{
+        const user: IUser | null = await User.findOne({email: email}).orFail();
+        console.log("user found")
+        return user
+    }
+    catch(err){
+        console.log('user not found: ' + err)
+        return null
+    }
+
+}
+
 export default async function NavbarParent() {
     console.log('navbar: getting user')
   const user = await currentUser();
@@ -30,11 +44,10 @@ export default async function NavbarParent() {
   if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
   console.log('navbar: getting user data')
-  const userRes = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
-    if (userRes){
-        const user = JSON.parse(userRes)
+  const userData = await getUserFromEmail(user.emailAddresses[0].emailAddress)
+    if (userData){
         console.log('parsed user data')
-        if (user?.role == "admin"){
+        if (userData?.role == "admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
         }
     }
