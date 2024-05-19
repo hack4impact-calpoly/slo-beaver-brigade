@@ -5,8 +5,8 @@ import { currentUser } from "@clerk/nextjs/server";
 import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
-import { getUserDbData } from "app/lib/authentication";
-import { getBaseUrl } from "app/lib/random";
+import { getUserDataFromEmail, getUserDbData } from "app/lib/authentication";
+import { getUserFromEmail } from "app/actions/userapi";
 
 export const dynamic = "force-dynamic";
 /** fetch from MongoDB, get user Role */
@@ -30,10 +30,9 @@ export default async function NavbarParent() {
   if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
   console.log('navbar: getting user data')
-    const userRes = await fetch(getBaseUrl() + "/api/user/default")
-    
-    if (userRes.ok){
-        const user = await userRes.json()
+  const userRes = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
+    if (userRes){
+        const user = JSON.parse(userRes)
         console.log('parsed user data')
         if (user?.role == "admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
