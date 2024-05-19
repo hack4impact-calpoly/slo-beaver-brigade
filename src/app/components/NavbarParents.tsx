@@ -22,13 +22,17 @@ async function getUserData(id: string | null){
 }
 
 export default async function NavbarParent() {
+    console.log('navbar: getting user')
   const user = await currentUser();
+  console.log('navbar: user has been grabbed')
   
   if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
   const name = `Hi ${user?.firstName}!`;
+  console.log('navbar: getting user data')
   const userRes = await getUserDbData()
     if (userRes){
         const user = JSON.parse(userRes)
+        console.log('parsed user data')
         if (user?.role == "admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
         }

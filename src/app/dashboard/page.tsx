@@ -26,6 +26,7 @@ const LoadingEvents = () => {
 }
 
 export default async function Page(){
+    console.log('page loading...')
     let events = []
     const url = new URL(getBaseUrl() + "/api/events")
     url.searchParams.set("sort_order", "asc")
@@ -38,14 +39,17 @@ export default async function Page(){
     if (res.ok){
         events = await res.json()
     }
+    console.log('events loaded.')
 
+    console.log('getting user data')
     const userRes = await getUserDbData()
     let userData = null
     if (userRes){
         userData = JSON.parse(userRes)
     }
-    console.log(userData)
+    console.log('parsed user data')
 
+    console.log('returning page')
 
     return (
         <Suspense 
