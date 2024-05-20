@@ -143,6 +143,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
    return `${formattedStart} - ${formattedEnd}`;
   };
 
+ 
   useEffect(() => {
     if (userData) {
       console.log("useData:" + userData)
@@ -150,11 +151,11 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
       // Filter events based on user registration and selected event type
       
       const userSignedUpEvents = events.filter(
-        event => event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+        event => event.registeredIds.includes(userData?._id)
       );
       
       const eventsUserHasntRegistered = events.filter(
-        event => !event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+        event => !event.registeredIds.includes(userData?._id)
       
       );
 
