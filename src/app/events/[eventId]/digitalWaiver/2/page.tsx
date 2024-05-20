@@ -103,7 +103,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
         const res = await fetch(`/api/waiver`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify({parentUserId: userData._id, ...data}),
         });
         //if the waiver returns successfully
         if (res.ok) {
@@ -180,7 +180,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           const res = await fetch(`/api/waiver`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
+            body: JSON.stringify({parentUserId: user._id, ...data}),
           });
           //if the waiver returns successfully
           if (res.ok) {
