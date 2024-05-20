@@ -46,7 +46,7 @@ export default function Waiver() {
         flexDirection="column"
         justifyContent="flex-start"
         alignItems="center"
-        height="100vh"
+        height="75vh"
         marginTop="5vh"
       >
         <Image src={beaverLogo} alt="beaver" />
