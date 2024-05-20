@@ -91,7 +91,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
 
     return(
         <Box className = {styles.header}>
-            <h1 className = {styles.eventTitle}>{eventData.eventName} Details</h1>
+             <button className={styles.backButton} onClick={() => router.back()}>Back</button>
             <DeleteEvent eventName={eventData.eventName} onDelete={handleDelete}/>
         </Box>
     );
