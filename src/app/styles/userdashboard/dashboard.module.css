@@ -25,7 +25,19 @@
 .selectContainer {
     position: relative; /* Make sure container has position to anchor z-index */
     z-index: 10; /* Higher than any underlying elements */
+    font-size: 28px;
+
 }
+/*
+.signInButton {
+    width: "450px";
+    padding: "30px"; 
+    margin-top: "4";
+    margin-right: "4";
+    margin-left: "4";
+}
+*/
+
 
 @media (max-width: 750px) {
     .eventBox {
@@ -40,3 +52,5 @@
         width: 0%;
     }
 }
+
+

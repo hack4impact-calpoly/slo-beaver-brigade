@@ -28,6 +28,7 @@ import { IEvent } from "@database/eventSchema";
 import { EmailRSSComponent } from "./EmailComponent";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
 import "../fonts/fonts.css";
+import { px } from "framer-motion";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -327,7 +328,11 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
        <Box p="4">
          <Stack spacing={2} px="10" mb={6}>
            <Flex alignItems="center" justifyContent="space-between">
-             <Text fontSize="2xl" fontWeight="light" color="black" mb={3}>
+             <Text 
+              fontSize={["xl","xl","2xl"]}
+              fontWeight="light" 
+              color="black" 
+              mb={3}>
                Your Events
              </Text>
              <Heading as="h2" fontSize="xl">
@@ -342,8 +347,8 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
            />
            {!allDataLoaded ? (
              <Text
-               fontSize="2xl"
-               fontWeight="bold"
+               fontSize={["xl","xl","2xl"]}
+               fontWeight="400"
                color="black"
                textAlign="center"
                mt={5}
@@ -354,35 +359,62 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              <Flex
                flexDirection={"column"}
                alignItems={"center"}
+               justifyContent={"center"}
              >
                <Text
-                 fontSize="2xl"
-                 fontWeight="bold"
+                 fontSize={["l","l","xl"]}
+                 fontWeight="600"
                  color="black"
                  textAlign="center"
-                 mt="60px"
+                 mt="8"
                >
-                 Sign in to see all your upcoming events！
+                 Create an account or sign in to see your upcoming events!
                </Text>
-               <Link href="/login">
-                 <Button
-                   width="200px"
-                   colorScheme="yellow"   
-                   mt="5"
-                 >
-                   Sign in
-                 </Button>
-               </Link>
+               <Box
+                flexDirection={["column", "column", "row"]} // for breakpoints of 0px, 480px, and 768px
+                alignItems="center"
+                justifyContent="center"
+                display="flex"
+                w="100%"
+               
+                
+                >
+                <Link href="/login">
+                  <Button
+                    w={[40, 40, 160]} // button width for breakpoints of 0px, 480px, and 768px
+                    colorScheme="yellow"
+                    fontFamily="Lato"   
+                    mt="4"
+                    mr="4"
+                    ml="4"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                <Button
+                    w={[40, 40, 160]} // button width for breakpoints of 0px, 480px, ad 768px               
+                    bg="#006d75"
+                    color="white" 
+                    fontFamily="Lato" 
+                    mt="4"
+                    mr="4"
+                    ml="4"
+                  >
+                    Create Account
+                  </Button>
+                </Link>
+              </Box>
              </Flex>
            ) : userEvents.length === 0 ? (
              <Text
-               fontSize="2xl"
+               fontSize={["xl","xl","2xl"]}
                fontWeight="bold"
                color="black"
                textAlign="center"
                mt={5}
              >
-               Check out the events below！
+               Check out the events below!
              </Text>
            ) : null}
          </Stack>
@@ -517,7 +549,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
          <Box px="10" mb={6}>
            <Flex alignItems="center" justifyContent="space-between" mt={6}>
              <Text
-               fontSize="2xl"
+               fontSize={["xl","xl","2xl"]}
                fontWeight="light"
                color="black"
                mb={3}
@@ -527,7 +559,8 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
        
              <Select
                 id='event-type'
-                placeholder='Select Event Type'
+                placeholder='Event Type'
+                size={["sm","sm","md"]}
                 options={eventTypes.map((type) => ({
                   value: type,
                   label: type,
@@ -547,8 +580,8 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
            />
            {!allDataLoaded ? (
              <Text
-               fontSize="2xl"
-               fontWeight="bold"
+               fontSize={["xl","xl","2xl"]}
+               fontWeight="400"
                color="black"
                textAlign="center"
                mt={5}
@@ -557,7 +590,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              </Text>
            ) : userData && unregisteredEvents.length === 0 ? (
              <Text
-               fontSize="2xl"
+               fontSize={["xl","xl","2xl"]}
                fontWeight="bold"
                color="black"
                textAlign="center"
