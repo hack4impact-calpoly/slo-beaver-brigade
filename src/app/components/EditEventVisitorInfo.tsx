@@ -265,17 +265,16 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                               key={`${parentIndex}-${index}`}
                             >
                               <td className={styles.checkBox}></td>
-                              <td className={styles.nameColumn}>
+                              <td
+                                className={styles.nameColumn}
+                                style={{ paddingLeft: "25px" }}
+                              >
                                 {dependent.firstName} {dependent.lastName}
                               </td>
                               <td className={styles.emailColumn}>
                                 {dependent.email}
                               </td>
-                              <td className={styles.detailsColumn}>
-                                <SingleVisitorComponent
-                                  visitorData={dependent}
-                                />
-                              </td>
+                              <td className={styles.detailsColumn}></td>
                             </tr>
                           ))}
                       </React.Fragment>
