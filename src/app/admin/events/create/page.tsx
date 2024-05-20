@@ -28,6 +28,7 @@ import { uploadFileS3Bucket } from "app/lib/clientActions";
 import { Select, CreatableSelect } from "chakra-react-select";
 import MDEditor from "@uiw/react-md-editor";
 import style from "@styles/calendar/calendar.module.css";
+import ImageSelector from "app/components/ImageSelector";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -40,15 +41,16 @@ export default function Page() {
   const router = useRouter();
   const [eventName, setEventName] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
   // Specify type for group to avoid error
   const [groups, setGroups] = useState<Group[]>([]);
+  const [preselected, setPreselected] = useState<boolean>(false);
   const [location, setLocation] = useState("");
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState("Yes");
   const [description, setDescription] = useState("");
-  const [accessibilityAccommodation, setAccessibilityAccommodation] = useState("");
+  const [accessibilityAccommodation, setAccessibilityAccommodation] = useState("Yes");
   const [checkList, setChecklist] = useState("N/A");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
@@ -123,6 +125,7 @@ export default function Page() {
 
   // Handle file selection for the event cover image and set preview
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPreselected(false)
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
@@ -139,6 +142,7 @@ export default function Page() {
 
   // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
+    debugger;
     // Form validation before submission
     if (
       !eventName ||
@@ -184,20 +188,26 @@ export default function Page() {
     // Try to upload image
     const file = fileInputRef?.current?.files?.[0] ?? null;
     let imageurl = null;
-
-    if (file) {
-      imageurl = await uploadFileS3Bucket(file);
-      if (!imageurl) {
-        console.error("Failed to create the event: image upload.");
-        toast({
-          title: "Error",
-          description: "Failed to create the event",
-          status: "error",
-          duration: 2500,
-          isClosable: true,
-        });
-        return;
-      }    }
+    console.log('image preview', preselected)
+    if (file || preselected) {
+        if (!preselected){
+    imageurl = await uploadFileS3Bucket(file);
+        if (!imageurl) {
+            console.error("Failed to create the event: image upload.");
+            toast({
+            title: "Error",
+            description: "Failed to create the event",
+            status: "error",
+            duration: 2500,
+            isClosable: true,
+            });
+            return;
+        }    }
+        else{
+            imageurl = imagePreview
+        }
+        }
+   
 
     const eventData = {
       eventName,
@@ -216,6 +226,7 @@ export default function Page() {
 
     // Attempt to create event via API and handle response
     try {
+        console.log('images', imageurl)
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
@@ -353,50 +364,55 @@ export default function Page() {
         Create New Event
       </Text>
 
-      <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
-        <Input
-          id="cover-image"
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          ref={fileInputRef}
-          hidden // Hide the actual input
-        />
-        <Box
-          position="relative"
-          borderWidth="1px"
-          p="4"
-          mt="4"
-          textAlign="center"
-          h="64"
-          borderRadius="20px"
-          overflow="hidden"
-          bg="gray.200"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          flexDirection="column"
-        >
-          {!imagePreview ? (
-            <>
-              <Text>Upload Image</Text>
-              <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
-            </>
-          ) : (
-            <Image
-              src={imagePreview}
-              alt="Event cover preview"
-              position="absolute"
-              top={0}
-              left={0}
-              width="100%"
-              height="100%"
-              objectFit="fill"
-              zIndex={0}
+    {/* image uploading */}
+    <Flex flexDir={{ base: "column", md: "row" }} flex="1" gap={{base: "10px", md: "50px"}}>
+        <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
+            <Input
+            id="cover-image"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            ref={fileInputRef}
+            hidden // Hide the actual input
             />
-          )}
-        </Box>
-      </FormControl>
+            <Box
+            position="relative"
+            borderWidth="1px"
+            p="4"
+            mt="4"
+            textAlign="center"
+            h="64"
+            borderRadius="20px"
+            overflow="hidden"
+            width="100%"
+            bg="gray.200"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column"
+            >
+            {!imagePreview ? (
+                <>
+                <Text>Upload Image</Text>
+                <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
+                </>
+            ) : (
+                <Image
+                src={imagePreview}
+                alt="Event cover preview"
+                position="absolute"
+                top={0}
+                left={0}
+                width="100%"
+                height="100%"
+                objectFit="cover"
+                zIndex={0}
+                />
+            )}
+            </Box>
+        </FormControl>
+        <ImageSelector setPreselected={setPreselected} setImageURL={setImagePreview}></ImageSelector>
+      </Flex>
 
       <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
         <VStack spacing={4} align="stretch" flex="1">
@@ -492,6 +508,7 @@ export default function Page() {
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
+              defaultInputValue="Yes"
               onChange={(option) => setLanguage(option ? option.value : " ")}
               chakraStyles={{
                 control: (provided) => ({
@@ -513,6 +530,7 @@ export default function Page() {
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
+              defaultInputValue="Yes"
               onChange={(option) =>
                 setAccessibilityAccommodation(option ? option.value : " ")
               }

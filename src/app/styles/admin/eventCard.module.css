@@ -9,6 +9,38 @@
     width: 25vw;
     height: 250px;
     color: #fbf9f9;
+    position: relative;
+}
+
+.imageCard {
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    width: 25vw;
+    height: 250px;
+    color: #fbf9f9;
+    position: relative;
+    width: 250px;
+}
+
+.imageCard h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.imageCard h3 {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.imageCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 }
 
 .bottomRow {
@@ -47,5 +79,10 @@
 @media (max-width: 768px) {
     .eventCard {
         width: 65vw;
+    }
+}
+@media (max-width: 600px) {
+    .imageCard {
+        width: 200px;
     }
 }
