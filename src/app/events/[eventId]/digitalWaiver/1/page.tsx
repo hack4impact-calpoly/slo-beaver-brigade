@@ -46,11 +46,11 @@ export default function Waiver() {
         flexDirection="column"
         justifyContent="flex-start"
         alignItems="center"
-        height="75vh"
+        height="80vh"
         marginTop="5vh"
       >
         <Image src={beaverLogo} alt="beaver" />
-        <Box w="60%" h="60%" mt={20} mb={20}>
+        <Box w="60%" h="70%" mt={20} mb={20}>
           <h1 style={{ fontSize: "30px", fontWeight: "bold" }}>
             Waiver of Liability and Hold Harmless Agreement
           </h1>
