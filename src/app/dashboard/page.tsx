@@ -37,12 +37,12 @@ export const getUserDbDataRevamp = async() => {
     // search db for user with matching email address
     await connectDB()
     console.log(clerk_user.emailAddresses[0].emailAddress)
-    try{
-        const user: IUser | null = await User.findOne({email: clerk_user.emailAddresses[0].emailAddress}).orFail();
+    try {
+        const user: IUser= await User.findOne({ email: clerk_user.emailAddresses[0].emailAddress }).lean().orFail() as IUser;
         console.log("user found")
         return user
     }
-    catch(err){
+    catch (err) {
         console.log('user not found: ' + err)
         return null
     }
@@ -67,17 +67,13 @@ export default async function Page(){
     console.log('getting user data')
 
     const userData = await getUserDbDataRevamp()
+    console.log(typeof userData?._id)
     console.log('parsed user data')
 
     console.log('returning page')
 
     return (
-        <Suspense 
-        //fallback={<LoadingEvents />}
-        // Removed because loading is already shown for event cards
-        >
-            <UserDashboard events={events} userData={userData}/>
-        </Suspense>
+        <UserDashboard events={events} userData={userData}/>
     )
 }
 
