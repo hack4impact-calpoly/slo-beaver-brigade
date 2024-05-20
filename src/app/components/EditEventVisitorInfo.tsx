@@ -1,10 +1,5 @@
-"use client";
-
-import {
-  Box,
-  Spinner,
-  Checkbox,
-} from "@chakra-ui/react";
+"use client"
+import { Box, Spinner, Checkbox } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from "@database/eventSchema";
@@ -18,13 +13,13 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [loading, setLoading] = useState(true);
   const [visitorData, setVisitorData] = useState<IUser[]>([]);
   const [eventData, setEventData] = useState<IEvent>({
-    _id: '',
-    eventName: '',
+    _id: "",
+    eventName: "",
     eventImage: null,
     checklist: "N/A",
-    eventType: '',
-    location: '',
-    description: '',
+    eventType: "",
+    location: "",
+    description: "",
     wheelchairAccessible: false,
     spanishSpeakingAccommodation: false,
     startTime: new Date(0),
@@ -32,7 +27,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     volunteerEvent: false,
     groupsAllowed: [],
     registeredIds: [],
-    attendeeIds: []
+    attendeeIds: [],
   });
 
   const emailLink = () => {
@@ -61,7 +56,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         data.endTime = new Date(data.endTime);
         setEventData(data);
       } catch (error) {
-        console.error('Error fetching event data:', error);
+        console.error("Error fetching event data:", error);
       }
     };
     fetchEventData();
@@ -81,9 +76,9 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             waivers.forEach((waiver: IWaiver) => {
               waiver.dependents.forEach((dependent) => {
                 dependents.push({
-                  _id: `${dependent} (Dependent)`,
+                  _id: `${dependent} Dependent`,
                   groupId: null,
-                  email: "(Dependent)",
+                  email: "Dependent",
                   firstName: dependent,
                   lastName: "",
                   phoneNumber: "",
@@ -97,10 +92,13 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               });
             });
           } else {
-            console.error("Error fetching waivers:", await waiverResponse.json());
+            console.error(
+              "Error fetching waivers:",
+              await waiverResponse.json()
+            );
           }
         } catch (error) {
-          console.error('Error fetching waivers:', error);
+          console.error("Error fetching waivers:", error);
         }
 
         // Fetch user data for registered IDs
@@ -119,7 +117,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           );
           console.log("Visitors collected:", visitors);
         } catch (error) {
-          console.error('Error fetching users:', error);
+          console.error("Error fetching users:", error);
         }
 
         // Sort visitors by firstName and ensure dependents appear last
@@ -156,13 +154,18 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         <>
           <div className={styles.visitorHeading}>
             Visitors
-            <div className={styles.visitorCount}>
-              ({visitorData.length})
-            </div>
-            <button onClick={handleEmailAllVisitors} className={styles.emailAllVisitors}>Email All Visitors</button>
+            <div className={styles.visitorCount}>({visitorData.length})</div>
+            <button
+              onClick={handleEmailAllVisitors}
+              className={styles.emailAllVisitors}
+            >
+              Email All Visitors
+            </button>
           </div>
           {visitorData.length === 0 ? (
-            <div className={styles.noVisitorsMessage}>No visitors registered for this event.</div>
+            <div className={styles.noVisitorsMessage}>
+              No visitors registered for this event.
+            </div>
           ) : (
             <div className={styles.tableContainer}>
               <table className={styles.visitorTable}>
@@ -170,17 +173,42 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                   {visitorData.map((visitor, index) => (
                     <tr className={styles.visitorRow} key={index}>
                       <td className={styles.checkBox}>
-                        {eventData.attendeeIds.map(oid => oid.toString()).includes(visitor._id) ?
-                          <Checkbox colorScheme="green" defaultChecked onChange={async (e) => await handleCheck(e.target.checked, visitor._id.toString())} />
-                          :
-                          <Checkbox colorScheme="green" onChange={async (e) => await handleCheck(e.target.checked, visitor._id.toString())} />
-                        }
+                        {eventData.attendeeIds
+                          .map((oid) => oid.toString())
+                          .includes(visitor._id) ? (
+                          <Checkbox
+                            colorScheme="green"
+                            defaultChecked
+                            onChange={async (e) =>
+                              await handleCheck(
+                                e.target.checked,
+                                visitor._id.toString()
+                              )
+                            }
+                          />
+                        ) : (
+                          <Checkbox
+                            colorScheme="green"
+                            onChange={async (e) =>
+                              await handleCheck(
+                                e.target.checked,
+                                visitor._id.toString()
+                              )
+                            }
+                          />
+                        )}
                       </td>
                       <td className={styles.nameColumn}>
                         {visitor.firstName} {visitor.lastName}
                       </td>
                       <td className={styles.emailColumn}>
-                        {visitor.email.includes("(Dependent)") ? <span className={styles.dependent}>{visitor.email}</span> : visitor.email}
+                        {visitor.email.includes("Dependent") ? (
+                          <span className={styles.dependent}>
+                            {visitor.email}
+                          </span>
+                        ) : (
+                          visitor.email
+                        )}
                       </td>
                       <td className={styles.detailsColumn}>
                         <SingleVisitorComponent visitorData={visitor} />
@@ -195,6 +223,6 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       )}
     </Box>
   );
-}
+};
 
 export default EditEventVisitorInfo;
