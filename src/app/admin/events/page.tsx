@@ -51,7 +51,7 @@ const EventPreview = () => {
 
 
   // get string for some group based on id
-  const fetchGroupName = async (groupId: ObjectId): Promise<string> => {
+  const fetchGroupName = async (groupId: string): Promise<string> => {
     try {
       const res = await fetch(`/api/groups/${groupId}`);
       if (res.ok) {

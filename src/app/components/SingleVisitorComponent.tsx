@@ -22,6 +22,7 @@ import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
 import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
+import { IEvent } from "database/eventSchema";
 
 interface Event {
   _id: string;
@@ -44,7 +45,7 @@ interface Event {
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

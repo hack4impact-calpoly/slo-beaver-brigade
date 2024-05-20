@@ -55,6 +55,9 @@ export type IUser = {
 //groupId and digitalWaiver seem to require a schema
 //currently there is no schema for them so I am leaving them as null for now
 //can groupId just be a string and digitalWaiver be a boolean?
+
+mongoose.Schema.ObjectId.get((v) => v.toString());
+mongoose.Schema.Types.Date.get((v) => v.toString());
 const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: false },

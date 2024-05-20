@@ -25,7 +25,7 @@ const getUserFromEmail = async (email: string) => {    // search db for user wit
     await connectDB()
     console.log(email)
     try{
-        const user: IUser | null = await User.findOne({email: email}).orFail();
+        const user: IUser = await User.findOne({email: email}).lean().orFail() as IUser;
         console.log("user found")
         return user
     }
