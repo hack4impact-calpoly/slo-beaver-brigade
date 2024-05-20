@@ -28,15 +28,6 @@
     font-size: 28px;
 
 }
-/*
-.signInButton {
-    width: "450px";
-    padding: "30px"; 
-    margin-top: "4";
-    margin-right: "4";
-    margin-left: "4";
-}
-*/
 
 
 @media (max-width: 750px) {
@@ -52,5 +43,3 @@
         width: 0%;
     }
 }
-
-
