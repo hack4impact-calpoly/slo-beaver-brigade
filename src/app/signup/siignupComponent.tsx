@@ -27,14 +27,11 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   //form consts
   const [email, setEmail] = useState('');
-  const [age, setAge] = useState(-1);
-  const [gender, setGender] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [zipcode, setZipcode] = useState('');
-  const [interestQuestions, setInterestQuestions] = useState('');
   const [enableNewsletter, setEnableNewsletter] = useState<boolean>(true);
   //verification consts
   const [pendingVerification, setPendingVerification] = useState(false);
@@ -86,7 +83,6 @@ export default function SignUp() {
             unsafeMetadata: {
               phone,
               zipcode,
-              interestQuestions,
             },
           });
  
@@ -143,8 +139,6 @@ export default function SignUp() {
             phoneNumber: phone,
             recieveNewsletter: enableNewsletter,
             role: 'user',
-            gender: gender,
-            age: age,
             firstName: firstName,
             lastName: lastName,
         };
@@ -155,7 +149,7 @@ export default function SignUp() {
             const user: IUser = JSON.parse(userRes)
             // no point in checking is user is guest, as they wouldn't be able to create
             // account with clerk if they had an existing email
-            await transitionGuestById(user._id, gender, age)
+            await transitionGuestById(user._id)
 
         }
         else{
@@ -276,26 +270,6 @@ export default function SignUp() {
               />
               <FormErrorMessage>Phone is required</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired isInvalid={age === -1 && submitAttempted}>
-              <FormLabel>Age</FormLabel>
-              <Input
-                type="number"
-                placeholder="Age"
-                variant="filled"
-                onChange={(e) => setAge(parseInt(e.target.value))}
-              />
-              <FormErrorMessage>Age is required</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4} isRequired isInvalid={gender === '' && submitAttempted}>
-              <FormLabel>Gender</FormLabel>
-              <Input
-                type="text"
-                placeholder="Gender"
-                variant="filled"
-                onChange={(e) => setGender(e.target.value)}
-              />
-              <FormErrorMessage>Gender is required</FormErrorMessage>
-            </FormControl>
             <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
               <FormLabel>Zipcode</FormLabel>
               <Input
@@ -305,15 +279,6 @@ export default function SignUp() {
                 onChange={(e) => setZipcode(e.target.value)}
               />
               <FormErrorMessage>Zipcode is required</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>Interest Questions</FormLabel>
-              <Textarea
-                placeholder="Enter your text here"
-                size="lg"
-                variant="filled"
-                onChange={(e) => setInterestQuestions(e.target.value)}
-              />
             </FormControl>
             <FormControl style={{display: "flex", flexDirection:"row"}} mb={4}>
               <FormLabel>Sign up for newsletter: 

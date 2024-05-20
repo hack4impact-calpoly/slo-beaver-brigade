@@ -1,5 +1,10 @@
-"use client"
-import { Box, Spinner, Checkbox } from "@chakra-ui/react";
+"use client";
+
+import {
+  Box,
+  Spinner,
+  Checkbox,
+} from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from "@database/eventSchema";
@@ -9,17 +14,32 @@ import { removeAttendee } from "app/actions/serveractions";
 import { addAttendee } from "app/actions/useractions";
 import SingleVisitorComponent from "./SingleVisitorComponent";
 
+const placeholderUser: IUser = {
+  _id: 'placeholder',
+  groupId: null,
+  email: '',
+  firstName: '',
+  lastName: '',
+  phoneNumber: '',
+  age: -1,
+  gender: '',
+  role: 'guest',
+  eventsAttended: [],
+  eventsRegistered: [],
+  recieveNewsletter: false,
+};
+
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [loading, setLoading] = useState(true);
-  const [visitorData, setVisitorData] = useState<IUser[]>([]);
+  const [visitorData, setVisitorData] = useState<{ [key: string]: { parent: IUser, dependents: IUser[] } }>({});
   const [eventData, setEventData] = useState<IEvent>({
-    _id: "",
-    eventName: "",
+    _id: '',
+    eventName: '',
     eventImage: null,
     checklist: "N/A",
-    eventType: "",
-    location: "",
-    description: "",
+    eventType: '',
+    location: '',
+    description: '',
     wheelchairAccessible: false,
     spanishSpeakingAccommodation: false,
     startTime: new Date(0),
@@ -27,13 +47,11 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     volunteerEvent: false,
     groupsAllowed: [],
     registeredIds: [],
-    attendeeIds: [],
+    attendeeIds: []
   });
 
   const emailLink = () => {
-    const emails = visitorData
-      .map((visitor) => visitor.email)
-      .filter((email) => !!email);
+    const emails = Object.values(visitorData).flatMap((group) => [group.parent, ...group.dependents].map(visitor => visitor.email)).filter(email => !!email);
     const subject = encodeURIComponent(eventData.eventName + " Update");
     return `mailto:${emails.join(",")}?subject=${subject}`;
   };
@@ -56,7 +74,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         data.endTime = new Date(data.endTime);
         setEventData(data);
       } catch (error) {
-        console.error("Error fetching event data:", error);
+        console.error('Error fetching event data:', error);
       }
     };
     fetchEventData();
@@ -65,20 +83,23 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   useEffect(() => {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
-        const visitors: IUser[] = [];
-        const dependents: IUser[] = [];
+        const visitors: { [key: string]: { parent: IUser, dependents: IUser[] } } = {};
 
         // Fetch waivers for the event
         try {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
             const waivers = await waiverResponse.json();
+            console.log('Fetched waivers:', waivers);  // Debug statement
             waivers.forEach((waiver: IWaiver) => {
+              if (!visitors[waiver.parentUserId]) {
+                visitors[waiver.parentUserId] = { parent: placeholderUser, dependents: [] };
+              }
               waiver.dependents.forEach((dependent) => {
-                dependents.push({
+                visitors[waiver.parentUserId].dependents.push({
                   _id: `${dependent} Dependent`,
                   groupId: null,
-                  email: "Dependent",
+                  email: "",
                   firstName: dependent,
                   lastName: "",
                   phoneNumber: "",
@@ -92,13 +113,10 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               });
             });
           } else {
-            console.error(
-              "Error fetching waivers:",
-              await waiverResponse.json()
-            );
+            console.error("Error fetching waivers:", await waiverResponse.json());
           }
         } catch (error) {
-          console.error("Error fetching waivers:", error);
+          console.error('Error fetching waivers:', error);
         }
 
         // Fetch user data for registered IDs
@@ -109,26 +127,24 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               .map(async (userId) => {
                 const response = await fetch(`/api/user/${userId}`);
                 if (response.ok) {
-                  visitors.push(await response.json());
+                  const user = await response.json();
+                  console.log('Fetched user:', user);  // Debug statement
+                  if (!visitors[user._id]) {
+                    visitors[user._id] = { parent: user, dependents: [] };
+                  } else {
+                    visitors[user._id].parent = user;
+                  }
                 } else {
                   console.error("Error fetching user:", await response.json());
                 }
               })
           );
-          console.log("Visitors collected:", visitors);
         } catch (error) {
-          console.error("Error fetching users:", error);
+          console.error('Error fetching users:', error);
         }
 
-        // Sort visitors by firstName and ensure dependents appear last
-        const sortedVisitors = [
-          ...visitors.sort((a, b) => a.firstName.localeCompare(b.firstName)),
-          ...dependents,
-        ];
-
-        console.log("Final visitor data with dependents:", sortedVisitors);
-
-        setVisitorData(sortedVisitors);
+        console.log("Final visitor data with dependents:", visitors);  // Debug statement
+        setVisitorData(visitors);
         setLoading(false);
       }
     };
@@ -154,66 +170,52 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         <>
           <div className={styles.visitorHeading}>
             Visitors
-            <div className={styles.visitorCount}>({visitorData.length})</div>
-            <button
-              onClick={handleEmailAllVisitors}
-              className={styles.emailAllVisitors}
-            >
-              Email All Visitors
-            </button>
-          </div>
-          {visitorData.length === 0 ? (
-            <div className={styles.noVisitorsMessage}>
-              No visitors registered for this event.
+            <div className={styles.visitorCount}>
+              ({Object.values(visitorData).flatMap((group) => [group.parent, ...group.dependents]).length})
             </div>
+            <button onClick={handleEmailAllVisitors} className={styles.emailAllVisitors}>Email All Visitors</button>
+          </div>
+          {Object.keys(visitorData).length === 0 ? (
+            <div className={styles.noVisitorsMessage}>No visitors registered for this event.</div>
           ) : (
             <div className={styles.tableContainer}>
               <table className={styles.visitorTable}>
                 <tbody>
-                  {visitorData.map((visitor, index) => (
-                    <tr className={styles.visitorRow} key={index}>
-                      <td className={styles.checkBox}>
-                        {eventData.attendeeIds
-                          .map((oid) => oid.toString())
-                          .includes(visitor._id) ? (
-                          <Checkbox
-                            colorScheme="green"
-                            defaultChecked
-                            onChange={async (e) =>
-                              await handleCheck(
-                                e.target.checked,
-                                visitor._id.toString()
-                              )
-                            }
-                          />
-                        ) : (
-                          <Checkbox
-                            colorScheme="green"
-                            onChange={async (e) =>
-                              await handleCheck(
-                                e.target.checked,
-                                visitor._id.toString()
-                              )
-                            }
-                          />
-                        )}
-                      </td>
-                      <td className={styles.nameColumn}>
-                        {visitor.firstName} {visitor.lastName}
-                      </td>
-                      <td className={styles.emailColumn}>
-                        {visitor.email.includes("Dependent") ? (
-                          <span className={styles.dependent}>
-                            {visitor.email}
-                          </span>
-                        ) : (
-                          visitor.email
-                        )}
-                      </td>
-                      <td className={styles.detailsColumn}>
-                        <SingleVisitorComponent visitorData={visitor} />
-                      </td>
-                    </tr>
+                  {Object.entries(visitorData).map(([parentId, group], parentIndex) => (
+                    <React.Fragment key={parentIndex}>
+                      <tr className={styles.visitorRow}>
+                        <td className={styles.checkBox}>
+                          {eventData.attendeeIds.map(oid => oid.toString()).includes(group.parent._id) ?
+                            <Checkbox colorScheme="green" defaultChecked onChange={async (e) => await handleCheck(e.target.checked, group.parent._id.toString())} />
+                            :
+                            <Checkbox colorScheme="green" onChange={async (e) => await handleCheck(e.target.checked, group.parent._id.toString())} />
+                          }
+                        </td>
+                        <td className={styles.nameColumn}>
+                          {group.parent.firstName} {group.parent.lastName}
+                        </td>
+                        <td className={styles.emailColumn}>
+                          {group.parent.email}
+                        </td>
+                        <td className={styles.detailsColumn}>
+                          <SingleVisitorComponent visitorData={group.parent} />
+                        </td>
+                      </tr>
+                      {group.dependents.map((dependent, index) => (
+                        <tr className={`${styles.visitorRow} ${styles.dependentRow}`} key={`${parentIndex}-${index}`}>
+                          <td className={styles.checkBox}></td>
+                          <td className={styles.nameColumn}>
+                            {dependent.firstName} {dependent.lastName}
+                          </td>
+                          <td className={styles.emailColumn}>
+                            {dependent.email}
+                          </td>
+                          <td className={styles.detailsColumn}>
+                            <SingleVisitorComponent visitorData={dependent} />
+                          </td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
@@ -223,6 +225,6 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       )}
     </Box>
   );
-};
+}
 
 export default EditEventVisitorInfo;

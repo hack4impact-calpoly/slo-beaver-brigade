@@ -13,12 +13,12 @@ import {
   AlertDialogOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import styles from './page.module.css'
-import beaverLogo from '/docs/images/beaver-logo.svg'
-import Image from 'next/image'
+import styles from "./page.module.css";
+import beaverLogo from "/docs/images/beaver-logo.svg";
+import Image from "next/image";
 import NextLink from "next/link";
-import { IUser } from '@database/userSchema';
-import { useNavigate } from 'react-router-dom';
+import { IUser } from "@database/userSchema";
+import { useNavigate } from "react-router-dom";
 import { addToRegistered } from "@app/actions/useractions";
 import { getUserDbData } from "app/lib/authentication";
 import { createGuestFromEmail, getUserFromEmail } from "app/actions/userapi";
@@ -26,21 +26,21 @@ import { useRouter } from "next/navigation";
 
 type IParams = {
   params: {
-      eventId: string
-  }
-}
+    eventId: string;
+  };
+};
 
 export default function Waiver({ params: { eventId } }: IParams) {
-  const [dependents, setDependents] = useState(['']);
+  const [dependents, setDependents] = useState([""]);
   const [formFilled, setFormFilled] = useState(false);
-  const [email, setEmail] = useState('');
-  const [zipcode, setZipcode] = useState('');
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [signature, setSignature] = useState('');
+  const [email, setEmail] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [signature, setSignature] = useState("");
   const [validEmail, setValidEmail] = useState(false);
-  const [userData, setUserData] = useState<IUser | null>(null)
-  const [loadingUser, setLoadingUser] = useState<boolean>(true)
+  const [userData, setUserData] = useState<IUser | null>(null);
+  const [loadingUser, setLoadingUser] = useState<boolean>(true);
   const [emailChecked, setEmailChecked] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement | null>(null);
@@ -48,73 +48,76 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   // checks if user is signed in
   useEffect(() => {
-    const fetchUserData = async() => {
-        let res = await getUserDbData()
-        if (res){
-            setUserData(JSON.parse(res))
-            setValidEmail(true)
-            console.log('valid email')
-        }
-        setLoadingUser(false)
-    }
-    fetchUserData()
-  }, [])
+    const fetchUserData = async () => {
+      let res = await getUserDbData();
+      if (res) {
+        setUserData(JSON.parse(res));
+        setValidEmail(true);
+        console.log("valid email");
+      }
+      setLoadingUser(false);
+    };
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     // Check if all required fields are filled
-    if (userData){
-        console.log('form filled')
-        setFormFilled(true)
-        return
+    if (userData) {
+      console.log("form filled");
+      setFormFilled(true);
+      return;
     }
-    const isFilled = email.trim() !== '' && zipcode.trim() !== '' && signature.trim() !== '';
+    const isFilled =
+      email.trim() !== "" && zipcode.trim() !== "" && signature.trim() !== "";
     setFormFilled(isFilled);
   }, [email, zipcode, signature, userData]);
 
   const addDependent = () => {
-    const emptyFieldCount = dependents.filter(dependent => dependent === '').length;
-    if(emptyFieldCount <= 1){
-      setDependents([...dependents, '']);
-    }               
+    const emptyFieldCount = dependents.filter(
+      (dependent) => dependent === ""
+    ).length;
+    if (emptyFieldCount <= 1) {
+      setDependents([...dependents, ""]);
+    }
   };
 
   const handleDependentChange = (index: number, value: string) => {
     const newDependents = [...dependents];
-    newDependents[index] = value; 
+    newDependents[index] = value;
     setDependents(newDependents);
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setEmailChecked(true);
-    const dependentArray = dependents.filter((dependent) => dependent !== '');
+    const dependentArray = dependents.filter((dependent) => dependent !== "");
 
     const data = {
       eventId: eventId,
       dependents: dependentArray,
     };
 
-    if (userData){
-    setValidEmail(true);
+    if (userData) {
+      setValidEmail(true);
       try {
         const res = await fetch(`/api/waiver`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({parentUserId: userData._id, ...data}),
         });
         //if the waiver returns successfully
         if (res.ok) {
-            const responseData = await res.json();
-            const waiverId = responseData._id; 
-            
-            //add digitalWaiverId to user, and add an object that consists of
-            //the eventId and digitalWaiverId to eventsAttended
-            const updatedInfo ={
-              eventsRegistered: {
-                  eventId: eventId,
-                  digitalWaiver: waiverId
-              }
-            }
+          const responseData = await res.json();
+          const waiverId = responseData._id;
+
+          //add digitalWaiverId to user, and add an object that consists of
+          //the eventId and digitalWaiverId to eventsAttended
+          const updatedInfo = {
+            eventsRegistered: {
+              eventId: eventId,
+              digitalWaiver: waiverId,
+            },
+          };
 
             try {
               //call to update the user object
@@ -138,58 +141,60 @@ export default function Waiver({ params: { eventId } }: IParams) {
               console.error("Error adding info to user", error);
             }
         } else {
-            console.error("Error creating waiver", res.statusText);
-        }} 
-      catch (error) {
+          console.error("Error creating waiver", res.statusText);
+        }
+      } catch (error) {
         console.error("Error creating waiver:", error);
       }
-    }
-
-    else{
-        //finds the userId associated with the given email
-        const fetchUser = async () => {
-            let user: IUser | null = null
-            const res = await getUserFromEmail(email)
-            if (res){
-                user = JSON.parse(res) as IUser
-            }
-            return user
-        };
-        let user = await fetchUser()
-        
-        //if a user exists for the given email, create a new waiver
-        //returns the waiverId, 
-        if (!user){
-            let userRes = await createGuestFromEmail(email, zipcode, firstName, lastName)
-            if (!userRes){
-                console.log('server error while creating guest user')
-                return
-            }
-            user = JSON.parse(userRes)
+    } else {
+      //finds the userId associated with the given email
+      const fetchUser = async () => {
+        let user: IUser | null = null;
+        const res = await getUserFromEmail(email);
+        if (res) {
+          user = JSON.parse(res) as IUser;
         }
+        return user;
+      };
+      let user = await fetchUser();
 
-        if(user && user.role == 'guest'){
-      
+      //if a user exists for the given email, create a new waiver
+      //returns the waiverId,
+      if (!user) {
+        let userRes = await createGuestFromEmail(
+          email,
+          zipcode,
+          firstName,
+          lastName
+        );
+        if (!userRes) {
+          console.log("server error while creating guest user");
+          return;
+        }
+        user = JSON.parse(userRes);
+      }
+
+      if (user && user.role == "guest") {
         setValidEmail(true);
         try {
-            const res = await fetch(`/api/waiver`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-            //if the waiver returns successfully
-            if (res.ok) {
-                const responseData = await res.json();
-                const waiverId = responseData._id; 
-                
-                //add digitalWaiverId to user, and add an object that consists of
-                //the eventId and digitalWaiverId to eventsAttended
-                const updatedInfo ={
-                eventsRegistered: {
-                    eventId: eventId,
-                    digitalWaiver: waiverId
-                }
-                }
+          const res = await fetch(`/api/waiver`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({parentUserId: user._id, ...data}),
+          });
+          //if the waiver returns successfully
+          if (res.ok) {
+            const responseData = await res.json();
+            const waiverId = responseData._id;
+
+            //add digitalWaiverId to user, and add an object that consists of
+            //the eventId and digitalWaiverId to eventsAttended
+            const updatedInfo = {
+              eventsRegistered: {
+                eventId: eventId,
+                digitalWaiver: waiverId,
+              },
+            };
 
                 try {
                 //call to update the user object
@@ -217,99 +222,197 @@ export default function Waiver({ params: { eventId } }: IParams) {
         catch (error) {
             console.error("Error creating waiver:", error);
         }
-
-        }
-        else{
+      } else {
         onOpen();
-        }
+      }
     }
   };
 
   return (
     <div>
-      <Flex flexDirection="column" justifyContent="flex-start" alignItems="center" 
-        height="100vh" marginTop="5vh">
-        <Image src={beaverLogo} alt="beaver"/>
-        <form onSubmit={handleSubmit}>
-        <Box w="100%" mt={20} mb='2.7%' padding='1vw'>
-        {
-            (!userData && !loadingUser) && (
+      <Flex
+        style={{
+          flexWrap: "wrap",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Image src={beaverLogo} alt="beaver" style={{ marginTop: "10px" }} />
+        <Flex
+          style={{
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            <Box w="100%" mt={10} mb="2.7%" padding="1vw">
+              {!userData && !loadingUser && (
                 <div className="flex flex-col">
-                    <h1 style={{ fontSize: "30px", fontWeight: "bold" } }>Add Members</h1>
-                    <h2 className={styles.formHeading}>Contact Information</h2>
-                    <div className="flex flex-row">
-                        <input className={styles.inputForm} type="text" id="firstname" name="firstname" 
-                        placeholder="First Name" onChange={(e) => setFirstName(e.target.value)} required/>
-                        <input className={styles.inputForm} type="text" id="lastname" name="lastname" 
-                        placeholder="Last Name" onChange={(e) => setLastName(e.target.value)} required/>
-                    </div>
-                    <div className="flex flex-row">
-                        <input className={styles.inputForm} type="email" id="email" name="email" 
-                        placeholder="Email" onChange={(e) => setEmail(e.target.value)} required/>
-                        <input className={styles.inputForm} type="zipcode" id="zipcode" name="zipcode" 
-                        placeholder="Zipcode" onChange={(e) => setZipcode(e.target.value)} required/>
-                    </div>
+                  <h1 style={{ fontSize: "30px", fontWeight: "bold" }}>
+                    Add Members
+                  </h1>
+                  <h2 className={styles.formHeading}>Contact Information</h2>
+                  <div className="flex flex-row">
+                    <input
+                      className={styles.inputForm}
+                      type="text"
+                      id="firstname"
+                      name="firstname"
+                      placeholder="First Name"
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                    />
+                    <input
+                      className={styles.inputForm}
+                      type="text"
+                      id="lastname"
+                      name="lastname"
+                      placeholder="Last Name"
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-row">
+                    <input
+                      className={styles.inputForm}
+                      type="email"
+                      id="email"
+                      name="email"
+                      placeholder="Email"
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <input
+                      className={styles.inputForm}
+                      type="zipcode"
+                      id="zipcode"
+                      name="zipcode"
+                      placeholder="Zipcode"
+                      onChange={(e) => setZipcode(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-            )
-        }
-          <table width="100%">
-            <tbody>
-            {dependents.map((name, index) => (
-              <tr key={index}>
-                <td>
-                  <input
-                    className={styles.dependentTable}
-                    type="text"
-                    value={name}
-                    onChange={(event) => handleDependentChange(index, event.target.value)}
-                    style={{ display: index === 0 ? 'none' : 'block'}}
-                    placeholder="Dependent Full Name"
-                  />
-                </td>
-              </tr>
-            ))}
-            </tbody>
-          </table>
-            <button type="button" onClick={addDependent} 
-            className={styles.addDependent} style={{color: '#ECB94A'}}>
-              Add Dependent +
-            </button>
-            <h2 className={styles.formHeading}>Sign Here</h2>
-            <input className={styles.inputSignature} type="string" id="signature" name="signature" 
-            placeholder="Signature"onChange={(e) => setSignature(e.target.value)} required/>
-          
-        </Box>
-        <Flex flexDirection="row">
-          <NextLink href = {"/events/" + eventId + "/digitalWaiver/1"}>
-            <Button sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
-            backgroundColor: 'white', border: '2px solid #B5B5B5', color: '#B5B5B5',
-            borderRadius: '10px', '&:hover': { backgroundColor: 'gray.200', border: '2px solid gray.200' }
-            }}>Return</Button>
-           </NextLink>
-          { !formFilled &&
-            <Button sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
-            backgroundColor: 'white', border: '2px solid #B5B5B5', color: '#B5B5B5',
-            borderRadius: '10px', 
-            '&:hover':{ backgroundColor: 'white', border: '2px solid gray.200' } 
-            }}>Continue</Button>
-          }
-          {
-            formFilled && 
-              <Button type="submit" sx={{ width: '225px', height: '40px', marginLeft: '75px', marginRight: '75px',
-              backgroundColor: '#337774', border: '2px solid #337774', color: 'white',
-              borderRadius: '10px', 
-              '&:hover':{ backgroundColor: '#296361', border: '2px solid #296361' } 
-              }}>
-                Continue
-              </Button>
-          }
-          
+              )}
+              <table width="100%">
+                <tbody>
+                  {dependents.map((name, index) => (
+                    <tr key={index}>
+                      <td>
+                        <input
+                          className={styles.dependentTable}
+                          type="text"
+                          value={name}
+                          onChange={(event) =>
+                            handleDependentChange(index, event.target.value)
+                          }
+                          style={{ display: index === 0 ? "none" : "block" }}
+                          placeholder="Dependent Full Name"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button
+                type="button"
+                onClick={addDependent}
+                className={styles.addDependent}
+                style={{ color: "#ECB94A" }}
+              >
+                Add Dependent +
+              </button>
+              <h2 className={styles.formHeading}>Sign Here</h2>
+              <input
+                className={styles.inputSignature}
+                type="string"
+                id="signature"
+                name="signature"
+                placeholder="Signature"
+                onChange={(e) => setSignature(e.target.value)}
+                required
+              />
+            </Box>
+            <Flex
+              style={{
+                flexWrap: "wrap",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <NextLink href={"/events/" + eventId + "/digitalWaiver/1"}>
+                <Button
+                  sx={{
+                    width: "225px",
+                    height: "40px",
+                    marginLeft: "75px",
+                    marginRight: "75px",
+                    marginBottom: "20px",
+                    backgroundColor: "white",
+                    border: "2px solid #B5B5B5",
+                    color: "#B5B5B5",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "gray.200",
+                      border: "2px solid gray.200",
+                    },
+                  }}
+                >
+                  Return
+                </Button>
+              </NextLink>
+              {!formFilled && (
+                <Button
+                  sx={{
+                    width: "225px",
+                    height: "40px",
+                    marginLeft: "75px",
+                    marginRight: "75px",
+                    marginBottom: "20px",
+                    backgroundColor: "white",
+                    border: "2px solid #B5B5B5",
+                    color: "#B5B5B5",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "white",
+                      border: "2px solid gray.200",
+                    },
+                  }}
+                >
+                  Continue
+                </Button>
+              )}
+              {formFilled && (
+                <Button
+                  type="submit"
+                  sx={{
+                    width: "225px",
+                    height: "40px",
+                    marginLeft: "75px",
+                    marginRight: "75px",
+                    marginBottom: "20px",
+                    backgroundColor: "#337774",
+                    border: "2px solid #337774",
+                    color: "white",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "#296361",
+                      border: "2px solid #296361",
+                    },
+                  }}
+                >
+                  Continue
+                </Button>
+              )}
+            </Flex>
+          </form>
         </Flex>
-        </form>
       </Flex>
 
       <AlertDialog
-        motionPreset='slideInBottom'
+        motionPreset="slideInBottom"
         leastDestructiveRef={cancelRef}
         onClose={onClose}
         isOpen={isOpen}
@@ -320,15 +423,13 @@ export default function Waiver({ params: { eventId } }: IParams) {
         <AlertDialogContent>
           <AlertDialogHeader>Email Already Exists.</AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
-            Sign in or try again.
-          </AlertDialogBody>
+          <AlertDialogBody>Sign in or try again.</AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
               Close
             </Button>
             <Button sx={{marginLeft: "5%"}}>
-              <a href="signin">
+              <a href="/signin">
                 Sign in
               </a>
             </Button>
@@ -338,4 +439,3 @@ export default function Waiver({ params: { eventId } }: IParams) {
     </div>
   );
 }
-  

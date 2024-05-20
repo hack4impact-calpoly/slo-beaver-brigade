@@ -27,7 +27,7 @@ import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
 import { EmailRSSComponent } from "./EmailComponent";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
-
+import "../fonts/fonts.css";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -35,7 +35,6 @@ declare module "react" {
    css?: any;
  }
 }
-
 
 // placeholder to ensure format consistency when there is only 1-2 events
 const EventPlaceholder = () => {
@@ -72,9 +71,6 @@ const UnregisteredEventPlaceholder = () => {
 
 export const UserDashboard = ({events, userData}: {events: IEvent[], userData: IUser | null}) => {
 
-
-
-
  const sliderStyles = css`
    .slick-dots li button:before {
    }
@@ -86,7 +82,6 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
    }
  `;
 
-
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
   const [eventTypes, setEventTypes] = useState<string[]>([]);
@@ -95,6 +90,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
   const [selectedEventType, setSelectedEventType] = useState('');
+  const [isExpandedViewComponentOpen, setExpandedViewComponentOpen] = useState(false);
+  const [eventForExpandedViewComponent, setEventForExpandedViewComponent] = useState<IEvent | null>(null);
 
  // breakpoint for different viewport size
  const eventNameSize = useBreakpointValue({
@@ -109,13 +106,11 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
  });
  const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
 
-
  //convert date into format Dayofweek, Month
  const formatDate = (date: Date) => {
    if (!(date instanceof Date)) {
      date = new Date(date); // Convert to Date object if not already
    }
-
 
    const options: Intl.DateTimeFormatOptions = {
      weekday: "long",
@@ -125,30 +120,26 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
    return date.toLocaleDateString("en-US", options);
  };
 
-
  // convert date into xx:xx XM - xx:xx XM
  const formatDateTimeRange = (start: Date, end: Date) => {
    if (!(start instanceof Date)) {
      start = new Date(start); // Convert to Date object if not already
    }
 
-
    if (!(end instanceof Date)) {
      end = new Date(end); // Convert to Date object if not already
    }
-
 
    const options: Intl.DateTimeFormatOptions = {
      hour: "numeric", // "numeric" or "2-digit"
      minute: "numeric", // "numeric" or "2-digit"
    };
 
-
    const formattedStart = start.toLocaleTimeString("en-US", options);
    const formattedEnd = end.toLocaleTimeString("en-US", options);
 
 
-    return `${formattedStart} - ${formattedEnd}`;
+   return `${formattedStart} - ${formattedEnd}`;
   };
 
   useEffect(() => {
@@ -156,18 +147,23 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
       console.log("useData:" + userData)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
-      const filteredEvents = events.filter(event =>
+      
+      const userSignedUpEvents = events.filter(
+        event => event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+      );
+      
+      const eventsUserHasntRegistered = events.filter(
+        event => !event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
+      
+      );
+
+      const filteredEvents = eventsUserHasntRegistered.filter(event =>
         new Date(event.endTime) >= currentDate &&
         (!selectedEventType || event.eventType === selectedEventType) // Filter by event type if selected
       );
-      const userSignedUpEvents = filteredEvents.filter(
-        event => event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
-      );
-      const eventsUserHasntRegistered = filteredEvents.filter(
-        event => !event.registeredIds.map(id => id.toString()).includes(userData?._id as string)
-      );
+
       setUserEvents(userSignedUpEvents);
-      setUnregisteredEvents(eventsUserHasntRegistered);
+      setUnregisteredEvents(filteredEvents);
     } else {
       const currentDate = new Date();
       const upcomingEvents = events.filter(
@@ -300,9 +296,18 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
 
  const allDataLoaded = !eventsLoading;
 
+ const toggleExpandedViewComponentOpen = () => {
+  setExpandedViewComponentOpen(!isExpandedViewComponentOpen);
+};
 
+function setupViewEventModal(event: IEvent){
+  setEventForExpandedViewComponent(event);
+  setExpandedViewComponentOpen(!isExpandedViewComponentOpen);
+}
 
-
+const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonElement>) => {
+  event.stopPropagation();
+};
 
 
   return (
@@ -312,17 +317,18 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
        showModal={showEventList}
      ></EventListRegister>
   
-    {userData &&
+    {/*{userData &&
     <div className="px-[3rem] pt-3">
              <EmailRSSComponent calendarURL={"/api/user/calendar/" + userData?._id}/>
-   </div>
+    </div>
              /*<a href=>Add to calendar!</a>*/}
+
      <div css={sliderStyles}>
        <Box p="4">
          <Stack spacing={2} px="10" mb={6}>
            <Flex alignItems="center" justifyContent="space-between">
-             <Text fontSize="2xl" fontWeight="bold" color="black" mb={3}>
-               Your Upcoming Events
+             <Text fontSize="2xl" fontWeight="light" color="black" mb={3}>
+               Your Events
              </Text>
              <Heading as="h2" fontSize="xl">
              </Heading>
@@ -330,7 +336,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
            <Divider
              size="sm"
              borderWidth="1px"
-             borderColor="black"
+             borderColor="grey"
              alignSelf="center"
              w="100%"
            />
@@ -361,8 +367,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                <Link href="/login">
                  <Button
                    width="200px"
-                   colorScheme="yellow"
-                  
+                   colorScheme="yellow"   
                    mt="5"
                  >
                    Sign in
@@ -388,7 +393,14 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                  userEvents.map((event) => {
                    const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
                    return (
-                   <Box key={event._id} textAlign="center" px="4" mb="4">
+                   <Box 
+                      key={event._id} 
+                      textAlign="center" 
+                      px="4" 
+                      pt="20px"
+                      pb="20px" 
+                      onClick={() => setupViewEventModal(event)}>
+                     
                      <Box
                        position="relative"
                        borderWidth="1px"
@@ -396,6 +408,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                        h="60"
                        textAlign="left"
                        borderRadius="20px"
+                       className={style.registeredEventBox}
                        style={{
                          //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
                          background: backgroundImage,
@@ -412,7 +425,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                        >
                          <Text
                            fontSize={eventNameSize}
-                           fontWeight="black"
+                           fontWeight="800"
                            color="white"
                            className="bold-text"
                            mx={2}
@@ -435,7 +448,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                        >
                          <Text
                            fontSize={eventDetailSize}
-                           fontWeight="bold"
+                           fontFamily="Lato"
+                           fontWeight="500"
                            color="white"
                            className="bold-text"
                            mx={2}
@@ -446,18 +460,8 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                          </Text>
                          <Text
                            fontSize={eventTimeSize}
-                           fontWeight="semibold"
-                           color="white"
-                           className="bold-text"
-                           mx={2}
-                           zIndex={2}
-                           alignContent="left-bottom"
-                         >
-                           {event.location}
-                         </Text>
-                         <Text
-                           fontSize={eventTimeSize}
-                           fontWeight="semibold"
+                           fontFamily="Lato"
+                           fontWeight="500"
                            color="white"
                            className="bold-text"
                            mx={2}
@@ -468,6 +472,18 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                              event.startTime,
                              event.endTime
                            )}
+                         </Text>
+                         <Text
+                           fontSize={eventTimeSize}
+                           fontFamily="Lato"
+                           fontWeight="500"
+                           color="white"
+                           className="bold-text"
+                           mx={2}
+                           zIndex={2}
+                           alignContent="left-bottom"
+                         >
+                           {event.location}
                          </Text>
                        </Box>
                      </Box>
@@ -499,20 +515,19 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
          </Box>
          {/* Re-include the omitted bottom section here */}
          <Box px="10" mb={6}>
-           <Flex alignItems="center" justifyContent="space-between">
+           <Flex alignItems="center" justifyContent="space-between" mt={6}>
              <Text
                fontSize="2xl"
-               fontWeight="bold"
+               fontWeight="light"
                color="black"
                mb={3}
-               mt={5}
              >
-               Other Events
+               Upcoming Events
              </Text>
        
              <Select
                 id='event-type'
-                placeholder='Select Event Types'
+                placeholder='Select Event Type'
                 options={eventTypes.map((type) => ({
                   value: type,
                   label: type,
@@ -525,7 +540,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
            <Divider
              size="sm"
              borderWidth="1px"
-             borderColor="black"
+             borderColor="grey"
              alignSelf="center"
              w="100%"
              my={2}
@@ -552,14 +567,14 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
              </Text>
            ) : null}
          </Box>
-         <Box mt={6} px={6} >
+         <Box mt={7} px={6} >
            {unregisteredEvents.length > 0 ? (
             <Slider {...unregisteredEventSettings}>
               {unregisteredEvents.length > 0 ? (
                 unregisteredEvents.map((event) => {
                   const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
                   return (
-                    <Box key={event._id} textAlign="center" px="0" mb="4">
+                    <Box key={event._id} textAlign="center" px="0" mb="4" onClick={() => setupViewEventModal(event)}>
                       <Box
                         key={event._id}
                         style={{
@@ -579,8 +594,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                         borderRadius="20px"
                         className={style.eventBox}
                         flex="1 0 40%" // Adjust the width as needed
-                        
-                      >
+                      >                                               
                         <Heading
                           as="h1"
                           size="3xl"
@@ -602,17 +616,10 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                           position={"relative"}
                           zIndex={2}
                           fontSize={eventDetailSize}
-                        >
+                        >                         
                           <Text
-                            fontWeight="custom"
-                            color="white"
-                            className="bold-text"
-                            zIndex={2}
-                          >
-                            {event.location}
-                          </Text>
-                          <Text
-                            fontWeight="custom"
+                            fontFamily="Lato"
+                            fontWeight="500"
                             color="white"
                             className="bold-text"
                             zIndex={2}
@@ -620,39 +627,50 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
                             {formatDate(event.startTime)}
                           </Text>
                           <Text
-                            fontWeight="custom"
+                            fontFamily="Lato"
+                            fontWeight="500"
                             color="white"
                             className="bold-text"
                             zIndex={2}
                           >
                             {formatDateTimeRange(event.startTime, event.endTime)}
                           </Text>
+                          <Text
+                            fontFamily="Lato"
+                            fontWeight="500"
+                            color="white"
+                            className="bold-text"
+                            zIndex={2}
+                          >
+                            {event.location}
+                          </Text>
                         </Box>
-                              <Box
-                                position="absolute"
-                                bottom="0"
-                                left="0"
-                                right="0"
-                                p={2}
-                                mx="2"
-                                my="2"
-                                zIndex={2}
-                              >
-                                <Heading as="h2" fontSize="xl">
-                                    <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
-                                    <Button
-                                        colorScheme="yellow"
-                                        fontSize={eventDetailSize}
-                                        mt={14}
-                                    >
-                                        Register
-                                    </Button>
-                                  </Link>
-                                </Heading>
-                              </Box> 
-                            </Box>
-                          </Box>
-                          )})
+                          <Box
+                            position="absolute"
+                            bottom="0"
+                            left="0"
+                            right="0"
+                            p={2}
+                            mx="2"
+                            my="2"
+                            zIndex={2}
+                          >
+                          <Heading as="h2" fontSize="xl">
+                            <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
+                              <Button
+                                colorScheme="yellow"
+                                fontSize={eventDetailSize}
+                                mt={14}
+                                onClick={handleButtonClickToStopPropogation}
+                                >
+                                Register
+                              </Button>
+                            </Link>
+                          </Heading>
+                        </Box> 
+                      </Box>
+                    </Box>
+                  )})        
                ) : (
                  <UnregisteredEventPlaceholder />
                )}
@@ -679,5 +697,10 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
           </Box>
         </Box>
      </div>
+     <ExpandedViewComponent
+        eventDetails={eventForExpandedViewComponent}
+        showModal={isExpandedViewComponentOpen}
+        setShowModal={toggleExpandedViewComponentOpen}
+      />
     </div>
-    )};
+  )};

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from '@clerk/nextjs'
 import "./styles/globals.css";
 import Providers from "./Providers";
@@ -23,13 +24,16 @@ export default function RootLayout({
 }) {
     
   return (
+    <ClerkProvider>
       <html lang="en">
         <body  className={montserrat.className}>
-          <Providers>
+            <Providers>
               <NavbarParent/>
               {children}
-          </Providers>
+              <SpeedInsights/>
+              </Providers>
           </body>
       </html>
+      </ClerkProvider>
   );
 }
