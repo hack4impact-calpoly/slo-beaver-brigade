@@ -19,7 +19,7 @@ const Layout = async (props: Props) => {
         // get user role
         const user = await getUserDbDataRevamp()
         if (!user || user?.role != "admin"){
-            redirect("/")
+            redirect("/dashboard")
         }
     }
 
