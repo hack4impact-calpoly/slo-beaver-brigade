@@ -42,9 +42,7 @@ export default function Navbar(props: { name: string }) {
             </div>
           }
         </div>   
-        <div
-          className={`${styles.nav_elements}  ${showNavbar && styles.active}`}
-        >
+        <div className={`${styles.nav_elements}  ${showNavbar && styles.active}`}>
           <ul>
             <li>
               <Link href="/" onClick={handleHideNavbar}>
@@ -71,33 +69,32 @@ export default function Navbar(props: { name: string }) {
               </>
             }
           </ul>
-        </div>
-          
+        </div>  
         <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
-          <ul>
-            <li>
-              <Link href="https://www.slobeaverbrigade.com">
-                Homepage
-              </Link>
-            </li>
-            {(props.name != "Sign In / Log In") &&
-              <>
-                <li>
-                  |
-                </li>
-                <li>
-                  <SignOutButton/>
-                </li>
-              </>
-            }
-            </ul>
+            <ul>
+              <li>
+                <Link href="https://www.slobeaverbrigade.com">
+                  Homepage
+                </Link>
+              </li>
+              {(props.name != "Sign In / Log In") &&
+                <>
+                  <li>
+                    |
+                  </li>
+                  <li>
+                    <SignOutButton/>
+                  </li>
+                </>
+              }
+              </ul>
           </div>
           <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
             <HamburgerIcon/>
           </div> 
           <div className={`${styles.close_icon} ${showNavbar && styles.active}`} onClick={handleHideNavbar}>
             <CloseIcon/> 
-          </div>
+          </div>               
       </div>
     </nav>
   );

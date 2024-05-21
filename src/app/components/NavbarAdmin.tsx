@@ -42,19 +42,17 @@ export default function Navbar(props: { name: string }) {
             </div>
           }
         </div>   
-        <div
-          className={`${styles.nav_elements}  ${showNavbar && styles.active}`}
-        >
+        <div className={`${styles.nav_elements}  ${showNavbar && styles.active}`}>
           <ul>
             <li>
               <Link href="/dashboard" onClick={handleHideNavbar}>
                 Discover Events
               </Link>
             </li>
-           <li>
-              <Link href="/calendar" onClick={handleHideNavbar}>
-                Calendar
-              </Link>
+            <li>
+                <Link href="/calendar" onClick={handleHideNavbar}>
+                  Calendar
+                </Link>
             </li>
             {(props.name != "Sign In / Log In") &&
               <>
@@ -82,34 +80,34 @@ export default function Navbar(props: { name: string }) {
             }
           </ul>
         </div>
-          
         <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
-          <ul>
-            <li>
-              <Link href="https://www.slobeaverbrigade.com">
-                Homepage
-              </Link>
-            </li>
-            {(props.name != "Sign In / Log In") &&
-              <>
-                <li>
-                  |
-                </li>
-                <li>
-                  <SignOutButton>
-                    <button>Sign Out</button>
-                  </SignOutButton>
-                </li>
-              </>
-            }
-            </ul>
+            <ul>
+              <li>
+                <Link href="https://www.slobeaverbrigade.com">
+                  <p>Homepage</p>
+                </Link>
+              </li>
+              {(props.name != "Sign In / Log In") &&
+                <>
+                  <li>
+                  <p>|</p>
+                  </li>
+                  <li>
+                    <SignOutButton>
+                      <p>Sign Out</p>
+                    </SignOutButton>
+                  </li>
+                </>
+              }
+              </ul>
           </div>
-          <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
-            <HamburgerIcon/>
-          </div> 
-          <div className={`${styles.close_icon} ${showNavbar && styles.active}`} onClick={handleHideNavbar}>
-            <CloseIcon/> 
-          </div>
+        
+        <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
+          <HamburgerIcon/>
+        </div> 
+        <div className={`${styles.close_icon} ${showNavbar && styles.active}`} onClick={handleHideNavbar}>
+          <CloseIcon/> 
+        </div>
       </div>
     </nav>
   );
