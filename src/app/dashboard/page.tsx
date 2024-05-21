@@ -41,6 +41,7 @@ export const getUserDbDataRevamp = async() => {
     try {
         const user: IUser= await User.findOne({ email: clerk_user.emailAddresses[0].emailAddress }).lean().orFail() as IUser;
         console.log("user found")
+    
         return user
     }
     catch (err) {
@@ -73,7 +74,7 @@ export default async function Page(){
     console.log('returning page')
 
     return (
-        <UserDashboard events={events} userData={userData}/>
+        <UserDashboard eventsRes={JSON.stringify(events)} userDataRes={JSON.stringify(userData)}/>
     )
 }
 
