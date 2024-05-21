@@ -26,9 +26,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+
         <body  className={montserrat.className}>
             <Providers>
-              <NavbarParent/>
+            <NavbarParent/>
               {children}
               <SpeedInsights/>
               </Providers>
