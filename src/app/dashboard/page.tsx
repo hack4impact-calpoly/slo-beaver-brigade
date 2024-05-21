@@ -35,6 +35,7 @@ export const getUserDbDataRevamp = async() => {
         return null
     }
     // search db for user with matching email address
+    console.log('revamp: fetching data')
     await connectDB()
     console.log(clerk_user.emailAddresses[0].emailAddress)
     try {
@@ -51,9 +52,8 @@ export const getUserDbDataRevamp = async() => {
 export default async function Page(){
     console.log('page loading...')
     let events = []
-    const url = new URL(getBaseUrl() + "/api/events")
-    url.searchParams.set("sort_order", "asc")
-    const res = await fetch( url, {
+    const url = getBaseUrl() + "/api/events/ascending"
+    const res = await fetch(url, {
         cache: "force-cache",
         next: {
             tags: ['events']
