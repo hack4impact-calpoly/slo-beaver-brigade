@@ -5,6 +5,7 @@ import styles from "@styles/navbar/navbar.module.css";
 import { HamburgerIcon, Search2Icon, StarIcon, ExternalLinkIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import { SignOutButton } from "@clerk/clerk-react";
+import { removeUserCookie } from "app/actions/cookieactions";
 
 export default function Navbar(props: { name: string }) {
   const [showNavbar, setShowNavbar] = useState(false);
@@ -95,7 +96,7 @@ export default function Navbar(props: { name: string }) {
                 <li>
                   |
                 </li>
-                <li>
+                <li onClick={async() => await removeUserCookie()}>
                   <SignOutButton>
                     <button>Sign Out</button>
                   </SignOutButton>

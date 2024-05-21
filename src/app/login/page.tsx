@@ -3,7 +3,7 @@ import Login from "./loginComponent";
 
 export default function Page(){
     return (
-        <Suspense fallback="Loading..">
+        <Suspense>
             <Login/>
         </Suspense>
     )

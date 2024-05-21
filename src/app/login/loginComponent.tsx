@@ -16,6 +16,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter, useSearchParams} from 'next/navigation';
 import { revalidatePathServer } from "app/actions/serveractions";
+import { getBareBoneUser } from "app/actions/cookieactions";
+import { getUserDataFromEmail } from "app/lib/authentication";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,6 +60,9 @@ export default function Login() {
       if (completeSignIn.status === 'complete') {
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
+        const user = await getUserDataFromEmail(email)
+        console.log('email', email, 'user', user)
+        await fetch('/api/user/cookies', {method: "POST", body:user})
 
         await revalidatePathServer("/dashboard")
         // Redirect the user to a post sign-in route
