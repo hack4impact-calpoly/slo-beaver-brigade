@@ -9,9 +9,9 @@ import { clerkClient } from "@clerk/nextjs/server";
 // setting cookies
 export async function POST(req: NextRequest) {
     try {
-        const { firstName, lastName, role } = await req.json();
-        console.log(firstName, lastName, role);
-        if (!firstName || !lastName || !role) {
+        const { firstName, lastName, role, email } = await req.json();
+        console.log(firstName, lastName, role, email);
+        if (!firstName || !lastName || !role || !email) {
             return NextResponse.json("Cookies failed to be set.", {
                 status: 500,
             });
@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
         cookies().set("user_first_name", firstName);
         cookies().set("user_last_name", lastName);
         cookies().set("user_role", role || "guest");
+        cookies().set("user_email", email);
     } catch (err) {
         console.log(err);
         return NextResponse.json("Cookies failed to be set.", { status: 500 });
