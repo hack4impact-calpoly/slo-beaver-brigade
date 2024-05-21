@@ -109,15 +109,12 @@ const EditEvent = ({event}: {event: IEvent}) => {
 
   function getTime(x: Date | null): string {
     if (!x) return '';
-    let time: string = x.toLocaleTimeString();
-    let [hour, minute] = time.split(':');
-    let [formattedHour, amPM] = hour.split(' ');
-  
-    let h: number = parseInt(formattedHour);
-    if (amPM === 'PM' && h !== 12) h += 12;
-    if (amPM === 'AM' && h === 12) h = 0;
-  
-    return `${h.toString().padStart(2, '0')}:${minute}`;
+    let hours = x.getHours();
+    let minutes = x.getMinutes();
+    
+    const pad = (num: number) => num.toString().padStart(2, '0');
+    
+    return `${pad(hours)}:${pad(minutes)}`;
   }
 
   function HandleSubmit() {
