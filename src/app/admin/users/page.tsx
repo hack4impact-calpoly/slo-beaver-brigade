@@ -3,15 +3,15 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
+  Thead,
   Tbody,
   Tr,
+  Th,
   Td,
   useBreakpointValue,
   Text,
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
-import Image from "next/image";
-import beaverLogo from "/docs/images/beaver-logo.svg";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
 import SingleVisitorComponent from "@components/SingleVisitorComponent";
@@ -56,6 +56,10 @@ const formatHours = (hours: number): string => {
   return `${displayHours}h ${displayMinutes}min`;
 };
 
+const capitalizeFirstLetter = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 const UserList = () => {
   // states
   const [users, setUsers] = useState<IUserWithHours[]>([]);
@@ -69,12 +73,11 @@ const UserList = () => {
     return events.reduce((total, event) => {
       const start = new Date(event.startTime);
       const end = new Date(event.endTime);
-      console.log(event.startTime, event.endTime, total)
       return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
     }, 0);
   };
 
-  //fetch event name for each user based on event id
+  // fetch event name for each user based on event id
   const fetchEventName = async (
     eventId: Schema.Types.ObjectId
   ): Promise<string> => {
@@ -158,7 +161,7 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    role: user.role, // Add role to CSV data
+    role: capitalizeFirstLetter(user.role), 
     eventsAttended:
       user.eventsAttendedNames.length > 0
         ? user.eventsAttendedNames.join(", ")
@@ -167,16 +170,12 @@ const UserList = () => {
     totalHoursFormatted: user.totalHoursFormatted,
   }));
 
-  const capitalizeFirstLetter = (str: string): string => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
   const headers = [
     { label: "First Name", key: "firstName" },
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
-    { label: "Role", key: "role" }, // Add role to CSV headers
+    { label: "Role", key: "role" },
     { label: "Events Attended", key: "eventsAttended" },
     { label: "Number of Events Attended", key: "eventsAttendedCount" },
     { label: "Total Hours", key: "totalHoursFormatted" },
@@ -227,23 +226,23 @@ const UserList = () => {
       </div>
       <div className={style.tableContainer}>
         <Box>
-          <Table variant="striped" size={tableSize}>
+          <Table variant="striped" size={tableSize} className={style.customTable}>
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Email</Th>
+                <Th>Total Hours</Th>
+                <Th>Role</Th>
+                <Th></Th>
+              </Tr>
+            </Thead>
             <Tbody>
               {filteredUsers.map((user) => (
                 <Tr key={user._id}>
-                  <Td className={style.mobileHide}>
-                    <Image
-                      src={beaverLogo}
-                      alt="profile picture"
-                      width="50"
-                      height="30"
-                      style={{ minWidth: "50px" }}
-                    />
-                  </Td>
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
                   <Td>{user.totalHoursFormatted}</Td>
-                  <Td>{capitalizeFirstLetter(user.role)}</Td> 
+                  <Td>{capitalizeFirstLetter(user.role)}</Td>
                   <Td>
                     <SingleVisitorComponent visitorData={user} />
                   </Td>

@@ -69,6 +69,15 @@
   border-color: #337774;
 }
 
+.customTable th {
+  border-bottom: 2px solid #e2e8f0; 
+  padding-bottom: 10px; 
+}
+
+.customTable td {
+  padding: 25px;
+}
+
 @media (max-width: 980px) {
   .searchBar {
     padding: 5px 10px 5px 20px;
