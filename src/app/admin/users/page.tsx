@@ -158,6 +158,7 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
+    role: user.role, // Add role to CSV data
     eventsAttended:
       user.eventsAttendedNames.length > 0
         ? user.eventsAttendedNames.join(", ")
@@ -166,11 +167,16 @@ const UserList = () => {
     totalHoursFormatted: user.totalHoursFormatted,
   }));
 
+  const capitalizeFirstLetter = (str: string): string => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   const headers = [
     { label: "First Name", key: "firstName" },
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
+    { label: "Role", key: "role" }, // Add role to CSV headers
     { label: "Events Attended", key: "eventsAttended" },
     { label: "Number of Events Attended", key: "eventsAttendedCount" },
     { label: "Total Hours", key: "totalHoursFormatted" },
@@ -237,6 +243,7 @@ const UserList = () => {
                   <Td>{`${user.firstName} ${user.lastName}`}</Td>
                   <Td>{user.email}</Td>
                   <Td>{user.totalHoursFormatted}</Td>
+                  <Td>{capitalizeFirstLetter(user.role)}</Td> 
                   <Td>
                     <SingleVisitorComponent visitorData={user} />
                   </Td>
