@@ -20,8 +20,7 @@ const Layout = async (props: Props) => {
         // get user role
         console.log('admin getting user')
         const email = cookies().get('user_email')?.value
-        const admin = cookies().get('admin')?.value
-        if (email && (admin == 'super_secret')){
+        if (email){
             console.log('cookie found, getting role')
             const user = await getUserRoleFromEmail(email)
             console.log('validated role')
