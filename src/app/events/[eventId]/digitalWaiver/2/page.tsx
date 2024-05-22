@@ -12,17 +12,24 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Text,
 } from "@chakra-ui/react";
 import styles from "./page.module.css";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import Image from "next/image";
 import NextLink from "next/link";
 import { IUser } from "@database/userSchema";
-import { useNavigate } from "react-router-dom";
 import { addToRegistered } from "@app/actions/useractions";
 import { getUserDbData } from "app/lib/authentication";
 import { createGuestFromEmail, getUserFromEmail } from "app/actions/userapi";
 import { useRouter } from "next/navigation";
+import { IEvent } from "database/eventSchema";
 
 type IParams = {
   params: {
@@ -45,6 +52,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement | null>(null);
   const router = useRouter()
+  const [modalOpen, setModalOpen] = useState(false);
+  const [eventData, setEventData] = useState<IEvent | null>(null);
 
   // checks if user is signed in
   useEffect(() => {
@@ -72,6 +81,18 @@ export default function Waiver({ params: { eventId } }: IParams) {
     setFormFilled(isFilled);
   }, [email, zipcode, signature, userData]);
 
+  //get event from eventId
+  useEffect(() => {
+    const fetchEvent = async () => {
+      const res = await fetch(`/api/events/${eventId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setEventData(data);
+      }
+    };
+    fetchEvent();
+  }, []);
+
   const addDependent = () => {
     const emptyFieldCount = dependents.filter(
       (dependent) => dependent === ""
@@ -86,6 +107,23 @@ export default function Waiver({ params: { eventId } }: IParams) {
     newDependents[index] = value;
     setDependents(newDependents);
   };
+
+  function handleSkip(){
+    setModalOpen(false)
+    router.push("/dashboard")
+  }
+
+  function handleCreateAccount(){
+    setModalOpen(false)
+    const userData = {
+      email: email,
+      zipcode: zipcode,
+      firstName: firstName,
+      lastName: lastName,
+    }
+    sessionStorage.setItem("userData", JSON.stringify(userData))
+    router.push("/signup")
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -125,7 +163,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               if (res) {
                 console.log('added')
                 const emailBody = {"email": userData.email}
-                const confirmRes = await fetch("/api/events/confirmation/" + eventId, {
+                const confirmRes = await fetch(`/api/events/confirmation/${eventId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(emailBody)
@@ -207,8 +245,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(emailBody)
                     })
-                    //on success, return to the home page
-                    router.push("/dashboard")
+                    //on success, open modal prompting user to create an account
+                    setModalOpen(true)
                     
                 } else {
                     console.error("Error adding info to user");
@@ -436,6 +474,28 @@ export default function Waiver({ params: { eventId } }: IParams) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Modal isOpen={modalOpen} onClose={()=>{setModalOpen(false)}} size={"lg"}>
+        <ModalOverlay />
+        <ModalContent mt={"70px"}>
+          <ModalHeader>
+            <Flex justifyContent={"center"} w={"100%"} mt={"10%"} mb={"5%"}>
+              <Image src={beaverLogo} alt="beaver" style={{ marginTop: "10px", width:"70px" }} />
+            </Flex>
+          </ModalHeader>
+          <ModalBody textAlign={"center"} mb={"50px"}>
+            <Text fontSize={{base:"lg", md:"xl"}}>Thank you for signing up for</Text>
+            <Text fontSize={{base:"xl", md:"3xl"}} fontWeight={"bold"} mt={"25px"} mb={"50px"}>{eventData?.eventName}</Text>
+            <Text fontSize={{base:"md", md:"lg"}}>You can create an account to view your upcoming event!</Text>
+          </ModalBody>
+          <ModalFooter justifyContent={"space-around"} mb={"65px"}>
+            <Button fontSize={{base:"sm", md:"md"}} color= "#B5B5B5" borderColor="gray" w={"35%"} variant={"outline"} onClick={handleSkip}>
+              Skip
+            </Button>
+            <Button fontWeight={"bold"} fontSize={{base:"xs", sm:"sm", md:"md"}}  colorScheme="teal" w={"35%"} pl={"10px"} pr={"10px"} onClick={handleCreateAccount}>Create Account</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
