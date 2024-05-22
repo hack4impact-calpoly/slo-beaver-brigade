@@ -20,7 +20,7 @@ export default function Navbar(props: { name: string }) {
 
   return (
     <nav className={`${styles.navbar} ${showNavbar && styles.active}`}>
-      <div className={styles.container}>
+      <div className={styles.container} style={{ fontFamily: 'Lato' }}>
         <div className={`${styles.nav_left} ${showNavbar && styles.active}`}>
           <Link href="/">
             <Image
@@ -63,7 +63,7 @@ export default function Navbar(props: { name: string }) {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/" onClick={handleHideNavbar}>
+                  <Link href="/admin/events" onClick={handleHideNavbar}>
                     Manage Events
                   </Link>
                 </li>
@@ -108,13 +108,6 @@ export default function Navbar(props: { name: string }) {
           <div className={`${styles.close_icon} ${showNavbar && styles.active}`} onClick={handleHideNavbar}>
             <CloseIcon/> 
           </div>
-        
-        <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
-          <HamburgerIcon/>
-        </div> 
-        <div className={`${styles.close_icon} ${showNavbar && styles.active}`} onClick={handleHideNavbar}>
-          <CloseIcon/> 
-        </div>
       </div>
     </nav>
   );
