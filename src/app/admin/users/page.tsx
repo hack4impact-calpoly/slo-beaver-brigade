@@ -227,6 +227,29 @@ const UserList = () => {
               }),
             }}
           />
+          <div className={style.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search Users"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={style.searchBar}
+            />
+            <MagnifyingGlassIcon
+              style={{
+                width: "20px",
+                height: "20px",
+                position: "absolute",
+                margin: "auto",
+                top: 0,
+                bottom: 0,
+                right: "10px",
+                color: '#337774'
+              }}
+            />
+          </div>
+        </div>
+        <div className={style.csvButton}>
           <CSVLink
             data={csvData}
             headers={headers}
@@ -236,26 +259,6 @@ const UserList = () => {
           >
             Export User List
           </CSVLink>
-        </div>
-        <div className={style.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search for user"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={style.searchBar}
-          />
-          <MagnifyingGlassIcon
-            style={{
-              width: "20px",
-              height: "20px",
-              position: "absolute",
-              margin: "auto",
-              top: 0,
-              bottom: 0,
-              right: "10px",
-            }}
-          />
         </div>
       </div>
       <div className={style.tableContainer}>
