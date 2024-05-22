@@ -87,6 +87,8 @@ export const UserDashboard = ({eventsRes}: {eventsRes: string}) => {
  const [events, setEvents] = useState<IEvent[]>([])
  const [userData, setUserData] = useState<IUser | null>(null)
 
+const {isSignedIn, user} = useUser()
+
    const [parsed, setParsed] = useState<boolean>(false)
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
@@ -148,23 +150,24 @@ export const UserDashboard = ({eventsRes}: {eventsRes: string}) => {
    return `${formattedStart} - ${formattedEnd}`;
   };
 
-  const getUser = async () => {
-    const user = await currentUser()
-    if (user){
-        const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
-        if (res){
-            setUserData(JSON.parse(res))
-        }
-    }
-  }
+
 
   // parse data on component mount
   useEffect(() => {
     setEvents(JSON.parse(eventsRes))
+    const getUser = async () => {
+        console.log('user', user)
+        if (user && isSignedIn){
+            const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
+            if (res){
+                setUserData(JSON.parse(res))
+            }
+        }
+    }
     getUser()
     // get user
     setParsed(true)
-  }, [eventsRes, userData]) 
+  }, [eventsRes, isSignedIn, user]) 
  
   useEffect(() => {
     if (parsed && userData) {

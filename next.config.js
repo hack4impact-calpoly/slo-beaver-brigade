@@ -38,12 +38,12 @@ const nextConfig = {
             // },
             {
                 source: "/",
-                missing: [
-                    {
-                        type: "cookie",
-                        key: "user_role",
-                    },
-                ],
+                // missing: [
+                //     {
+                //         type: "cookie",
+                //         key: "user_role",
+                //     },
+                // ],
                 destination: "/dashboard",
             },
         ];
