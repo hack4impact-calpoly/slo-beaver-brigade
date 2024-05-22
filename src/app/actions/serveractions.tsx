@@ -50,6 +50,7 @@ export async function removeRegistered(userid: string, eventid: string ) {
             BASE_URL = process.env.DEV_BASE_URL
         }
         revalidateTag("events")
+        revalidateTag("events")
         revalidatePath(BASE_URL + "/dashboard")
         return true
     }
