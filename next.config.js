@@ -11,7 +11,8 @@ const nextConfig = {
                         value: "admin",
                     },
                 ],
-                destination: "/admin/events",
+                // destination: "/admin/events",
+                destination: "/dashboard",
             },
             {
                 source: "/",

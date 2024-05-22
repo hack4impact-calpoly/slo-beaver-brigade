@@ -65,7 +65,7 @@ export default function Navbar(props: { name: string }) {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/" onClick={handleHideNavbar}>
+                  <Link href="/admin/events" onClick={handleHideNavbar}>
                     Manage Events
                   </Link>
                 </li>
