@@ -21,7 +21,7 @@ import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "../actions/eventsactions";
-import { getUserDbData } from "@app/lib/authentication";
+import { getUserDataFromEmail, getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
@@ -29,6 +29,7 @@ import { EmailRSSComponent } from "./EmailComponent";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
 import "../fonts/fonts.css";
 import { px } from "framer-motion";
+import { currentUser } from "@clerk/nextjs/server";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -70,7 +71,7 @@ const UnregisteredEventPlaceholder = () => {
  };
 
 
-export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, userDataRes: string | null}) => {
+export const UserDashboard = ({eventsRes}: {eventsRes: string}) => {
 
  const sliderStyles = css`
    .slick-dots li button:before {
@@ -85,6 +86,8 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
 
  const [events, setEvents] = useState<IEvent[]>([])
  const [userData, setUserData] = useState<IUser | null>(null)
+
+const {isSignedIn, user, isLoaded} = useUser()
 
    const [parsed, setParsed] = useState<boolean>(false)
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
@@ -147,18 +150,39 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
    return `${formattedStart} - ${formattedEnd}`;
   };
 
+
+
   // parse data on component mount
   useEffect(() => {
     setEvents(JSON.parse(eventsRes))
-    if (userDataRes){
-        setUserData(JSON.parse(userDataRes))
+
+   const getUser = async () => {
+        if (user && isSignedIn){
+            const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
+            if (res){
+                const user = JSON.parse(res)
+                console.log(user)
+                setUserData(user)
+            }
+        }
+        setParsed(true)
     }
-    setParsed(true)
-  }, [eventsRes, userDataRes]) 
+    if (!isLoaded){
+        return
+    }
+    console.log(isLoaded, isSignedIn)
+
+    // get user
+    getUser()
+  }, [eventsRes,isLoaded, isSignedIn, user]) 
  
   useEffect(() => {
+ 
+    if (!parsed){
+        return
+    }
     if (parsed && userData) {
-      console.log("useData:" + userData)
+      console.log("userData:" + userData)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       
@@ -188,7 +212,7 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
       setUnregisteredEvents(upcomingEvents);
     }
     setEventsLoading(false);
-  }, [events, userData, selectedEventType, parsed]); // Include selectedEventType in the dependency array
+  }, [events, selectedEventType, parsed, isLoaded, isSignedIn, userData]); // Include selectedEventType in the dependency array
   
 
   useEffect(() => {
@@ -308,7 +332,7 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
   ],
 };
 
- const allDataLoaded = !eventsLoading;
+ const allDataLoaded = !eventsLoading && parsed;
 
  const toggleExpandedViewComponentOpen = () => {
   setExpandedViewComponentOpen(!isExpandedViewComponentOpen);
@@ -368,7 +392,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              >
                Loading...
              </Text>
-           ) : !userData ? (
+           ) : !isSignedIn ? (
              <Flex
                flexDirection={"column"}
                alignItems={"center"}
