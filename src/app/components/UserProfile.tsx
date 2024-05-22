@@ -6,8 +6,7 @@ import Link from "next/link"
 import EditProfile from "@components/EditProfile"
 import { getUserDbData } from "app/lib/authentication";
 import { IUser } from "database/userSchema";
-//import "../fonts/fonts.css";
-import Lato from "/next/font/google"
+import "../fonts/fonts.css";
 
 export default function UserProfile() {
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -69,7 +68,7 @@ export default function UserProfile() {
              <div className={styles.fieldTitle}>Phone Number</div>
                 {userData ? userData.phoneNumber : <div>Loading...</div>}
               <div className={styles.fieldTitle}>Zipcode</div>
-                {/*userData ? userData.zipcode : <div>Loading...</div>*/}                   
+                {userData ? userData.zipcode : <div>Loading...</div>}                   
            </div>
            <div>
             <div className={styles.fieldTitle}>Receive Newsletter</div>

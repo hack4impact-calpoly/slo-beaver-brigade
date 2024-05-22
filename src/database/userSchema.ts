@@ -50,6 +50,7 @@ export type IUser = {
     eventsAttended: AttendedEventInfo[];
     groupId: Schema.Types.ObjectId | null;
     receiveNewsletter: boolean;
+    zipcode: string;
 };
 
 //groupId and digitalWaiver seem to require a schema

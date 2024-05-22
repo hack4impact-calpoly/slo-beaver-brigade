@@ -32,6 +32,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
   const [user_lastName, setLastName] = useState('');
   const [user_email, setEmail] = useState('');
   const [user_phoneNumber, setPhoneNumber] = useState('');
+  const [user_zipcode, setZipcode] = useState('');
   const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
 
   // Update state when userData changes
@@ -41,14 +42,16 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
           setLastName(userData.lastName || '');
           setEmail(userData.email || '');
           setPhoneNumber(userData.phoneNumber || '');
+          setZipcode(userData.zipcode || '');
           setReceiveNewsletter(userData.receiveNewsletter || false);
       }
   }, [userData]);
 
   const handleFirstNameChange = (e: any) => setFirstName(e.target.value);
   const handleLastNameChange = (e: any) => setLastName(e.target.value);
-  const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePhoneNumberChange = (e: any) => setPhoneNumber(e.target.value);
+  const handleZipcodeChange = (e: any) => setZipcode(e.target.value)
+
   
   const handleReceiveNewsletter = (e: any) => {
     const selectedOption = e.target.value;
@@ -63,6 +66,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
       setLastName(userData?.lastName || '');
       setEmail(userData?.email || '');
       setPhoneNumber(userData?.phoneNumber || '');
+      setZipcode(userData?.phoneNumber || '');
       setReceiveNewsletter(userData?.receiveNewsletter || false);
       setIsSubmitted(false);
       onClose();
@@ -74,7 +78,8 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
         lastName: user_lastName,
         email: user_email,
         phoneNumber: user_phoneNumber,
-        receiveNewsletter: user_receiveNewsletter
+        receiveNewsletter: user_receiveNewsletter,
+        zipcode: user_zipcode
       };
   
       console.log("New User Data:", updatedUserData);
@@ -136,6 +141,13 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
                   <FormControl isInvalid={user_phoneNumber === '' && isSubmitted}>
                     <FormLabel color='grey' fontWeight='bold'>Phone Number</FormLabel>
                     <Input placeholder='' fontWeight='bold' value={user_phoneNumber} onChange={handlePhoneNumberChange}/>
+                  </FormControl>
+                </Stack>
+
+                <Stack spacing={0}>
+                  <FormControl isInvalid={user_zipcode === '' && isSubmitted}>
+                    <FormLabel color='grey' fontWeight='bold'>Zipcode</FormLabel>
+                    <Input placeholder='' fontWeight='bold' value={user_zipcode} onChange={handleZipcodeChange}/>
                   </FormControl>
                 </Stack>
               
