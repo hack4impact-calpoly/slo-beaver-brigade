@@ -70,7 +70,7 @@ const UnregisteredEventPlaceholder = () => {
  };
 
 
-export const UserDashboard = ({events, userData}: {events: IEvent[], userData: IUser | null}) => {
+export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, userDataRes: string | null}) => {
 
  const sliderStyles = css`
    .slick-dots li button:before {
@@ -83,6 +83,10 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
    }
  `;
 
+ const [events, setEvents] = useState<IEvent[]>([])
+ const [userData, setUserData] = useState<IUser | null>(null)
+
+   const [parsed, setParsed] = useState<boolean>(false)
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
   const [eventTypes, setEventTypes] = useState<string[]>([]);
@@ -143,9 +147,17 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
    return `${formattedStart} - ${formattedEnd}`;
   };
 
+  // parse data on component mount
+  useEffect(() => {
+    setEvents(JSON.parse(eventsRes))
+    if (userDataRes){
+        setUserData(JSON.parse(userDataRes))
+    }
+    setParsed(true)
+  }, [eventsRes, userDataRes]) 
  
   useEffect(() => {
-    if (userData) {
+    if (parsed && userData) {
       console.log("useData:" + userData)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
@@ -176,7 +188,7 @@ export const UserDashboard = ({events, userData}: {events: IEvent[], userData: I
       setUnregisteredEvents(upcomingEvents);
     }
     setEventsLoading(false);
-  }, [events, userData, selectedEventType]); // Include selectedEventType in the dependency array
+  }, [events, userData, selectedEventType, parsed]); // Include selectedEventType in the dependency array
   
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import styles from "@styles/navbar/navbar.module.css";
 import { HamburgerIcon, Search2Icon, StarIcon, ExternalLinkIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import { SignOutButton } from "@clerk/clerk-react";
+import { removeUserCookie } from "app/actions/cookieactions";
 
 export default function Navbar(props: { name: string }) {
   const [showNavbar, setShowNavbar] = useState(false);
@@ -71,23 +72,23 @@ export default function Navbar(props: { name: string }) {
           </ul>
         </div>  
         <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
-            <ul>
-              <li>
-                <Link href="https://www.slobeaverbrigade.com">
-                  Homepage
-                </Link>
-              </li>
-              {(props.name != "Sign In / Log In") &&
-                <>
-                  <li>
-                    |
-                  </li>
-                  <li>
-                    <SignOutButton/>
-                  </li>
-                </>
-              }
-              </ul>
+          <ul>
+            <li>
+              <Link href="https://www.slobeaverbrigade.com">
+                Homepage
+              </Link>
+            </li>
+            {(props.name != "Sign In / Log In") &&
+              <>
+                <li>
+                  |
+                </li>
+                <li onClick={async() => await removeUserCookie()}>
+                  <SignOutButton/>
+                </li>
+              </>
+            }
+            </ul>
           </div>
           <div className={`${styles.menu_icon} ${showNavbar && styles.active}`} onClick={handleShowNavbar}>
             <HamburgerIcon/>

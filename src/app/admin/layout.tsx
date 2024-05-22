@@ -5,7 +5,8 @@ import style from "@styles/admin/layout.module.css";
 import TabBar from "../components/TabBar";
 import { getUserDbData } from "app/lib/authentication";
 import { redirect } from "next/navigation";
-import { getUserDbDataRevamp } from "app/dashboard/page";
+import { getUserDbDataRevamp, getUserRoleFromEmail } from "app/dashboard/page";
+import { cookies } from "next/headers";
 type Props = {
   children: ReactNode;
 };
@@ -17,9 +18,12 @@ const Layout = async (props: Props) => {
 
     if (process.env.DEV_MODE != "true"){
         // get user role
-        const user = await getUserDbDataRevamp()
-        if (!user || user?.role != "admin"){
-            redirect("/")
+        const email = cookies().get('user_email')?.value
+        if (email){
+            const user = await getUserRoleFromEmail(email)
+            if (user != "admin"){
+                redirect("/dashboard")
+            }
         }
     }
 

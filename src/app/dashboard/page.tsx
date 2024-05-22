@@ -27,6 +27,19 @@ const LoadingEvents = () => {
         <h1>Loading...</h1>
     )
 }
+
+export const getUserRoleFromEmail = async(email: string) => {
+    console.log('revamp: fetching data')
+    await connectDB()
+    try {
+        const user: IUser= await User.findOne({ email: email}, 'role').lean().orFail() as IUser;
+        return user.role
+    }
+    catch (err) {
+        console.log('user not found: ' + err)
+        return 'guest'
+    }
+}
 export const getUserDbDataRevamp = async() => {
 
     const clerk_user = await currentUser();
@@ -41,6 +54,7 @@ export const getUserDbDataRevamp = async() => {
     try {
         const user: IUser= await User.findOne({ email: clerk_user.emailAddresses[0].emailAddress }).lean().orFail() as IUser;
         console.log("user found")
+    
         return user
     }
     catch (err) {
@@ -73,7 +87,7 @@ export default async function Page(){
     console.log('returning page')
 
     return (
-        <UserDashboard events={events} userData={userData}/>
+        <UserDashboard eventsRes={JSON.stringify(events)} userDataRes={JSON.stringify(userData)}/>
     )
 }
 
