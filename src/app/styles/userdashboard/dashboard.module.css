@@ -25,7 +25,9 @@
 .selectContainer {
     position: relative; /* Make sure container has position to anchor z-index */
     z-index: 10; /* Higher than any underlying elements */
+
 }
+
 
 @media (max-width: 750px) {
     .eventBox {

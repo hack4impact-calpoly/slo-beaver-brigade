@@ -20,7 +20,7 @@ export default function Navbar(props: { name: string }) {
 
   return (
     <nav className={`${styles.navbar} ${showNavbar && styles.active}`}>
-      <div className={styles.container}>
+      <div className={styles.container} style={{ fontFamily: 'Lato' }}>
         <div className={`${styles.nav_left} ${showNavbar && styles.active}`}>
           <Link href="/">
             <Image
@@ -43,19 +43,17 @@ export default function Navbar(props: { name: string }) {
             </div>
           }
         </div>   
-        <div
-          className={`${styles.nav_elements}  ${showNavbar && styles.active}`}
-        >
+        <div className={`${styles.nav_elements}  ${showNavbar && styles.active}`}>
           <ul>
             <li>
               <Link href="/dashboard" onClick={handleHideNavbar}>
                 Discover Events
               </Link>
             </li>
-           <li>
-              <Link href="/calendar" onClick={handleHideNavbar}>
-                Calendar
-              </Link>
+            <li>
+                <Link href="/calendar" onClick={handleHideNavbar}>
+                  Calendar
+                </Link>
             </li>
             {(props.name != "Sign In / Log In") &&
               <>
@@ -83,7 +81,6 @@ export default function Navbar(props: { name: string }) {
             }
           </ul>
         </div>
-          
         <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
           <ul>
             <li>
