@@ -87,7 +87,7 @@ export const UserDashboard = ({eventsRes}: {eventsRes: string}) => {
  const [events, setEvents] = useState<IEvent[]>([])
  const [userData, setUserData] = useState<IUser | null>(null)
 
-const {isSignedIn, user} = useUser()
+const {isSignedIn, user, isLoaded} = useUser()
 
    const [parsed, setParsed] = useState<boolean>(false)
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
@@ -155,23 +155,34 @@ const {isSignedIn, user} = useUser()
   // parse data on component mount
   useEffect(() => {
     setEvents(JSON.parse(eventsRes))
-    const getUser = async () => {
-        console.log('user', user)
+
+   const getUser = async () => {
         if (user && isSignedIn){
             const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
             if (res){
-                setUserData(JSON.parse(res))
+                const user = JSON.parse(res)
+                console.log(user)
+                setUserData(user)
             }
         }
+        setParsed(true)
     }
-    getUser()
+    if (!isLoaded){
+        return
+    }
+    console.log(isLoaded, isSignedIn)
+
     // get user
-    setParsed(true)
-  }, [eventsRes, isSignedIn, user]) 
+    getUser()
+  }, [eventsRes,isLoaded, isSignedIn, user]) 
  
   useEffect(() => {
+ 
+    if (!parsed){
+        return
+    }
     if (parsed && userData) {
-      console.log("useData:" + userData)
+      console.log("userData:" + userData)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       
@@ -201,7 +212,7 @@ const {isSignedIn, user} = useUser()
       setUnregisteredEvents(upcomingEvents);
     }
     setEventsLoading(false);
-  }, [events, userData, selectedEventType, parsed]); // Include selectedEventType in the dependency array
+  }, [events, selectedEventType, parsed, isLoaded, isSignedIn, userData]); // Include selectedEventType in the dependency array
   
 
   useEffect(() => {
@@ -321,7 +332,7 @@ const {isSignedIn, user} = useUser()
   ],
 };
 
- const allDataLoaded = !eventsLoading;
+ const allDataLoaded = !eventsLoading && parsed;
 
  const toggleExpandedViewComponentOpen = () => {
   setExpandedViewComponentOpen(!isExpandedViewComponentOpen);
@@ -381,7 +392,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              >
                Loading...
              </Text>
-           ) : !userData ? (
+           ) : !isSignedIn ? (
              <Flex
                flexDirection={"column"}
                alignItems={"center"}

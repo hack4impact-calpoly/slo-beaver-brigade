@@ -75,9 +75,9 @@ export default async function NavbarParent() {
         if (res){
             user = res
         }
-        else{
-            user = await getUserDbDataRevamp()
-        }
+        // else{
+        //     user = await getUserDbDataRevamp()
+        // }
 
         console.log('navbar: user has been grabbed')
         console.log('user', user)
