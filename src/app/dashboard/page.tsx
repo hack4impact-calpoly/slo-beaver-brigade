@@ -78,16 +78,10 @@ export default async function Page(){
     }
     console.log('events loaded.')
 
-    console.log('getting user data')
-
-    const userData = await getUserDbDataRevamp()
-    console.log(typeof userData?._id)
-    console.log('parsed user data')
-
     console.log('returning page')
 
     return (
-        <UserDashboard eventsRes={JSON.stringify(events)} userDataRes={JSON.stringify(userData)}/>
+        <UserDashboard eventsRes={JSON.stringify(events)} />
     )
 }
 

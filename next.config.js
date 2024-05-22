@@ -2,40 +2,40 @@
 const nextConfig = {
     async rewrites() {
         return [
-            {
-                source: "/",
-                has: [
-                    {
-                        type: "cookie",
-                        key: "user_role",
-                        value: "admin",
-                    },
-                ],
-                // destination: "/admin/events",
-                destination: "/dashboard",
-            },
-            {
-                source: "/",
-                has: [
-                    {
-                        type: "cookie",
-                        key: "user_role",
-                        value: "user",
-                    },
-                ],
-                destination: "/dashboard",
-            },
-            {
-                source: "/",
-                has: [
-                    {
-                        type: "cookie",
-                        key: "user_role",
-                        value: "guest",
-                    },
-                ],
-                destination: "/dashboard",
-            },
+            // {
+            //     source: "/",
+            //     has: [
+            //         {
+            //             type: "cookie",
+            //             key: "user_role",
+            //             value: "admin",
+            //         },
+            //     ],
+            //     // destination: "/admin/events",
+            //     destination: "/dashboard",
+            // },
+            // {
+            //     source: "/",
+            //     has: [
+            //         {
+            //             type: "cookie",
+            //             key: "user_role",
+            //             value: "user",
+            //         },
+            //     ],
+            //     destination: "/dashboard",
+            // },
+            // {
+            //     source: "/",
+            //     has: [
+            //         {
+            //             type: "cookie",
+            //             key: "user_role",
+            //             // value: "guest",
+            //         },
+            //     ],
+            //     destination: "/dashboard",
+            // },
             {
                 source: "/",
                 missing: [

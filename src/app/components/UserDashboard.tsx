@@ -21,7 +21,7 @@ import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "../actions/eventsactions";
-import { getUserDbData } from "@app/lib/authentication";
+import { getUserDataFromEmail, getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
@@ -29,6 +29,7 @@ import { EmailRSSComponent } from "./EmailComponent";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
 import "../fonts/fonts.css";
 import { px } from "framer-motion";
+import { currentUser } from "@clerk/nextjs/server";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -70,7 +71,7 @@ const UnregisteredEventPlaceholder = () => {
  };
 
 
-export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, userDataRes: string | null}) => {
+export const UserDashboard = ({eventsRes}: {eventsRes: string}) => {
 
  const sliderStyles = css`
    .slick-dots li button:before {
@@ -147,14 +148,23 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
    return `${formattedStart} - ${formattedEnd}`;
   };
 
+  const getUser = async () => {
+    const user = await currentUser()
+    if (user){
+        const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
+        if (res){
+            setUserData(JSON.parse(res))
+        }
+    }
+  }
+
   // parse data on component mount
   useEffect(() => {
     setEvents(JSON.parse(eventsRes))
-    if (userDataRes){
-        setUserData(JSON.parse(userDataRes))
-    }
+    getUser()
+    // get user
     setParsed(true)
-  }, [eventsRes, userDataRes]) 
+  }, [eventsRes, userData]) 
  
   useEffect(() => {
     if (parsed && userData) {

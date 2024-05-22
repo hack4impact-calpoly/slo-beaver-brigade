@@ -9,10 +9,10 @@ let connection: typeof mongoose;
  * @returns {Promise<typeof mongoose>}
  */
 const connectDB = async () => {
-  if (!connection) {
-    connection = await mongoose.connect(url);
-    return connection;
-  }
+    if (!connection) {
+        connection = await mongoose.connect(url);
+        return connection;
+    }
 };
 
 export default connectDB;
