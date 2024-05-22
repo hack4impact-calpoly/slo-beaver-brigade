@@ -52,7 +52,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
       role: "user",
       eventsAttended: [],
       eventsRegistered:[],
-      recieveNewsletter: false
+      receiveNewsletter: false
     },
   );
 

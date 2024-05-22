@@ -22,7 +22,7 @@ const placeholderUser: IUser = {
   role: "guest",
   eventsAttended: [],
   eventsRegistered: [],
-  recieveNewsletter: false,
+  receiveNewsletter: false,
 };
 
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
@@ -114,7 +114,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                   role: "guest",
                   eventsAttended: [],
                   eventsRegistered: [],
-                  recieveNewsletter: false,
+                  receiveNewsletter: false,
                 });
               });
             });

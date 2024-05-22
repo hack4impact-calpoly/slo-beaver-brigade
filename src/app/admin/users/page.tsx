@@ -40,7 +40,7 @@ export interface IUser {
   eventsRegistered: EventInfo[];
   eventsAttended: AttendedEventInfo[];
   groupId: Schema.Types.ObjectId | null;
-  recieveNewsletter: boolean;
+  receiveNewsletter: boolean;
 }
 
 export interface IUserWithHours extends IUser {

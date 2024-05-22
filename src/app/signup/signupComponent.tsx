@@ -8,6 +8,7 @@ import {
   FormLabel,
   Button,
   Textarea,
+  Text,
   Link as ChakraLink,
   FormErrorMessage,
   Checkbox,
@@ -19,6 +20,11 @@ import { doesUserExist, getUserFromEmail, transitionGuestById } from 'app/action
 import { addToNewsletter } from 'app/actions/mailingactions';
 import { IUser } from 'database/userSchema';
 import { revalidatePathServer } from 'app/actions/serveractions';
+
+import styles from ".//page.module.css"
+import { Montserrat } from 'next/font/google';
+import "../fonts/fonts.css";
+
 
 export default function SignUp() {
   //clerk consts
@@ -137,7 +143,7 @@ export default function SignUp() {
         const data = {
             email: email,
             phoneNumber: phone,
-            recieveNewsletter: enableNewsletter,
+            receiveNewsletter: enableNewsletter,
             role: 'user',
             firstName: firstName,
             lastName: lastName,
@@ -195,13 +201,15 @@ export default function SignUp() {
 
   return (
     <>
-      <Box p={4} maxWidth="400px" mx="auto">
+      <Box p={4} maxWidth="400px" mx="auto" className={styles.componentContainer}>
         {!pendingVerification && (
           <>
-            <Box mb={6}>
-              <Heading as="h1" fontSize="xl" textAlign="center">
-                Create Account
-              </Heading>
+            <Box mt={4} mb={4}>
+              <Box textAlign="center">
+                <Text fontSize="xl" fontWeight="bold">
+                  Create Account
+                </Text>
+              </Box>
             </Box>
             <FormControl mb={4} isRequired isInvalid={firstName === '' && submitAttempted}>
               <FormLabel>First Name</FormLabel>
@@ -212,7 +220,7 @@ export default function SignUp() {
                 onChange={(e) => setFirstName(e.target.value)}
                 required={true}
               />
-              <FormErrorMessage>First Name is required</FormErrorMessage>
+              <FormErrorMessage>First name is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={lastName === '' && submitAttempted}>
               <FormLabel>Last Name</FormLabel>
@@ -223,7 +231,7 @@ export default function SignUp() {
                 onChange={(e) => setLastName(e.target.value)}
                 required={true}
               />
-              <FormErrorMessage>Last Name is required</FormErrorMessage>
+              <FormErrorMessage>Last name is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
               <FormLabel>Email</FormLabel>
@@ -235,6 +243,27 @@ export default function SignUp() {
                 required={true}
               />
               <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
+            </FormControl>
+            <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
+              <FormLabel>Phone Number</FormLabel>
+              <Input
+                type="text"
+                placeholder="Phone"
+                variant="filled"
+                onChange={(e) => setPhone(e.target.value)}
+                required={true}
+              />
+              <FormErrorMessage>Phone number is required</FormErrorMessage>
+            </FormControl>
+            <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
+              <FormLabel>Zipcode</FormLabel>
+              <Input
+                type="text"
+                placeholder="Zipcode"
+                variant="filled"
+                onChange={(e) => setZipcode(e.target.value)}
+              />
+              <FormErrorMessage>Zipcode is required</FormErrorMessage>
             </FormControl>
             <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
               <FormLabel>Password</FormLabel>
@@ -259,36 +288,15 @@ export default function SignUp() {
               </Button>
               <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
             </FormControl>
-            <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
-              <FormLabel>Phone</FormLabel>
-              <Input
-                type="text"
-                placeholder="Phone"
-                variant="filled"
-                onChange={(e) => setPhone(e.target.value)}
-                required={true}
-              />
-              <FormErrorMessage>Phone is required</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
-              <FormLabel>Zipcode</FormLabel>
-              <Input
-                type="text"
-                placeholder="Zipcode"
-                variant="filled"
-                onChange={(e) => setZipcode(e.target.value)}
-              />
-              <FormErrorMessage>Zipcode is required</FormErrorMessage>
-            </FormControl>
             <FormControl style={{display: "flex", flexDirection:"row"}} mb={4}>
-              <FormLabel>Sign up for newsletter: 
-              <Checkbox style={{verticalAlign: "middle", marginLeft:"10px"}} defaultChecked checked={enableNewsletter} onClick={() => {
+              <FormLabel fontWeight="bold">Sign up for the Beaver Brigade Newsletter?
+              <Checkbox style={{verticalAlign: "middle", marginLeft: "10px"}} checked={enableNewsletter} onClick={() => {
                 setEnableNewsletter(!enableNewsletter)
               }}></Checkbox>
               </FormLabel>
             </FormControl>
             <FormControl mb={4}>
-              <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
+              <Button loadingText="Submitting" bg="#006d75" color="white"  width="full" onClick={handleSubmit}>
                 Create Account
               </Button>
             </FormControl>
@@ -296,9 +304,11 @@ export default function SignUp() {
         )}
         {pendingVerification && (
           <>
-            <Box mb={6}>
-              <Heading as="h1" fontSize="xl" textAlign="center">
-                Verify Email
+            <Box mt={8} mb={8}>
+              <Heading textAlign="center">
+                <Text fontSize="xl" fontWeight="bold" >
+                  Verify Email
+                </Text>
               </Heading>
             </Box>
             <FormControl mb={4} isRequired>
@@ -310,8 +320,8 @@ export default function SignUp() {
                 onChange={(e) => setCode(e.target.value)}
               />
             </FormControl>
-            <FormControl mb={4} isInvalid={submitAttempted}>
-              <Button bg="#a3caf0" width="full" onClick={onPressVerify}>
+            <FormControl mt={4} mb={4} isInvalid={submitAttempted}>
+              <Button loadingText="Submitting" bg="#006d75" color="white" width="full" onClick={onPressVerify}>
                 Verify
               </Button>
               <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>

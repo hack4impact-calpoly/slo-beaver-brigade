@@ -101,7 +101,7 @@ export default function Login() {
             as="h1" 
             fontSize="xl" 
             textAlign="center">
-            Log In
+            Sign In
           </Heading>
         </Box>
         <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
@@ -139,18 +139,18 @@ export default function Login() {
           <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
           
           <ChakraLink href="/forgot-password" fontSize="sm" mt={1} display="block">
-            Forgot password?
+            Forgot Password?
           </ChakraLink>
         </FormControl>
         <FormControl mb={4}>
 
           <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
-            Log In           
+            Sign In           
           </Button>
 
         </FormControl>
         <Box textAlign="center">
-        <ChakraLink href="/signup" fontSize="sm">Create new account</ChakraLink>
+        <ChakraLink href="/signup" fontSize="sm">Create New Account</ChakraLink>
         </Box>
       </Box>
     </>

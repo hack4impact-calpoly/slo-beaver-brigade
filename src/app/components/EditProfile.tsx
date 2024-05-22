@@ -15,10 +15,13 @@ import {
   Spacer,
   Flex,
   FormControl,
-  FormLabel
+  FormLabel,
+  Button
 } from '@chakra-ui/react'
 import { IUser } from '@database/userSchema';
-import { Button } from '@styles/Button'
+import { PencilIcon } from "@heroicons/react/16/solid";
+
+//import { Button } from '@styles/Button'
 import React, {useState, useEffect} from 'react';
 
 const EditProfile = ({userData}: {userData: IUser | null}) => {   
@@ -38,7 +41,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
           setLastName(userData.lastName || '');
           setEmail(userData.email || '');
           setPhoneNumber(userData.phoneNumber || '');
-          setReceiveNewsletter(userData.recieveNewsletter || false);
+          setReceiveNewsletter(userData.receiveNewsletter || false);
       }
   }, [userData]);
 
@@ -60,7 +63,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
       setLastName(userData?.lastName || '');
       setEmail(userData?.email || '');
       setPhoneNumber(userData?.phoneNumber || '');
-      setReceiveNewsletter(userData?.recieveNewsletter || false);
+      setReceiveNewsletter(userData?.receiveNewsletter || false);
       setIsSubmitted(false);
       onClose();
   };
@@ -97,15 +100,21 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
 
   return(
       <>
-        <Button onClick={onOpen} style = {{border: 'none', color: 'white', fontWeight: 'normal', padding: '0%', margin: '5px',
-                                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '16px'}}>
+        <Button 
+          onClick={onOpen} 
+          fontFamily={"Lato"} 
+          variant={"link"} 
+          rightIcon={ <PencilIcon  style = {{ height: '15px', width: '15px'}}/>}
+          style = {{ color: 'white', fontWeight: 'bold', padding: '0%', margin: '5px',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '17px'}}
+        >
           Edit Details
         </Button>
   
         <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
           <ModalOverlay />
-          <ModalContent>
-            <ModalHeader bg='#006d75' color='white' fontWeight='bold' position='relative'>
+          <ModalContent fontFamily="Lato" borderRadius="10px">
+            <ModalHeader bg='#337774' color='white' fontWeight='bold' position='relative' borderRadius="10px 10px 0px 0px">
               Edit Profile
             </ModalHeader>
             <ModalCloseButton color='white' size='l' marginTop='15px' marginRight='5px'/>    
@@ -113,7 +122,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
             <ModalBody>
               <Stack spacing={4}>
   
-                <FormControl isInvalid={user_firstName === '' && isSubmitted}>
+                <FormControl isInvalid={user_firstName === '' && isSubmitted} mt={2}>
                   <FormLabel color='grey' fontWeight='bold'>First Name</FormLabel>
                   <Input placeholder='' fontWeight='bold' value={user_firstName} onChange={handleFirstNameChange}/>
                 </FormControl>
@@ -148,11 +157,16 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
               </Stack>
             </ModalBody>
   
-            <ModalFooter>
-              <Button onClick={handleClose}>
+            <ModalFooter display={"flex"} justifyContent={"space-between"}>
+              <Button onClick={handleClose}
+                >
                 Close
               </Button>
-              <Button onClick={HandleSubmit}>
+              <Button 
+                  onClick={HandleSubmit}
+                  colorScheme="yellow"
+                  fontFamily="Lato"
+                >
                   Confirm
               </Button>
             </ModalFooter>
