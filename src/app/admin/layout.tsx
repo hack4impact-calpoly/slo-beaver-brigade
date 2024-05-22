@@ -18,12 +18,18 @@ const Layout = async (props: Props) => {
 
     if (process.env.DEV_MODE != "true"){
         // get user role
+        console.log('admin getting user')
         const email = cookies().get('user_email')?.value
         if (email){
+            console.log('cookie found, getting role')
             const user = await getUserRoleFromEmail(email)
+            console.log('validated role')
             if (user != "admin"){
                 redirect("/dashboard")
             }
+        }
+        else{
+            redirect('/dashboard')
         }
     }
 
