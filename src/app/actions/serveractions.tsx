@@ -47,6 +47,7 @@ export async function removeRegistered(userid: string, eventid: string ) {
         await User.updateOne({_id:userid},{$pull: {eventsRegistered : {eventId: eventid}}}).orFail();
     
         revalidateTag("events")
+        revalidatePath("/dashboard")
         return true
     }
     catch(err){
