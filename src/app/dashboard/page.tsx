@@ -68,7 +68,7 @@ export default async function Page(){
     let events = []
     const url = getBaseUrl() + "/api/events/ascending"
     const res = await fetch(url, {
-        cache: "force-cache",
+        cache: "no-store",
         next: {
             tags: ['events']
         }
