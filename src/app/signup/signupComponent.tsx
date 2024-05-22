@@ -147,6 +147,7 @@ export default function SignUp() {
             role: 'user',
             firstName: firstName,
             lastName: lastName,
+            zipcode: zipcode
         };
         // check if user has made a guest account and transition if so
         const userRes = await getUserFromEmail(email)
