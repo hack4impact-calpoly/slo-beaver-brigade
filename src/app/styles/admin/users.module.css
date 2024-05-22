@@ -40,6 +40,7 @@
 .viewDetails {
   color: darkgray;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .searchBar {

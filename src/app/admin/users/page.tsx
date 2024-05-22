@@ -12,6 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
+import Select from "react-select";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
 import SingleVisitorComponent from "@components/SingleVisitorComponent";
@@ -64,7 +65,10 @@ const UserList = () => {
   // states
   const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("firstName");
+  const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
+    value: "firstName",
+    label: "First Name",
+  });
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
@@ -143,10 +147,15 @@ const UserList = () => {
       )
     )
     .sort((a, b) =>
-      sortOrder === "firstName"
+      sortOrder.value === "firstName"
         ? a.firstName.localeCompare(b.firstName)
         : a.lastName.localeCompare(b.lastName)
     );
+
+  const sortOptions = [
+    { value: "firstName", label: "First Name" },
+    { value: "lastName", label: "Last Name" },
+  ];
 
   if (loading) {
     return (
@@ -161,7 +170,7 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    role: capitalizeFirstLetter(user.role), 
+    role: capitalizeFirstLetter(user.role),
     eventsAttended:
       user.eventsAttendedNames.length > 0
         ? user.eventsAttendedNames.join(", ")
@@ -185,14 +194,39 @@ const UserList = () => {
     <div className={style.mainContainer}>
       <div className={style.buttonContainer}>
         <div className={style.innerButtons}>
-          <select
+          <Select
+            id="sort-select"
+            placeholder="Sort by First or Last Name"
+            options={sortOptions}
+            className={style.selectContainer}
+            onChange={(selectedOption) =>
+              setSortOrder(
+                selectedOption || { value: "firstName", label: "First Name" }
+              )
+            }
+            isClearable={false}
+            isSearchable={false}
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className={style.filter}
-          >
-            <option value="firstName">First Name</option>
-            <option value="lastName">Last Name</option>
-          </select>
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                borderRadius: "12px",
+                height: "40px",
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                color: "black",
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                color: state.isSelected ? "white" : "black",
+              }),
+              placeholder: (provided) => ({
+                ...provided,
+                color: "black",
+              }),
+            }}
+          />
           <CSVLink
             data={csvData}
             headers={headers}
@@ -200,7 +234,7 @@ const UserList = () => {
             className={style.yellowButton}
             target="_blank"
           >
-            Export To CSV
+            Export User List
           </CSVLink>
         </div>
         <div className={style.searchWrapper}>
@@ -226,7 +260,11 @@ const UserList = () => {
       </div>
       <div className={style.tableContainer}>
         <Box>
-          <Table variant="striped" size={tableSize} className={style.customTable}>
+          <Table
+            variant="striped"
+            size={tableSize}
+            className={style.customTable}
+          >
             <Thead>
               <Tr>
                 <Th>Name</Th>
@@ -237,17 +275,27 @@ const UserList = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {filteredUsers.map((user) => (
-                <Tr key={user._id}>
-                  <Td>{`${user.firstName} ${user.lastName}`}</Td>
-                  <Td>{user.email}</Td>
-                  <Td>{user.totalHoursFormatted}</Td>
-                  <Td>{capitalizeFirstLetter(user.role)}</Td>
-                  <Td>
-                    <SingleVisitorComponent visitorData={user} />
+              {filteredUsers.length === 0 ? (
+                <Tr>
+                  <Td colSpan={5}>
+                    <Text fontSize="lg" textAlign="center">
+                      No users found
+                    </Text>
                   </Td>
                 </Tr>
-              ))}
+              ) : (
+                filteredUsers.map((user) => (
+                  <Tr key={user._id}>
+                    <Td>{`${user.firstName} ${user.lastName}`}</Td>
+                    <Td>{user.email}</Td>
+                    <Td>{user.totalHoursFormatted}</Td>
+                    <Td>{capitalizeFirstLetter(user.role)}</Td>
+                    <Td>
+                      <SingleVisitorComponent visitorData={user} />
+                    </Td>
+                  </Tr>
+                ))
+              )}
             </Tbody>
           </Table>
         </Box>
