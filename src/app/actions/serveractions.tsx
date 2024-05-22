@@ -45,9 +45,12 @@ export async function removeRegistered(userid: string, eventid: string ) {
         await Event.updateOne({_id: eventid},{$pull: {registeredIds : userid} }).orFail();
         // remove event from user
         await User.updateOne({_id:userid},{$pull: {eventsRegistered : {eventId: eventid}}}).orFail();
-    
+        let BASE_URL = process.env.BASE_URL
+        if (process.env.DEV_MODE){
+            BASE_URL = process.env.DEV_BASE_URL
+        }
         revalidateTag("events")
-        revalidatePath("/dashboard")
+        revalidatePath(BASE_URL + "/dashboard")
         return true
     }
     catch(err){
@@ -61,6 +64,6 @@ export async function revalidatePathServer(path: string){
     if (process.env.DEV_MODE){
         BASE_URL = process.env.DEV_BASE_URL
     }
-    revalidatePath(path)
+    revalidatePath(BASE_URL + path)
     console.log('revalidated path')
 }
