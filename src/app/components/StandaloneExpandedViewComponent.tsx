@@ -49,6 +49,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
       firstName: "",
       lastName: "",
       phoneNumber: "",
+      zipcode: "",
       age: -1,
       gender: "",
       role: "user",

@@ -116,6 +116,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                   eventsAttended: [],
                   eventsRegistered: [],
                   receiveNewsletter: false,
+                  zipcode: ""
                 });
               });
             });
