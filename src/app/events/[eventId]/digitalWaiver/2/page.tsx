@@ -52,7 +52,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement | null>(null);
   const router = useRouter()
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
   const [eventData, setEventData] = useState<IEvent | null>(null);
 
   // checks if user is signed in
@@ -485,8 +485,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
           </ModalHeader>
           <ModalBody textAlign={"center"} mb={"50px"}>
             <Text fontSize={{base:"lg", md:"xl"}}>Thank you for signing up for</Text>
-            <Text fontSize={{base:"xl", md:"3xl"}} fontWeight={"bold"} mt={"25px"} mb={"50px"}>{eventData?.eventName}</Text>
-            <Text fontSize={{base:"md", md:"lg"}}>You can create an account to view your upcoming event!</Text>
+            <Text fontSize={{base:"2xl", md:"3xl"}} fontWeight={"bold"} mt={"25px"} mb={"50px"}>{eventData?.eventName}</Text>
+            <Text fontSize={{base:"md", md:"lg"}} pl={10} pr={10}>You can create an account to view your upcoming event!</Text>
           </ModalBody>
           <ModalFooter justifyContent={"space-around"} mb={"65px"}>
             <Button fontSize={{base:"sm", md:"md"}} color= "#B5B5B5" borderColor="gray" w={"35%"} variant={"outline"} onClick={handleSkip}>
