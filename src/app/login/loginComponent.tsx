@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import {
   Box,
-  Heading,
   Input,
   FormControl,
+  Flex,
   FormLabel,
   Button,
   Link as ChakraLink,
@@ -18,6 +18,9 @@ import { useRouter, useSearchParams} from 'next/navigation';
 import { revalidatePathServer } from "app/actions/serveractions";
 import { getBareBoneUser } from "app/actions/cookieactions";
 import { getUserDataFromEmail } from "app/lib/authentication";
+import "../fonts/fonts.css";
+import beaverLogo from "/docs/images/beaver-logo.svg";
+import Image from "next/image";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -95,17 +98,17 @@ export default function Login() {
 
   return (
     <>
-      <Box p={4} maxWidth="400px" mx="auto">
-        <Box mb={6}>
-          <Heading 
-            as="h1" 
-            fontSize="xl" 
-            textAlign="center">
-            Sign In
-          </Heading>
-        </Box>
+      <Box p={4} maxWidth="400px" mx="auto" fontFamily={"Lato"}>
+        <Flex 
+          mt={6}
+          mb={4} 
+          justifyContent="flex-start"
+          flexDirection="column" 
+          alignItems="center">
+          <Image src={beaverLogo} alt="beaver" />
+        </Flex>
         <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
-          <FormLabel>Email</FormLabel>
+          <FormLabel fontWeight="600">Email</FormLabel>
           <Input 
             type="text" 
             placeholder="Email" 
@@ -115,7 +118,7 @@ export default function Login() {
           <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
         </FormControl>
         <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
-          <FormLabel>Password</FormLabel>
+          <FormLabel fontWeight="600">Password</FormLabel>
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
@@ -128,8 +131,9 @@ export default function Login() {
             position="absolute"
             bg="transparent"
             right="0"
-            top="53.5"
+            top="52.5"
             transform="translateY(-50%)"
+            variant="link"
             onClick={handleTogglePassword}
           >
             {/* {showPassword ? "Hide" : "Show"} */}
@@ -138,19 +142,21 @@ export default function Login() {
 
           <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
           
-          <ChakraLink href="/forgot-password" fontSize="sm" mt={1} display="block">
+          <ChakraLink href="/forgot-password" fontSize="16px" mt={1} display="block">
             Forgot Password?
           </ChakraLink>
         </FormControl>
         <FormControl mb={4}>
 
-          <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
+        <Flex justifyContent="center" alignItems="center">
+          <Button bg="#e0af48" color="black" width="full" /*colorScheme="yellow" width="200px"*/ onClick={handleSubmit}>
             Sign In           
           </Button>
+        </Flex>
 
         </FormControl>
         <Box textAlign="center">
-        <ChakraLink href="/signup" fontSize="sm">Create New Account</ChakraLink>
+        <ChakraLink href="/signup" fontSize="16px">Create New Account</ChakraLink>
         </Box>
       </Box>
     </>
