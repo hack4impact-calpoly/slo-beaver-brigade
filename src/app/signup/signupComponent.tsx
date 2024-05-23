@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Heading,
@@ -7,7 +7,6 @@ import {
   FormControl,
   FormLabel,
   Button,
-  Textarea,
   Link as ChakraLink,
   FormErrorMessage,
   Checkbox,
@@ -15,7 +14,7 @@ import {
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSignUp } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { doesUserExist, getUserFromEmail, transitionGuestById } from 'app/actions/userapi';
+import { getUserFromEmail, transitionGuestById } from 'app/actions/userapi';
 import { addToNewsletter } from 'app/actions/mailingactions';
 import { IUser } from 'database/userSchema';
 import { revalidatePathServer } from 'app/actions/serveractions';
@@ -45,6 +44,20 @@ export default function SignUp() {
   const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required');
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+
+  useEffect(() => {
+    let userData = sessionStorage.getItem('userData');
+    if(userData !== null){
+      const parsedData = JSON.parse(userData); 
+      setFirstName(parsedData!.firstName);
+      setLastName(parsedData!.lastName);
+      setEmail(parsedData!.email);
+      setZipcode(parsedData!.zipcode);
+
+      sessionStorage.removeItem('userData');
+    }
+  }
+  ,[]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     // If the form submission is successful, setSubmitted(true);
@@ -209,6 +222,7 @@ export default function SignUp() {
                 type="text"
                 placeholder="First Name"
                 variant="filled"
+                value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required={true}
               />
@@ -220,6 +234,7 @@ export default function SignUp() {
                 type="text"
                 placeholder="Last Name"
                 variant="filled"
+                value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required={true}
               />
@@ -231,6 +246,7 @@ export default function SignUp() {
                 type="text"
                 placeholder="Email"
                 variant="filled"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required={true}
               />
@@ -276,6 +292,7 @@ export default function SignUp() {
                 type="text"
                 placeholder="Zipcode"
                 variant="filled"
+                value={zipcode}
                 onChange={(e) => setZipcode(e.target.value)}
               />
               <FormErrorMessage>Zipcode is required</FormErrorMessage>

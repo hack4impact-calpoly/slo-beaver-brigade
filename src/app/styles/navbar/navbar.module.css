@@ -12,13 +12,16 @@
     align-items: center;
     height: 100%;
     position: relative;
+    font-weight: 600;
+    max-width: 100%;
 }
 
 .navbar {
     height: 60px;
     background-color: #2b2b33;
-    position: relative;
+    position: sticky;
     z-index: 9999;  
+    width: 100vw;
 }
 
 .nav_left {
@@ -69,7 +72,6 @@
 
 .nav_elements ul a {
     font-size: 16px;
-    font-weight: 400;
     color: #e0af48;
     text-decoration: none;   
 }
@@ -78,43 +80,13 @@
     text-decoration: underline;    
 }
 
-.nav_elements ul a.active {
-    color: #574c4c;
-    font-weight: 500;
-    position: relative;   
-}
-
-.nav_elements ul button {
-    font-size: 16px;
-    font-weight: 400;
-    color: #e0af48;
-    text-decoration: none;
-}
-
-.nav_elements ul button.active {
-    color: #574c4c;
-    font-weight: 500;
-    position: relative;
-}
-
- .nav_elements ul a.active::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #574c4c;
-} 
-
 .nav_right {
     color: #e0af48;
     padding-right: 1rem;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-shrink: 0;
     overflow: hidden;
+    justify-content: flex-end;
 }
 
 .nav_right ul {
@@ -168,7 +140,7 @@
         font-size: 12px;
     }
     .nav_right ul {
-        font-size: 12px;
+        font-size: 14px;
     }
 
 }
@@ -191,9 +163,8 @@
         position: absolute;
         top: 60px;
         background-color: #2b2b33;
-        height: 60vh;
+        height: 400px;        
     }
-    
 
     .nav_elements.active ul {
         display: flex;
@@ -203,34 +174,36 @@
     }
 
     .nav_elements.active ul li {
-        margin-left: 0px;
         margin-top: 20px;
-        text-align: left;       
+        text-align: left;              
     }
-    
+
     .nav_right {
         display: none;
     }
+    
     .nav_right.active {
         display: flex;
+        flex-direction: column;
         position: absolute;
-        top: 60vh;
-        left: 50px;   
+        margin-top: 800px;
+        margin-left: 50px;
     }
     
     .nav_right.active ul {
-        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
     }
 
-    .nav_right.active ul li {
-        text-align: right;
-        margin-top: 5px;
-        margin-right: 10px; 
+    .nav_right.active ul li p {
+        text-align: left;
+        font-size: 14px;
     }
     
     .menu_icon.active {
         display: none;
     }
+
     .close_icon.active {
         display: block;
         cursor: pointer;
