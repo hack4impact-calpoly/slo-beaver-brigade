@@ -214,7 +214,7 @@ export default function SignUp() {
                 </Text>
               </Box>
             </Box>
-            <Box fontFamily="Lato" fontWeight="600">
+            <Box fontFamily="Lato">
               <FormControl mb={4} isRequired isInvalid={firstName === '' && submitAttempted}>
                 <FormLabel fontWeight="600">First Name</FormLabel>
                 <Input
@@ -324,7 +324,7 @@ export default function SignUp() {
                 </Text>
               </Flex>
             </Box>
-            <Box mt={12} fontFamily="Lato" fontWeight="600">
+            <Box mt={12} fontFamily="Lato" >
               <FormControl mb={4} isRequired>
                 <FormLabel fontWeight="600">Email Verification Code</FormLabel>
                 <Input
