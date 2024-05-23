@@ -17,6 +17,7 @@ const placeholderUser: IUser = {
   firstName: "",
   lastName: "",
   phoneNumber: "",
+  zipcode: "",
   age: -1,
   gender: "",
   role: "guest",
