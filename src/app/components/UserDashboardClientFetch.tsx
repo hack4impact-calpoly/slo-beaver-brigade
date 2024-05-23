@@ -186,6 +186,7 @@ const {isSignedIn, user, isLoaded} = useUser()
     }
     if (events && parsed && userData) {
       console.log("userData:" + userData)
+      console.log('events', events)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       
@@ -353,10 +354,6 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
 
   return (
     <div>
-     <EventListRegister
-       setShowModal={setShowEventList}
-       showModal={showEventList}
-     ></EventListRegister>
   
     {/*{userData &&
     <div className="px-[3rem] pt-3">

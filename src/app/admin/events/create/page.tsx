@@ -29,6 +29,7 @@ import { Select, CreatableSelect } from "chakra-react-select";
 import MDEditor from "@uiw/react-md-editor";
 import style from "@styles/calendar/calendar.module.css";
 import ImageSelector from "app/components/ImageSelector";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -37,6 +38,7 @@ type Group = {
 };
 
 export default function Page() {
+    const {mutate} = useEventsAscending()
   const toast = useToast();
   const router = useRouter();
   const [eventName, setEventName] = useState("");
@@ -240,7 +242,7 @@ export default function Page() {
       }
 
       const result = await response.json();
-
+        mutate()
       toast({
         title: "Event Created",
         description: "Your event has been successfully created.",
