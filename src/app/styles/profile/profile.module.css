@@ -25,15 +25,14 @@
   width: 25%;
   float: left;
   background-color: #fbf9f9;
-  height: 30vh;
+  height: 200px;
   border-radius: 10px;
   padding-bottom: 4%;
-
  }
  
  .personalDetails {
   background-color: #fbf9f9;
-  height: 40vh;
+  height: 300px;
   border-radius: 10px;
   padding-bottom: 4%;
  }
@@ -74,9 +73,6 @@
   font-weight: 600;
   
 }
- 
-
- 
  
  .formGroup label {
   display: block;
@@ -143,8 +139,6 @@
  }
  
  
- 
- 
  .accountHeader,
  .personalHeader,
  .savedAddressHeader {
@@ -174,8 +168,21 @@
     margin-top: 5px;
   }
  }
-@media (max-width: 670px){
- /* Define a wrapper for both personal details and account details */
+
+@media (max-width: 900px){
+  .formFields {
+    grid-gap: 5px;
+    margin-left: 20px
+    
+   }
+}
+
+@media (max-width: 720px){
+.profileContainer {
+  margin-top: 20px;
+}
+
+  /* Define a wrapper for both personal details and account details */
 .detailsWrapper {
   display: flex;
   flex-wrap: wrap; /* Allow items to wrap to next line */
@@ -184,6 +191,7 @@
 .personalDetails {
   width: 100%;
   margin-bottom: 20px; /* Adjust margin as needed */
+  height: 400px;
 }
 
 .accountDetails {
