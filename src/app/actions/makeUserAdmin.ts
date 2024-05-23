@@ -17,7 +17,11 @@ const makeUserAdmin = async (email: string) => {
 
     return user.toObject();
   } catch (error) {
-    throw new Error(`Error updating user role: ${error.message}`);
+    if (error instanceof Error) {
+        throw new Error(`Error updating user role: ${error.message}`);
+      } else {
+        throw new Error('Unknown error occurred while updating user role');
+      }
   }
 };
 
