@@ -12,7 +12,7 @@ export interface SWRResponse<Data, Error> {
 
 export function useEventsAscending() {
     // revalidates every 10 minutes
-    const { data, error, isValidating, mutate } = useSWRImmutable<IEvent[]>('/api/events/ascending', {refreshInterval: (1000 * 60 * 10), dedupingInterval: (1000 * 60 * 10)});
+    const { data, error, isValidating, mutate } = useSWR<IEvent[]>('/api/events/ascending', {refreshInterval: (1000 * 60 * 10), dedupingInterval: (1000 * 60 * 10)});
 
     return {
         events: data,
