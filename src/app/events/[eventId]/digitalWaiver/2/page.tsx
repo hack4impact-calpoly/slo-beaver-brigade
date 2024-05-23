@@ -492,7 +492,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
             <Button fontSize={{base:"sm", md:"md"}} color= "#B5B5B5" borderColor="gray" w={"35%"} variant={"outline"} onClick={handleSkip}>
               Skip
             </Button>
-            <Button fontWeight={"bold"} fontSize={{base:"xs", sm:"sm", md:"md"}}  colorScheme="teal" w={"35%"} pl={"10px"} pr={"10px"} onClick={handleCreateAccount}>Create Account</Button>
+            <Button fontWeight={"bold"} fontSize={{base:"xs", sm:"sm", md:"md"}}  backgroundColor="#e0af48" w={"35%"} pl={"10px"} pr={"10px"} onClick={handleCreateAccount}>Create Account</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
