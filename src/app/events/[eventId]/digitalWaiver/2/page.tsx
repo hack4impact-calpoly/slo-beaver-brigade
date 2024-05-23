@@ -52,7 +52,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement | null>(null);
   const router = useRouter()
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [eventData, setEventData] = useState<IEvent | null>(null);
 
   // checks if user is signed in
