@@ -209,7 +209,7 @@ export default function SignUp() {
           <>
             <Box mt={6} mb={6}>
               <Box textAlign="center">
-                <Text fontFamily="Lato" fontWeight="600" fontSize="24px">
+                <Text fontWeight="400" fontSize="24px">
                   Create Account
                 </Text>
               </Box>
