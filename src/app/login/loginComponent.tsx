@@ -149,7 +149,7 @@ export default function Login() {
         <FormControl mb={4}>
 
         <Flex justifyContent="center" alignItems="center">
-          <Button bg="#e0af48" color="black" width="full" /*colorScheme="yellow" width="200px"*/ onClick={handleSubmit}>
+          <Button bg="#e0af48" color="black" width="full" onClick={handleSubmit} loadingText="Signing In">
             Sign In           
           </Button>
         </Flex>
