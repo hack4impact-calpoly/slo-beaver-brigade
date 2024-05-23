@@ -5,7 +5,6 @@ import {
   Text,
   Flex,
   Button,
-  Spinner,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -47,7 +46,6 @@ interface Event {
 }
 
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +54,6 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
-     
       try {
         const eventIds = visitorData.eventsAttended.map((e) => e.eventId);
         const fetchedEvents = await Promise.all(
@@ -64,13 +61,15 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
             fetch(`/api/events/${id}`)
               .then((res) => res.json())
               .then((data) => {
-                console.log(data);
-
-                return { ...data, attendeeIds: data.attendeeIds || [], startTime:  visitorData.eventsAttended[idx].startTime, endTime: visitorData.eventsAttended[idx].endTime};
+                return {
+                  ...data,
+                  attendeeIds: data.attendeeIds || [],
+                  startTime: visitorData.eventsAttended[idx].startTime,
+                  endTime: visitorData.eventsAttended[idx].endTime,
+                };
               })
           )
         );
-        console.log('fetched', fetchedEvents);
         setEvents(fetchedEvents);
       } catch (error) {
         console.error("Failed to fetch events:", error);
@@ -78,7 +77,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       setLoading(false);
     };
 
-if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.length > 0) {
+    if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.length > 0) {
       fetchEvents();
     }
   }, [visitorData]);
@@ -116,21 +115,20 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
               fontWeight: "bold",
               fontFamily: "Lato",
               width: "100%",
-
             }}
           >
-            <Flex p={4}>
-            {visitorData.firstName} {visitorData.lastName}
-            {userRole === 'user' ? (
-              <Button ml={4} colorScheme="blue" onClick={() => handleRoleChange('admin')}>
-                Make Admin
-              </Button>
-            ) : (
-              <Button ml={4} colorScheme="red" onClick={() => handleRoleChange('user')}>
-                Revert to User
-              </Button>
-            )}
-          </Flex>
+            <Flex direction="column" align="center" p={4}>
+              <Text>{visitorData.firstName} {visitorData.lastName}</Text>
+              {userRole === 'user' ? (
+                <Button mt={2} colorScheme="blue" onClick={handleRoleChange}>
+                  Make Admin
+                </Button>
+              ) : (
+                <Button mt={2} colorScheme="red" onClick={handleRoleChange}>
+                  Revert to User
+                </Button>
+              )}
+            </Flex>
           </ModalHeader>
           <ModalCloseButton />
           <hr />
