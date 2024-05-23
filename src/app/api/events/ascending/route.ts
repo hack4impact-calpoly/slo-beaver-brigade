@@ -5,12 +5,14 @@ import Event from "database/eventSchema";
 
 export async function GET(request: Request) {
     await connectDB(); // connect to db
-    const { searchParams } = new URL(request.url);
     let sort: SortOrder = 1;
 
     try {
         // query for all events and sort by date
-        const events = await Event.find().sort({ startTime: sort }).orFail();
+        const events = await Event.find()
+            .sort({ startTime: sort })
+            .lean()
+            .orFail();
         // returns all events in json format or errors
         return NextResponse.json(events, { status: 200 });
     } catch (err) {

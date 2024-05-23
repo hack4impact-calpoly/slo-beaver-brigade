@@ -27,14 +27,16 @@ import { IUser } from "@database/userSchema";
 import { getUserDbData } from "app/lib/authentication";
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import style from "@styles/calendar/calendar.module.css";
+import { KeyedMutator } from "swr";
 
 interface Props {
   eventDetails: IEvent | null;
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  mutate?: KeyedMutator<IEvent[]> | undefined
 }
 
-function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props)  {
+function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate }: Props)  {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const [signedIn, setSignedIn] = useState(false);
@@ -85,6 +87,17 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
 
   async function handleCancel(eventid : string, userid : string) {
     await removeRegistered(userid, eventid);
+    // really innefficient, move to useSubscription
+    if (mutate){
+        mutate(data => {
+            return data?.map(val => {
+                if (val._id === eventid) {
+                    val.registeredIds = val.registeredIds.filter(id => id !== userid);
+                }
+                return val;
+            });
+        })
+    }
     onClose(); 
     closeExpandedView();
     setSignedIn(false);
@@ -179,19 +192,19 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
                       }
                       </>
                     : 
-                      <Link href="/login" className={style.login_button} >
-                        <Button
-                          bg="#006d75"
-                          color="white"
-                          fontWeight={"light"}
-                          pl={"100%"}
-                          pr={"100%"}
-                          flexBasis={{ base: '100%', md: 'auto' }}
-                          width={{ base: '100%', md: 'auto' }}
-                        >
-                          <strong>Login</strong>
-                        </Button>
-                      </Link>
+                      <Link href={url} className={style.signup_button}>
+                          <Button
+                            bg="#006d75"
+                            color="white"
+                            fontWeight={"light"}
+                            pl={"100%"}
+                            pr={"100%"}
+                            flexBasis={{ base: '100%', md: 'auto' }}
+                            width={{ base: '100%', md: 'auto' }}
+                          >
+                            <strong>Sign Up</strong>
+                          </Button>
+                        </Link>
                     }
                   </Flex>
                 </Flex>

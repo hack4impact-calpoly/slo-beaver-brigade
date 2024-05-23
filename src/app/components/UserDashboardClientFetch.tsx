@@ -21,7 +21,7 @@ import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
 import { getEvents } from "../actions/eventsactions";
-import { getUserDbData } from "@app/lib/authentication";
+import { getUserDataFromEmail, getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
@@ -29,6 +29,9 @@ import { EmailRSSComponent } from "./EmailComponent";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
 import "../fonts/fonts.css";
 import { px } from "framer-motion";
+import { currentUser } from "@clerk/nextjs/server";
+import useSWR, { Fetcher } from "swr";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -70,7 +73,7 @@ const UnregisteredEventPlaceholder = () => {
  };
 
 
-export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, userDataRes: string | null}) => {
+export const UserDashboard = () => {
 
  const sliderStyles = css`
    .slick-dots li button:before {
@@ -83,8 +86,13 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
    }
  `;
 
- const [events, setEvents] = useState<IEvent[]>([])
+ // fetching events
+
+ const {events, isLoading, isError, mutate} = useEventsAscending()
+
  const [userData, setUserData] = useState<IUser | null>(null)
+
+const {isSignedIn, user, isLoaded} = useUser()
 
    const [parsed, setParsed] = useState<boolean>(false)
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
@@ -147,18 +155,37 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
    return `${formattedStart} - ${formattedEnd}`;
   };
 
+
+
   // parse data on component mount
   useEffect(() => {
-    setEvents(JSON.parse(eventsRes))
-    if (userDataRes){
-        setUserData(JSON.parse(userDataRes))
+    
+   const getUser = async () => {
+        if (user && isSignedIn){
+            const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
+            if (res){
+                const user = JSON.parse(res)
+                console.log(user)
+                setUserData(user)
+            }
+        }
+
+        setParsed(true)
     }
-    setParsed(true)
-  }, [eventsRes, userDataRes]) 
+    if (!isLoaded){
+        return
+    }
+    // get user
+    getUser()
+  }, [isLoaded, isSignedIn, user]) 
  
   useEffect(() => {
-    if (parsed && userData) {
-      console.log("useData:" + userData)
+ 
+    if (!parsed || !events){
+        return
+    }
+    if (events && parsed && userData) {
+      console.log("userData:" + userData)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       
@@ -188,7 +215,7 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
       setUnregisteredEvents(upcomingEvents);
     }
     setEventsLoading(false);
-  }, [events, userData, selectedEventType, parsed]); // Include selectedEventType in the dependency array
+  }, [events, selectedEventType, parsed, isLoaded, isSignedIn, userData]); // Include selectedEventType in the dependency array
   
 
   useEffect(() => {
@@ -308,7 +335,7 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
   ],
 };
 
- const allDataLoaded = !eventsLoading;
+ const allDataLoaded = !eventsLoading && parsed;
 
  const toggleExpandedViewComponentOpen = () => {
   setExpandedViewComponentOpen(!isExpandedViewComponentOpen);
@@ -368,7 +395,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              >
                Loading...
              </Text>
-           ) : !userData ? (
+           ) : !isSignedIn ? (
              <Flex
                flexDirection={"column"}
                alignItems={"center"}
@@ -747,6 +774,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
         eventDetails={eventForExpandedViewComponent}
         showModal={isExpandedViewComponentOpen}
         setShowModal={toggleExpandedViewComponentOpen}
+        mutate={mutate}
       />
     </div>
   )};

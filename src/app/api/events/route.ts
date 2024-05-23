@@ -16,7 +16,10 @@ export async function GET(request: Request) {
 
     try {
         // query for all events and sort by date
-        const events = await Event.find().sort({ startTime: sort }).orFail();
+        const events = await Event.find()
+            .sort({ startTime: sort })
+            .lean()
+            .orFail();
         // returns all events in json format or errors
         return NextResponse.json(events, { status: 200 });
     } catch (err) {
@@ -47,11 +50,10 @@ export async function POST(req: NextRequest) {
 
     const event: IEvent = await req.json();
 
-
     // create new event or return error
     try {
         const newEvent = new Event(event);
-        newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
+        newEvent.volunteerEvent = newEvent.eventType === "Volunteer";
 
         await newEvent.save();
         revalidateTag("events");
@@ -59,7 +61,6 @@ export async function POST(req: NextRequest) {
             status: 200,
         });
     } catch (err: any) {
-
         if (err.name === "ValidationError") {
             // Handle validation errors
             const errors = Object.values(err.errors).map(
