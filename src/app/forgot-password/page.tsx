@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Heading,
+  Text,
   Input,
   FormControl,
   FormLabel,
@@ -14,6 +14,7 @@ import {
 import { useAuth, useSignIn } from '@clerk/nextjs';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
+import "../fonts/fonts.css";
 
 const ForgotPasswordPage: NextPage = () => {
   const [email, setEmail] = useState('');
@@ -84,55 +85,64 @@ const ForgotPasswordPage: NextPage = () => {
 
   return (
     <Box p={4} maxWidth="400px" mx="auto">
-      <Box mb={6}>
-        <Heading as="h1" fontSize="xl" textAlign="center">
+      <Box mt={6} mb={6} textAlign="center">
+        <Text fontSize="20" fontWeight="400" textAlign="center">
           Forgot Password?
-        </Heading>
+        </Text>
       </Box>
       <form onSubmit={!successfulCreation ? create : reset}>
         {!successfulCreation && (
           <>
-            <FormControl mb={4} isRequired>
-              <FormLabel>Email</FormLabel>
-              <Input
-                type="email"
-                placeholder="e.g. john@doe.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
-            </FormControl>
-            <Button type="submit" width="full">
-              Send password reset code
-            </Button>
-            {error && <FormErrorMessage>{error}</FormErrorMessage>}
+            <Box fontFamily="Lato">
+              <FormControl mb={4} isRequired>
+                <FormLabel fontWeight={600}>Email</FormLabel>
+                <Input
+                  type="email"
+                  placeholder="example@gmail.com"
+                  variant="filled"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
+              </FormControl>
+              <Button loadingText="Sending Code" bg="#e0af48" color="black" type="submit" width="full">
+                Send Reset Code
+              </Button>
+              {error && <FormErrorMessage>{error}</FormErrorMessage>}
+            </Box>
           </>
         )}
         {successfulCreation && (
           <>
-            <FormControl mb={4} isRequired>
-              <FormLabel>New Password</FormLabel>
-              <Input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-            </FormControl>
-            <FormControl mb={4} isRequired>
-              <FormLabel>Password Reset Code</FormLabel>
-              <Input
-                type="text"
-                value={code}
-                onChange={e => setCode(e.target.value)}
-              />
-            </FormControl>
-            <Button type="submit" width="full">
-              Reset Password
-            </Button>
-            {error && <FormErrorMessage>{error}</FormErrorMessage>}
+            <Box fontFamily="Lato">
+              <FormControl mb={4} isRequired>
+                <FormLabel fontWeight="600">Password Reset Code</FormLabel>
+                <Input
+                  type="text"
+                  variant="filled"
+                  placeholder="123456"
+                  value={code}
+                  onChange={e => setCode(e.target.value)}
+                />
+              </FormControl>
+              <FormControl mb={4} isRequired>
+                <FormLabel fontWeight="600">New Password</FormLabel>
+                <Input
+                  type="password"
+                  variant="filled"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                />
+              </FormControl>
+            
+              <Button loadingText="Submitting" bg="#e0af48" color="black" type="submit" width="full">
+                Reset Password
+              </Button>
+              {error && <FormErrorMessage>{error}</FormErrorMessage>}
+            </Box>
           </>
         )}
       </form>
-      <Box textAlign="center" mt={4}>
+      <Box fontFamily= "Lato" textAlign="center" mt={4}>
         <ChakraLink href="/login">Back to Login</ChakraLink>
       </Box>
     </Box>
