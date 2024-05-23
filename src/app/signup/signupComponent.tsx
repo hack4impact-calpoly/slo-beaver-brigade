@@ -2,12 +2,10 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Heading,
   Input,
   FormControl,
   FormLabel,
   Button,
-  Textarea,
   Flex,
   Text,
   Link as ChakraLink,
@@ -22,7 +20,6 @@ import { addToNewsletter } from 'app/actions/mailingactions';
 import { IUser } from 'database/userSchema';
 import { revalidatePathServer } from 'app/actions/serveractions';
 import styles from ".//page.module.css"
-import { Montserrat } from 'next/font/google';
 import "../fonts/fonts.css";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import Image from "next/image";
