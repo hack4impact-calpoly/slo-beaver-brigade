@@ -1,5 +1,6 @@
 import { IEvent } from "database/eventSchema";
 import useSWR, { Fetcher, MutatorCallback } from "swr";
+import useSWRImmutable from "swr/immutable"
 
 export interface SWRResponse<Data, Error> {
     data?: Data;
@@ -10,7 +11,8 @@ export interface SWRResponse<Data, Error> {
 }
 
 export function useEventsAscending() {
-    const { data, error, isValidating, mutate } = useSWR<IEvent[]>('/api/events/ascending');
+    // revalidates every 10 minutes
+    const { data, error, isValidating, mutate } = useSWRImmutable<IEvent[]>('/api/events/ascending', {refreshInterval: (1000 * 60 * 10), dedupingInterval: (1000 * 60 * 10)});
 
     return {
         events: data,

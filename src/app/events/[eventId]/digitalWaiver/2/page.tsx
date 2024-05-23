@@ -30,6 +30,7 @@ import { getUserDbData } from "app/lib/authentication";
 import { createGuestFromEmail, getUserFromEmail } from "app/actions/userapi";
 import { useRouter } from "next/navigation";
 import { IEvent } from "database/eventSchema";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
 type IParams = {
   params: {
@@ -38,6 +39,7 @@ type IParams = {
 };
 
 export default function Waiver({ params: { eventId } }: IParams) {
+  const {mutate} = useEventsAscending()
   const [dependents, setDependents] = useState([""]);
   const [formFilled, setFormFilled] = useState(false);
   const [email, setEmail] = useState("");
@@ -162,6 +164,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
               const res = await addToRegistered(userData._id, eventId, waiverId)
               if (res) {
                 console.log('added')
+
+                mutate()
                 const emailBody = {"email": userData.email}
                 const confirmRes = await fetch(`/api/events/confirmation/${eventId}`, {
                     method: 'POST',
@@ -238,6 +242,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 //call to update the user object
                 const res = await addToRegistered(user._id, eventId, waiverId)
                 if (res) {
+                    mutate()
                     console.log('added')
                     const emailBody = {"email": user.email}
                     await fetch("/api/confirmation/" + eventId, {
