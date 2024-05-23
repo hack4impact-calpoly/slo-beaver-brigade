@@ -16,10 +16,16 @@ export async function POST(req: NextRequest) {
                 status: 500,
             });
         }
-        cookies().set("user_first_name", firstName);
-        cookies().set("user_last_name", lastName);
-        cookies().set("user_role", role || "guest");
-        cookies().set("user_email", email);
+        const expirationDate = new Date();
+        expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+        cookies().set("user_first_name", firstName, {
+            expires: expirationDate,
+        });
+        cookies().set("user_last_name", lastName, { expires: expirationDate });
+        cookies().set("user_role", role || "guest", {
+            expires: expirationDate,
+        });
+        cookies().set("user_email", email, { expires: expirationDate });
     } catch (err) {
         console.log(err);
         return NextResponse.json("Cookies failed to be set.", { status: 500 });
