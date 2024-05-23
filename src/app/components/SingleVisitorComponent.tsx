@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Text,
+  Flex,
+  Button,
   Spinner,
   Modal,
   ModalOverlay,
@@ -23,6 +25,8 @@ import { IUser } from "@database/userSchema";
 import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
+import makeUserAdmin from '../actions/makeUserAdmin';
+import makeAdminUser from '../actions/makeAdminUser';
 
 interface Event {
   _id: string;
@@ -47,6 +51,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(visitorData.role);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -82,6 +87,16 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
     return new Date(date).toLocaleDateString();
   };
 
+  const handleRoleChange = async () => {
+    console.log("role change")
+    try {
+      const result = userRole === 'admin' ? await makeAdminUser(visitorData.email) : await makeUserAdmin(visitorData.email);
+      setUserRole(result.role); 
+    } catch (error) {
+      console.error('Error updating role:', error);
+    }
+  }
+
   return (
     <>
       <div className={styles.link}>
@@ -104,7 +119,18 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
 
             }}
           >
+            <Flex p={4}>
             {visitorData.firstName} {visitorData.lastName}
+            {userRole === 'user' ? (
+              <Button ml={4} colorScheme="blue" onClick={() => handleRoleChange('admin')}>
+                Make Admin
+              </Button>
+            ) : (
+              <Button ml={4} colorScheme="red" onClick={() => handleRoleChange('user')}>
+                Revert to User
+              </Button>
+            )}
+          </Flex>
           </ModalHeader>
           <ModalCloseButton />
           <hr />
