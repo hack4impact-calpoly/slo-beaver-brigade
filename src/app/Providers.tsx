@@ -2,15 +2,37 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import StyledComponentsRegistry from "./lib/registry";
 import { ChakraProvider } from "@chakra-ui/react";
-import  theme from "../themes/theme"
+import theme from "../themes/theme"
+import useSWR, { SWRConfig, Cache } from 'swr'
+
+function localStorageProvider(cache: Readonly<Cache<any>>): Cache<any> {
+    let map: Map<any, any> = new Map();
+
+    if (typeof window !== "undefined" && window.localStorage) {
+        const storedCache = localStorage.getItem('app-cache');
+        if (storedCache) {
+            map = new Map(JSON.parse(storedCache));
+        }
+
+        window.addEventListener('beforeunload', () => {
+            const appCache = JSON.stringify(Array.from(map.entries()));
+            localStorage.setItem('app-cache', appCache);
+        });
+    }
+
+    return map;
+}
+
+const fetcher = (resource: string | URL | Request, init: RequestInit | undefined) => fetch(resource, init).then(res => res.json())
+
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    
-    <StyledComponentsRegistry>
-      <ChakraProvider theme={theme}>
-        {children}
-      </ChakraProvider>
-    </StyledComponentsRegistry>
-    
-  )
+    return (
+        <SWRConfig value={{ provider: localStorageProvider, fetcher: fetcher }}>
+            <StyledComponentsRegistry>
+                <ChakraProvider theme={theme}>
+                    {children}
+                </ChakraProvider>
+            </StyledComponentsRegistry>
+        </SWRConfig>
+    )
 }

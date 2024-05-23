@@ -15,6 +15,7 @@ import {
   Box
 } from "@chakra-ui/react";
 import { getAllImagesS3 } from "app/actions/imageactions";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
 // interface IEvent {
 //   _id: string;
@@ -34,7 +35,7 @@ import { getAllImagesS3 } from "app/actions/imageactions";
 
 const EventPreview = () => {
   //states
-  const [events, setEvents] = useState<IEvent[]>([]);
+  const {events, isLoading} = useEventsAscending()
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("earliest");
@@ -71,26 +72,29 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await getEvents(-1, -1)
-        if (!res){
-            console.log("Error getting events.")
-            return;
-        }
-        const data = JSON.parse(res)
-        console.log(data)
-        setEvents(
-          data.map((event: IEvent) => ({
-            ...event,
-            startTime: new Date(event.startTime),
-            endTime: new Date(event.endTime),
-            groupsAllowed: event.groupsAllowed || [],
-          }))
-        );
+        // const res = await getEvents(-1, -1)
+        // if (!res){
+        //     console.log("Error getting events.")
+        //     return;
+        // }
+        // const data = JSON.parse(res)
+        // console.log(data)
+        // setEvents(
+        //   data.map((event: IEvent) => ({
+        //     ...event,
+        //     startTime: new Date(event.startTime),
+        //     endTime: new Date(event.endTime),
+        //     groupsAllowed: event.groupsAllowed || [],
+        //   }))
+        // );
 
+        if (!events){
+            return
+        }
         const names: { [key: string]: string } = {};
         setLoading(true);
         await Promise.all(
-          data.map(async (event: IEvent) => {
+          events.map(async (event: IEvent) => {
             if (event.groupsAllowed && event.groupsAllowed.length > 0) {
               const groupName = await fetchGroupName(event.groupsAllowed[0]);
               names[event._id] = groupName;
@@ -117,13 +121,12 @@ const EventPreview = () => {
 
   // filtering events logic
   const filteredEvents = events
-    .filter((event) =>
+    ?.filter((event) =>
       spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
     )
     .filter((event) =>
       wheelchairAccessible ? event.wheelchairAccessible : true
     )
-    
     .filter((event) => {
       // display event if the checkbox is toggled and event type is toggled
       // if multiple checkboxes are toggled, display events for any of the types that are toggled
@@ -159,7 +162,7 @@ const EventPreview = () => {
       sortOrder === "earliest"
         ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
         : new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
-    );
+    ) || [];
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
