@@ -27,7 +27,7 @@ const fetcher = (resource: string | URL | Request, init: RequestInit | undefined
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <SWRConfig value={{ provider: () => new Map(), fetcher: fetcher }}>
+        <SWRConfig value={{fetcher: fetcher }}>
             <StyledComponentsRegistry>
                 <ChakraProvider theme={theme}>
                     {children}
