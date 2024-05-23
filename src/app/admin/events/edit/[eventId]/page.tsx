@@ -52,6 +52,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
       eventsAttended: [],
       groupId: null,
       receiveNewsletter: false,
+      zipcode: ""
     },
   ]);
 
