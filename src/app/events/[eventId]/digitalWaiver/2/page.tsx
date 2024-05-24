@@ -39,7 +39,7 @@ type IParams = {
 };
 
 export default function Waiver({ params: { eventId } }: IParams) {
-  const {mutate} = useEventsAscending()
+//   const {mutate} = useEventsAscending()
   const [dependents, setDependents] = useState([""]);
   const [formFilled, setFormFilled] = useState(false);
   const [email, setEmail] = useState("");
@@ -165,7 +165,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               if (res) {
                 console.log('added')
 
-                mutate()
+                // mutate()
                 const emailBody = {"email": userData.email}
                 const confirmRes = await fetch(`/api/events/confirmation/${eventId}`, {
                     method: 'POST',
@@ -242,7 +242,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 //call to update the user object
                 const res = await addToRegistered(user._id, eventId, waiverId)
                 if (res) {
-                    mutate()
+                    // mutate()
                     console.log('added')
                     const emailBody = {"email": user.email}
                     await fetch("/api/confirmation/" + eventId, {
