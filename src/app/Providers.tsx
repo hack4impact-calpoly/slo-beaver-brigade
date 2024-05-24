@@ -23,11 +23,11 @@ function localStorageProvider(cache: Readonly<Cache<any>>): Cache<any> {
     return map;
 }
 
-const fetcher = (resource: string | URL | Request, init: RequestInit | undefined) => fetch(resource, init).then(res => res.json())
+const fetcher = (resource: string | URL | Request)=> fetch(resource, {cache: 'no-store'}).then(res => res.json())
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <SWRConfig value={{fetcher: fetcher }}>
+        <SWRConfig value={{provider: localStorageProvider, fetcher: fetcher, keepPreviousData: true }}>
             <StyledComponentsRegistry>
                 <ChakraProvider theme={theme}>
                     {children}
