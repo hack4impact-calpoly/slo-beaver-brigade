@@ -60,11 +60,12 @@ export default function Login() {
       if (completeSignIn.status === 'complete') {
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
+        // can be hacked....?
         const user = await getUserDataFromEmail(email)
         console.log('email', email, 'user', user)
         await fetch('/api/user/cookies', {method: "POST", body:user})
 
-        await revalidatePathServer("/dashboard")
+        await revalidatePathServer("/")
         // Redirect the user to a post sign-in route
         if (redirect_url){
             router.push(redirect_url);

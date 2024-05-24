@@ -112,7 +112,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   function handleSkip(){
     setModalOpen(false)
-    router.push("/dashboard")
+    router.push("/")
   }
 
   function handleCreateAccount(){
@@ -174,7 +174,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 })
                 console.log(confirmRes.status)
                 //on success, return to the home page
-                router.push("/dashboard")
+                router.push("/")
                 
               } else {
                   console.error("Error adding info to user");

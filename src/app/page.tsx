@@ -20,17 +20,14 @@ import "@emotion/react";
 import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
-import { getEvents } from "../actions/eventsactions";
+import { getEvents } from "./actions/eventsactions";
 import { getUserDataFromEmail, getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
-import { EmailRSSComponent } from "./EmailComponent";
-import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
-import "../fonts/fonts.css";
-import { px } from "framer-motion";
-import { currentUser } from "@clerk/nextjs/server";
-import useSWR, { Fetcher } from "swr";
+import { EmailRSSComponent } from "./components/EmailComponent";
+import ExpandedViewComponent from "./components/StandaloneExpandedViewComponent";
+import "./fonts/fonts.css";
 import { useEventsAscending } from "app/lib/swrfunctions";
 
 // logic for letting ts know about css prop
@@ -73,7 +70,7 @@ const UnregisteredEventPlaceholder = () => {
  };
 
 
-export const UserDashboard = () => {
+ export default function Page(){
 
  const sliderStyles = css`
    .slick-dots li button:before {
