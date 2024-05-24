@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Input,
@@ -64,7 +64,7 @@ export default function SignUp() {
     }
   }
   ,[]);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     // If the form submission is successful, setSubmitted(true);
     // This should also handle the backend submission later.
