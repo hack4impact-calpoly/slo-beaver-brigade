@@ -3,7 +3,7 @@ import User from "@database/userSchema";
 import connectDB from "database/db";
 
 const makeUserAdmin = async (email: string) => {
-    await connectDB();
+  await connectDB();
   try {
     const user = await User.findOneAndUpdate(
       { email: email },
