@@ -85,7 +85,7 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
   return (
     <>
       <div className={styles.link}>
-        <Text onClick={onOpen}>Details</Text>
+        <Text onClick={onOpen}>Details & Role</Text>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
