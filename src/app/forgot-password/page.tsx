@@ -129,6 +129,7 @@ const ForgotPasswordPage: NextPage = () => {
                 <Input
                   type="password"
                   variant="filled"
+                  placeholder="Password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
