@@ -7,7 +7,7 @@ import { SortOrder } from "mongoose";
 export async function GET(request: Request) {
     await connectDB(); // connect to db
     const { searchParams } = new URL(request.url);
-    const sort_order = searchParams.get("sort_order");
+    const sort_order = searchParams.get("sort");
     let sort: SortOrder = -1;
 
     if (sort_order && sort_order == "asc") {

@@ -96,7 +96,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
                 }
                 return val;
             });
-        })
+        }, {revalidate:true})
     }
     onClose(); 
     closeExpandedView();
