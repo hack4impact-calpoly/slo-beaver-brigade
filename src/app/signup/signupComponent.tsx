@@ -51,6 +51,20 @@ export default function SignUp() {
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
 
+  useEffect(() => {
+    let userData = sessionStorage.getItem('userData');
+    if(userData !== null){
+      const parsedData = JSON.parse(userData); 
+      setFirstName(parsedData!.firstName);
+      setLastName(parsedData!.lastName);
+      setEmail(parsedData!.email);
+      setZipcode(parsedData!.zipcode);
+
+      sessionStorage.removeItem('userData');
+    }
+  }
+  ,[]);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     // If the form submission is successful, setSubmitted(true);
     // This should also handle the backend submission later.
