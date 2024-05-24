@@ -80,14 +80,14 @@
   }
 
   .yellowButton {
-    width: 175px;
+    width: 160px;
     padding: 8px 20px;
-    margin-right: 60px;
+    margin-right: 50px;
   }
 
   .tableContainer {
     font-size: 0.7rem;
-    height: 500px; 
+    height: 600px; 
     overflow: auto;
   }
 
@@ -101,13 +101,8 @@
   }
 
   .searchBar {
-    width: 160px;
+    width: 140px;
     height: 37px;
-    padding: 5px 10px 5px 20px;
-  }
-
-  .selectContainer .react-select__control {
-    width: 150px; 
     padding: 5px 10px 5px 20px;
   }
 }
