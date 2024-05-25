@@ -24,8 +24,8 @@ import { IUser } from "@database/userSchema";
 import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
-import makeUserAdmin from '../actions/makeUserAdmin';
-import makeAdminUser from '../actions/makeAdminUser';
+import makeUserAdmin from "../actions/makeUserAdmin";
+import makeAdminUser from "../actions/makeAdminUser";
 
 interface Event {
   _id: string;
@@ -77,7 +77,11 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       setLoading(false);
     };
 
-    if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.length > 0) {
+    if (
+      visitorData &&
+      visitorData.eventsAttended &&
+      visitorData.eventsAttended.length > 0
+    ) {
       fetchEvents();
     }
   }, [visitorData]);
@@ -87,14 +91,17 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   };
 
   const handleRoleChange = async () => {
-    console.log("role change")
+    console.log("role change");
     try {
-      const result = userRole === 'admin' ? await makeAdminUser(visitorData.email) : await makeUserAdmin(visitorData.email);
-      setUserRole(result.role); 
+      const result =
+        userRole === "admin"
+          ? await makeAdminUser(visitorData.email)
+          : await makeUserAdmin(visitorData.email);
+      setUserRole(result.role);
     } catch (error) {
-      console.error('Error updating role:', error);
+      console.error("Error updating role:", error);
     }
-  }
+  };
 
   return (
     <>
@@ -104,7 +111,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
-          style={{ width: "60vw", height: "65vh", overflow: "auto"}}
+          style={{ width: "60vw", height: "65vh", overflow: "auto" }}
           maxW="100rem"
         >
           <ModalHeader
@@ -118,13 +125,28 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
             }}
           >
             <Flex direction="column" align="center" p={4}>
-              <Text>{visitorData.firstName} {visitorData.lastName}</Text>
-              {userRole === 'user' ? (
-                <Button mt={2} colorScheme="blue" onClick={handleRoleChange}>
+              <Text>
+                {visitorData.firstName} {visitorData.lastName}
+              </Text>
+              {userRole === "user" ? (
+                <Button
+                  mt={2}
+                  color="#d93636"
+                  bg="white"
+                  border="2px"
+                  _hover={{ bg: "#d93636", color: "white" }}
+                  onClick={handleRoleChange}
+                >
                   Make Admin
                 </Button>
               ) : (
-                <Button mt={2} colorScheme="red" onClick={handleRoleChange}>
+                <Button
+                  mt={2}
+                  bg="#E0AF48"
+                  color="black"
+                  _hover={{ bg: "#C19137", color: "black" }}
+                  onClick={handleRoleChange}
+                >
                   Revert to User
                 </Button>
               )}
@@ -132,7 +154,10 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
           </ModalHeader>
           <ModalCloseButton />
           <hr />
-          <ModalBody style={{ display: "flex", padding: "0%" }} className={styles.parentContainer}>
+          <ModalBody
+            style={{ display: "flex", padding: "0%" }}
+            className={styles.parentContainer}
+          >
             <Box className={styles.infoBox}>
               <Text className={styles.visitorInfoSmallHeader}>
                 Personal Info
