@@ -31,6 +31,8 @@ import { createGuestFromEmail, getUserFromEmail } from "app/actions/userapi";
 import { useRouter } from "next/navigation";
 import { IEvent } from "database/eventSchema";
 import { useEventsAscending } from "app/lib/swrfunctions";
+import "../../../../fonts/fonts.css";
+
 
 type IParams = {
   params: {
@@ -281,7 +283,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           justifyContent: "center",
         }}
       >
-        <Image src={beaverLogo} alt="beaver" style={{ marginTop: "10px" }} />
+        <Image src={beaverLogo} alt="beaver" style={{ marginTop: "40px" }} />
         <Flex
           style={{
             flexWrap: "wrap",
@@ -290,7 +292,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           }}
         >
           <form onSubmit={handleSubmit}>
-            <Box w="100%" mt={10} mb="2.7%" padding="1vw">
+            <Box w="100%" mt={5} mb="2.7%" padding="1vw">
               {!userData && !loadingUser && (
                 <div className="flex flex-col">
                   <h1 style={{ fontSize: "30px", fontWeight: "bold" }}>
@@ -464,9 +466,9 @@ export default function Waiver({ params: { eventId } }: IParams) {
         <AlertDialogOverlay />
 
         <AlertDialogContent>
-          <AlertDialogHeader>Email Already Exists.</AlertDialogHeader>
+          <AlertDialogHeader>Email already exists</AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>Sign in or try again.</AlertDialogBody>
+          <AlertDialogBody>Sign in or try again</AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
               Close
