@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 import User, { IUser } from "@database/userSchema";
 import { IEvent } from "@database/eventSchema";
 import mongoose from "mongoose";
+import { cookies } from "next/headers";
 
 // GET request for getting all users
 export async function GET() {
@@ -17,8 +18,6 @@ export async function GET() {
         );
     }
 }
-
-
 
 // POST request for adding user
 export async function POST(req: NextRequest) {
@@ -36,6 +35,16 @@ export async function POST(req: NextRequest) {
         newUser.email = newUser.email.toLowerCase();
 
         const savedUser = await newUser.save();
+        // save to cookies
+        cookies().set(
+            "user",
+            JSON.stringify({
+                firstName: savedUser.firstName,
+                lastName: savedUser.lastName,
+                role: savedUser.role,
+                id: savedUser._id,
+            })
+        );
 
         return NextResponse.json({ _id: savedUser._id }, { status: 200 });
     } catch (error) {

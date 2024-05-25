@@ -71,7 +71,7 @@ const ForgotPasswordPage: NextPage = () => {
           // the newly created session (user is now signed in)
           setActive({ session: result.createdSessionId });
           setError('');
-          router.push('/dashboard');
+          router.push('/');
 
         } else {
           console.log(result);
