@@ -71,7 +71,7 @@ export default function Waiver() {
             justifyContent: "center",
           }}
         >
-          <NextLink href="/dashboard">
+          <NextLink href="/">
             <Button
               sx={{
                 width: "225px",

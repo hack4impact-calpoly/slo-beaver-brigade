@@ -46,7 +46,7 @@ export default function Navbar(props: { name: string }) {
         <div className={`${styles.nav_elements}  ${showNavbar && styles.active}`}>
           <ul>
             <li>
-              <Link href="/dashboard" onClick={handleHideNavbar}>
+              <Link href="/" onClick={handleHideNavbar}>
                 Discover Events
               </Link>
             </li>
