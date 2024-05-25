@@ -12,6 +12,7 @@ import {
   Input,
   Wrap,
   WrapItem,
+  TableContainer,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import style from '@styles/admin/users.module.css';
@@ -210,8 +211,7 @@ const AttendedEvents = () => {
           </WrapItem>
         </Wrap>
       </Box>
-      <div className={style.tableContainer}>
-        <Box>
+      <TableContainer>
           <Table variant="striped" size={tableSize}>
             <Thead>
               <Tr>
@@ -230,8 +230,7 @@ const AttendedEvents = () => {
               ))}
             </Tbody>
           </Table>
-        </Box>
-      </div>
+        </TableContainer>
     </div>
   );
 };
