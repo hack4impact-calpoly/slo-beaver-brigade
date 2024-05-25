@@ -1,6 +1,6 @@
 'use client'
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Text,  Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Box, IconButton, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Select, Checkbox, Input, useToast } from "@chakra-ui/react";
+import { Text,  Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Box, IconButton, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Select, Checkbox, Input, useToast, Divider } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from "@styles/admin/users.module.css"
 import { useGroups, useUsers } from "app/lib/swrfunctions";
@@ -40,8 +40,10 @@ const CreateGroupUserList = ({ selectedUsers, setSelectedUsers }: {selectedUsers
      return (
         <TableContainer overflow="auto">
             <Table variant='simple' overflow="auto">
-                <TableCaption>Imperial to metric conversion factors</TableCaption>
                 <Thead>
+                    <div className="ml-5 mt-6">
+                        Add users to group:
+                    </div>
                     <Tr>
                         <Th>In group</Th>
                         <Th>Name</Th>
@@ -108,18 +110,18 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
     }
     return (
       <>
-        <h1
-            className="font-extrabold cursor-pointer mb-5"
+        <Button
+            variant="ghost"
           onClick={onOpen}
         >
               Create Group
-        </h1>
+        </Button>
 
   
         <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
         <ModalOverlay />
         <ModalContent>
-            <ModalHeader>Groups</ModalHeader>
+            <ModalHeader>Create Group</ModalHeader>
             <ModalCloseButton />
             <ModalBody >
                 <Input value={groupName} onChange={(e) => setGroupName(e.currentTarget.value)} placeholder="Enter group name:"></Input>
@@ -175,7 +177,6 @@ const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IG
     return (
         <TableContainer overflow="auto">
             <Table variant='simple' overflow="auto">
-                <TableCaption>Imperial to metric conversion factors</TableCaption>
                 <Thead>
                     <Tr>
                         <Th>In group</Th>
@@ -265,15 +266,17 @@ export default function ViewGroups() {
         <ModalOverlay />
         <ModalContent>
             <ModalHeader>Groups</ModalHeader>
+
+            <Divider className="mb-5" />
             <ModalCloseButton />
             <ModalBody >
+
                 <div className="flex flex-col justify-start">
 
-                <CreateGroup mutate={mutate}/>
                 {isLoading && !groups && <div>Loading...</div> }
                 {isError && <div>Error occurred getting groups.</div>}
-                {groups && groups.map((group) => {
-                    return <h2 className="cursor-pointer" onClick={() => {onGroupClick(group)}} key={group._id}>{group.group_name}</h2>
+                {!isError && groups && groups.map((group) => {
+                    return <h2 className="cursor-pointer hover:underline" onClick={() => {onGroupClick(group)}} key={group._id}>{group.group_name}</h2>
                 })}
                 </div>
             </ModalBody>
@@ -281,6 +284,7 @@ export default function ViewGroups() {
             <Button colorScheme='blue' mr={3} onClick={onClose}>
                 Close
             </Button>
+            <CreateGroup mutate={mutate}/>
             </ModalFooter>
         </ModalContent>
         </Modal>
