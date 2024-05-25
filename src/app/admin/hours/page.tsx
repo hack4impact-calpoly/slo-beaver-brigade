@@ -24,6 +24,7 @@ import { calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
 import { set } from 'mongoose';
+import { getEvents } from 'app/actions/eventsactions';
 
 const AttendedEvents = () => {
   //states

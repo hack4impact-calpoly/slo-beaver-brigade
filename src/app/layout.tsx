@@ -5,8 +5,6 @@ import "./styles/globals.css";
 import Providers from "./Providers";
 import NavbarParent from "@components/NavbarParents";
 import { Lato, Montserrat } from "next/font/google";
-import { redirect, useRouter } from "next/navigation";
-import { getUserDbData } from "./lib/authentication";
 
 //! Update metadata to match your project
 export const metadata: Metadata = {
@@ -17,6 +15,8 @@ export const metadata: Metadata = {
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
 
+
+
 export default function RootLayout({
   children,
 }: {
@@ -26,12 +26,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+
         <body  className={montserrat.className}>
-            <Providers>
-              <NavbarParent/>
-              {children}
-              <SpeedInsights/>
-              </Providers>
+                <Providers>
+                    <NavbarParent/>
+                    {children}
+                    <SpeedInsights/>
+                </Providers>
           </body>
       </html>
       </ClerkProvider>

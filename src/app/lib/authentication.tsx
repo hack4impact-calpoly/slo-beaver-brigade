@@ -13,7 +13,7 @@ export async function getUserDbData(){
     await connectDB()
     console.log(clerk_user.emailAddresses[0].emailAddress)
     try{
-        const user: IUser | null = await User.findOne({email: clerk_user.emailAddresses[0].emailAddress}).orFail();
+        const user: IUser  = await User.findOne({email: clerk_user.emailAddresses[0].emailAddress}).lean().orFail() as IUser;
         console.log("user found")
         return JSON.stringify(user);
     }
@@ -28,7 +28,7 @@ export async function getUserDataFromEmail(email: string){
     await connectDB()
     console.log(email)
     try{
-        const user: IUser | null = await User.findOne({email: email}).orFail();
+        const user: IUser = await User.findOne({email: email}).lean().orFail() as IUser;
         console.log("user found")
         return JSON.stringify(user);
     }

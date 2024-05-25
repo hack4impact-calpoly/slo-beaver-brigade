@@ -40,7 +40,8 @@ export interface IUser {
   eventsRegistered: EventInfo[];
   eventsAttended: AttendedEventInfo[];
   groupId: Schema.Types.ObjectId | null;
-  recieveNewsletter: boolean;
+  receiveNewsletter: boolean;
+  zipcode: string;
 }
 
 export interface IUserWithHours extends IUser {
@@ -158,6 +159,7 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
+    zipcode: user.zipcode,
     eventsAttended:
       user.eventsAttendedNames.length > 0
         ? user.eventsAttendedNames.join(", ")
@@ -171,6 +173,7 @@ const UserList = () => {
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
+    { label: "Zipcode", key: "zipcode" },
     { label: "Events Attended", key: "eventsAttended" },
     { label: "Number of Events Attended", key: "eventsAttendedCount" },
     { label: "Total Hours", key: "totalHoursFormatted" },

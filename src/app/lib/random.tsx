@@ -1,3 +1,5 @@
+import { cookies } from "next/headers"
+
 export function fallbackBackgroundImage(image: string | null, fallback: string = '/beaver-eventcard.jpeg'){
     if (!image){
 
