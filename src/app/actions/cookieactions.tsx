@@ -29,8 +29,6 @@ export async function getBareBoneUser() {
 }
 
 export async function removeUserCookie(){
-    cookies().delete('user_first_name')
-    cookies().delete('user_last_name')
-    cookies().delete('user_role')
-    cookies().delete('user_email')
+    cookies().delete('user')
+   
 }
