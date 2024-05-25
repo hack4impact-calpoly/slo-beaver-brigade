@@ -16,6 +16,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
 import SingleVisitorComponent from "@components/SingleVisitorComponent";
 import { Schema } from "mongoose";
+import ViewGroups from "app/components/ViewGroups";
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;
@@ -104,10 +105,10 @@ const UserList = () => {
           `Failed to fetch users: ${response.status} ${response.statusText}`
         );
       }
-      const data = await response.json();
+      const users = await response.json();
 
       const usersWithEventNames = await Promise.all(
-        data.users.map(async (user: IUser) => {
+        users.map(async (user: IUser) => {
           const eventsAttendedNames = await Promise.all(
             user.eventsAttended.map((event) => fetchEventName(event.eventId))
           );
@@ -200,6 +201,7 @@ const UserList = () => {
           >
             Export To CSV
           </CSVLink>
+          <ViewGroups/>
         </div>
         <div className={style.searchWrapper}>
           <input
