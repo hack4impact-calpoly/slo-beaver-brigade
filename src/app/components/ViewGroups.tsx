@@ -108,6 +108,7 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
         }
 
     }
+
     return (
       <>
         <Button
@@ -118,7 +119,7 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
         </Button>
 
   
-        <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
+        <Modal scrollBehavior="inside" isOpen={isOpen} onClose={onClose} size={'xl'}>
         <ModalOverlay />
         <ModalContent>
             <ModalHeader>Create Group</ModalHeader>
@@ -131,6 +132,7 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
             <Button colorScheme='blue' mr={3} onClick={onClose}>
                 Close
             </Button>
+          
             <Button onClick={createGroup} variant='ghost'>Create</Button>
             </ModalFooter>
         </ModalContent>
@@ -165,6 +167,8 @@ const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IG
             mutate()
         }
     };
+
+  
 
     const isUserInGroup = (id: string) => {
         return selectedUsers.includes(id);
@@ -208,9 +212,35 @@ const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IG
 
 const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isOpen: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, mutate: KeyedMutator<IGroup[]>}) => {
 
+
+    const toast = useToast()
     const {onOpen, onClose } = useDisclosure()
     if (!group){
         return
+    }
+
+    const deleteGroup = async () => {
+        
+        const res = await fetch("/api/group/" + group._id, {method: "DELETE"})
+        if (res.ok){
+            toast({
+                    title: "Group Removed",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+                mutate()
+                setOpen(false)
+            }
+        else{
+            toast({
+                    title: "Failed to Remove Group",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+        }
+
     }
  
     return (
@@ -218,7 +248,7 @@ const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isO
 
         <Modal isOpen={isOpen} onClose={() => setOpen(false)} size={'xl'}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent overflowY="auto">
             <ModalHeader>Editing {group.group_name}</ModalHeader>
             <ModalCloseButton />
             <ModalBody >
@@ -228,6 +258,7 @@ const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isO
             <Button colorScheme='blue' mr={3} onClick={() => setOpen(false)}>
                 Close
             </Button>
+            <Button variant="ghost" onClick={deleteGroup}>Delete Group</Button>
             </ModalFooter>
         </ModalContent>
         </Modal>
