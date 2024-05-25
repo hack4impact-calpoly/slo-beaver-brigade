@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Heading,
   Input,
   FormControl,
   FormLabel,
   Button,
+  Flex,
+  Text,
   Link as ChakraLink,
   FormErrorMessage,
   Checkbox,
@@ -14,10 +15,15 @@ import {
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSignUp } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getUserFromEmail, transitionGuestById } from 'app/actions/userapi';
+import { doesUserExist, getUserFromEmail, transitionGuestById } from 'app/actions/userapi';
 import { addToNewsletter } from 'app/actions/mailingactions';
 import { IUser } from 'database/userSchema';
 import { revalidatePathServer } from 'app/actions/serveractions';
+import styles from ".//page.module.css"
+import "../fonts/fonts.css";
+import beaverLogo from "/docs/images/beaver-logo.svg";
+import Image from "next/image";
+
 
 export default function SignUp() {
   //clerk consts
@@ -150,10 +156,11 @@ export default function SignUp() {
         const data = {
             email: email,
             phoneNumber: phone,
-            recieveNewsletter: enableNewsletter,
+            receiveNewsletter: enableNewsletter,
             role: 'user',
             firstName: firstName,
             lastName: lastName,
+            zipcode: zipcode
         };
         // check if user has made a guest account and transition if so
         const userRes = await getUserFromEmail(email)
@@ -208,131 +215,143 @@ export default function SignUp() {
 
   return (
     <>
-      <Box p={4} maxWidth="400px" mx="auto">
+      <Box p={4} maxWidth="400px" mx="auto" className={styles.componentContainer}>
         {!pendingVerification && (
           <>
-            <Box mb={6}>
-              <Heading as="h1" fontSize="xl" textAlign="center">
-                Create Account
-              </Heading>
+            <Box mt={6} mb={6}>
+              <Box textAlign="center">
+                <Text fontWeight="400" fontSize="24px">
+                  Create Account
+                </Text>
+              </Box>
             </Box>
-            <FormControl mb={4} isRequired isInvalid={firstName === '' && submitAttempted}>
-              <FormLabel>First Name</FormLabel>
-              <Input
-                type="text"
-                placeholder="First Name"
-                variant="filled"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required={true}
-              />
-              <FormErrorMessage>First Name is required</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4} isRequired isInvalid={lastName === '' && submitAttempted}>
-              <FormLabel>Last Name</FormLabel>
-              <Input
-                type="text"
-                placeholder="Last Name"
-                variant="filled"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required={true}
-              />
-              <FormErrorMessage>Last Name is required</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
-              <FormLabel>Email</FormLabel>
-              <Input
-                type="text"
-                placeholder="Email"
-                variant="filled"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required={true}
-              />
-              <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
-              <FormLabel>Password</FormLabel>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
-                variant="filled"
-                pr="4.5rem"
-                onChange={(e) => setPassword(e.target.value)}
-                required={true}
-              />
-              <Button
-                position="absolute"
-                bg="transparent"
-                right="0"
-                top="65%"
-                transform="translateY(-38%)"
-                onClick={handleTogglePassword}
-              >
-                {/* {showPassword ? "Hide" : "Show"} */}
-                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-              </Button>
-              <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
-              <FormLabel>Phone</FormLabel>
-              <Input
-                type="text"
-                placeholder="Phone"
-                variant="filled"
-                onChange={(e) => setPhone(e.target.value)}
-                required={true}
-              />
-              <FormErrorMessage>Phone is required</FormErrorMessage>
-            </FormControl>
-            <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
-              <FormLabel>Zipcode</FormLabel>
-              <Input
-                type="text"
-                placeholder="Zipcode"
-                variant="filled"
-                value={zipcode}
-                onChange={(e) => setZipcode(e.target.value)}
-              />
-              <FormErrorMessage>Zipcode is required</FormErrorMessage>
-            </FormControl>
-            <FormControl style={{display: "flex", flexDirection:"row"}} mb={4}>
-              <FormLabel>Sign up for newsletter: 
-              <Checkbox style={{verticalAlign: "middle", marginLeft:"10px"}} defaultChecked checked={enableNewsletter} onClick={() => {
-                setEnableNewsletter(!enableNewsletter)
-              }}></Checkbox>
-              </FormLabel>
-            </FormControl>
-            <FormControl mb={4}>
-              <Button bg="#a3caf0" width="full" onClick={handleSubmit}>
-                Create Account
-              </Button>
-            </FormControl>
+            <Box fontFamily="Lato">
+              <FormControl mb={4} isRequired isInvalid={firstName === '' && submitAttempted}>
+                <FormLabel fontWeight="600">First Name</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="First Name"
+                  variant="filled"
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required={true}
+                />
+                <FormErrorMessage>First name is required</FormErrorMessage>
+              </FormControl>
+              <FormControl mb={4} isRequired isInvalid={lastName === '' && submitAttempted}>
+                <FormLabel fontWeight="600">Last Name</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Last Name"
+                  variant="filled"
+                  onChange={(e) => setLastName(e.target.value)}
+                  required={true}
+                />
+                <FormErrorMessage>Last name is required</FormErrorMessage>
+              </FormControl>
+              <FormControl mb={4} isRequired isInvalid={emailError || (email === '' && submitAttempted)}>
+                <FormLabel fontWeight="600">Email</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Email"
+                  variant="filled"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required={true}
+                />
+                <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
+              </FormControl>
+              <FormControl mb={4} isRequired isInvalid={phone === '' && submitAttempted}>
+                <FormLabel fontWeight="600">Phone Number</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Phone"
+                  variant="filled"
+                  onChange={(e) => setPhone(e.target.value)}
+                  required={true}
+                />
+                <FormErrorMessage>Phone number is required</FormErrorMessage>
+              </FormControl>
+              <FormControl mb={4} isRequired isInvalid={zipcode === '' && submitAttempted}>
+                <FormLabel fontWeight="600">Zipcode</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Zipcode"
+                  variant="filled"
+                  onChange={(e) => setZipcode(e.target.value)}
+                />
+                <FormErrorMessage>Zipcode is required</FormErrorMessage>
+              </FormControl>
+              <FormControl mb={4} isRequired isInvalid={passwordError || (password === '' && submitAttempted)}>
+                <FormLabel fontWeight="600">Password</FormLabel>
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  variant="filled"
+                  pr="4.5rem"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required={true}
+                />
+                <Button
+                  position="absolute"
+                  bg="transparent"
+                  right="0"
+                  top="65%"
+                  transform="translateY(-38%)"
+                  variant="Link"
+                  onClick={handleTogglePassword}
+                >
+                  {/* {showPassword ? "Hide" : "Show"} */}
+                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                </Button>
+                <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
+              </FormControl>
+              <FormControl style={{display: "flex", flexDirection:"row"}} mb={4}>
+                <FormLabel fontWeight="600">Join the Beaver Brigade Newsletter?
+                <Checkbox style={{verticalAlign: "middle", marginLeft: "10px"}} checked={enableNewsletter} onClick={() => {
+                  setEnableNewsletter(!enableNewsletter)
+                }}></Checkbox>
+                </FormLabel>
+              </FormControl>
+              <FormControl mb={4}>
+                <Button loadingText="Submitting" bg="#337774" color="white"  width="full" onClick={handleSubmit}>
+                  Create Account
+                </Button>
+              </FormControl>
+            </Box>
           </>
         )}
         {pendingVerification && (
           <>
-            <Box mb={6}>
-              <Heading as="h1" fontSize="xl" textAlign="center">
-                Verify Email
-              </Heading>
+            <Box mt={8} mb={8}>
+              <Flex 
+                textAlign="center"
+                justifyContent="flex-start"
+                flexDirection="column" 
+                alignItems="center">
+                <Image src={beaverLogo} alt="beaver" />
+                <Text mt={12} fontFamily="Lato" fontWeight="600" fontSize={"24px"} >
+                  Verification code sent to
+                    <br/>
+                  {email}
+                </Text>
+              </Flex>
             </Box>
-            <FormControl mb={4} isRequired>
-              <FormLabel>Verification Code</FormLabel>
-              <Input
-                type="text"
-                placeholder="Verification Code"
-                variant="filled"
-                onChange={(e) => setCode(e.target.value)}
-              />
-            </FormControl>
-            <FormControl mb={4} isInvalid={submitAttempted}>
-              <Button bg="#a3caf0" width="full" onClick={onPressVerify}>
-                Verify
-              </Button>
-              <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>
-            </FormControl>
+            <Box mt={12} fontFamily="Lato" >
+              <FormControl mb={4} isRequired>
+                <FormLabel fontWeight="600">Email Verification Code</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="123456"
+                  variant="filled"
+                  onChange={(e) => setCode(e.target.value)}
+                />
+              </FormControl>
+              <FormControl mt={4} mb={4} isInvalid={submitAttempted}>
+                <Button loadingText="Verifying" bg="#e0af48" color="black" width="full" onClick={onPressVerify}>
+                  Verify Email
+                </Button>
+                <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>
+              </FormControl>
+            </Box>
      
           </>
         )}

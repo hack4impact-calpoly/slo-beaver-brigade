@@ -5,6 +5,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
+  margin-top: 40px;
  }
  
  
@@ -14,40 +15,32 @@
  
  
  .highlight {
-  background-color: #006d75;
+  background-color: #337774;
   color: #fff;
-  border-radius: 15px 15px 0 0;
+  border-radius: 10px 10px 0 0;
  }
  
  
  .accountDetails {
   width: 25%;
   float: left;
+  background-color: #fbf9f9;
+  height: 200px;
+  border-radius: 10px;
+  padding-bottom: 4%;
  }
  
+ .personalDetails {
+  background-color: #fbf9f9;
+  height: 300px;
+  border-radius: 10px;
+  padding-bottom: 4%;
+ }
  
  .accountDetails .formFields > div > p {
-  margin-top: 35px;
+  margin-top: 40px;
   margin-left: 15px;
-  
-  align-items: center;
-  justify-content: space-between;
   white-space: nowrap;
- }
- 
- 
- .accountDetails .formFields > div > p button {
-  padding: 5px 5px;
-  margin-top: 5px;
-
- 
- 
- }
- 
- 
- .personalDetails .formFields > div > p {
-  margin-top: 35px;
-  margin-left: 15px;
  }
  
  
@@ -73,15 +66,13 @@
  }
  
  
- .title {
+ .containerTitle {
   color: #fff;
- }
- 
- 
- .biggerTitle {
-  font-size: 22px;
- }
- 
+  font-size: 23px;
+  font-family: "Lato";
+  font-weight: 600;
+  
+}
  
  .formGroup label {
   display: block;
@@ -119,9 +110,18 @@
  .formFields {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px;
+  grid-gap: 5px;
+  font-family: "Lato";
+  margin-top: 10px;
+  margin-left: 40px
+  
  }
  
+ .fieldTitle {
+  font-weight: bold;
+  margin: 3vh 0vw 1.5vh 0vw;
+  white-space: nowrap;
+ }
  
  .editButton {
   font-size: 22px;
@@ -129,26 +129,13 @@
   align-items: center;
   cursor: pointer;
   margin-right: 15px;
+  font-size: 27px;
+  color-scheme: "white";
+ }
+ 
+ 
+ .editButton:hover {
   text-decoration: underline;
- }
- 
- 
- .editFieldButton {
-  font-size: 15px;
-  background-color: #ffc107;
-  color: #000;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-  font-weight: bold;
-  width: auto;
- }
- 
- 
- .pencilIcon {
-  width: 15px;
-  height: 15px;
-  margin-left: auto;
  }
  
  
@@ -181,8 +168,21 @@
     margin-top: 5px;
   }
  }
-@media (max-width: 670px){
- /* Define a wrapper for both personal details and account details */
+
+@media (max-width: 900px){
+  .formFields {
+    grid-gap: 5px;
+    margin-left: 20px
+    
+   }
+}
+
+@media (max-width: 720px){
+.profileContainer {
+  margin-top: 20px;
+}
+
+  /* Define a wrapper for both personal details and account details */
 .detailsWrapper {
   display: flex;
   flex-wrap: wrap; /* Allow items to wrap to next line */
@@ -191,6 +191,7 @@
 .personalDetails {
   width: 100%;
   margin-bottom: 20px; /* Adjust margin as needed */
+  height: 400px;
 }
 
 .accountDetails {

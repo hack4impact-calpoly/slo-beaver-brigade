@@ -15,10 +15,13 @@ import {
   Spacer,
   Flex,
   FormControl,
-  FormLabel
+  FormLabel,
+  Button
 } from '@chakra-ui/react'
 import { IUser } from '@database/userSchema';
-import { Button } from '@styles/Button'
+import { PencilIcon } from "@heroicons/react/16/solid";
+
+//import { Button } from '@styles/Button'
 import React, {useState, useEffect} from 'react';
 
 const EditProfile = ({userData}: {userData: IUser | null}) => {   
@@ -29,6 +32,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
   const [user_lastName, setLastName] = useState('');
   const [user_email, setEmail] = useState('');
   const [user_phoneNumber, setPhoneNumber] = useState('');
+  const [user_zipcode, setZipcode] = useState('');
   const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
 
   // Update state when userData changes
@@ -38,14 +42,16 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
           setLastName(userData.lastName || '');
           setEmail(userData.email || '');
           setPhoneNumber(userData.phoneNumber || '');
-          setReceiveNewsletter(userData.recieveNewsletter || false);
+          setZipcode(userData.zipcode || '');
+          setReceiveNewsletter(userData.receiveNewsletter || false);
       }
   }, [userData]);
 
   const handleFirstNameChange = (e: any) => setFirstName(e.target.value);
   const handleLastNameChange = (e: any) => setLastName(e.target.value);
-  const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePhoneNumberChange = (e: any) => setPhoneNumber(e.target.value);
+  const handleZipcodeChange = (e: any) => setZipcode(e.target.value)
+
   
   const handleReceiveNewsletter = (e: any) => {
     const selectedOption = e.target.value;
@@ -60,7 +66,8 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
       setLastName(userData?.lastName || '');
       setEmail(userData?.email || '');
       setPhoneNumber(userData?.phoneNumber || '');
-      setReceiveNewsletter(userData?.recieveNewsletter || false);
+      setZipcode(userData?.phoneNumber || '');
+      setReceiveNewsletter(userData?.receiveNewsletter || false);
       setIsSubmitted(false);
       onClose();
   };
@@ -71,7 +78,8 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
         lastName: user_lastName,
         email: user_email,
         phoneNumber: user_phoneNumber,
-        receiveNewsletter: user_receiveNewsletter
+        receiveNewsletter: user_receiveNewsletter,
+        zipcode: user_zipcode
       };
   
       console.log("New User Data:", updatedUserData);
@@ -97,15 +105,21 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
 
   return(
       <>
-        <Button onClick={onOpen} style = {{border: 'none', color: 'white', fontWeight: 'normal', padding: '0%', margin: '5px',
-                                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '16px'}}>
+        <Button 
+          onClick={onOpen} 
+          fontFamily={"Lato"} 
+          variant={"link"} 
+          rightIcon={ <PencilIcon  style = {{ height: '15px', width: '15px'}}/>}
+          style = {{ color: 'white', fontWeight: 'bold', padding: '0%', margin: '5px',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '17px'}}
+        >
           Edit Details
         </Button>
   
         <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
           <ModalOverlay />
-          <ModalContent>
-            <ModalHeader bg='#006d75' color='white' fontWeight='bold' position='relative'>
+          <ModalContent fontFamily="Lato" borderRadius="10px">
+            <ModalHeader bg='#337774' color='white' fontWeight='bold' position='relative' borderRadius="10px 10px 0px 0px">
               Edit Profile
             </ModalHeader>
             <ModalCloseButton color='white' size='l' marginTop='15px' marginRight='5px'/>    
@@ -113,7 +127,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
             <ModalBody>
               <Stack spacing={4}>
   
-                <FormControl isInvalid={user_firstName === '' && isSubmitted}>
+                <FormControl isInvalid={user_firstName === '' && isSubmitted} mt={2}>
                   <FormLabel color='grey' fontWeight='bold'>First Name</FormLabel>
                   <Input placeholder='' fontWeight='bold' value={user_firstName} onChange={handleFirstNameChange}/>
                 </FormControl>
@@ -127,6 +141,13 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
                   <FormControl isInvalid={user_phoneNumber === '' && isSubmitted}>
                     <FormLabel color='grey' fontWeight='bold'>Phone Number</FormLabel>
                     <Input placeholder='' fontWeight='bold' value={user_phoneNumber} onChange={handlePhoneNumberChange}/>
+                  </FormControl>
+                </Stack>
+
+                <Stack spacing={0}>
+                  <FormControl isInvalid={user_zipcode === '' && isSubmitted}>
+                    <FormLabel color='grey' fontWeight='bold'>Zipcode</FormLabel>
+                    <Input placeholder='' fontWeight='bold' value={user_zipcode} onChange={handleZipcodeChange}/>
                   </FormControl>
                 </Stack>
               
@@ -148,11 +169,16 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
               </Stack>
             </ModalBody>
   
-            <ModalFooter>
-              <Button onClick={handleClose}>
+            <ModalFooter display={"flex"} justifyContent={"space-between"}>
+              <Button onClick={handleClose}
+                >
                 Close
               </Button>
-              <Button onClick={HandleSubmit}>
+              <Button 
+                  onClick={HandleSubmit}
+                  colorScheme="yellow"
+                  fontFamily="Lato"
+                >
                   Confirm
               </Button>
             </ModalFooter>
