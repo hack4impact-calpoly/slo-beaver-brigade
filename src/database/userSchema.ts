@@ -49,7 +49,8 @@ export type IUser = {
     eventsRegistered: EventInfo[];
     eventsAttended: AttendedEventInfo[];
     groupId: Schema.Types.ObjectId | null;
-    recieveNewsletter: boolean;
+    receiveNewsletter: boolean;
+    zipcode: string;
 };
 
 //groupId and digitalWaiver seem to require a schema
@@ -96,7 +97,7 @@ const UserSchema = new Schema({
         required: false,
     },
     groupId: { type: Schema.Types.ObjectId, required: false },
-    recieveNewsletter: {
+    receiveNewsletter: {
         type: Boolean,
         required: false,
         default: false,

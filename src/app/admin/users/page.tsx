@@ -41,7 +41,8 @@ export interface IUser {
   eventsRegistered: EventInfo[];
   eventsAttended: AttendedEventInfo[];
   groupId: Schema.Types.ObjectId | null;
-  recieveNewsletter: boolean;
+  receiveNewsletter: boolean;
+  zipcode: string;
 }
 
 export interface IUserWithHours extends IUser {
@@ -244,7 +245,7 @@ const UserList = () => {
                 top: 0,
                 bottom: 0,
                 right: "10px",
-                color: '#337774'
+                color: "#337774",
               }}
             />
           </div>

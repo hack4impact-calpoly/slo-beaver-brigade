@@ -9,23 +9,20 @@ import { clerkClient } from "@clerk/nextjs/server";
 // setting cookies
 export async function POST(req: NextRequest) {
     try {
-        const { firstName, lastName, role, email } = await req.json();
-        console.log(firstName, lastName, role, email);
-        if (!firstName || !lastName || !role || !email) {
+        const { firstName, lastName, role, _id } = await req.json();
+        console.log(firstName, lastName, role, _id);
+        if (!firstName || !lastName || !role || !_id) {
             return NextResponse.json("Cookies failed to be set.", {
                 status: 500,
             });
         }
         const expirationDate = new Date();
         expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-        cookies().set("user_first_name", firstName, {
-            expires: expirationDate,
-        });
-        cookies().set("user_last_name", lastName, { expires: expirationDate });
-        cookies().set("user_role", role || "guest", {
-            expires: expirationDate,
-        });
-        cookies().set("user_email", email, { expires: expirationDate });
+        cookies().set(
+            "user",
+            JSON.stringify({ firstName, lastName, role, _id }),
+            { expires: expirationDate }
+        );
     } catch (err) {
         console.log(err);
         return NextResponse.json("Cookies failed to be set.", { status: 500 });

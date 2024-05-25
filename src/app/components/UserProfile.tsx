@@ -6,7 +6,7 @@ import Link from "next/link"
 import EditProfile from "@components/EditProfile"
 import { getUserDbData } from "app/lib/authentication";
 import { IUser } from "database/userSchema";
-
+import "../fonts/fonts.css";
 
 export default function UserProfile() {
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -37,67 +37,50 @@ export default function UserProfile() {
      <div className={styles.formContainer}>
        <div className={`${styles.formGroup} ${styles.accountDetails}`}>
          <div className={`${styles.highlight} ${styles.accountHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}>
+           <h2 className={styles.containerTitle}>
              Account
            </h2>
          </div>
          <div className={styles.formFields}>
            <div>
-            <p>
-              <strong>Email Address</strong>
-              <br /> {userData?.email}
-            </p>
-            <p>
-              <button className={styles.editFieldButton}>
-                <Link href ="/reset-password">Reset Password</Link>
-              </button>
-             </p>  
-           </div>
+              <div className={styles.fieldTitle}>Email Address</div>
+                {userData ? userData?.email : <div>Loading...</div>}
+            </div>
          </div>
        </div>
        <div className={`${styles.formGroup} ${styles.personalDetails}`}>
          <div className={`${styles.highlight} ${styles.personalHeader}`}>
-           <h2 className={`${styles.title} ${styles.biggerTitle}`}>
-             Personal Details
+           <h2 className={styles.containerTitle}>
+             Personal
            </h2>
-            <h2 className={styles.editButton}> <EditProfile userData={userData}/>             
-            <PencilIcon className={styles.pencilIcon} />
+            <h2 className={styles.editButton}> <EditProfile userData={userData}/>           
             </h2> 
          </div>
          <div className={styles.formFields}>
            <div>
-             <p>
-               <strong>First Name</strong>
-               <br /> {userData?.firstName}
-             </p>
-             <p>
-               <strong>Last Name</strong>
-               <br /> {userData?.lastName}
-             </p>            
+              <div className={styles.fieldTitle}>First Name</div>
+                {userData ? userData.firstName : <div>Loading...</div>}
+
+            <div className={styles.fieldTitle}>Last Name</div>
+              {userData ? userData.lastName : <div>Loading...</div>}            
            </div>
            <div>
-             <p>
-               <strong>Phone Number</strong>
-               <br /> {userData?.phoneNumber}
-             </p>
-             <p>
-               <strong>Zipcode</strong>
-               {/*<br /> {userData?.zipcode}*/}              
-             </p>     
+             <div className={styles.fieldTitle}>Phone Number</div>
+                {userData ? userData.phoneNumber : <div>Loading...</div>}
+              <div className={styles.fieldTitle}>Zipcode</div>
+                {userData ? userData.zipcode : <div>Loading...</div>}                   
            </div>
            <div>
-            <p>
-              <strong>Receive Newsletter</strong> <br />
-              <span className={userData?.recieveNewsletter ? 'yes' : 'no'}>
-                {userData?.recieveNewsletter ? 'Yes' : 'No'}
+            <div className={styles.fieldTitle}>Receive Newsletter</div>
+              <span className={userData?.receiveNewsletter ? 'yes' : 'no'}>
+                { userData ?(userData?.receiveNewsletter ? 'Yes' : 'No') : <div>Loading...</div>}
               </span>
-            </p>
           </div>
          </div>
        </div>      
       </div>
     </div> 
- )
+  )
 };
 
 

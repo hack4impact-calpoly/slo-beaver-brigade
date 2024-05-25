@@ -20,16 +20,15 @@ import "@emotion/react";
 import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
-import { getEvents } from "../actions/eventsactions";
+import { getEvents } from "./actions/eventsactions";
 import { getUserDataFromEmail, getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
-import { EmailRSSComponent } from "./EmailComponent";
-import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
-import "../fonts/fonts.css";
-import { px } from "framer-motion";
-import { currentUser } from "@clerk/nextjs/server";
+import { EmailRSSComponent } from "./components/EmailComponent";
+import ExpandedViewComponent from "./components/StandaloneExpandedViewComponent";
+import "./fonts/fonts.css";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -71,7 +70,7 @@ const UnregisteredEventPlaceholder = () => {
  };
 
 
-export const UserDashboard = ({eventsRes}: {eventsRes: string}) => {
+ export default function Page(){
 
  const sliderStyles = css`
    .slick-dots li button:before {
@@ -84,7 +83,10 @@ export const UserDashboard = ({eventsRes}: {eventsRes: string}) => {
    }
  `;
 
- const [events, setEvents] = useState<IEvent[]>([])
+ // fetching events
+
+ const {events, isLoading, isError, mutate} = useEventsAscending()
+
  const [userData, setUserData] = useState<IUser | null>(null)
 
 const {isSignedIn, user, isLoaded} = useUser()
@@ -154,8 +156,7 @@ const {isSignedIn, user, isLoaded} = useUser()
 
   // parse data on component mount
   useEffect(() => {
-    setEvents(JSON.parse(eventsRes))
-
+    
    const getUser = async () => {
         if (user && isSignedIn){
             const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
@@ -165,24 +166,24 @@ const {isSignedIn, user, isLoaded} = useUser()
                 setUserData(user)
             }
         }
+
         setParsed(true)
     }
     if (!isLoaded){
         return
     }
-    console.log(isLoaded, isSignedIn)
-
     // get user
     getUser()
-  }, [eventsRes,isLoaded, isSignedIn, user]) 
+  }, [isLoaded, isSignedIn, user]) 
  
   useEffect(() => {
  
-    if (!parsed){
+    if (!parsed || !events){
         return
     }
-    if (parsed && userData) {
+    if (events && parsed && userData) {
       console.log("userData:" + userData)
+      console.log('events', events)
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       
@@ -350,10 +351,6 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
 
   return (
     <div>
-     <EventListRegister
-       setShowModal={setShowEventList}
-       showModal={showEventList}
-     ></EventListRegister>
   
     {/*{userData &&
     <div className="px-[3rem] pt-3">
@@ -771,6 +768,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
         eventDetails={eventForExpandedViewComponent}
         showModal={isExpandedViewComponentOpen}
         setShowModal={toggleExpandedViewComponentOpen}
+        mutate={mutate}
       />
     </div>
   )};

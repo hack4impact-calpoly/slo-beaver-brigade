@@ -18,10 +18,12 @@ import { IEvent } from "@database/eventSchema";
 import { Button } from "@styles/Button";
 import React, { useState, useEffect } from "react";
 import { CreatableSelect } from "chakra-react-select";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
 const EditEvent = ({event}: {event: IEvent}) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // button open/close
 
+  const {mutate} = useEventsAscending()
   const [name, setName] = useState(event.eventName);
   const [loc, setLoc] = useState(event.location);
   const [date, setDate] = useState(getDate(event.startTime));
@@ -142,6 +144,7 @@ const EditEvent = ({event}: {event: IEvent}) => {
     })
       .then((response) => response.text()) // Parsing JSON response
       .then((text) => {
+        mutate()
         console.log("Server response:", text);
         const data = text.startsWith("Event updated:")
           ? JSON.parse(text.substring("Event updated: ".length))
