@@ -193,7 +193,7 @@ export default function SignUp() {
                 }
             }
 
-            await revalidatePathServer("/dashboard")
+            await revalidatePathServer("/")
             // Redirect the user to a post sign-up route
             if (redirect_url) {
             router.push(redirect_url);

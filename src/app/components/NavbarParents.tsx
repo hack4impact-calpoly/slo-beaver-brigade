@@ -9,26 +9,36 @@ import { getUserDataFromEmail, getUserDbData } from "app/lib/authentication";
 import { getBareBoneUser } from "app/actions/cookieactions";
 import { cookies } from "next/headers";
 import { getBaseUrl } from "app/lib/random";
-import { getUserDbDataRevamp } from "app/dashboard/page";
 
-export const dynamic = "force-dynamic";
-/** fetch from MongoDB, get user Role */
-async function getUserData(id: string | null){
-  await connectDB()
-  
-  try{
-    const user: IUser | null = await User.findById(id).orFail();
-    return user;
-  }
-  catch(err){
-    return null
-  }
+
+export const getUserDbDataRevamp = async() => {
+
+    const clerk_user = await currentUser();
+    if (!clerk_user){
+        console.log('clerk user not found')
+        return null
+    }
+    // search db for user with matching email address
+    console.log('revamp: fetching data')
+    await connectDB()
+    console.log(clerk_user.emailAddresses[0].emailAddress)
+    try {
+        const user: IUser= await User.findOne({ email: clerk_user.emailAddresses[0].emailAddress }).lean().orFail() as IUser;
+        console.log("user found")
+    
+        return user
+    }
+    catch (err) {
+        console.log('user not found: ' + err)
+        return null
+    }
 }
 
 export type BareBoneIUser = {
     firstName: string,
     lastName: string,
     role: string
+    _id: string
 }
 
 const getUserFromEmail = async (email: string) => {    // search db for user with matching email address
@@ -47,19 +57,13 @@ const getUserFromEmail = async (email: string) => {    // search db for user wit
 }
 
 export function getUserCookie(){
-    let firstName = cookies().get('user_first_name')?.value;
-    let lastName = cookies().get('user_last_name')?.value;
-    let role = cookies().get('user_role')?.value;
 
     console.log('fetching cookies');
-
-    if (firstName && lastName && role) {
+    let res = cookies().get('user')?.value
+    if (res) {
         console.log('returning cookies');
-        return {
-            firstName,
-            lastName,
-            role
-        } as BareBoneIUser;
+        const user = JSON.parse(res)
+        return user as BareBoneIUser
     }
 }
 
