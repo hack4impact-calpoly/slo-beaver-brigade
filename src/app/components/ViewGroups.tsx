@@ -19,8 +19,31 @@ type Props = {
 
 
 
-const CreateGroupUserList = ({ selectedUsers, setSelectedUsers }: {selectedUsers: string[], setSelectedUsers:React.Dispatch<React.SetStateAction<string[]>> }) => {
+const CreateGroupUserList = ({ selectedUsers, setSelectedUsers, name }: {selectedUsers: string[], setSelectedUsers:React.Dispatch<React.SetStateAction<string[]>>, name: string}) => {
+    const [filteredUsers, setFilteredUsers] = useState<IUser[]>([])
     const { users, isLoading, isError } = useUsers();
+    useEffect(() => {
+        if (!isLoading){
+            const parsedUsers = users || []
+            setFilteredUsers(parsedUsers)
+        }
+    }, [isLoading, users])
+
+    useEffect(() => {
+        
+        if (isLoading || isError){
+            return
+        }
+        const filteredUsers = users?.filter((user) =>
+        `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+            name.toLowerCase()
+        )
+        )
+        .sort((a, b) =>
+            a.firstName.localeCompare(b.firstName)
+        );
+        setFilteredUsers(filteredUsers || [])
+    }, [isError, isLoading, name, users])
 
     const onSelectUser = async (selected: boolean, userId: string) => {
         let updatedSelectedUsers;
@@ -40,10 +63,9 @@ const CreateGroupUserList = ({ selectedUsers, setSelectedUsers }: {selectedUsers
      return (
         <TableContainer overflow="auto">
             <Table variant='simple' overflow="auto">
+               
                 <Thead>
-                    <div className="ml-5 mt-6">
-                        Add users to group:
-                    </div>
+
                     <Tr>
                         <Th>In group</Th>
                         <Th>Name</Th>
@@ -53,7 +75,7 @@ const CreateGroupUserList = ({ selectedUsers, setSelectedUsers }: {selectedUsers
                 <Tbody>
                     {isLoading && !users && !isError && <Tr><Td>Loading...</Td></Tr>}
                     {isError && <Tr><Td>Error occurred.</Td></Tr>}
-                    {users && users.map((user) => (
+                    {filteredUsers && filteredUsers.map((user) => (
                         <Tr key={user._id}>
                             <Td>
                                 <Checkbox 
@@ -76,6 +98,7 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
     const toast = useToast();
 
     const [groupName, setGroupName]  = useState<string>("")
+    const [filterName, setFilterName]  = useState<string>("")
     const [selectedUsers, setSelectedUsers] = useState<string[]>([])
  
     const createGroup = async () => {
@@ -121,12 +144,17 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
   
         <Modal scrollBehavior="inside" isOpen={isOpen} onClose={onClose} size={'xl'}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="80vw">
             <ModalHeader>Create Group</ModalHeader>
             <ModalCloseButton />
             <ModalBody >
-                <Input value={groupName} onChange={(e) => setGroupName(e.currentTarget.value)} placeholder="Enter group name:"></Input>
-                <CreateGroupUserList selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers}/>
+                <div>
+                    <div className="flex flex-col">
+                        <Input width={['200px', '200px', '300px']} marginLeft="5" marginTop="6" className="ml-5 mt-6 w-[50%]" value={groupName} onChange={(e) => setGroupName(e.currentTarget.value)} placeholder="Enter group name:"></Input>
+                        <Input width={['200px', '200px', '300px']} marginLeft="5" marginTop="6" className="ml-5 mt-6 w-[50%]" value={filterName} onChange={(e) => setFilterName(e.currentTarget.value)} placeholder="Search by name:"></Input>
+                    </div>
+                <CreateGroupUserList selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} name={filterName}/>
+                </div>
             </ModalBody>
             <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
@@ -143,7 +171,8 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
     )
 }
 
-const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IGroup[]>}) => {
+const EditUserList = ({ group, mutate, name }: {group: IGroup, mutate: KeyedMutator<IGroup[]>, name: string}) => {
+    const [filteredUsers, setFilteredUsers] = useState<IUser[] | null>(null)
     const { users, isLoading, isError } = useUsers();
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
@@ -152,6 +181,29 @@ const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IG
             setSelectedUsers(group.groupees);
         }
     }, [group.groupees]);
+
+    useEffect(() => {
+        if (!isLoading){
+            const parsedUsers = users || []
+            setFilteredUsers(parsedUsers)
+        }
+    }, [isLoading, users])
+
+    useEffect(() => {
+        
+        if (isLoading || isError){
+            return
+        }
+        const filteredUsers = users?.filter((user) =>
+        `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+            name.toLowerCase()
+        )
+        )
+        .sort((a, b) =>
+            a.firstName.localeCompare(b.firstName)
+        );
+        setFilteredUsers(filteredUsers || [])
+    }, [isError, isLoading, name, users])
 
     const onSelectUser = async (selected: boolean, userId: string) => {
         let updatedSelectedUsers;
@@ -168,7 +220,6 @@ const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IG
         }
     };
 
-  
 
     const isUserInGroup = (id: string) => {
         return selectedUsers.includes(id);
@@ -191,7 +242,7 @@ const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IG
                 <Tbody>
                     {isLoading && !users && !isError && <Tr><Td>Loading...</Td></Tr>}
                     {isError && <Tr><Td>Error occurred.</Td></Tr>}
-                    {users && users.map((user) => (
+                    {filteredUsers && filteredUsers.map((user) => (
                         <Tr key={user._id}>
                             <Td>
                                 <Checkbox 
@@ -213,6 +264,7 @@ const EditUserList = ({ group, mutate }: {group: IGroup, mutate: KeyedMutator<IG
 const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isOpen: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, mutate: KeyedMutator<IGroup[]>}) => {
 
 
+    const [filterName, setFilterName]  = useState<string>("")
     const toast = useToast()
     const {onOpen, onClose } = useDisclosure()
     if (!group){
@@ -248,11 +300,13 @@ const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isO
 
         <Modal isOpen={isOpen} onClose={() => setOpen(false)} size={'xl'}>
         <ModalOverlay />
-        <ModalContent overflowY="auto">
+        <ModalContent maxW="80vw" overflowY="auto">
             <ModalHeader>Editing {group.group_name}</ModalHeader>
             <ModalCloseButton />
             <ModalBody >
-                <EditUserList group={group} mutate={mutate}/>
+
+                <Input width={['200px', '200px', '300px']} marginLeft="5" marginTop="6" className="ml-5 mt-6 w-[50%]" value={filterName} onChange={(e) => setFilterName(e.currentTarget.value)} placeholder="Search by name:"></Input>
+                <EditUserList group={group} mutate={mutate} name={filterName}/>
             </ModalBody>
             <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={() => setOpen(false)}>
@@ -293,7 +347,7 @@ export default function ViewGroups() {
         </Box>
 
   
-        <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
+        <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'}>
         <ModalOverlay />
         <ModalContent>
             <ModalHeader>Groups</ModalHeader>
