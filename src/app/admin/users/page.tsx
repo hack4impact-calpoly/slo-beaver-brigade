@@ -17,6 +17,7 @@ import { CSVLink } from "react-csv";
 import SingleVisitorComponent from "@components/SingleVisitorComponent";
 import { Schema } from "mongoose";
 import ViewGroups from "app/components/ViewGroups";
+import { useUsers } from "app/lib/swrfunctions";
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;
@@ -60,7 +61,8 @@ const formatHours = (hours: number): string => {
 
 const UserList = () => {
   // states
-  const [users, setUsers] = useState<IUserWithHours[]>([]);
+  const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+  const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("firstName");
   const [loading, setLoading] = useState(true);
@@ -95,17 +97,13 @@ const UserList = () => {
     }
   };
 
-  // fetch users from db
+  // fetch customUser from db
   const fetchUsers = async () => {
-    setLoading(true);
+   
+    if (!users){
+        return
+    }
     try {
-      const response = await fetch("/api/user");
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch users: ${response.status} ${response.statusText}`
-        );
-      }
-      const users = await response.json();
 
       const usersWithEventNames = await Promise.all(
         users.map(async (user: IUser) => {
@@ -125,17 +123,20 @@ const UserList = () => {
 
       setUsers(usersWithEventNames as IUserWithHours[]);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching customUser:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    if (isLoading || isError){
+            return;
+        }
     fetchUsers();
-  }, []);
+  }, [isError, isLoading]);
 
-  const filteredUsers = users
+  const filteredUsers = customUser
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -147,15 +148,8 @@ const UserList = () => {
         : a.lastName.localeCompare(b.lastName)
     );
 
-  if (loading) {
-    return (
-      <Text fontSize="lg" textAlign="center">
-        Loading users...
-      </Text>
-    );
-  }
 
-  const csvData = users.map((user) => ({
+  const csvData = customUser.map((user) => ({
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -225,31 +219,44 @@ const UserList = () => {
         </div>
       </div>
       <div className={style.tableContainer}>
+        {/* {isLoading && !users  && !isError && <div>Loading...</div>}
+        {isError && <div>Error occurred.</div>} */}
         <Box>
           <Table variant="striped" size={tableSize}>
             <Tbody>
-              {filteredUsers.map((user) => (
-                <Tr key={user._id}>
-                  <Td className={style.mobileHide}>
-                    <Image
-                      src={beaverLogo}
-                      alt="profile picture"
-                      width="50"
-                      height="30"
-                      style={{ minWidth: "50px" }}
-                    />
-                  </Td>
-                  <Td>{`${user.firstName} ${user.lastName}`}</Td>
-                  <Td>{user.email}</Td>
-                  <Td>{user.totalHoursFormatted}</Td>
-                  <Td>
-                    <SingleVisitorComponent visitorData={user} />
+               {filteredUsers.length === 0 ? (
+                <Tr>
+                  <Td colSpan={5} textAlign="center">
+                    {isLoading && 'Loading...'}
+                    {isError && 'Error occurred.'}
+                    {!isLoading && !isError  && !loading && 'No users found.'}
                   </Td>
                 </Tr>
-              ))}
+              ) : (
+                filteredUsers.map((user) => (
+                  <Tr key={user._id}>
+                    <Td className={style.mobileHide}>
+                      <Image
+                        src={beaverLogo}
+                        alt="profile picture"
+                        width="50"
+                        height="30"
+                        style={{ minWidth: "50px" }}
+                      />
+                    </Td>
+                    <Td>{`${user.firstName} ${user.lastName}`}</Td>
+                    <Td>{user.email}</Td>
+                    <Td>{user.totalHoursFormatted}</Td>
+                    <Td>
+                      <SingleVisitorComponent visitorData={user} />
+                    </Td>
+                  </Tr>
+                ))
+              )}
             </Tbody>
           </Table>
         </Box>
+      
       </div>
     </div>
   );
