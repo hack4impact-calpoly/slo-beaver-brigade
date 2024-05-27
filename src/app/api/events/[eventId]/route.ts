@@ -84,6 +84,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 volunteerEvent,
                 groupsAllowed,
                 registeredIds,
+                attendeeIds,
             }: IEvent = await req.json();
             if (location) {
                 event.location = location;
@@ -115,6 +116,9 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             }
             if (registeredIds) {
                 event.registeredIds = registeredIds;
+            }
+            if (attendeeIds) {
+                event.attendeeIds = attendeeIds;
             }
             if (eventType) {
                 event.eventType = eventType;

@@ -10,6 +10,7 @@ import {
     ModalHeader, 
     ModalOverlay, 
     useDisclosure,
+    useToast,
     Box,
     Flex,
     Text,
@@ -28,14 +29,19 @@ import style from '@styles/admin/users.module.css';
 import { eventTimeSpecific, eventHoursSpecific, eventHoursNum, eventMinsNum } from "app/lib/hours";
 import { formatDateWeekday, formatDateTime } from "app/lib/dates"
 import{
-    TimeIcon, EditIcon,
+    TimeIcon, EditIcon, AddIcon,
 } from "@chakra-ui/icons"
 
 
 export default function ViewEventDetailsHours({event}: {event: IEvent}){
-    const [attendees, setAttendees] = useState<IUser[]>([])
+    const [attendees, setAttendees] = useState<IUser[]>([]);
     const [editMode, setEditMode] = useState(false);
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [name, setName] = useState("");
+    const [hour, setHour] = useState("");
+    const [min, setMin] = useState("");
+    const [email, setEmail] = useState("")
+    const toast = useToast();
 
     const handleEditClick = () => {
       setEditMode(!editMode);
@@ -49,6 +55,90 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
     const handleTimeChange = (event : React.ChangeEvent<HTMLInputElement>, attendee : IUser) => {
 
     }
+
+    const handleAddUserClick = () => {
+        //convert hours and minutes to readable time
+        const findEndTime = (hours : number, minutes : number) => {
+            const endTime = new Date(event.startTime)
+            endTime.setTime(endTime.getTime() + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000))
+            return endTime.toISOString();
+        }
+
+        //check to see if there is a user with the inputted email
+        const getUser = async () => {
+            const response = await fetch(`/api/user`);
+            return response.json();
+        }
+
+        const getUserAndCheck = async () => {
+            const result = await getUser();
+            if (!result) {
+                console.log("No users found");
+                return;
+            }
+            const filteredUsers = result.users.filter((user : IUser)=> user.email === email);
+            if (filteredUsers.length === 0) {
+                toast({
+                    title: "Error",
+                    description: "User account does not exist",
+                    status: "error",
+                    duration: 2500,
+                    isClosable: true,
+                  });
+                return;
+            } else {
+                return filteredUsers[0]; // Return the first filtered user
+            }
+        }
+
+        //if the user exists, then add user to event
+        //then add the event to the users events attended
+         getUserAndCheck().then(user => {
+            console.log(user)
+            if (user) {
+                //add user to event
+                 const updatedEvent = {
+                     ...event,
+                     attendeeIds : [...event.attendeeIds, user._id]
+                 }
+                 setAttendees([...attendees, user])
+                 fetch(`/api/events/${event._id}/`, {
+                     method: "PATCH",
+                     headers: {
+                       "Content-Type": "application/json",
+                     },
+                     body: JSON.stringify(updatedEvent),
+                })
+
+                //add event to user's eventsAttended
+                const updatedUser = {
+                    ...user,
+                    eventsAttended : [...user.eventsAttended, 
+                        {eventId : event._id,
+                         startTime : event.startTime,
+                         endTime : findEndTime( parseInt(hour), parseInt(min))
+                    }]
+                }
+                fetch(`/api/user/${user._id}`, 
+                {
+                    method: "PATCH",
+                    headers: {
+                       "Content-Type": "application/json",
+                     },
+                    body: JSON.stringify(updatedUser),
+                })
+                console.log(updatedUser)
+
+            }
+        });
+        
+        //reset to default values
+        setName("")
+        setEmail("")
+        setHour("")
+        setMin("")       
+    }
+
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -76,7 +166,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
             <Button onClick={onOpen} className={style.viewDetails} bg="none" _hover={{ bg: "none" }}>View Details</Button>
             <Modal onClose={onClose}isOpen={isOpen}>
                 <ModalOverlay />
-                <ModalContent maxW="75%" mt={"9vh"} overflow={"hidden"}>
+                <ModalContent maxW="75%" mt={"9vh"}>
                 <Box w="100%" pl="3%" pr="3%" pb="3%" backgroundColor="#2B2B34" color="white">
                     <Text fontWeight={"bold"} marginY="15px">Event Details</Text>
                     <hr/>
@@ -95,7 +185,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                     </Flex>
                     <ModalCloseButton />
                 </Box>
-                <ModalBody>
+                <ModalBody overflowX="auto">
                     <Table variant="striped">
                         <Thead>
                             <Tr>
@@ -115,69 +205,121 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                 </Th>
                             </Tr>                        
                         </Thead>
-                        <Tbody>
-                            {attendees.map((attendee) => (
-                                <Tr key={attendee._id}>
-                                <Td width="20%">{attendee.firstName} {attendee.lastName}</Td>
-                                <Td>{editMode ? (
-                                    <>
-                                    <Flex align="center">
-                                    <Input
-                                    type="text"
-                                    defaultValue={eventHoursNum(attendee, event)}
-                                    width="30px"
-                                    height="20px"
-                                    p="0px"
-                                    m="0px"
-                                    backgroundColor="white"
-                                    textAlign="center"
-                                    />
-                                    hours
-                                    <Input
-                                    type="text"
-                                    defaultValue={eventMinsNum(attendee, event)}
-                                    onChange={(e) => handleTimeChange(e, attendee)}
-                                    width="30px"
-                                    height="20px"
-                                    p="0px"
-                                    m="0px"
-                                    backgroundColor="white"
-                                    textAlign="center"
-                                    min="0"
-                                    max="0"
-                                    />
-                                    min
-                                    </Flex>  
-                                    </>
-                                ) : (
-                                    eventTimeSpecific(attendee, event)
-                                )}</Td>
-                                <Td>{attendee.email}</Td>
+                        {editMode ? 
+                            <Tbody>
+                                {attendees.map((attendee) => (
+                                    <Tr key={attendee._id}>
+                                    <Td width="20%">{attendee.firstName} {attendee.lastName}</Td>
+                                    <Td>
+                                        <Flex align="center">
+                                            <Input
+                                            type="text"
+                                            defaultValue={eventHoursNum(attendee, event)}
+                                            width="30px"
+                                            height="30px"
+                                            p="7px"
+                                            m="0px"
+                                            backgroundColor="white"
+                                            textAlign="center"
+                                            />
+                                            hours
+                                            <Input
+                                            type="text"
+                                            defaultValue={eventMinsNum(attendee, event)}
+                                            onChange={(e) => handleTimeChange(e, attendee)}
+                                            width="30px"
+                                            height="30px"
+                                            p="7px"
+                                            m="0px"
+                                            backgroundColor="white"
+                                            textAlign="center"
+                                            min="0"
+                                            max="0"
+                                            />
+                                            min
+                                        </Flex>    
+                                    </Td>
+                                    <Td>{attendee.email}</Td>
                                 </Tr>
-                            ))}
-                        
-                        <Tr>
-                            <Td width="20%">
-                                <Input
-                                    type="text"
-                                    defaultValue="Enter name"
-                                />
-                            </Td>
-                            <Td>
-                                <Input
-                                    type="text"
-                                    defaultValue="Enter hours"
-                                />
-                            </Td>
-                            <Td>
-                                <Input
-                                    type="text"
-                                    defaultValue="Enter email"
-                                />
-                            </Td>
-                        </Tr>
-                        
-                        </Tbody>
+                                ))}
+                                <Tr p="2px">
+                                    <Td>
+                                        <Input
+                                            type="text"
+                                            placeholder="Enter name"
+                                            width="200px"
+                                            height="30px"
+                                            p="7px"
+                                            m="0px"
+                                            backgroundColor="white"
+                                            color="gray"
+                                            textAlign="left"
+                                            onChange={(e) => setName(e.target.value)}
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <Flex align="center">
+                                            <Input
+                                            type="number"
+                                            placeholder="0"
+                                            width="30px"
+                                            height="20px"
+                                            p="0px"
+                                            m="0px"
+                                            backgroundColor="white"
+                                            color="gray"
+                                            textAlign="center"
+                                            onChange={(e) => setHour(e.target.value)}
+                                            />
+                                            hours
+                                            <Input
+                                            type="number"
+                                            placeholder="0"
+                                            width="30px"
+                                            height="20px"
+                                            p="0px"
+                                            m="0px"
+                                            backgroundColor="white"
+                                            color="gray"
+                                            textAlign="center"
+                                            min="0"
+                                            max="0"
+                                            onChange={(e) => setMin(e.target.value)}
+                                            />
+                                            min
+                                        </Flex>    
+                                    </Td>
+                                    <Td display="flex" justifyContent={"space-between"} alignItems="center">
+                                        <Input
+                                            type="text"
+                                            placeholder="Enter email"
+                                            width="200px"
+                                            height="30px"
+                                            p="7px"
+                                            m="0px"
+                                            backgroundColor="white"
+                                            color="gray"
+                                            textAlign="left"
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                        <Button onClick={handleAddUserClick}>
+                                            <Text color = "gray" mr="10px" fontWeight="normal">Add user</Text>
+                                            <AddIcon color="gray" w="15px"/>
+                                        </Button>
+                                        
+                                    </Td>
+
+                                </Tr>
+                            </Tbody>: 
+                            (<Tbody>
+                                {attendees.map((attendee) => (
+                                    <Tr key={attendee._id}>
+                                        <Td width="20%">{attendee.firstName} {attendee.lastName}</Td>
+                                        <Td>{eventTimeSpecific(attendee, event)}</Td>
+                                        <Td>{attendee.email}</Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>)}
                     </Table>
                 </ModalBody>
                 <ModalFooter/>

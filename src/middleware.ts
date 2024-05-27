@@ -18,6 +18,7 @@ export default authMiddleware({
         "/reset-password",
         "/calendar",
         "/api/user",
+        "/api/user/:email",
         "/api/events",
         "/api/waiver",
         "/api/events/:id",

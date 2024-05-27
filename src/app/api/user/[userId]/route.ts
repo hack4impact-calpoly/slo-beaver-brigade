@@ -75,15 +75,19 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
     const { userId } = params; // Destructure the userId from params
 
     try {
-        const { eventsRegistered }: IUser = await req.json();
-        console.log("hello", eventsRegistered);
-
+        const { eventsRegistered,
+                eventsAttended }: IUser = await req.json();
+        
+        if(eventsRegistered){
+            
+        }
         const user = await User.findOneAndUpdate(
             { _id: userId },
             {
                 $push: {
                     eventsRegistered: eventsRegistered,
                 },
+                eventsAttended: eventsAttended,
             }
         );
 
