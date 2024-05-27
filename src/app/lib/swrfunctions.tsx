@@ -32,7 +32,7 @@ export function useGroups() {
         groups: data,
         isLoading: isValidating,
         isError: error,
-        mutate
+        mutateGroups: mutate
     }
 }
 export function useUsers() {
@@ -43,7 +43,7 @@ export function useUsers() {
         users: data,
         isLoading: isValidating,
         isError: error,
-        mutate
+         mutate
     }
 }
 

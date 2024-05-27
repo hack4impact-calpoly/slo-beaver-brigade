@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -29,7 +29,9 @@ import { Select, CreatableSelect } from "chakra-react-select";
 import MDEditor from "@uiw/react-md-editor";
 import style from "@styles/calendar/calendar.module.css";
 import ImageSelector from "app/components/ImageSelector";
-import { useEventsAscending } from "app/lib/swrfunctions";
+import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
+import { CreateTemporaryGroup } from "app/components/ViewGroups";
+import { IGroup } from "database/groupSchema";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -46,8 +48,17 @@ export default function Page() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
+  const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([])
   // Specify type for group to avoid error
-  const [groups, setGroups] = useState<Group[]>([]);
+  const {groups, isLoading, isError, mutateGroups} = useGroups()
+ const setGroups = useCallback((updateFunction: (groups: any[]) => any[]) => {
+    mutateGroups((currentGroups) => {
+      if (currentGroups) {
+        return updateFunction(currentGroups);
+      }
+      return currentGroups; // Return the same groups if currentGroups is undefined
+    }, false);
+  }, []);
   const [preselected, setPreselected] = useState<boolean>(false);
   const [location, setLocation] = useState("");
   const [language, setLanguage] = useState("Yes");
@@ -58,6 +69,7 @@ export default function Page() {
   const [eventEnd, setEventEnd] = useState("");
   const [activeDate, setActiveDate] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
+  const [onlyInvitees, setOnlyInvitees] = useState<boolean>(false)
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEventName(e.target.value);
@@ -223,7 +235,8 @@ export default function Page() {
       startTime: eventStart,
       endTime: eventEnd,
       volunteerEvent: eventType === "Volunteer",
-      groupsAllowed: organizationIds,
+      groupsAllowed: groupsSelected.map(group => group._id as string),
+      groupsOnly: onlyInvitees
     };
 
     // Attempt to create event via API and handle response
@@ -319,15 +332,7 @@ export default function Page() {
 
   // Fetch groups data on component mount
   useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const response = await fetch("/api/group");
-        if (!response.ok) {
-          throw new Error("Failed to fetch groups");
-        }
-        const data = await response.json();
-        setGroups(data);
-      } catch (error) {
+    if (isError){
         toast({
           title: "Error",
           description: "Failed to fetch groups",
@@ -335,10 +340,9 @@ export default function Page() {
           duration: 2500,
           isClosable: true,
         });
-      }
-    };
-    fetchGroups();
-  }, [toast]);
+    }
+
+  }, [isError]);
 
   // Fetching different event types
   useEffect(() => {
@@ -463,12 +467,16 @@ export default function Page() {
               <CreatableSelect
                 id="organization"
                 placeholder="Select or create organization"
-                options={groups.map((group) => ({
-                  value: group._id,
+                options={groups?.map((group) => ({
+                  value: group,
                   label: group.group_name,
                 }))}
+                value={groupsSelected.map(group => ({
+                    value: group,
+                    label: group.group_name,
+                }))}
                 onChange={(selectedOptions) =>
-                  setOrganizationIds(
+                  setGroupsSelected(
                     selectedOptions
                       ? selectedOptions.map((option) => option.value)
                       : []
@@ -505,7 +513,7 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accommodation-type"
-              placeholder="Select"
+              placeholder="Yes"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
@@ -527,7 +535,7 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accessibility"
-              placeholder="Select"
+              placeholder="Yes"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
@@ -544,6 +552,31 @@ export default function Page() {
               }}
             />
           </FormControl>
+
+            <FormControl>
+            <FormLabel htmlFor="invitees" fontWeight="bold">
+              Invitees Only
+            </FormLabel>
+            <Select
+              id="invitees"
+              placeholder="No"
+              options={[
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
+              ]}
+              defaultInputValue="No"
+              onChange={(option) =>
+                setOnlyInvitees(option ? option.value == "Yes" : false)
+              }
+              chakraStyles={{
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
+              }}
+            />
+          </FormControl>
+          {onlyInvitees && groups && <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>}
 
           <FormControl isRequired>
             <FormLabel htmlFor="description" fontWeight="bold">

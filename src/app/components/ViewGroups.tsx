@@ -92,6 +92,87 @@ const CreateGroupUserList = ({ selectedUsers, setSelectedUsers, name }: {selecte
         </TableContainer>
     );
 };
+export const CreateTemporaryGroup = ({ groups, setGroups,  mutate }: {groups: IGroup[], setGroups: React.Dispatch<React.SetStateAction<IGroup[]>>, mutate: KeyedMutator<IGroup[]> }) => {
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const toast = useToast()
+
+    const [filterName, setFilterName]  = useState<string>("")
+    const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+
+    
+    useEffect(() => {
+        setSelectedUsers(groups.flatMap(group => group.groupees))
+    }, [groups])
+ 
+    const createGroup = async () => {
+        const group = {
+            group_name: new Date().toISOString() + "_group",
+            groupees: selectedUsers,
+            temporary: true
+        }
+        const res = await fetch("/api/group", {method: "POST", body: JSON.stringify(group)})
+        if (res.ok){
+   
+                setSelectedUsers([])
+                const data = await res.json()
+                mutate((groups) => {
+                    if (groups){
+                        return [...groups, data]
+                    }
+                }, {revalidate: false})
+                setGroups(groups => [...groups, data])
+                console.log('new group', data)
+                onClose()
+            }
+        else{
+            toast({
+                    title: "Failed to Create Temporary Group",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+        }
+
+    }
+
+    return (
+      <>
+        <Button
+            variant="ghost"
+          onClick={onOpen}
+        >
+              Create Group
+        </Button>
+
+  
+        <Modal scrollBehavior="inside" isOpen={isOpen} onClose={onClose} size={'xl'}>
+        <ModalOverlay />
+        <ModalContent maxW="80vw">
+            <ModalHeader>Create Group</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody >
+                <div>
+                    <div className="flex flex-col">
+                        <Input width={['200px', '200px', '300px']} marginLeft="5" marginTop="6" className="ml-5 mt-6 w-[50%]" value={filterName} onChange={(e) => setFilterName(e.currentTarget.value)} placeholder="Search by name:"></Input>
+                    </div>
+                <CreateGroupUserList selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} name={filterName}/>
+                </div>
+            </ModalBody>
+            <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={onClose}>
+                Close
+            </Button>
+          
+            <Button onClick={createGroup} variant='ghost'>Create</Button>
+            </ModalFooter>
+        </ModalContent>
+        </Modal>
+
+
+      </>
+    )
+}
 
 const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -326,7 +407,7 @@ const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isO
 
 export default function ViewGroups() {
 
-    const {groups, isLoading, isError, mutate} = useGroups()
+    const {groups, isLoading, isError, mutateGroups} = useGroups()
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [openEditGroup, setOpenEditGroup] = useState(false)
@@ -338,7 +419,7 @@ export default function ViewGroups() {
     }
     return (
       <>
-      <EditGroup group={editGroup} setOpen={setOpenEditGroup} isOpen={openEditGroup} mutate={mutate}/>
+      <EditGroup group={editGroup} setOpen={setOpenEditGroup} isOpen={openEditGroup} mutate={mutateGroups}/>
     <Box
           className={style.yellowButton}
           onClick={onOpen}
@@ -369,7 +450,7 @@ export default function ViewGroups() {
             <Button colorScheme='blue' mr={3} onClick={onClose}>
                 Close
             </Button>
-            <CreateGroup mutate={mutate}/>
+            <CreateGroup mutate={mutateGroups}/>
             </ModalFooter>
         </ModalContent>
         </Modal>
