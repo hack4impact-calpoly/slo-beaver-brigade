@@ -32,6 +32,7 @@ import ImageSelector from "app/components/ImageSelector";
 import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
 import { CreateTemporaryGroup } from "app/components/ViewGroups";
 import { IGroup } from "database/groupSchema";
+import { IEvent } from "database/eventSchema";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -70,6 +71,8 @@ export default function Page() {
   const [activeDate, setActiveDate] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
   const [onlyInvitees, setOnlyInvitees] = useState<boolean>(false)
+  const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(true)
+
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEventName(e.target.value);
@@ -254,7 +257,23 @@ export default function Page() {
         throw new Error("HTTP error! status: $(response.status)");
       }
 
-      const result = await response.json();
+      const event: IEvent= await response.json();
+      // send confirmation email if button was checked
+      if (sendEmailInvitees){
+        const res = await fetch('/api/events/' + event._id + "/groups/confirmation", 
+            {method: 'POST',
+            body: JSON.stringify({groupIds: groupsSelected.flatMap(group => group._id)})})
+        if (!res){
+            toast()
+        toast({
+                title: "Error",
+                description: "Failed to send emails.",
+                status: "error",
+                duration: 2500,
+                isClosable: true,
+            });
+                }
+      }
         mutate()
       toast({
         title: "Event Created",
@@ -577,6 +596,7 @@ export default function Page() {
             />
           </FormControl>
           {onlyInvitees && groups && <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>}
+          {onlyInvitees && groups && <div>Notify Invitees: <Checkbox onChange={(e) => setSendEmailInvitees(e.currentTarget.checked)}></Checkbox></div>}
 
           <FormControl isRequired>
             <FormLabel htmlFor="description" fontWeight="bold">

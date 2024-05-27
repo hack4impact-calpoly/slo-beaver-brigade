@@ -86,9 +86,9 @@ export async function POST(req: NextRequest) {
         const newEvent = new Event(event);
         newEvent.volunteerEvent = newEvent.eventType === "Volunteer";
 
-        await newEvent.save();
+        const createdEvent = await newEvent.save();
         revalidateTag("events");
-        return NextResponse.json("Event added successfully: " + newEvent, {
+        return NextResponse.json(createdEvent, {
             status: 200,
         });
     } catch (err: any) {
