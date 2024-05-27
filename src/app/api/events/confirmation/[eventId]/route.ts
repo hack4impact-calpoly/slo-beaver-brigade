@@ -17,6 +17,7 @@ const transporter = nodemailer.createTransport({
 });
 
 function formatDateToGoogleCalendar(date: Date) {
+    date = new Date(date);
     return date.toISOString().replace(/-|:|\.\d\d\d/g, "");
 }
 

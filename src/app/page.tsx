@@ -29,6 +29,7 @@ import { EmailRSSComponent } from "./components/EmailComponent";
 import ExpandedViewComponent from "./components/StandaloneExpandedViewComponent";
 import "./fonts/fonts.css";
 import { useEventsAscending } from "app/lib/swrfunctions";
+import { LockIcon } from "@chakra-ui/icons";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -116,6 +117,22 @@ const {isSignedIn, user, isLoaded} = useUser()
  });
  const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
 
+ const sortFuncGroups = (a:IEvent, b:IEvent) => {
+
+    console.log(a.groupsOnly, b.groupsOnly)
+    if (a.groupsOnly){
+        if (b.groupsOnly){
+            return 0
+        }
+        else{
+            return -1
+        }
+    }
+    else if (b.groupsOnly){
+        return 1
+    }
+    return 0
+ }
  //convert date into format Dayofweek, Month
  const formatDate = (date: Date) => {
    if (!(date instanceof Date)) {
@@ -181,7 +198,10 @@ const {isSignedIn, user, isLoaded} = useUser()
     if (!parsed || !events){
         return
     }
-    if (events && parsed && userData) {
+    console.log('use effect')
+    console.log(isSignedIn)
+ 
+    if (events && isSignedIn && parsed && userData) {
       console.log("userData:" + userData)
       console.log('events', events)
       const currentDate = new Date();
@@ -194,12 +214,12 @@ const {isSignedIn, user, isLoaded} = useUser()
       const eventsUserHasntRegistered = events.filter(
         event => !event.registeredIds.includes(userData?._id)
       
-      );
+      )
 
       const filteredEvents = eventsUserHasntRegistered.filter(event =>
         new Date(event.endTime) >= currentDate &&
         (!selectedEventType || event.eventType === selectedEventType) // Filter by event type if selected
-      );
+      ).sort((a, b) => sortFuncGroups(a, b));
 
       setUserEvents(userSignedUpEvents);
       setUnregisteredEvents(filteredEvents);
@@ -213,7 +233,7 @@ const {isSignedIn, user, isLoaded} = useUser()
       setUnregisteredEvents(upcomingEvents);
     }
     setEventsLoading(false);
-  }, [events, selectedEventType, parsed, isLoaded, isSignedIn, userData]); // Include selectedEventType in the dependency array
+  }, [events,user, selectedEventType, parsed, isLoaded, isSignedIn, userData]); // Include selectedEventType in the dependency array
   
 
   useEffect(() => {
@@ -722,17 +742,28 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             my="2"
                             zIndex={2}
                           >
-                          <Heading as="h2" fontSize="xl">
+                          <Heading className="flex flex-row justify-start" as="h2" fontSize="xl">
                             <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
                               <Button
                                 colorScheme="yellow"
                                 fontSize={eventDetailSize}
-                                mt={14}
                                 onClick={handleButtonClickToStopPropogation}
                                 >
                                 Register
                               </Button>
                             </Link>
+                            {event.groupsOnly && 
+                            <div className="w-full flex flex-row justify-end items-center">
+                                <Text fontFamily="Lato"
+                            fontWeight="500"
+                            fontSize='18px'
+                            color="white"
+                            marginRight='1rem'
+                            className="bold-text"
+                            >Invite only.</Text>
+                                <LockIcon color='wheat'/>
+                            </div>
+                            }
                           </Heading>
                         </Box> 
                       </Box>

@@ -40,7 +40,11 @@ const eventSchema = new Schema({
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     volunteerEvent: { type: Boolean, required: true },
-    groupsAllowed: { type: [Schema.Types.ObjectId], required: false },
+    groupsAllowed: {
+        type: [Schema.Types.ObjectId],
+        required: false,
+        default: [],
+    },
     attendeeIds: {
         type: [Schema.Types.ObjectId],
         required: false,
