@@ -49,14 +49,17 @@ export type IUser = {
     eventsRegistered: EventInfo[];
     eventsAttended: AttendedEventInfo[];
     groupId: Schema.Types.ObjectId | null;
-    recieveNewsletter: boolean;
+    receiveNewsletter: boolean;
+    zipcode: string;
 };
 
 //groupId and digitalWaiver seem to require a schema
 //currently there is no schema for them so I am leaving them as null for now
 //can groupId just be a string and digitalWaiver be a boolean?
+
+mongoose.Schema.ObjectId.get((v) => v.toString());
+mongoose.Schema.Types.Date.get((v) => v.toString());
 const UserSchema = new Schema({
-    _id: { type: Schema.Types.ObjectId, required: false },
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: false },
     zipcode: { type: String, required: false },
@@ -94,7 +97,7 @@ const UserSchema = new Schema({
         required: false,
     },
     groupId: { type: Schema.Types.ObjectId, required: false },
-    recieveNewsletter: {
+    receiveNewsletter: {
         type: Boolean,
         required: false,
         default: false,

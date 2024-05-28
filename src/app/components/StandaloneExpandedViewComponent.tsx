@@ -25,20 +25,22 @@ import Link from "next/link";
 import { removeRegistered } from "app/actions/serveractions";
 import { IUser } from "@database/userSchema";
 import { getUserDbData } from "app/lib/authentication";
-import Markdown from "react-markdown"
-
+import MarkdownPreview from '@uiw/react-markdown-preview';
+import style from "@styles/calendar/calendar.module.css";
+import { KeyedMutator } from "swr";
 
 interface Props {
   eventDetails: IEvent | null;
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  mutate?: KeyedMutator<IEvent[]> | undefined
 }
 
-function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props)  {
+function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate }: Props)  {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const [signedIn, setSignedIn] = useState(false);
-  const [isLargerThan768] = useMediaQuery("(min-width: 550px)");
+  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [visitorData, setVisitorData] = useState<IUser>(
     {
       _id: "",
@@ -47,12 +49,13 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
       firstName: "",
       lastName: "",
       phoneNumber: "",
+      zipcode: "",
       age: -1,
       gender: "",
       role: "user",
       eventsAttended: [],
       eventsRegistered:[],
-      recieveNewsletter: false
+      receiveNewsletter: false
     },
   );
 
@@ -85,6 +88,17 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
 
   async function handleCancel(eventid : string, userid : string) {
     await removeRegistered(userid, eventid);
+    // really innefficient, move to useSubscription
+    if (mutate){
+        mutate(data => {
+            return data?.map(val => {
+                if (val._id === eventid) {
+                    val.registeredIds = val.registeredIds.filter(id => id !== userid);
+                }
+                return val;
+            });
+        }, {revalidate:true})
+    }
     onClose(); 
     closeExpandedView();
     setSignedIn(false);
@@ -112,9 +126,9 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
   const url = `/events/${eventDetails._id}/digitalWaiver/1`
   return (
   <>
-    <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" isCentered>
+    <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" >
       <ModalOverlay/>
-      <ModalContent mt={"5rem"}>
+      <ModalContent mt={"5rem"} mb={"1rem"}>
         <ModalHeader bg={backgroundImage} fontWeight="bold" position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"5px 5px 0px 0px"}>
           <Flex justify={"right"} ml={"5%"}>
             <Text fontSize={"5xl"} opacity={"85%"}>{eventDetails.eventName}</Text>
@@ -139,129 +153,137 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal }: Props
           </Flex>
         </ModalHeader>
 
-        <ModalBody>
-          
+        <ModalBody pb={"5%"}>
           <Stack spacing={5} width={"100%"}>
-            {isLargerThan768 ?
-            <>
-            <Flex ml={"5%"}>
-              <Flex direction={"column"} width={"50%"}>
-                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                  Description:
-                </FormLabel>
-                <Text fontWeight={"bold"} maxW={"90%"}>
-                  {eventDetails.description}
-                </Text>
-              </Flex>
-              <Stack spacing={0}>
-                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                  Spanish Speaking:
-                </FormLabel>
-                  {eventDetails.spanishSpeakingAccommodation ? 
-                    <Text fontWeight={"bold"}>Yes</Text> :
-                    <Text fontWeight={"bold"}>No</Text>
-                  }
-              </Stack>
-            </Flex>
-            <Flex ml={"5%"}>
-              <Flex direction={"column"} width={"50%"}>
-                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                  Checklist:
-                </FormLabel>
-                  <Text fontWeight={"bold"} maxW={"90%"}>
-                    {eventDetails.checklist}
-                  </Text>
-              </Flex>
-              <Stack spacing={0}>
-                <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                  Wheelchair Accessible:
-                </FormLabel>
-                {eventDetails.wheelchairAccessible ? 
-                  <Text fontWeight={"bold"}>Yes</Text> :
-                  <Text fontWeight={"bold"}>No</Text>
-                }
-              </Stack>
-            </Flex> 
-            </>
-            : 
-              <Flex ml={"5%"} direction={"column"}>
-                <Flex direction={"column"} width={"50%"}>
-                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
+              <Flex direction={"column"} mt={"3%"} >
+                <Flex justifyContent={"space-between"} > 
+                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"} mt={"2%"}>
                     Description:
                   </FormLabel>
-                  <Text fontWeight={"bold"} maxW={"90%"}>
-                    
-                    {eventDetails.description}
-                  </Text>
-                </Flex>
-                <Flex direction={"column"} width={"50%"}>
-                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                    Checklist:
-                  </FormLabel>
-                  <Text fontWeight={"bold"} maxW={"90%"}>
-                    {eventDetails.checklist}
-                  </Text>
-                </Flex>
-                <Stack spacing={0}>
-                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                    Spanish Speaking:
-                  </FormLabel>
-                  {eventDetails.spanishSpeakingAccommodation ? 
-                    <Text fontWeight={"bold"}>Yes</Text> :
-                    <Text fontWeight={"bold"}>No</Text>
-                  }
-                </Stack>
-                <Stack spacing={0}>
-                  <FormLabel color="grey" fontWeight="light" fontSize={"2xl"}>
-                    Wheelchair Accessible:
-                  </FormLabel>
-                  {eventDetails.wheelchairAccessible ? 
-                    <Text fontWeight={"bold"}>Yes</Text> :
-                    <Text fontWeight={"bold"}>No</Text>
-                  }
-                </Stack> 
-              </Flex>
-            }
-            <Flex
-              direction={{ base: 'column', md: 'row' }}
-              alignItems={{ base: 'center', md: 'flex-start' }}
-              justifyContent='left'
-              flexWrap="wrap"
-              mt={"10%"}
-              ml={"5%"}
-              >
-                       {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
+                  <Flex pr={{base:"5%",md:"10%"}}>
+                    {signedIn ? 
+                      <>
+                      {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ?
                         <Button
                           onClick={onOpen}
                           bg="#e0af48"
                           color="black"
                           fontWeight={"light"}
-                          fontSize={{ base: 'xl', md: 'md' }}
-                          mb={{ base: 2, md: 5 }}
-                          pl={"5%"}
-                          pr={"5%"}
-                          flexBasis={{ base: '100%', md: 'auto' }}
+                          pl={"70%"}
+                          pr={"70%"}
+                          width={{ base: '100px', md: 'auto' }}
+                          fontSize={{ base: 'sm', md: 'md' }}
                         >
                           <strong>Cancel Reservation</strong>
                         </Button>
                       :
-                        <Link href={url}>
+                        <Link href={url} className={style.signup_button}>
                           <Button
                             bg="#006d75"
                             color="white"
                             fontWeight={"light"}
-                            fontSize={{ base: 'xl', md: 'md' }}
-                            mb={{ base: 2, md: 5 }}
                             pl={"100%"}
                             pr={"100%"}
                             flexBasis={{ base: '100%', md: 'auto' }}
+                            width={{ base: '100%', md: 'auto' }}
+                          >
+                            <strong>Sign Up</strong>
+                          </Button>
+                        </Link>
+                      }
+                      </>
+                    : 
+                      <Link href={url} className={style.signup_button}>
+                          <Button
+                            bg="#006d75"
+                            color="white"
+                            fontWeight={"light"}
+                            pl={"100%"}
+                            pr={"100%"}
+                            flexBasis={{ base: '100%', md: 'auto' }}
+                            width={{ base: '100%', md: 'auto' }}
                           >
                             <strong>Sign Up</strong>
                           </Button>
                         </Link>
                     }
-                 
-            </Flex>
+                  </Flex>
+                </Flex>
+                <Text ml={"3.5%"} fontWeight={"light"}>
+                  <MarkdownPreview className= {style.preview} source={eventDetails.description} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
+                </Text>
+              </Flex>
+              {isLargerThan550 ?
+                   <Flex>
+                   <Flex direction={"column"} width={"50%"}>
+                       <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"10%"}>
+                       Checklist:
+                       </FormLabel>
+                       <Text ml={"6.5%"} fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={eventDetails.checklist} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
+                       </Text>
+                   </Flex>
+                   <Stack spacing={5}>
+                     <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
+                       Accomodations:
+                     </FormLabel>
+                     {eventDetails.wheelchairAccessible ? 
+                       <Text  fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={"- Wheelchair Accessible"}  wrapperElement={{"data-color-mode": "light"}} />
+                       </Text> :
+                       <></>
+                     }
+                     {eventDetails.spanishSpeakingAccommodation ? 
+                       <Text fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"}  wrapperElement={{"data-color-mode": "light"}} />
+                       </Text> :
+                       <></>
+                     }
+                     {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible? 
+                       <Text ml={"6.5%"} fontWeight={"light"}>
+                         <MarkdownPreview className= {style.preview} source={"N/A"}  wrapperElement={{"data-color-mode": "light"}} />
+                       </Text> :
+                       <></>
+                     }
+                   </Stack>
+                 </Flex> 
+              :
+              <Flex direction={"column"} ml={"5%"}>
+                <Flex direction={"column"} width={"50%"}>
+                    <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
+                    Checklist:
+                    </FormLabel>
+                    <Text ml={"6.5%"} fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={eventDetails.checklist} style={{ padding: 16 }} wrapperElement={{"data-color-mode": "light"}} />
+                    </Text>
+                </Flex>
+                <Stack spacing={5}>
+                  <FormLabel color="black" fontWeight="bold" fontSize={"2xl"}>
+                    Accomodations:
+                  </FormLabel>
+                  {eventDetails.wheelchairAccessible ? 
+                    <Text  fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={"- Wheelchair Accessible"}  wrapperElement={{"data-color-mode": "light"}} />
+                    </Text> :
+                    <></>
+                  }
+                  {eventDetails.spanishSpeakingAccommodation ? 
+                    <Text fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={"- Spanish-Speaking"}  wrapperElement={{"data-color-mode": "light"}} />
+                    </Text> :
+                    <></>
+                  }
+                  {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible? 
+                    <Text ml={"6.5%"} fontWeight={"light"}>
+                      <MarkdownPreview className= {style.preview} source={"N/A"}  wrapperElement={{"data-color-mode": "light"}} />
+                    </Text> :
+                    <></>
+                  }
+                </Stack>
+            </Flex> 
+            
+            }
+         
           </Stack>
         </ModalBody>
       </ModalContent>

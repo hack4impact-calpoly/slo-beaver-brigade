@@ -54,3 +54,16 @@ function put(url: string | URL, bufferData: string | ArrayBuffer | DataView) {
     });
   }
   
+
+export function extractObjectKey(url: string) {
+    // Use URL constructor to parse the URL
+    const parsedUrl = new URL(url);
+
+    // Split the pathname to get the last part
+    const pathSegments = parsedUrl.pathname.split('/');
+
+    // The object key is the last segment of the pathname
+    const objectKey = pathSegments[pathSegments.length - 1];
+
+    return objectKey;
+}

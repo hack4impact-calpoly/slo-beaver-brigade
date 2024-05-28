@@ -7,7 +7,7 @@ import { SortOrder } from "mongoose";
 export async function GET(request: Request) {
     await connectDB(); // connect to db
     const { searchParams } = new URL(request.url);
-    const sort_order = searchParams.get("sort_order");
+    const sort_order = searchParams.get("sort");
     let sort: SortOrder = -1;
 
     if (sort_order && sort_order == "asc") {
@@ -16,7 +16,10 @@ export async function GET(request: Request) {
 
     try {
         // query for all events and sort by date
-        const events = await Event.find().sort({ startTime: sort }).orFail();
+        const events = await Event.find()
+            .sort({ startTime: sort })
+            .lean()
+            .orFail();
         // returns all events in json format or errors
         return NextResponse.json(events, { status: 200 });
     } catch (err) {
@@ -44,15 +47,13 @@ export async function GET(request: Request) {
 
 export async function POST(req: NextRequest) {
     await connectDB();
-    console.log("Connected to Db");
 
     const event: IEvent = await req.json();
 
     // create new event or return error
     try {
         const newEvent = new Event(event);
-        newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
-        console.log("New Event Data:", newEvent); // Add this line
+        newEvent.volunteerEvent = newEvent.eventType === "Volunteer";
 
         await newEvent.save();
         revalidateTag("events");
@@ -60,8 +61,6 @@ export async function POST(req: NextRequest) {
             status: 200,
         });
     } catch (err: any) {
-        console.error("Error creating event:", err); // Add this line
-
         if (err.name === "ValidationError") {
             // Handle validation errors
             const errors = Object.values(err.errors).map(

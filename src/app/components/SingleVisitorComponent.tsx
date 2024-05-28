@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Text,
-  Spinner,
+  Flex,
+  Button,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -20,8 +21,11 @@ import {
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
-import { eventHours } from ".././lib/hours";
+import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
+import { IEvent } from "database/eventSchema";
+import makeUserAdmin from "../actions/makeUserAdmin";
+import makeAdminUser from "../actions/makeAdminUser";
 
 interface Event {
   _id: string;
@@ -42,28 +46,30 @@ interface Event {
 }
 
 function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(visitorData.role);
 
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
-     
       try {
         const eventIds = visitorData.eventsAttended.map((e) => e.eventId);
         const fetchedEvents = await Promise.all(
-          eventIds.map((id) =>
+          eventIds.map((id, idx) =>
             fetch(`/api/events/${id}`)
               .then((res) => res.json())
               .then((data) => {
-                console.log(data);
-                return { ...data, attendeeIds: data.attendeeIds || [] };
+                return {
+                  ...data,
+                  attendeeIds: data.attendeeIds || [],
+                  startTime: visitorData.eventsAttended[idx].startTime,
+                  endTime: visitorData.eventsAttended[idx].endTime,
+                };
               })
           )
         );
-        console.log(fetchedEvents);
         setEvents(fetchedEvents);
       } catch (error) {
         console.error("Failed to fetch events:", error);
@@ -71,7 +77,11 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       setLoading(false);
     };
 
-if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.length > 0) {
+    if (
+      visitorData &&
+      visitorData.eventsAttended &&
+      visitorData.eventsAttended.length > 0
+    ) {
       fetchEvents();
     }
   }, [visitorData]);
@@ -80,15 +90,28 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
     return new Date(date).toLocaleDateString();
   };
 
+  const handleRoleChange = async () => {
+    console.log("role change");
+    try {
+      const result =
+        userRole === "admin"
+          ? await makeAdminUser(visitorData.email)
+          : await makeUserAdmin(visitorData.email);
+      setUserRole(result.role);
+    } catch (error) {
+      console.error("Error updating role:", error);
+    }
+  };
+
   return (
     <>
       <div className={styles.link}>
-        <Text onClick={onOpen}>Details</Text>
+        <Text onClick={onOpen}>Details & Role</Text>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
-          style={{ width: "60vw", height: "65vh", overflow: "auto"}}
+          style={{ width: "60vw", height: "65vh", overflow: "auto" }}
           maxW="100rem"
         >
           <ModalHeader
@@ -99,14 +122,42 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
               fontWeight: "bold",
               fontFamily: "Lato",
               width: "100%",
-
             }}
           >
-            {visitorData.firstName} {visitorData.lastName}
+            <Flex direction="column" align="center" p={4}>
+              <Text>
+                {visitorData.firstName} {visitorData.lastName}
+              </Text>
+              {userRole === "user" ? (
+                <Button
+                  mt={2}
+                  color="#d93636"
+                  bg="white"
+                  border="2px"
+                  _hover={{ bg: "#d93636", color: "white" }}
+                  onClick={handleRoleChange}
+                >
+                  Make Admin
+                </Button>
+              ) : (
+                <Button
+                  mt={2}
+                  bg="#E0AF48"
+                  color="black"
+                  _hover={{ bg: "#C19137", color: "black" }}
+                  onClick={handleRoleChange}
+                >
+                  Revert to User
+                </Button>
+              )}
+            </Flex>
           </ModalHeader>
           <ModalCloseButton />
           <hr />
-          <ModalBody style={{ display: "flex", padding: "0%" }} className={styles.parentContainer}>
+          <ModalBody
+            style={{ display: "flex", padding: "0%" }}
+            className={styles.parentContainer}
+          >
             <Box className={styles.infoBox}>
               <Text className={styles.visitorInfoSmallHeader}>
                 Personal Info
@@ -158,11 +209,10 @@ if (visitorData && visitorData.eventsAttended && visitorData.eventsAttended.leng
                   </Thead>
                   <Tbody>
                     {events.map((event) => {
-                      console.log(event);
                       return (
                         <Tr key={event._id}>
                           <Td>{event.eventName}</Td>
-                          <Td>{eventHours(event)}</Td>
+                          <Td>{eventIndividualHours(event)}</Td>
                           <Td>{formatDate(event.startTime)}</Td>
                         </Tr>
                       );

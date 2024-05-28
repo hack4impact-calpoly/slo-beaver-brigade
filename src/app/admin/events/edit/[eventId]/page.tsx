@@ -51,7 +51,8 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
       eventsRegistered: [],
       eventsAttended: [],
       groupId: null,
-      recieveNewsletter: false
+      receiveNewsletter: false,
+      zipcode: ""
     },
   ]);
 
@@ -78,17 +79,17 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
   useEffect(() => {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
-        const visitors: IUser[] = []
+        const visitors: IUser[] = [];
         const visitorDataArray = await Promise.all(
           eventData.registeredIds
             .filter((userId) => userId !== null)
             .map(async (userId) => {
               const response = await fetch(`/api/user/${userId}`);
-              if (response.ok){
-                console.log('ok')
-                visitors.push(await response.json())
+              if (response.ok) {
+                console.log("ok");
+                visitors.push(await response.json());
               }
-              return null
+              return null;
             })
         );
         setVisitorData(visitors);
@@ -107,10 +108,13 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
+          <EditEventVisitorInfo eventId={eventId} />
           <Box className={styles.imageContainer}>
-            <img src={eventData.eventImage || "/beaver-eventcard.jpeg"} alt="cover"></img>
+            <img
+              src={eventData.eventImage || "/beaver-eventcard.jpeg"}
+              alt="cover"
+            ></img>
           </Box>
-          <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>
           <EditEventPrimaryInfo eventId={eventId} />

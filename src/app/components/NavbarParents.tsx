@@ -1,38 +1,108 @@
+
 import React from "react";
 import Navbar from "./Navbar";
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
-import { getUserDbData } from "app/lib/authentication";
+import { getUserDataFromEmail, getUserDbData } from "app/lib/authentication";
+import { getBareBoneUser } from "app/actions/cookieactions";
+import { cookies } from "next/headers";
+import { getBaseUrl } from "app/lib/random";
 
-/** fetch from MongoDB, get user Role */
-async function getUserData(id: string | null){
-  await connectDB()
-  
-  try{
-    const user: IUser | null = await User.findById(id).orFail();
-    return user;
-  }
-  catch(err){
-    return null
-  }
+
+export const getUserDbDataRevamp = async() => {
+
+    const clerk_user = await currentUser();
+    if (!clerk_user){
+        console.log('clerk user not found')
+        return null
+    }
+    // search db for user with matching email address
+    console.log('revamp: fetching data')
+    await connectDB()
+    console.log(clerk_user.emailAddresses[0].emailAddress)
+    try {
+        const user: IUser= await User.findOne({ email: clerk_user.emailAddresses[0].emailAddress }).lean().orFail() as IUser;
+        console.log("user found")
+    
+        return user
+    }
+    catch (err) {
+        console.log('user not found: ' + err)
+        return null
+    }
 }
 
-export default async function NavbarParent() {
-  const user = await currentUser();
-  
-  if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
-  const name = `Hi ${user?.firstName}!`;
-  const userRes = await getUserDbData()
-    if (userRes){
-        const user = JSON.parse(userRes)
-        if (user?.role == "admin"){
-        return <NavbarAdmin name={name}></NavbarAdmin>
-        }
+export type BareBoneIUser = {
+    firstName: string,
+    lastName: string,
+    role: string
+    _id: string
+}
+
+const getUserFromEmail = async (email: string) => {    // search db for user with matching email address
+    await connectDB()
+    console.log(email)
+    try{
+        const user: IUser = await User.findOne({email: email}).lean().orFail() as IUser;
+        console.log("user found")
+        return user
+    }
+    catch(err){
+        console.log('user not found: ' + err)
+        return null
     }
 
-    return <Navbar name={name}></Navbar>;
+}
+
+export function getUserCookie(){
+
+    console.log('fetching cookies');
+    let res = cookies().get('user')?.value
+    if (res) {
+        console.log('returning cookies');
+        const user = JSON.parse(res)
+        return user as BareBoneIUser
+    }
+}
+
+
+
+export default async function NavbarParent() {
+    console.log('navbar: getting user')
+    
+    let user = null
+    const res = getUserCookie()
+    try{
+        // getting user data
+        if (res){
+            user = res
+        }
+        // else{
+        //     user = await getUserDbDataRevamp()
+        // }
+
+        console.log('navbar: user has been grabbed')
+        console.log('user', user)
+        
+        if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
+        const name = `Hi ${user?.firstName}!`;
+        console.log('navbar: getting user data')
+        if (user){
+            console.log('parsed user data')
+            if (user?.role == "admin"){
+            return <NavbarAdmin name={name}></NavbarAdmin>
+            }
+        }
+
+        return <Navbar name={name}></Navbar>;
+    }
+    catch(err){
+        console.log(err)
+        return <Navbar name="Sign In / Log In"></Navbar>;
+
+    }
   }
 
   //process.env.DEV_MODE == "true" ||
