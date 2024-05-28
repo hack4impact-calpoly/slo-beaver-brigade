@@ -95,6 +95,25 @@ export default async function NavbarParent() {
             return <NavbarAdmin name={name}></NavbarAdmin>
             }
         }
+        else{
+            // manually check if user is logged in
+            const temp = await currentUser()
+            if (temp){
+                // fetch user on mongo and set cookies
+                const userRes = await getUserDataFromEmail(temp.emailAddresses[0].emailAddress)
+                if (userRes){
+                    await fetch("/api/user/cookies", {method: "POST", body: userRes})
+                    const tempUser = JSON.parse(userRes) as IUser
+                    if (tempUser){
+                    if (tempUser?.role == "admin"){
+                        return <NavbarAdmin name={name}></NavbarAdmin>
+                        }
+                    }
+                    }
+
+                
+            }
+        }
 
         return <Navbar name={name}></Navbar>;
     }
