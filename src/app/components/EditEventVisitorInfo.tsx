@@ -138,7 +138,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     };
     fetchVisitorData();
-  }, [eventData, isLoading]);
+  }, [isLoading]);
 
   async function handleCheck(checked: boolean, userid: string) {
     if (checked) {

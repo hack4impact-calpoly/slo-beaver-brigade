@@ -4,6 +4,8 @@ import { IGroup } from "database/groupSchema";
 import { IUser } from "database/userSchema";
 import useSWR, { Fetcher, MutatorCallback } from "swr";
 
+
+const groupIdsFetcher = (urls: string[]) => Promise.all(urls.map(url => fetch(url).then(res => res.json())));
 export interface SWRResponse<Data, Error> {
     data?: Data;
     error?: Error;
@@ -67,3 +69,4 @@ export function useEventId(id: string){
         mutate
     }
 }
+

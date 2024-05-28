@@ -23,55 +23,6 @@ type IParams = {
 export default function EditEventsPage({ params: { eventId } }: IParams) {
   const {eventData, isLoading, isError, mutate} = useEventId(eventId)
 
-  const [visitorData, setVisitorData] = useState<IUser[]>([
-    {
-      _id: "",
-      email: "",
-      phoneNumber: "",
-      firstName: "",
-      lastName: "",
-      age: -1,
-      gender: "",
-      role: "user",
-      eventsRegistered: [],
-      eventsAttended: [],
-      groupId: null,
-      receiveNewsletter: false,
-      zipcode: ""
-    },
-  ]);
-
-  const [loading, setLoading] = useState(true);
-
-
-  useEffect(() => {
-    const fetchVisitorData = async () => {
-        if (isLoading){
-            return
-        }
-        if (!eventData){
-            return
-        }
-      if (eventData.eventName !== "") {
-        const visitors: IUser[] = [];
-        const visitorDataArray = await Promise.all(
-          eventData.registeredIds
-            .filter((userId) => userId !== null)
-            .map(async (userId) => {
-              const response = await fetch(`/api/user/${userId}`);
-              if (response.ok) {
-                console.log("ok");
-                visitors.push(await response.json());
-              }
-              return null;
-            })
-        );
-        setVisitorData(visitors);
-        setLoading(false);
-      }
-    };
-    fetchVisitorData();
-  }, [eventData, isLoading]);
 
   return (
     <Box className={styles.eventPage}>
