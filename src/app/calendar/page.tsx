@@ -19,6 +19,24 @@ import { EmailRSSComponent } from "app/components/EmailComponent";
 export default function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [events, setEvents] = useState<IEvent[]>([]);
+  const [eventTypes, setEventTypes] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchEventTypes = async () => {
+      try {
+        const response = await fetch("/api/events/bytype/eventType");
+        const data: string[] = await response.json();
+        const uniqueEventTypes = Array.from(
+          new Set([...data, "Volunteer", "Beaver Walk", "Pond Clean Up"])
+        );
+        setEventTypes(uniqueEventTypes);
+      } catch (error) {
+        console.error("Error fetching event types:", error);
+      }
+    };
+
+    fetchEventTypes();
+  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -36,63 +54,99 @@ export default function Page() {
   const calEvent = events.map(Calendarify);
 
   return (
-    <Flex className={style.page} direction="column" align="flex-end">
-      <Flex width="full">
-        <Box flex="1" margin="0" padding="0">
-          <Box className={style.header}>
+    <Box bg="white" minH="100vh" p="4">
+      <Flex className={style.page} direction="column" align="flex-end">
+        <Flex width="full" justify="space-between" alignItems="flex-start">
+          <Box
+            flex="1"
+            maxWidth="350px"
+            padding="0"
+            mt="2%" 
+            ml="5%"
+            bg="#F5F5F5"
+            borderRadius="md"
+            p="5"
+            pr="10"
+            pb="10"
+            boxShadow="sm"
+          >
             <Heading
               as="h1"
               textTransform="none"
               textAlign="left"
               padding="10px"
-              mb="5"
-              ml="2"
+              fontSize="24"
+              ml="5"
+              mb="3"
             >
-              Events Calendar
+              Event Filters
             </Heading>
+            <CheckboxGroup
+              colorScheme="green"
+              value={selectedFilters}
+              onChange={(values) =>
+                setSelectedFilters(values.map((value) => String(value)))
+              }
+            >
+              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
+                {eventTypes.map((eventType) => (
+                  <Checkbox key={eventType} value={eventType} colorScheme="teal">
+                    {eventType}
+                  </Checkbox>
+                ))}
+              </Stack>
+            </CheckboxGroup>
+            <Heading
+              as="h1"
+              textTransform="none"
+              textAlign="left"
+              padding="10px"
+              fontSize="24"
+              ml="5"
+              mt="10"
+              mb="3"
+            >
+              Accessibility Filters
+            </Heading>
+            <CheckboxGroup
+              colorScheme="yellow"
+              value={selectedFilters}
+              onChange={(values) =>
+                setSelectedFilters(values.map((value) => String(value)))
+              }
+            >
+              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
+                <Checkbox
+                  value="spanishSpeakingAccommodation"
+                >
+                  Spanish Speaking
+                </Checkbox>
+                <Checkbox
+                  value="wheelchairAccessible"
+                >
+                  Wheelchair Accessible
+                </Checkbox>
+              </Stack>
+            </CheckboxGroup>
+            <div className="ml-[40px] mt-10">
+              <EmailRSSComponent calendarURL="/api/events/calendar"/>
+            </div>
           </Box>
-          <Heading
-            as="h1"
-            textTransform="none"
-            textAlign="left"
-            padding="10px"
-            fontSize="lg"
-            color="gray.500"
-            ml="5"
+          <Box
+            flex="2"
+            padding="0"
+            mt="2%" 
+            mr="10%"
+            ml="5%"
+            bg="#F5F5F5"
+            borderRadius="md"
+            p="5"
+            boxShadow="sm"
           >
-            Filters
-          </Heading>
-          <CheckboxGroup
-            colorScheme="green"
-            value={selectedFilters}
-            onChange={(values) => setSelectedFilters(values.map((value) => String(value)))}
-          >
-            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
-              <Checkbox value="Watery Walk" colorScheme="teal">
-                Watery Walk
-              </Checkbox>
-              <Checkbox value="Volunteer" colorScheme="yellow">
-                Volunteer
-              </Checkbox>
-              <Checkbox value="Special Events" colorScheme="green">
-                Special Events
-              </Checkbox>
-              <Checkbox value="spanishSpeakingAccommodation" colorScheme="blue">
-                Spanish Speaking
-              </Checkbox>
-              <Checkbox value="wheelchairAccessible" colorScheme="orange">
-                Wheelchair Accessible
-              </Checkbox>
-            </Stack>
-          </CheckboxGroup>
-          <div className="ml-[40px] mt-10">
-            <EmailRSSComponent calendarURL="/api/events/calendar"/>
-        </div>
-        </Box>
-        <Box flex="2" margin="10" padding="0">
-          <Calendar events={calEvent} admin={false} dbevents={events} />
-        </Box>
+            <Calendar events={calEvent} admin={false} dbevents={events} />
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
+    </Box>
   );
 }

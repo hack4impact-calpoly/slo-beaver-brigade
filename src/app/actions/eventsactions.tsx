@@ -33,16 +33,22 @@ export async function getSelectedEvents(selectedFilters: string[]) {
   try {
     let query = Event.find().sort({ date: -1 });
 
-    if (selectedFilters.length > 0) {
-      query = query.where("eventType").in(selectedFilters);
+    const eventTypes = selectedFilters.filter(
+      filter => filter !== "spanishSpeakingAccommodation" && filter !== "wheelchairAccessible"
+    );
+    const accessibilityFilters = selectedFilters.filter(
+      filter => filter === "spanishSpeakingAccommodation" || filter === "wheelchairAccessible"
+    );
 
-      if (selectedFilters.includes("spanishSpeakingAccommodation")) {
-        query = query.where("spanishSpeakingAccommodation").equals(true);
-      }
+    if (eventTypes.length > 0) {
+      query = query.where("eventType").in(eventTypes);
+    }
 
-      if (selectedFilters.includes("wheelchairAccessible")) {
-        query = query.where("wheelchairAccessible").equals(true);
-      }
+    if (accessibilityFilters.includes("spanishSpeakingAccommodation")) {
+      query = query.where("spanishSpeakingAccommodation").equals(true);
+    }
+    if (accessibilityFilters.includes("wheelchairAccessible")) {
+      query = query.where("wheelchairAccessible").equals(true);
     }
 
     const events = await query.exec();
@@ -53,5 +59,3 @@ export async function getSelectedEvents(selectedFilters: string[]) {
     return "[]";
   }
 }
-
-
