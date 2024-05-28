@@ -10,27 +10,13 @@ import React, {useState, useEffect} from 'react'
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
 import { useRouter} from 'next/navigation';
+import { useEventId } from 'app/lib/swrfunctions';
+import { mutate } from 'swr';
 
 const EditEventHeader = ({ eventId }: { eventId: string }) => {
     const router = useRouter();
 
-    const [eventData, setEventData] = useState<IEvent>({
-        _id: '',
-        eventName: '',
-        eventImage: null,
-        checklist: "N/A",
-        eventType: '',
-        location: '',
-        description: '',
-        wheelchairAccessible: false,
-        spanishSpeakingAccommodation: false,
-        startTime: new Date(0),
-        endTime: new Date(0),
-        volunteerEvent: false,
-        groupsAllowed: [],
-        registeredIds: [],
-        attendeeIds:[]
-    });
+    const {eventData, isLoading, isError} = useEventId(eventId)
 
     function DeleteEvent({eventName, onDelete}: {eventName: string, onDelete: () => void}){
         const { isOpen, onOpen, onClose } = useDisclosure() 
@@ -63,6 +49,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
             } else {
                 console.error('Failed to delete event:', response.statusText);
             }
+            mutate("/api/events")
             router.push('/admin/events');
         }
         catch(error){
@@ -71,28 +58,11 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         
     }
 
-    useEffect(() => {
-        const fetchEventData = async () => {
-            try {
-                const response = await fetch(`/api/events/${eventId}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error, status: ${response.status}`);
-                }
-                const data = await response.json();
-                data.startTime = new Date(data.startTime);
-                data.endTime = new Date(data.endTime);
-                setEventData(data);
-            } catch (error) {
-                console.error('Error fetching event data:', error);
-            }
-        };
-        fetchEventData();
-    }, [eventId]);
 
     return(
         <Box className = {styles.header}>
              <button className={styles.backButton} onClick={() => router.back()}>Back</button>
-            <DeleteEvent eventName={eventData.eventName} onDelete={handleDelete}/>
+            <DeleteEvent eventName={eventData?.eventName || "Error."} onDelete={handleDelete}/>
         </Box>
     );
 }

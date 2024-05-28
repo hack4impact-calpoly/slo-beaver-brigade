@@ -139,7 +139,8 @@ export const CreateTemporaryGroup = ({ groups, setGroups,  mutate }: {groups: IG
     return (
       <>
         <Button
-            variant="ghost"
+            variant="outline"
+            color="green"
           onClick={onOpen}
         >
               Create Group

@@ -245,7 +245,6 @@ const UserList = () => {
             />
           </div>
         </div>
-        <div className={style.csvButton}>
           <CSVLink
             data={csvData}
             headers={headers}
@@ -257,53 +256,53 @@ const UserList = () => {
           </CSVLink>
           <ViewGroups/>
         </div>
-      </div>
       <div className={style.tableContainer}>
         {/* {isLoading && !users  && !isError && <div>Loading...</div>}
         {isError && <div>Error occurred.</div>} */}
-        <Box>
-          <Table
-            variant="striped"
-            size={tableSize}
-            className={style.customTable}
-          >
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Email</Th>
-                <Th>Total Hours</Th>
-                <Th>Role</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-               {filteredUsers.length === 0 ? (
+
+        {isLoading && !isError && 'Loading...'}
+        {isError && 'Error occurred.'}
+        {!isLoading && !loading &&
+            <Box>
+            <Table
+                variant="striped"
+                size={tableSize}
+                className={style.customTable}
+            >
+                <Thead>
                 <Tr>
-                  <Td colSpan={5} textAlign="center">
-                    {isLoading && 'Loading...'}
-                    {isError && 'Error occurred.'}
-                    {!isLoading && !isError  && !loading && 'No users found.'}
-
-                  </Td>
+                    <Th>Name</Th>
+                    <Th>Email</Th>
+                    <Th>Total Hours</Th>
+                    <Th>Role</Th>
+                    <Th></Th>
                 </Tr>
-              ) : (
-                filteredUsers.map((user) => (
-                  <Tr key={user._id}>
-                    <Td>{`${user.firstName} ${user.lastName}`}</Td>
-                    <Td>{user.email}</Td>
-                    <Td>{user.totalHoursFormatted}</Td>
-
-                    <Td>{capitalizeFirstLetter(user.role)}</Td>
-                    <Td>
-                      <SingleVisitorComponent visitorData={user} />
+                </Thead>
+                <Tbody>
+                {filteredUsers.length === 0 ? (
+                    <Tr>
+                    <Td colSpan={5} textAlign="center">
+                        No users found.
                     </Td>
-                  </Tr>
-                ))
-              )}
-            </Tbody>
-          </Table>
-        </Box>
-      
+                    </Tr>
+                ) : (
+                    filteredUsers.map((user) => (
+                    <Tr key={user._id}>
+                        <Td>{`${user.firstName} ${user.lastName}`}</Td>
+                        <Td>{user.email}</Td>
+                        <Td>{user.totalHoursFormatted}</Td>
+
+                        <Td>{capitalizeFirstLetter(user.role)}</Td>
+                        <Td>
+                        <SingleVisitorComponent visitorData={user} />
+                        </Td>
+                    </Tr>
+                    ))
+                )}
+                </Tbody>
+                </Table>
+            </Box>
+        }
       </div>
     </div>
   );

@@ -595,8 +595,10 @@ export default function Page() {
               }}
             />
           </FormControl>
-          {onlyInvitees && groups && <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>}
-          {onlyInvitees && groups && <div>Notify Invitees: <Checkbox onChange={(e) => setSendEmailInvitees(e.currentTarget.checked)}></Checkbox></div>}
+          {onlyInvitees && groups && <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
+          <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>
+          <div className="flex flex-row gap-4 justify-center"> Notify Invitees: <Checkbox onChange={(e) => setSendEmailInvitees(e.currentTarget.checked)}></Checkbox></div>
+            </div>}
 
           <FormControl isRequired>
             <FormLabel htmlFor="description" fontWeight="bold">

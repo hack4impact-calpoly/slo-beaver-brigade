@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { IUser } from "@database/userSchema";
 import { IEvent } from "@database/eventSchema";
 import { fallbackBackgroundImage } from "app/lib/random";
+import { useEventId } from "app/lib/swrfunctions";
 
 type IParams = {
   params: {
@@ -20,23 +21,7 @@ type IParams = {
 };
 
 export default function EditEventsPage({ params: { eventId } }: IParams) {
-  const [eventData, setEventData] = useState<IEvent>({
-    _id: "",
-    eventName: "",
-    eventImage: null,
-    checklist: "N/A",
-    eventType: "",
-    location: "",
-    description: "",
-    wheelchairAccessible: false,
-    spanishSpeakingAccommodation: false,
-    startTime: new Date(0),
-    endTime: new Date(0),
-    volunteerEvent: false,
-    groupsAllowed: [],
-    registeredIds: [],
-    attendeeIds: [],
-  });
+  const {eventData, isLoading, isError, mutate} = useEventId(eventId)
 
   const [visitorData, setVisitorData] = useState<IUser[]>([
     {
@@ -58,26 +43,15 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        const response = await fetch(`/api/events/${eventId}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error, status: ${response.status}`);
-        }
-        const data = await response.json();
-        data.startTime = new Date(data.startTime);
-        data.endTime = new Date(data.endTime);
-        setEventData(data);
-      } catch (error) {
-        console.error("Error fetching event data:", error);
-      }
-    };
-    fetchEventData();
-  }, [eventId]);
 
   useEffect(() => {
     const fetchVisitorData = async () => {
+        if (isLoading){
+            return
+        }
+        if (!eventData){
+            return
+        }
       if (eventData.eventName !== "") {
         const visitors: IUser[] = [];
         const visitorDataArray = await Promise.all(
@@ -97,7 +71,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
       }
     };
     fetchVisitorData();
-  }, [eventData]);
+  }, [eventData, isLoading]);
 
   return (
     <Box className={styles.eventPage}>
@@ -111,7 +85,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
           <EditEventVisitorInfo eventId={eventId} />
           <Box className={styles.imageContainer}>
             <img
-              src={eventData.eventImage || "/beaver-eventcard.jpeg"}
+              src={eventData?.eventImage || "/beaver-eventcard.jpeg"}
               alt="cover"
             ></img>
           </Box>
