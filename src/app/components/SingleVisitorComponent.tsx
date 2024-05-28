@@ -106,7 +106,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   return (
     <>
       <div className={styles.link}>
-        <Text onClick={onOpen}>Details</Text>
+        <Text onClick={onOpen}>Details & Role</Text>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
