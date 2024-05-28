@@ -106,7 +106,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   return (
     <>
       <div className={styles.link}>
-        <Text onClick={onOpen}>Details</Text>
+        <Text onClick={onOpen}>Details & Role</Text>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -170,56 +170,42 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                 {visitorData.phoneNumber ? visitorData.phoneNumber : "N/A"}
               </Text>
               <Text className={styles.fieldInfo}>
-                Age: {visitorData.age !== -1 ? visitorData.age : "N/A"}
+                Zipcode: {" "}
+                {visitorData.zipcode ? visitorData.zipcode : "N/A"}
               </Text>
-              <Text className={styles.fieldInfo}>
-                Gender: {visitorData.gender ? visitorData.gender : "N/A"}
-              </Text>
-              <Text className={styles.fieldInfo}>Address: N/A</Text>
-              <Text className={styles.fieldInfo}>City: N/A</Text>
-              <Text className={styles.fieldInfo}>Zipcode: N/A</Text>
-              <Text className={styles.fieldInfo}>Primary Language: N/A</Text>
-              <Text className={styles.visitorInfoSmallHeader}>
-                Availability
-              </Text>
-              <Text className={styles.fieldInfo}>Available Locations: N/A</Text>
             </Box>
             <Box className={styles.infoBox}>
               <Text className={styles.visitorInfoSmallHeader}>
-                Interest Questions
-              </Text>
-              <Text className={styles.fieldInfo}>
-                What led you to SLO Beavers: N/A
-              </Text>
-              <Text className={styles.fieldInfo}>Specialized skills: N/A</Text>
-              <Text className={styles.fieldInfo}>
-                Why are you interested: N/A
-              </Text>
-              <Text className={styles.visitorInfoSmallHeader}>
                 Events Attendeded
               </Text>
-              <div className={styles.tableContainer}>
-                <Table variant="striped">
-                  <Thead>
-                    <Tr>
-                      <Th>Event Name</Th>
-                      <Th>Duration</Th>
-                      <Th>Date</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {events.map((event) => {
-                      return (
-                        <Tr key={event._id}>
-                          <Td>{event.eventName}</Td>
-                          <Td>{eventIndividualHours(event)}</Td>
-                          <Td>{formatDate(event.startTime)}</Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-              </div>
+                {events.length > 0 ? (
+                <div className={styles.tableContainer}>
+                  <Table variant="striped">
+                    <Thead>
+                      <Tr>
+                        <Th>Event Name</Th>
+                        <Th>Duration</Th>
+                        <Th>Date</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {events.map((event) => {
+                        return (
+                          <Tr key={event._id}>
+                            <Td>{event.eventName}</Td>
+                            <Td>{eventIndividualHours(event)}</Td>
+                            <Td>{formatDate(event.startTime)}</Td>
+                          </Tr>
+                        );
+                      })}
+                    </Tbody>
+                  </Table>
+                </div>
+              ) : (
+                <Text className={styles.fieldInfo}>
+                  No events attended
+                </Text>
+              )}
             </Box>
           </ModalBody>
         </ModalContent>

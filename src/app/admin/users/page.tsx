@@ -3,15 +3,16 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
+  Thead,
   Tbody,
   Tr,
+  Th,
   Td,
   useBreakpointValue,
   Text,
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
-import Image from "next/image";
-import beaverLogo from "/docs/images/beaver-logo.svg";
+import Select from "react-select";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
 import SingleVisitorComponent from "@components/SingleVisitorComponent";
@@ -57,11 +58,18 @@ const formatHours = (hours: number): string => {
   return `${displayHours}h ${displayMinutes}min`;
 };
 
+const capitalizeFirstLetter = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 const UserList = () => {
   // states
   const [users, setUsers] = useState<IUserWithHours[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("firstName");
+  const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
+    value: "firstName",
+    label: "First Name",
+  });
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
 
@@ -70,12 +78,11 @@ const UserList = () => {
     return events.reduce((total, event) => {
       const start = new Date(event.startTime);
       const end = new Date(event.endTime);
-      console.log(event.startTime, event.endTime, total)
       return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
     }, 0);
   };
 
-  //fetch event name for each user based on event id
+  // fetch event name for each user based on event id
   const fetchEventName = async (
     eventId: Schema.Types.ObjectId
   ): Promise<string> => {
@@ -141,10 +148,15 @@ const UserList = () => {
       )
     )
     .sort((a, b) =>
-      sortOrder === "firstName"
+      sortOrder.value === "firstName"
         ? a.firstName.localeCompare(b.firstName)
         : a.lastName.localeCompare(b.lastName)
     );
+
+  const sortOptions = [
+    { value: "firstName", label: "First Name" },
+    { value: "lastName", label: "Last Name" },
+  ];
 
   if (loading) {
     return (
@@ -159,7 +171,7 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    zipcode: user.zipcode,
+    role: capitalizeFirstLetter(user.role),
     eventsAttended:
       user.eventsAttendedNames.length > 0
         ? user.eventsAttendedNames.join(", ")
@@ -173,7 +185,7 @@ const UserList = () => {
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
-    { label: "Zipcode", key: "zipcode" },
+    { label: "Role", key: "role" },
     { label: "Events Attended", key: "eventsAttended" },
     { label: "Number of Events Attended", key: "eventsAttendedCount" },
     { label: "Total Hours", key: "totalHoursFormatted" },
@@ -183,14 +195,62 @@ const UserList = () => {
     <div className={style.mainContainer}>
       <div className={style.buttonContainer}>
         <div className={style.innerButtons}>
-          <select
+          <Select
+            id="sort-select"
+            placeholder="Sort by First or Last Name"
+            options={sortOptions}
+            className={style.selectContainer}
+            onChange={(selectedOption) =>
+              setSortOrder(
+                selectedOption || { value: "firstName", label: "First Name" }
+              )
+            }
+            isClearable={false}
+            isSearchable={false}
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className={style.filter}
-          >
-            <option value="firstName">First Name</option>
-            <option value="lastName">Last Name</option>
-          </select>
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                borderRadius: "12px",
+                height: "40px",
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                color: "black",
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                color: state.isSelected ? "white" : "black",
+              }),
+              placeholder: (provided) => ({
+                ...provided,
+                color: "black",
+              }),
+            }}
+          />
+          <div className={style.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search Users"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={style.searchBar}
+            />
+            <MagnifyingGlassIcon
+              style={{
+                width: "20px",
+                height: "20px",
+                position: "absolute",
+                margin: "auto",
+                top: 0,
+                bottom: 0,
+                right: "10px",
+                color: "#337774",
+              }}
+            />
+          </div>
+        </div>
+        <div className={style.csvButton}>
           <CSVLink
             data={csvData}
             headers={headers}
@@ -198,53 +258,48 @@ const UserList = () => {
             className={style.yellowButton}
             target="_blank"
           >
-            Export To CSV
+            Export User List
           </CSVLink>
-        </div>
-        <div className={style.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search for user"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={style.searchBar}
-          />
-          <MagnifyingGlassIcon
-            style={{
-              width: "20px",
-              height: "20px",
-              position: "absolute",
-              margin: "auto",
-              top: 0,
-              bottom: 0,
-              right: "10px",
-            }}
-          />
         </div>
       </div>
       <div className={style.tableContainer}>
         <Box>
-          <Table variant="striped" size={tableSize}>
+          <Table
+            variant="striped"
+            size={tableSize}
+            className={style.customTable}
+          >
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Email</Th>
+                <Th>Total Hours</Th>
+                <Th>Role</Th>
+                <Th></Th>
+              </Tr>
+            </Thead>
             <Tbody>
-              {filteredUsers.map((user) => (
-                <Tr key={user._id}>
-                  <Td className={style.mobileHide}>
-                    <Image
-                      src={beaverLogo}
-                      alt="profile picture"
-                      width="50"
-                      height="30"
-                      style={{ minWidth: "50px" }}
-                    />
-                  </Td>
-                  <Td>{`${user.firstName} ${user.lastName}`}</Td>
-                  <Td>{user.email}</Td>
-                  <Td>{user.totalHoursFormatted}</Td>
-                  <Td>
-                    <SingleVisitorComponent visitorData={user} />
+              {filteredUsers.length === 0 ? (
+                <Tr>
+                  <Td colSpan={5}>
+                    <Text fontSize="lg" textAlign="center">
+                      No users found
+                    </Text>
                   </Td>
                 </Tr>
-              ))}
+              ) : (
+                filteredUsers.map((user) => (
+                  <Tr key={user._id}>
+                    <Td>{`${user.firstName} ${user.lastName}`}</Td>
+                    <Td>{user.email}</Td>
+                    <Td>{user.totalHoursFormatted}</Td>
+                    <Td>{capitalizeFirstLetter(user.role)}</Td>
+                    <Td>
+                      <SingleVisitorComponent visitorData={user} />
+                    </Td>
+                  </Tr>
+                ))
+              )}
             </Tbody>
           </Table>
         </Box>
