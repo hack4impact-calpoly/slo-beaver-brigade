@@ -95,6 +95,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 });
               });
             });
+            console.log(visitors)
           } else {
             console.error(
               "Error fetching waivers:",
@@ -192,7 +193,10 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 <tbody>
                   {sortedVisitorEntries.map(
                     ([parentId, group], parentIndex) => (
+                      
                       <React.Fragment key={parentIndex}>
+                      
+                        {group.parent._id != "placeholder" && (
                         <tr className={styles.visitorRow}>
                           <td className={styles.checkBox}>
                             {eventData.attendeeIds
@@ -221,17 +225,20 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                             )}
                           </td>
                           <td className={styles.nameColumn}>
-                            {group.parent.firstName} {group.parent.lastName}
+                            {group.parent.firstName ? (group.parent.firstName + ' ' + group.parent.lastName) : "N/A"}
+                            
                           </td>
                           <td className={styles.emailColumn}>
-                            {group.parent.email}
+                            {group.parent.email ? group.parent.email : "N/A"}
                           </td>
                           <td className={styles.detailsColumn}>
-                            <SingleVisitorComponent
-                              visitorData={group.parent}
-                            />
+             
+                            <SingleVisitorComponent visitorData={group.parent} />
+                            
+                            
                           </td>
                         </tr>
+                        )}
                         {group.dependents
                           .sort((a, b) =>
                             a.firstName.localeCompare(b.firstName)
