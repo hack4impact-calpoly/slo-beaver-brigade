@@ -11,6 +11,7 @@ import {
   getSignedUrl,
 } from "@aws-sdk/s3-request-presigner";
 import { URL } from "url";
+import Group from "database/groupSchema";
 
 const s3Client = new S3Client({
     region: process.env.S3_REGION as string,
@@ -108,4 +109,27 @@ function put(url: string | URL, data: BlobPart) {
 export async function getImageUploadFileURL(fileName: string){
     return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${fileName}`
 
+}
+
+export async function addToGroup(groupId: string, userId: string){
+    try{
+
+        await connectDB()
+        await Group.findByIdAndUpdate(groupId, {$push: {groupees: userId}}).orFail()
+        console.log(userId, " added to group.")
+    }
+    catch(err){
+        console.log("error adding to group: ", err)
+    }
+}
+export async function removeFromGroup(groupId: string, userId: string){
+    try{
+
+        await connectDB()
+        await Group.findByIdAndUpdate(groupId, {$pull: {groupees: userId}}).orFail()
+        console.log(userId, " removed from group.")
+    }
+    catch(err){
+        console.log("error removing to group: ", err)
+    }
 }
