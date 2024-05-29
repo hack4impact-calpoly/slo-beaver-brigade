@@ -15,10 +15,12 @@ import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 import { getSelectedEvents } from "app/actions/eventsactions";
 import { EmailRSSComponent } from "app/components/EmailComponent";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
 export default function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [events, setEvents] = useState<IEvent[]>([]);
+  const {events, isLoading} = useEventsAscending()
+  const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([])
   const [eventTypes, setEventTypes] = useState<string[]>([]);
 
   useEffect(() => {
@@ -38,20 +40,31 @@ export default function Page() {
     fetchEventTypes();
   }, []);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const selectedEventsString = await getSelectedEvents(selectedFilters);
-        const parsedEvents: IEvent[] = JSON.parse(selectedEventsString);
-        setEvents(parsedEvents);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-    fetchEvents();
-  }, [selectedFilters]);
+    useEffect(() => {
+    if (isLoading) return;
+    if (!events) return;
 
-  const calEvent = events.map(Calendarify);
+    const eventTypes = selectedFilters.filter(
+      (filter) => filter !== "spanishSpeakingAccommodation" && filter !== "wheelchairAccessible"
+    );
+    const accessibilityFilters = selectedFilters.filter(
+      (filter) => filter === "spanishSpeakingAccommodation" || filter === "wheelchairAccessible"
+    );
+
+    const filtered = events.filter((event) => {
+      const matchesType = eventTypes.length === 0 || eventTypes.includes(event.eventType || "");
+      const matchesAccessibility = accessibilityFilters.every((filter) => {
+        if (filter === "spanishSpeakingAccommodation") return event.spanishSpeakingAccommodation;
+        if (filter === "wheelchairAccessible") return event.wheelchairAccessible;
+        return true;
+      });
+      return matchesType && matchesAccessibility;
+    });
+
+    setFilteredEvents(filtered);
+  }, [events, selectedFilters]);
+
+  const calEvent = filteredEvents.map(Calendarify);
 
   return (
     <Box bg="white" minH="100vh" p="4">
@@ -143,7 +156,7 @@ export default function Page() {
             p="5"
             boxShadow="sm"
           >
-            <Calendar events={calEvent} admin={false} dbevents={events} />
+            <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
           </Box>
         </Flex>
       </Flex>
