@@ -11,6 +11,8 @@ import styles from "./page.module.css";
 import beaverLogo from "/docs/images/beaver-logo.svg";
 import Image from "next/image";
 import NextLink from "next/link";
+import "../../../../fonts/fonts.css";
+ 
 
 export default function Waiver() {
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);

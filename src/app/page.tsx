@@ -436,7 +436,9 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                 <Link href="/login">
                   <Button
                     w={[40, 40, 160]} // button width for breakpoints of 0px, 480px, and 768px
-                    colorScheme="yellow"
+                    bg="#e0af48"
+                    color="black"
+                    _hover={{ bg: "#C19137" }}
                     fontFamily="Lato"   
                     mt="4"
                     mr="4"
@@ -448,8 +450,9 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                 <Link href="/signup">
                 <Button
                     w={[40, 40, 160]} // button width for breakpoints of 0px, 480px, ad 768px               
-                    bg="#006d75"
-                    color="white" 
+                    bg="#337774"
+                    color="white"
+                    _hover={{ bg: "#4a9b99" }} 
                     fontFamily="Lato" 
                     mt="4"
                     mr="4"
@@ -745,7 +748,9 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           <Heading className="flex flex-row justify-start" as="h2" fontSize="xl">
                             <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
                               <Button
-                                colorScheme="yellow"
+                                bg="#e0af48"
+                                color="black"
+                                _hover={{ bg: "#C19137" }}
                                 fontSize={eventDetailSize}
                                 onClick={handleButtonClickToStopPropogation}
                                 >

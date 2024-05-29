@@ -29,22 +29,6 @@
     margin-top: 15px;
 }
 
-.dependentTable::placeholder{
-    font-style: italic
-}
-
-.inputForm::placeholder {
-    font-style: italic;
-  }
-
-.inputSignature::placeholder{
-    font-style:italic;
-}
-
-.inputZipcode::placeholder{
-    font-style:italic
-}
-
 .formHeading{
     font-size: 20px;
     margin-top: 1.5%;
