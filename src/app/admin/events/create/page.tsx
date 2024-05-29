@@ -3,10 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
-  Checkbox,
-  Menu,
-  MenuButton,
-  MenuList,
   FormControl,
   FormLabel,
   Input,
@@ -16,13 +12,12 @@ import {
   Image,
   Text,
   Flex,
-  Stack,
-  Textarea,
   IconButton,
 } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
+import EventPreviewComponent from "@components/EventCard";
 import MiniCalendar from "../../../components/MiniCalendar";
-import { formatISO, parse } from "date-fns";
+import { formatISO, parse, parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
 import { Select, CreatableSelect } from "chakra-react-select";
@@ -37,8 +32,8 @@ type Group = {
   group_name: string;
 };
 
-export default function Page() {
-    const {mutate} = useEventsAscending()
+const Page: React.FC = () => {
+  const { mutate } = useEventsAscending();
   const toast = useToast();
   const router = useRouter();
   const [eventName, setEventName] = useState("");
@@ -46,7 +41,6 @@ export default function Page() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
-  // Specify type for group to avoid error
   const [groups, setGroups] = useState<Group[]>([]);
   const [preselected, setPreselected] = useState<boolean>(false);
   const [location, setLocation] = useState("");
@@ -54,8 +48,8 @@ export default function Page() {
   const [description, setDescription] = useState("");
   const [accessibilityAccommodation, setAccessibilityAccommodation] = useState("Yes");
   const [checkList, setChecklist] = useState("N/A");
-  const [eventStart, setEventStart] = useState("");
-  const [eventEnd, setEventEnd] = useState("");
+  const [eventStart, setEventStart] = useState<string | null>(null);
+  const [eventEnd, setEventEnd] = useState<string | null>(null);
   const [activeDate, setActiveDate] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
 
@@ -64,70 +58,51 @@ export default function Page() {
 
   const handleOrganizationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const groupId = e.target.value;
-    const isChekced = e.target.checked;
+    const isChecked = e.target.checked;
 
     setOrganizationIds((prevIds: string[]) => {
-      if (isChekced) {
-        //add to list
+      if (isChecked) {
         return [...prevIds, groupId];
       } else {
-        //remove from list
-        return prevIds.filter((id) => id != groupId);
+        return prevIds.filter((id) => id !== groupId);
       }
     });
   };
 
-  //Parse and format start and end time from user input
   const handleTimeChange = (start: string, end: string) => {
-    // Format for parsing input times (handle both 12-hour and 24-hour formats)
-    if(start && end){
-      const timeFormat =
-      start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
+    if (start && end) {
+      const timeFormat = start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
+      const parsedStartTime = parse(`${start}`, timeFormat, new Date(`${activeDate}T00:00:00`));
+      const parsedEndTime = parse(`${end}`, timeFormat, new Date(`${activeDate}T00:00:00`));
 
-      // Parse the start and end times as dates on the active date
-      const parsedStartTime = parse(
-        `${start}`,
-        timeFormat,
-        new Date(`${activeDate}T00:00:00`)
-      );
-      const parsedEndTime = parse(
-        `${end}`,
-        timeFormat,
-        new Date(`${activeDate}T00:00:00`)
-      );
-        
-      // Format the adjusted dates back into ISO strings
       const formattedStartDateTime = formatISO(parsedStartTime);
       const formattedEndDateTime = formatISO(parsedEndTime);
-      // Update the state with the formatted date times
+
       setEventStart(formattedStartDateTime);
       setEventEnd(formattedEndDateTime);
-    };
-    if(!start){
-      setEventStart("");
-    };
-    if(!end){
-      setEventEnd("");
-    };
+    }
+    if (!start) {
+      setEventStart(null);
+    }
+    if (!end) {
+      setEventEnd(null);
+    }
   };
-  // Update active date upon change from MiniCalendar
+
   const handleDateChangeFromCalendar = (newDate: string) => {
     setActiveDate(newDate);
   };
 
-  // Create a ref for the file input
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Function to trigger file input click for image upload
   const promptFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // Handle file selection for the event cover image and set preview
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPreselected(false)
+    setPreselected(false);
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
@@ -141,11 +116,7 @@ export default function Page() {
     }
   };
 
-
-  // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
-    debugger;
-    // Form validation before submission
     if (
       !eventName ||
       !eventType ||
@@ -161,10 +132,9 @@ export default function Page() {
         isClosable: true,
       });
       return;
-    }
-    else if (
-      eventStart === "" || eventEnd === "" || activeDate === ""
-    ){
+    } else if (
+      eventStart === null || eventEnd === null || activeDate === ""
+    ) {
       toast({
         title: "Error",
         description: "Event date and time are not set",
@@ -173,10 +143,9 @@ export default function Page() {
         isClosable: true,
       });
       return;
-    }
-    else if(
-      eventEnd < eventStart
-    ){
+    } else if (
+      new Date(eventEnd) < new Date(eventStart)
+    ) {
       toast({
         title: "Error",
         description: "End time is before start time",
@@ -187,29 +156,26 @@ export default function Page() {
       return;
     }
 
-    // Try to upload image
     const file = fileInputRef?.current?.files?.[0] ?? null;
     let imageurl = null;
-    console.log('image preview', preselected)
     if (file || preselected) {
-        if (!preselected){
-    imageurl = await uploadFileS3Bucket(file);
+      if (!preselected) {
+        imageurl = await uploadFileS3Bucket(file);
         if (!imageurl) {
-            console.error("Failed to create the event: image upload.");
-            toast({
+          console.error("Failed to create the event: image upload.");
+          toast({
             title: "Error",
             description: "Failed to create the event",
             status: "error",
             duration: 2500,
             isClosable: true,
-            });
-            return;
-        }    }
-        else{
-            imageurl = imagePreview
+          });
+          return;
         }
-        }
-   
+      } else {
+        imageurl = imagePreview;
+      }
+    }
 
     const eventData = {
       eventName,
@@ -220,15 +186,13 @@ export default function Page() {
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: language === "Yes",
-      startTime: eventStart,
-      endTime: eventEnd,
+      startTime: new Date(eventStart),
+      endTime: new Date(eventEnd),
       volunteerEvent: eventType === "Volunteer",
       groupsAllowed: organizationIds,
     };
 
-    // Attempt to create event via API and handle response
     try {
-        console.log('images', imageurl)
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
@@ -238,11 +202,11 @@ export default function Page() {
       });
 
       if (!response.ok) {
-        throw new Error("HTTP error! status: $(response.status)");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
-        mutate()
+      mutate();
       toast({
         title: "Event Created",
         description: "Your event has been successfully created.",
@@ -269,9 +233,8 @@ export default function Page() {
       groupees: [],
     };
 
-    // Optimistically update UI
     const optimisticNewGroup = {
-      _id: Date.now().toString(), // Temporary ID
+      _id: Date.now().toString(),
       group_name: groupName,
     };
 
@@ -284,14 +247,12 @@ export default function Page() {
         body: JSON.stringify(groupData),
       });
       if (!response.ok) {
-        // Rollback if the creation failed
         setGroups((currentGroups) =>
           currentGroups.filter((group) => group._id !== optimisticNewGroup._id)
         );
         throw new Error("Failed to create group");
       }
       const newGroup = await response.json();
-      // Update the temporary group with actual _id from the response
       setGroups((currentGroups) =>
         currentGroups.map((group) =>
           group._id === optimisticNewGroup._id
@@ -317,7 +278,6 @@ export default function Page() {
     }
   };
 
-  // Fetch groups data on component mount
   useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -340,7 +300,6 @@ export default function Page() {
     fetchGroups();
   }, [toast]);
 
-  // Fetching different event types
   useEffect(() => {
     const fetchEventTypes = async () => {
       try {
@@ -358,26 +317,46 @@ export default function Page() {
     fetchEventTypes();
   }, []);
 
-  
-  
+  const mockEvent = {
+    _id: "mockId",
+    eventName,
+    eventImage: imagePreview,
+    eventType,
+    checklist: checkList,
+    location,
+    description,
+    wheelchairAccessible: accessibilityAccommodation === "Yes",
+    spanishSpeakingAccommodation: language === "Yes",
+    startTime: eventStart ? parseISO(eventStart) : new Date(),
+    endTime: eventEnd ? parseISO(eventEnd) : new Date(),
+    volunteerEvent: eventType === "Volunteer",
+    groupsAllowed: organizationIds,
+    registeredIds: [],
+    attendeeIds: [],
+  };
+
+  const groupNames: Record<string, string> = {};
+  groups.forEach(group => {
+    groupNames[group._id] = group.group_name;
+  });
+
   return (
     <Box p={8} mx="10">
       <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
         Create New Event
       </Text>
 
-    {/* image uploading */}
-    <Flex flexDir={{ base: "column", md: "row" }} flex="1" gap={{base: "10px", md: "50px"}}>
+      <Flex flexDir={{ base: "column", md: "row" }} flex="1" gap={{ base: "10px", md: "50px" }}>
         <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
-            <Input
+          <Input
             id="cover-image"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
             ref={fileInputRef}
-            hidden // Hide the actual input
-            />
-            <Box
+            hidden
+          />
+          <Box
             position="relative"
             borderWidth="1px"
             p="4"
@@ -392,14 +371,14 @@ export default function Page() {
             justifyContent="center"
             alignItems="center"
             flexDirection="column"
-            >
+          >
             {!imagePreview ? (
-                <>
+              <>
                 <Text>Upload Image</Text>
                 <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
-                </>
+              </>
             ) : (
-                <Image
+              <Image
                 src={imagePreview}
                 alt="Event cover preview"
                 position="absolute"
@@ -409,9 +388,9 @@ export default function Page() {
                 height="100%"
                 objectFit="cover"
                 zIndex={0}
-                />
+              />
             )}
-            </Box>
+          </Box>
         </FormControl>
         <ImageSelector setPreselected={setPreselected} setImageURL={setImagePreview}></ImageSelector>
       </Flex>
@@ -442,7 +421,6 @@ export default function Page() {
                   label: type,
                 }))}
                 onChange={(option) => {
-                  console.log(option);
                   setEventType(option ? option.value : "");
                 }}
                 chakraStyles={{
@@ -561,10 +539,17 @@ export default function Page() {
         </VStack>
         <Flex flex="1">
           <VStack alignItems="flex-start">
-            <Text fontWeight="bold" mb="-4">
+              <Text fontWeight="bold">
+                Event Preview
+              </Text>
+              <EventPreviewComponent
+                event={mockEvent}
+                groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
+                onClick={() => {}}
+              />
+            <Text fontWeight="bold" mb="-4" mt="5">
               Date/Time
             </Text>
-            {/* MiniCalendar */}
             <FormControl ml="-4" isRequired>
               <MiniCalendar
                 onTimeChange={(start, end) => handleTimeChange(start, end)}
@@ -574,6 +559,7 @@ export default function Page() {
           </VStack>
         </Flex>
       </Flex>
+      
       <Box display="flex" justifyContent="center" mt={4}>
         <Button
           colorScheme="yellow"
@@ -587,3 +573,5 @@ export default function Page() {
     </Box>
   );
 }
+
+export default Page;
