@@ -346,8 +346,20 @@ const Page: React.FC = () => {
         Create New Event
       </Text>
 
-      <Flex flexDir={{ base: "column", md: "row" }} flex="1" gap={{ base: "10px", md: "50px" }}>
-        <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
+      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
+        <VStack alignItems="flex-start" mb={4}>
+            <Text fontWeight="bold">Event Preview</Text>
+            <EventPreviewComponent
+              event={mockEvent}
+              groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
+              onClick={() => {}}
+            />
+          <HStack>
+            <FormControl
+          onClick={promptFileInput}
+          cursor="pointer"
+          width={{ base: "10%", md: "100%", }}
+        >
           <Input
             id="cover-image"
             type="file"
@@ -392,11 +404,21 @@ const Page: React.FC = () => {
             )}
           </Box>
         </FormControl>
-        <ImageSelector setPreselected={setPreselected} setImageURL={setImagePreview}></ImageSelector>
-      </Flex>
+        <ImageSelector></ImageSelector>
+        </HStack>
+        <Text fontWeight="bold" mb="-4" mt="5">
+            Date/Time
+          </Text>
+          <FormControl isRequired>
+            <MiniCalendar
+              onTimeChange={(start, end) => handleTimeChange(start, end)}
+              onDateChange={(date) => handleDateChangeFromCalendar(date)}
+            />
+          </FormControl>
+        </VStack>
+        
 
-      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
-        <VStack spacing={4} align="stretch" flex="1">
+        <Flex flex="1" direction="column" gap={4}>
           <FormControl isRequired>
             <FormLabel htmlFor="event-name" fontWeight="bold">
               Event Name
@@ -536,30 +558,9 @@ const Page: React.FC = () => {
             </FormLabel>
             <MDEditor className={style.preview} value={checkList} onChange={(e) => setChecklist(e || "")} data-color-mode="light"/>
           </FormControl>
-        </VStack>
-        <Flex flex="1">
-          <VStack alignItems="flex-start">
-              <Text fontWeight="bold">
-                Event Preview
-              </Text>
-              <EventPreviewComponent
-                event={mockEvent}
-                groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
-                onClick={() => {}}
-              />
-            <Text fontWeight="bold" mb="-4" mt="5">
-              Date/Time
-            </Text>
-            <FormControl ml="-4" isRequired>
-              <MiniCalendar
-                onTimeChange={(start, end) => handleTimeChange(start, end)}
-                onDateChange={(date) => handleDateChangeFromCalendar(date)}
-              />
-            </FormControl>
-          </VStack>
         </Flex>
       </Flex>
-      
+
       <Box display="flex" justifyContent="center" mt={4}>
         <Button
           colorScheme="yellow"
