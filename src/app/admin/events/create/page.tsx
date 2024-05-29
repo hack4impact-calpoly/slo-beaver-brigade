@@ -71,7 +71,7 @@ export default function Page() {
   const [activeDate, setActiveDate] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
   const [onlyInvitees, setOnlyInvitees] = useState<boolean>(false)
-  const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(true)
+  const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false)
 
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -481,7 +481,7 @@ export default function Page() {
 
             <FormControl width="48%">
               <FormLabel htmlFor="organization" fontWeight="bold">
-                Organization
+                Groups
               </FormLabel>
               <CreatableSelect
                 id="organization"
@@ -597,7 +597,7 @@ export default function Page() {
           </FormControl>
           {onlyInvitees && groups && <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
           <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>
-          <div className="flex flex-row gap-4 justify-center"> Notify Invitees: <Checkbox onChange={(e) => setSendEmailInvitees(e.currentTarget.checked)}></Checkbox></div>
+          <div className="flex flex-row gap-4 justify-center"> Notify Invitees: <Checkbox checked={sendEmailInvitees} onChange={() => setSendEmailInvitees((checked) => !checked)}></Checkbox></div>
             </div>}
 
           <FormControl isRequired>

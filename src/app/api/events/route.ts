@@ -34,6 +34,8 @@ export async function GET(request: Request) {
                     { groupsOnly: false },
                     { groupsOnly: { $exists: false } },
                     { groupsAllowed: { $in: userGroupIds } },
+                    { registeredIds: { $in: [user._id] } },
+                    { attendeeIds: { $in: [user._id] } },
                 ],
             })
                 .sort({ startTime: sort })

@@ -14,7 +14,7 @@ export type IEvent = {
     startTime: Date;
     endTime: Date;
     volunteerEvent: boolean;
-    groupsAllowed: string[] | null;
+    groupsAllowed: string[];
     attendeeIds: string[];
     registeredIds: string[];
 };
