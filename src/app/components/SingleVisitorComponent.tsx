@@ -18,6 +18,7 @@ import {
   Tbody,
   Td,
   useDisclosure,
+  Center,
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
@@ -128,51 +129,38 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
               <Text>
                 {visitorData.firstName} {visitorData.lastName}
               </Text>
-              {userRole === "user" ? (
-                <Button
-                  mt={2}
-                  color="#d93636"
-                  bg="white"
-                  border="2px"
-                  _hover={{ bg: "#d93636", color: "white" }}
-                  onClick={handleRoleChange}
-                >
-                  Make Admin
-                </Button>
-              ) : (
-                <Button
-                  mt={2}
-                  bg="#E0AF48"
-                  color="black"
-                  _hover={{ bg: "#C19137", color: "black" }}
-                  onClick={handleRoleChange}
-                >
-                  Revert to User
-                </Button>
-              )}
+              
             </Flex>
           </ModalHeader>
           <ModalCloseButton />
           <hr />
           <ModalBody
-            style={{ display: "flex", padding: "0%" }}
+            style={{ display: "flex", flexDirection: "column", padding: "0%" }}
             className={styles.parentContainer}
           >
-            <Box className={styles.infoBox}>
+            <Box className={styles.infoBox} >
               <Text className={styles.visitorInfoSmallHeader}>
-                Personal Info
+                  Personal Info
               </Text>
-              <Text className={styles.fieldInfo}>
-                Email: {visitorData.email ? visitorData.email : "N/A"}
-              </Text>
-              <Text className={styles.fieldInfo}>
-                Phone:{" "}
-                {visitorData.phoneNumber ? visitorData.phoneNumber : "N/A"}
-              </Text>
-              <Text className={styles.fieldInfo}>
-                Zipcode: {" "}
-                {visitorData.zipcode ? visitorData.zipcode : "N/A"}
-              </Text>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div style={{ width: "45%" }}>
+                  <Text className={styles.fieldInfo}>
+                  <Text as="span" className={styles.boldText}>Email</Text> <br></br> {visitorData.email ? visitorData.email : "N/A"}
+                  </Text>
+                  <Text className={styles.fieldInfo}>
+                     <Text as="span" className={styles.boldText}>Zipcode</Text><br></br> {visitorData.zipcode ? visitorData.zipcode : "N/A"}
+                  </Text>
+                </div>
+                <div style={{ width: "45%" }}>
+                  <Text className={styles.fieldInfo}>
+                  <Text as="span" className={styles.boldText}>Phone</Text> <br></br> {visitorData.phoneNumber ? visitorData.phoneNumber : "N/A"}
+                  </Text>
+                  <Text className={styles.fieldInfo}>
+                  <Text as="span" className={styles.boldText}>Receive Newsletter</Text> <br></br> {visitorData.receiveNewsletter ? "Yes" : "No"}
+                  </Text>
+                </div>
+              </div>
+
             </Box>
             <Box className={styles.infoBox}>
               <Text className={styles.visitorInfoSmallHeader}>
@@ -202,11 +190,35 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                   </Table>
                 </div>
               ) : (
-                <Text className={styles.fieldInfo}>
-                  No events attended
+                <Text className={styles.fieldInfo} style={{ textAlign: "center" }}>
+                  <Text as="span" className={styles.boldText}>No Events Attended</Text>
                 </Text>
               )}
             </Box>
+            <Flex direction="column" align="center" p={4}>
+            {userRole === "user" ? (
+                <Button
+                  mt={2}
+                  color="#d93636"
+                  bg="white"
+                  border="2px"
+                  _hover={{ bg: "#d93636", color: "white" }}
+                  onClick={handleRoleChange}
+                >
+                  Make Admin
+                </Button>
+              ) : (
+                <Button
+                  mt={2}
+                  bg="#E0AF48"
+                  color="black"
+                  _hover={{ bg: "#C19137", color: "black" }}
+                  onClick={handleRoleChange}
+                >
+                  Revert to User
+                </Button>
+              )}
+              </Flex>
           </ModalBody>
         </ModalContent>
       </Modal>

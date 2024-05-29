@@ -220,9 +220,14 @@
 
 .tableContainer {
   overflow: auto;
-  height: 35vh;
+  height: auto;
+  padding-bottom: 5px;
   max-width: 800px; 
   margin: 0 auto;
+}
+
+.boldText {
+  font-weight: bold;
 }
 
 .visitorTable {
@@ -245,7 +250,7 @@
   border-radius: 10px;
   text-align: left;
   padding: 2%;
-  margin: 7% 0% 3% 0%;
+  margin: 3% 0% 3% 0%;
 }
 
 .fieldInfo {
