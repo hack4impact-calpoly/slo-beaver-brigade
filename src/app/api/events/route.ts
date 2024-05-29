@@ -6,6 +6,8 @@ import { revalidateTag } from "next/cache";
 import { SortOrder } from "mongoose";
 import { cookies } from "next/headers";
 import { BareBoneIUser } from "app/components/NavbarParents";
+import User from "database/userSchema";
+import { IUser } from "app/admin/users/page";
 
 export async function GET(request: Request) {
     await connectDB(); // connect to db
@@ -23,7 +25,17 @@ export async function GET(request: Request) {
         const userCookie = cookies().get("user")?.value;
         if (userCookie) {
             user = JSON.parse(userCookie) as BareBoneIUser;
+            // query db for user with _id of user from cookie
+            const userDoc = (await User.findById(user._id)
+                .lean()
+                .orFail()) as IUser;
 
+            if (userDoc.role === "admin") {
+                const events = await Event.find()
+                    .sort({ startTime: sort })
+                    .lean();
+                return NextResponse.json(events, { status: 200 });
+            }
             // Query for all groups that the user is in
             const userGroups = await Group.find({ groupees: user._id }).lean();
             const userGroupIds = userGroups.map((group) => group._id);
