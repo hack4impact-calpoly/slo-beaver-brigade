@@ -5,7 +5,7 @@ import { fallbackBackgroundImage } from "app/lib/random";
 
 interface EventPreviewProps {
   event: IEvent;
-  groupName: String;
+  groupName: string;
   onClick: () => void;
 }
 
@@ -14,39 +14,47 @@ const EventCard: React.FC<EventPreviewProps> = ({
   groupName,
   onClick,
 }) => {
-  // formats date saturday, february, 17th
   const formatDate = (date: Date | string): string => {
+    if (!date) return "Invalid date";
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
       month: "long",
       day: "numeric",
     };
-    return new Intl.DateTimeFormat("en-US", options).format(new Date(date));
+    const parsedDate = new Date(date);
+    return isNaN(parsedDate.getTime()) ? "Invalid date" : new Intl.DateTimeFormat("en-US", options).format(parsedDate);
   };
 
-  // format time range
   const formatTimeRange = (
     startTime: Date | string,
     endTime: Date | string
   ): string => {
+    if (!startTime || !endTime) return "Invalid time range";
     const timeOptions: Intl.DateTimeFormatOptions = {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
     };
+    const parsedStartTime = new Date(startTime);
+    const parsedEndTime = new Date(endTime);
+
+    if (isNaN(parsedStartTime.getTime()) || isNaN(parsedEndTime.getTime())) {
+      return "Invalid time range";
+    }
+
     const formattedStartTime = new Intl.DateTimeFormat(
       "en-US",
       timeOptions
-    ).format(new Date(startTime));
+    ).format(parsedStartTime);
     const formattedEndTime = new Intl.DateTimeFormat(
       "en-US",
       timeOptions
-    ).format(new Date(endTime));
+    ).format(parsedEndTime);
 
     return `${formattedStartTime} - ${formattedEndTime}`;
   };
 
-  const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
+  const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg");
   return (
     <div
       className={style.eventCard}
@@ -70,7 +78,7 @@ const EventCard: React.FC<EventPreviewProps> = ({
         </div>
         <div className={style.visitorCount}>
           <h2>{event.registeredIds.length}</h2>
-          <h3>{event.registeredIds.length == 1 ? " Visitor" : "Visitors"}</h3>
+          <h3>{event.registeredIds.length === 1 ? " Visitor" : " Visitors"}</h3>
         </div>
       </div>
     </div>
