@@ -1,7 +1,11 @@
+import connectDB from "database/db";
+import { NextRequest, NextResponse } from "next/server";
+import Group from "@database/groupSchema";
+
 import { formatDate, formatDateTimeRange } from "app/lib/dates";
 import Event, { IEvent } from "database/eventSchema";
-import { NextResponse, NextRequest } from "next/server";
 import nodemailer from "nodemailer";
+import User from "database/userSchema";
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -21,7 +25,7 @@ function formatDateToGoogleCalendar(date: Date) {
     return date.toISOString().replace(/-|:|\.\d\d\d/g, "");
 }
 
-async function send(emails: string[], event: IEvent) {
+async function sendInvite(emails: string[], event: IEvent) {
     const urlEncodedName = encodeURIComponent(event.eventName);
     const startTime = formatDateToGoogleCalendar(event.startTime);
     const endTime = formatDateToGoogleCalendar(event.endTime);
@@ -33,14 +37,14 @@ async function send(emails: string[], event: IEvent) {
             {
                 from: process.env.GMAIL_USER,
                 to: emails,
-                subject: `${event.eventName} Signup Confirmation`,
+                subject: `${event.eventName} Invite`,
                 html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Event Confirmation</title>
+<title>${event.eventType} Invite</title>
 <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; }
     .container { width: 80%; margin: 0 auto; padding: 20px; }
@@ -50,12 +54,12 @@ async function send(emails: string[], event: IEvent) {
 </head>
 <body>
 <div class="container">
-    <h1>${event.eventName} Signup Confirmation</h1>
-    <p>Thank you for signing up for our event! We are excited to have you join us.</p>
+    <h1>${event.eventName} (${event.eventType}) Invite</h1>
+    <p>You have been invited to sign up for ${event.eventName}.</p>
     <p>Date: <strong>${formatDate(event.startTime)}</strong></p>
     <p>Time: <strong>${formatDateTimeRange(event.startTime, event.endTime)}</strong></p>
-    <p>Please add this event to your calendar:</p>
-    <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=${urlEncodedName}&dates=${startTime}/${endTime}&details=${encodedDescription}&location=${encodedLocation}" class="button">Add to Google Calendar</a>
+    <p>If you would like to join please register for the event, it will be the first event to show in unregistered events.</p>
+    <a href="${process.env.BASE_URL}" class="button">Sign Up</a>
     
     <div class="footer">
         <p>If you have any questions, please do not hesitate to contact us at <a href="mailto:info@example.com">info@example.com</a>.</p>
@@ -85,13 +89,28 @@ export async function POST(
 ) {
     // get event
     // get email to send to
-    const { email } = await req.json();
-    if (!email) {
-        return NextResponse.json("No email provided.", { status: 200 });
+    const { groupIds } = await req.json();
+    if (!groupIds) {
+        return NextResponse.json("No groups provided.", { status: 200 });
     }
     try {
+        // flat map all user ids into one set
+        const userIds = new Set<string>();
+        const emails: string[] = [];
+
         const event = await Event.findById(params.eventId).orFail();
-        send([email], event);
+        const groups = await Group.find({ _id: { $in: groupIds } }).lean();
+        // make a query to User to get all emailsj
+        for (let group of groups) {
+            for (let userId of group.groupees) {
+                userIds.add(userId);
+            }
+        }
+        const users = await User.find({
+            _id: { $in: Array.from(userIds) },
+        }).lean();
+        users.forEach((user) => emails.push(user.email));
+        sendInvite(emails, event);
         console.log("sent email.");
         return NextResponse.json("Sent email.");
     } catch (err) {

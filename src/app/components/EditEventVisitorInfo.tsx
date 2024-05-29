@@ -9,6 +9,7 @@ import { IWaiver } from "database/digitalWaiverSchema";
 import { removeAttendee } from "app/actions/serveractions";
 import { addAttendee } from "app/actions/useractions";
 import SingleVisitorComponent from "./SingleVisitorComponent";
+import { useEventId } from "app/lib/swrfunctions";
 
 const placeholderUser: IUser = {
   _id: "placeholder",
@@ -31,23 +32,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [visitorData, setVisitorData] = useState<{
     [key: string]: { parent: IUser; dependents: IUser[] };
   }>({});
-  const [eventData, setEventData] = useState<IEvent>({
-    _id: "",
-    eventName: "",
-    eventImage: null,
-    checklist: "N/A",
-    eventType: "",
-    location: "",
-    description: "",
-    wheelchairAccessible: false,
-    spanishSpeakingAccommodation: false,
-    startTime: new Date(0),
-    endTime: new Date(0),
-    volunteerEvent: false,
-    groupsAllowed: [],
-    registeredIds: [],
-    attendeeIds: [],
-  });
+  const {eventData, isLoading,isError} = useEventId(eventId)
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -55,7 +40,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         [group.parent, ...group.dependents].map((visitor) => visitor.email)
       )
       .filter((email) => !!email);
-    const subject = encodeURIComponent(eventData.eventName + " Update");
+    const subject = encodeURIComponent(eventData?.eventName + " Update");
     return `mailto:${emails.join(",")}?subject=${subject}`;
   };
 
@@ -65,25 +50,15 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     window.location.href = mailtoLink;
   };
 
-  useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        const response = await fetch(`/api/events/${eventId}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error, status: ${response.status}`);
-        }
-        const data = await response.json();
-        data.startTime = new Date(data.startTime);
-        data.endTime = new Date(data.endTime);
-        setEventData(data);
-      } catch (error) {
-        console.error("Error fetching event data:", error);
-      }
-    };
-    fetchEventData();
-  }, [eventId]);
+
 
   useEffect(() => {
+    if (isLoading){
+        return
+    }
+    if (!eventData){
+        return
+    }
     const fetchVisitorData = async () => {
       if (eventData.eventName !== "") {
         const visitors: {
@@ -164,7 +139,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     };
     fetchVisitorData();
-  }, [eventData, eventId]);
+  }, [isLoading]);
 
   async function handleCheck(checked: boolean, userid: string) {
     if (checked) {
@@ -182,7 +157,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
 
   return (
     <Box className={styles.eventInformation}>
-      {loading ? (
+      {isLoading || !eventData  || loading? (
         <div className={styles.visitorHeadingLoading}>
           Visitors
           <Spinner className={styles.spinner} speed="0.8s" thickness="3px" />

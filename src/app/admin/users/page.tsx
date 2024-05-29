@@ -17,6 +17,8 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { CSVLink } from "react-csv";
 import SingleVisitorComponent from "@components/SingleVisitorComponent";
 import { Schema } from "mongoose";
+import ViewGroups from "app/components/ViewGroups";
+import { useUsers } from "app/lib/swrfunctions";
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;
@@ -64,7 +66,8 @@ const capitalizeFirstLetter = (str: string): string => {
 
 const UserList = () => {
   // states
-  const [users, setUsers] = useState<IUserWithHours[]>([]);
+  const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+  const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
     value: "firstName",
@@ -101,20 +104,16 @@ const UserList = () => {
     }
   };
 
-  // fetch users from db
+  // fetch customUser from db
   const fetchUsers = async () => {
-    setLoading(true);
+   
+    if (!users){
+        return
+    }
     try {
-      const response = await fetch("/api/user");
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch users: ${response.status} ${response.statusText}`
-        );
-      }
-      const data = await response.json();
 
       const usersWithEventNames = await Promise.all(
-        data.users.map(async (user: IUser) => {
+        users.map(async (user: IUser) => {
           const eventsAttendedNames = await Promise.all(
             user.eventsAttended.map((event) => fetchEventName(event.eventId))
           );
@@ -131,17 +130,20 @@ const UserList = () => {
 
       setUsers(usersWithEventNames as IUserWithHours[]);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching customUser:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    if (isLoading || isError){
+            return;
+        }
     fetchUsers();
-  }, []);
+  }, [isError, isLoading]);
 
-  const filteredUsers = users
+  const filteredUsers = customUser
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -158,15 +160,8 @@ const UserList = () => {
     { value: "lastName", label: "Last Name" },
   ];
 
-  if (loading) {
-    return (
-      <Text fontSize="lg" textAlign="center">
-        Loading users...
-      </Text>
-    );
-  }
 
-  const csvData = users.map((user) => ({
+  const csvData = customUser.map((user) => ({
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -250,7 +245,6 @@ const UserList = () => {
             />
           </div>
         </div>
-        <div className={style.csvButton}>
           <CSVLink
             data={csvData}
             headers={headers}
@@ -260,49 +254,55 @@ const UserList = () => {
           >
             Export User List
           </CSVLink>
+          <ViewGroups/>
         </div>
-      </div>
       <div className={style.tableContainer}>
-        <Box>
-          <Table
-            variant="striped"
-            size={tableSize}
-            className={style.customTable}
-          >
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Email</Th>
-                <Th>Total Hours</Th>
-                <Th>Role</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {filteredUsers.length === 0 ? (
+        {/* {isLoading && !users  && !isError && <div>Loading...</div>}
+        {isError && <div>Error occurred.</div>} */}
+
+        {isLoading && !isError && 'Loading...'}
+        {isError && 'Error occurred.'}
+        {!isLoading && !loading &&
+            <Box>
+            <Table
+                variant="striped"
+                size={tableSize}
+                className={style.customTable}
+            >
+                <Thead>
                 <Tr>
-                  <Td colSpan={5}>
-                    <Text fontSize="lg" textAlign="center">
-                      No users found
-                    </Text>
-                  </Td>
+                    <Th>Name</Th>
+                    <Th>Email</Th>
+                    <Th>Total Hours</Th>
+                    <Th>Role</Th>
+                    <Th></Th>
                 </Tr>
-              ) : (
-                filteredUsers.map((user) => (
-                  <Tr key={user._id}>
-                    <Td>{`${user.firstName} ${user.lastName}`}</Td>
-                    <Td>{user.email}</Td>
-                    <Td>{user.totalHoursFormatted}</Td>
-                    <Td>{capitalizeFirstLetter(user.role)}</Td>
-                    <Td>
-                      <SingleVisitorComponent visitorData={user} />
+                </Thead>
+                <Tbody>
+                {filteredUsers.length === 0 ? (
+                    <Tr>
+                    <Td colSpan={5} textAlign="center">
+                        No users found.
                     </Td>
-                  </Tr>
-                ))
-              )}
-            </Tbody>
-          </Table>
-        </Box>
+                    </Tr>
+                ) : (
+                    filteredUsers.map((user) => (
+                    <Tr key={user._id}>
+                        <Td>{`${user.firstName} ${user.lastName}`}</Td>
+                        <Td>{user.email}</Td>
+                        <Td>{user.totalHoursFormatted}</Td>
+
+                        <Td>{capitalizeFirstLetter(user.role)}</Td>
+                        <Td>
+                        <SingleVisitorComponent visitorData={user} />
+                        </Td>
+                    </Tr>
+                    ))
+                )}
+                </Tbody>
+                </Table>
+            </Box>
+        }
       </div>
     </div>
   );

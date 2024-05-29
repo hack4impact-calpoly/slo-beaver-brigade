@@ -37,8 +37,8 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
             {
                 $pull: {
                     eventsRegistered: { eventId: eventId },
-                    eventsAttended: eventId
-                }
+                    eventsAttended: eventId,
+                },
             }
         );
 
@@ -95,6 +95,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 volunteerEvent,
                 groupsAllowed,
                 registeredIds,
+                groupsOnly,
             }: IEvent = await req.json();
             if (location) {
                 event.location = location;
@@ -130,6 +131,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (eventType) {
                 event.eventType = eventType;
             }
+            event.groupsOnly = groupsOnly;
         }
         await event.save();
         revalidateTag("events");

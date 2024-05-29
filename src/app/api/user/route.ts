@@ -9,8 +9,8 @@ import { cookies } from "next/headers";
 export async function GET() {
     try {
         await connectDB();
-        const users = await User.find({});
-        return NextResponse.json({ users });
+        const users = await User.find({}).lean().orFail();
+        return NextResponse.json(users);
     } catch (error) {
         return NextResponse.json(
             { error: (error as Error).message },

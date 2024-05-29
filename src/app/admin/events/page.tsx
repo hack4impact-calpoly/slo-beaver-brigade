@@ -57,7 +57,7 @@ const EventPreview = () => {
       const res = await fetch(`/api/groups/${groupId}`);
       if (res.ok) {
         const data = await res.json();
-        return data.group.group_name;
+        return data.group_name;
       } else {
         console.error("Error fetching group name:", res.statusText);
         return "SLO Beaver Brigade";
