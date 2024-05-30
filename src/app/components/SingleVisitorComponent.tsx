@@ -125,7 +125,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
               width: "100%",
             }}
           >
-            <Flex direction="column" align="center" p={4}>
+            <Flex direction="column" align="left" p={4}>
               <Text>
                 {visitorData.firstName} {visitorData.lastName}
               </Text>
