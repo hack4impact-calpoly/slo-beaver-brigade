@@ -346,78 +346,86 @@ const Page: React.FC = () => {
         Create New Event
       </Text>
 
-      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
-        <VStack alignItems="flex-start" mb={4}>
-            <Text fontWeight="bold">Event Preview</Text>
-            <EventPreviewComponent
-              event={mockEvent}
-              groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
-              onClick={() => {}}
-            />
-          <HStack>
-            <FormControl
-          onClick={promptFileInput}
-          cursor="pointer"
-          width={{ base: "10%", md: "100%", }}
-        >
-          <Input
-            id="cover-image"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            ref={fileInputRef}
-            hidden
-          />
-          <Box
-            position="relative"
-            borderWidth="1px"
-            p="4"
-            mt="4"
-            textAlign="center"
-            h="64"
-            borderRadius="20px"
-            overflow="hidden"
-            width="100%"
-            bg="gray.200"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            flexDirection="column"
-          >
-            {!imagePreview ? (
-              <>
-                <Text>Upload Image</Text>
-                <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
-              </>
-            ) : (
-              <Image
-                src={imagePreview}
-                alt="Event cover preview"
-                position="absolute"
-                top={0}
-                left={0}
-                width="100%"
-                height="100%"
-                objectFit="cover"
-                zIndex={0}
+      <Flex direction={{ base: "column", md: "row" }} gap={10} mb={6}> 
+        <Box>
+          <VStack alignItems="flex-start" mb={4} width={{ base: "100%", md: "30%" }}>
+            <Box>
+              <Text fontWeight="bold" textAlign="left" mb="2">Event Preview</Text>
+              <VStack alignContent="center">
+              <EventPreviewComponent
+                event={mockEvent}
+                groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
+                onClick={() => {}}
               />
-            )}
-          </Box>
-        </FormControl>
-        <ImageSelector></ImageSelector>
-        </HStack>
-        <Text fontWeight="bold" mb="-4" mt="5">
-            Date/Time
-          </Text>
-          <FormControl isRequired>
-            <MiniCalendar
-              onTimeChange={(start, end) => handleTimeChange(start, end)}
-              onDateChange={(date) => handleDateChangeFromCalendar(date)}
-            />
-          </FormControl>
-        </VStack>
+              <HStack width="100%">
+                <FormControl
+                  onClick={promptFileInput}
+                  cursor="pointer"
+                  width="50%"
+                >
+                  <Input
+                    id="cover-image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    ref={fileInputRef}
+                    hidden
+                  />
+                  <Box
+                    position="relative"
+                    borderWidth="1px"
+                    p="4"
+                    textAlign="center"
+                    h="32"
+                    mt="2"
+                    borderRadius="10px"
+                    overflow="hidden"
+                    width="100%"
+                    bg="gray.200"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    flexDirection="column"
+                  >
+                    {!imagePreview ? (
+                      <>
+                        <Text>Upload Image</Text>
+                        <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
+                      </>
+                    ) : (
+                      <Image
+                        src={imagePreview}
+                        alt="Event cover preview"
+                        position="absolute"
+                        top={0}
+                        left={0}
+                        width="100%"
+                        height="100%"
+                        objectFit="cover"
+                        zIndex={0}
+                      />
+                    )}
+                  </Box>
+                </FormControl>
+                <ImageSelector width="50%" h="32" mt="2" borderRadius="10px" setPreselected={setPreselected} setImageURL={setImagePreview}/>
+              </HStack>
+              
+              <Text fontWeight="bold" mt="5" textAlign="left">
+                Date/Time
+              </Text>
+              <Flex justifyContent="center">
+                <FormControl isRequired>
+                  <MiniCalendar
+                    onTimeChange={(start, end) => handleTimeChange(start, end)}
+                    onDateChange={(date) => handleDateChangeFromCalendar(date)}
+                  />
+                </FormControl>
+              </Flex>
+              </VStack>
+            </Box>
+          </VStack>
+        </Box>
         
-
         <Flex flex="1" direction="column" gap={4}>
           <FormControl isRequired>
             <FormLabel htmlFor="event-name" fontWeight="bold">
