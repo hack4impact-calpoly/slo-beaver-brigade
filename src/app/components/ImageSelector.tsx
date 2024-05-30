@@ -4,13 +4,13 @@ import { getAllImagesS3, removeImageS3 } from "app/actions/imageactions";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
+import { BoxProps } from "@chakra-ui/react";
 import { fallbackBackgroundImage } from "app/lib/random";
 
 type Props = {
     setImageURL: Dispatch<SetStateAction<string | null>>, 
     setPreselected: Dispatch<SetStateAction<boolean>>, 
-
-}
+} & BoxProps;
 
 
 
@@ -69,7 +69,7 @@ const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
 
 // TODO: add parent that loads images and passes to selector
 
-export default function ImageSelector({setImageURL, setPreselected}: Props) {
+export default function ImageSelector({setImageURL, setPreselected, ...rest}: Props) {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [images, setImages] = useState<string[]>([])
@@ -91,16 +91,17 @@ export default function ImageSelector({setImageURL, setPreselected}: Props) {
           p="4"
           mt="4"
           textAlign="center"
-          h="64"
+          h="64" //this need to change
           borderRadius="20px"
           overflow="hidden"
           bg="gray.200"
-          width="100%"
+          width= "100%"
           display="flex"
           justifyContent="center"
           alignItems="center"
           flexDirection="column"
           onClick={onOpen}
+          {...rest}
         >
               <Text>Select From Existing Images</Text>
               <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
