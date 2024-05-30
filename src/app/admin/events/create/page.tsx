@@ -351,7 +351,13 @@ const Page: React.FC = () => {
       <VStack alignItems="flex-start" mb={4} width="100%">
         <Box width="100%">
         <VStack alignContent="center">
-          <Text fontWeight="bold" textAlign="left" zIndex="0">Event Preview</Text>
+          <Text fontWeight="bold"
+            position="absolute"
+            top="0"
+            left="0"
+            zIndex="1"
+            background="rgba(255, 255, 255, 0.8)" // Optional: Adds a background to make text more readable
+            p={1}>Event Preview</Text>
             <Box alignContent="center">
             <EventPreviewComponent
               event={mockEvent}
