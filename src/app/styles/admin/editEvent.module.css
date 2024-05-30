@@ -247,9 +247,10 @@
   font-family: "Lato";
   font-weight: bold;
   font-size: 15px;
-  border-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   text-align: left;
-  padding: 2%;
+  padding: 1%;
 }
 
 .fieldInfo {
@@ -257,8 +258,12 @@
   margin: 3% 5% 3% 5%;
   font-size: 14px;
   font-family: "Lato";
+
 }
 
+.accountInfo{
+  padding: 8px
+}
 .editEvent {
   width: 45%;
   height: 100%;
@@ -326,6 +331,8 @@
 
 .tableContainer {
   font-size: 0.7rem;
+  margin-right:auto;
+  margin-left:0px;
 }
 
 .link {
