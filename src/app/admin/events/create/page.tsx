@@ -341,245 +341,245 @@ const Page: React.FC = () => {
   });
 
   return (
-    <Box p={8} mx="10">
-      <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
-        Create New Event
-      </Text>
+    <Box p={{ base: 4, md: 8 }} mx={{ base: 2, md: 10 }}>
+  <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
+    Create New Event
+  </Text>
 
-      <Flex direction={{ base: "column", md: "row" }} gap={10} mb={6}> 
-        <Box>
-          <VStack alignItems="flex-start" mb={4} width={{ base: "100%", md: "30%" }}>
-            <Box>
-              <Text fontWeight="bold" textAlign="left" mb="2">Event Preview</Text>
-              <VStack alignContent="center">
-              <EventPreviewComponent
-                event={mockEvent}
-                groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
-                onClick={() => {}}
-              />
-              <HStack width="100%">
-                <FormControl
-                  onClick={promptFileInput}
-                  cursor="pointer"
-                  width="50%"
+  <Flex direction={{ base: "column", md: "row" }} gap={6} mb={6}> 
+    <Box flex={{ base: "1", md: "0 1 30%" }}>
+      <VStack alignItems="flex-start" mb={4} width="100%">
+        <Box width="100%">
+          <Text fontWeight="bold" textAlign="left" mb="2">Event Preview</Text>
+          <VStack alignContent="center">
+            <EventPreviewComponent
+              event={mockEvent}
+              groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
+              onClick={() => {}}
+            />
+            <HStack width="100%">
+              <FormControl
+                onClick={promptFileInput}
+                cursor="pointer"
+                width="50%"
+              >
+                <Input
+                  id="cover-image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  ref={fileInputRef}
+                  hidden
+                />
+                <Box
+                  position="relative"
+                  borderWidth="1px"
+                  p="4"
+                  textAlign="center"
+                  h="32"
+                  mt="2"
+                  borderRadius="10px"
+                  overflow="hidden"
+                  width="100%"
+                  bg="gray.200"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
                 >
-                  <Input
-                    id="cover-image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    ref={fileInputRef}
-                    hidden
-                  />
-                  <Box
-                    position="relative"
-                    borderWidth="1px"
-                    p="4"
-                    textAlign="center"
-                    h="32"
-                    mt="2"
-                    borderRadius="10px"
-                    overflow="hidden"
-                    width="100%"
-                    bg="gray.200"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    flexDirection="column"
-                  >
-                    {!imagePreview ? (
-                      <>
-                        <Text>Upload Image</Text>
-                        <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
-                      </>
-                    ) : (
-                      <Image
-                        src={imagePreview}
-                        alt="Event cover preview"
-                        position="absolute"
-                        top={0}
-                        left={0}
-                        width="100%"
-                        height="100%"
-                        objectFit="cover"
-                        zIndex={0}
-                      />
-                    )}
-                  </Box>
-                </FormControl>
-                <ImageSelector width="50%" h="32" mt="2" borderRadius="10px" setPreselected={setPreselected} setImageURL={setImagePreview}/>
-              </HStack>
-              
-              <Text fontWeight="bold" mt="5" textAlign="left">
-                Date/Time
-              </Text>
-              <Flex justifyContent="center">
-                <FormControl isRequired>
-                  <MiniCalendar
-                    onTimeChange={(start, end) => handleTimeChange(start, end)}
-                    onDateChange={(date) => handleDateChangeFromCalendar(date)}
-                  />
-                </FormControl>
-              </Flex>
-              </VStack>
-            </Box>
+                  {!imagePreview ? (
+                    <>
+                      <Text>Upload Image</Text>
+                      <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
+                    </>
+                  ) : (
+                    <Image
+                      src={imagePreview}
+                      alt="Event cover preview"
+                      position="absolute"
+                      top={0}
+                      left={0}
+                      width="100%"
+                      height="100%"
+                      objectFit="cover"
+                      zIndex={0}
+                    />
+                  )}
+                </Box>
+              </FormControl>
+              <ImageSelector width="50%" h="32" mt="2" borderRadius="10px" setPreselected={setPreselected} setImageURL={setImagePreview} />
+            </HStack>
+            <Text fontWeight="bold" mt="5" textAlign="left">
+              Date/Time
+            </Text>
+            <Flex justifyContent="center">
+              <FormControl isRequired>
+                <MiniCalendar
+                  onTimeChange={(start, end) => handleTimeChange(start, end)}
+                  onDateChange={(date) => handleDateChangeFromCalendar(date)}
+                />
+              </FormControl>
+            </Flex>
           </VStack>
         </Box>
-        
-        <Flex flex="1" direction="column" gap={4}>
-          <FormControl isRequired>
-            <FormLabel htmlFor="event-name" fontWeight="bold">
-              Event Name
-            </FormLabel>
-            <Input
-              id="event-name"
-              placeholder="Enter event name"
-              onChange={handleEventNameChange}
-            />
-          </FormControl>
-
-          <HStack justifyContent="space-between">
-            <FormControl width="48%">
-              <FormLabel htmlFor="event-type" fontWeight="bold">
-                Event Type
-              </FormLabel>
-              <CreatableSelect
-                id="event-type"
-                placeholder="Select or create event type"
-                options={eventTypes.map((type) => ({
-                  value: type,
-                  label: type,
-                }))}
-                onChange={(option) => {
-                  setEventType(option ? option.value : "");
-                }}
-                chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
-                }}
-                isClearable
-                isSearchable
-              />
-            </FormControl>
-
-            <FormControl width="48%">
-              <FormLabel htmlFor="organization" fontWeight="bold">
-                Organization
-              </FormLabel>
-              <CreatableSelect
-                id="organization"
-                placeholder="Select or create organization"
-                options={groups.map((group) => ({
-                  value: group._id,
-                  label: group.group_name,
-                }))}
-                onChange={(selectedOptions) =>
-                  setOrganizationIds(
-                    selectedOptions
-                      ? selectedOptions.map((option) => option.value)
-                      : []
-                  )
-                }
-                onCreateOption={handleCreateNewGroup}
-                chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
-                }}
-                isMulti
-                isClearable
-                isSearchable
-              />
-            </FormControl>
-          </HStack>
-
-          <FormControl isRequired>
-            <FormLabel htmlFor="location" fontWeight="bold">
-              Location
-            </FormLabel>
-            <Input
-              id="location"
-              placeholder="Enter event location"
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
-              Spanish Speaking Accommodation
-            </FormLabel>
-            <Select
-              id="accommodation-type"
-              placeholder="Select"
-              options={[
-                { value: "Yes", label: "Yes" },
-                { value: "No", label: "No" },
-              ]}
-              defaultInputValue="Yes"
-              onChange={(option) => setLanguage(option ? option.value : " ")}
-              chakraStyles={{
-                control: (provided) => ({
-                  ...provided,
-                  textAlign: "left",
-                }),
-              }}
-            ></Select>
-          </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="accessibility" fontWeight="bold">
-              Accessibility Accommodation
-            </FormLabel>
-            <Select
-              id="accessibility"
-              placeholder="Select"
-              options={[
-                { value: "Yes", label: "Yes" },
-                { value: "No", label: "No" },
-              ]}
-              defaultInputValue="Yes"
-              onChange={(option) =>
-                setAccessibilityAccommodation(option ? option.value : " ")
-              }
-              chakraStyles={{
-                control: (provided) => ({
-                  ...provided,
-                  textAlign: "left",
-                }),
-              }}
-            />
-          </FormControl>
-
-          <FormControl isRequired>
-            <FormLabel htmlFor="description" fontWeight="bold">
-              Description
-            </FormLabel>
-            <MDEditor className={style.preview} value={description} onChange={(e) => setDescription(e || "")} data-color-mode="light"/>
-          </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="required-items" fontWeight="bold">
-              Checklist
-            </FormLabel>
-            <MDEditor className={style.preview} value={checkList} onChange={(e) => setChecklist(e || "")} data-color-mode="light"/>
-          </FormControl>
-        </Flex>
-      </Flex>
-
-      <Box display="flex" justifyContent="center" mt={4}>
-        <Button
-          colorScheme="yellow"
-          onClick={handleCreateEvent}
-          minWidth="150px"
-          width="20%"
-        >
-          Create Event
-        </Button>
-      </Box>
+      </VStack>
     </Box>
+
+    <Flex flex="1" direction="column" gap={4}>
+      <FormControl isRequired>
+        <FormLabel htmlFor="event-name" fontWeight="bold">
+          Event Name
+        </FormLabel>
+        <Input
+          id="event-name"
+          placeholder="Enter event name"
+          onChange={handleEventNameChange}
+        />
+      </FormControl>
+
+      <HStack justifyContent="space-between">
+        <FormControl width="48%">
+          <FormLabel htmlFor="event-type" fontWeight="bold">
+            Event Type
+          </FormLabel>
+          <CreatableSelect
+            id="event-type"
+            placeholder="Select or create event type"
+            options={eventTypes.map((type) => ({
+              value: type,
+              label: type,
+            }))}
+            onChange={(option) => {
+              setEventType(option ? option.value : "");
+            }}
+            chakraStyles={{
+              control: (provided) => ({
+                ...provided,
+                textAlign: "left",
+              }),
+            }}
+            isClearable
+            isSearchable
+          />
+        </FormControl>
+
+        <FormControl width="48%">
+          <FormLabel htmlFor="organization" fontWeight="bold">
+            Organization
+          </FormLabel>
+          <CreatableSelect
+            id="organization"
+            placeholder="Select or create organization"
+            options={groups.map((group) => ({
+              value: group._id,
+              label: group.group_name,
+            }))}
+            onChange={(selectedOptions) =>
+              setOrganizationIds(
+                selectedOptions
+                  ? selectedOptions.map((option) => option.value)
+                  : []
+              )
+            }
+            onCreateOption={handleCreateNewGroup}
+            chakraStyles={{
+              control: (provided) => ({
+                ...provided,
+                textAlign: "left",
+              }),
+            }}
+            isMulti
+            isClearable
+            isSearchable
+          />
+        </FormControl>
+      </HStack>
+
+      <FormControl isRequired>
+        <FormLabel htmlFor="location" fontWeight="bold">
+          Location
+        </FormLabel>
+        <Input
+          id="location"
+          placeholder="Enter event location"
+          onChange={(e) => setLocation(e.target.value)}
+        />
+      </FormControl>
+
+      <FormControl>
+        <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
+          Spanish Speaking Accommodation
+        </FormLabel>
+        <Select
+          id="accommodation-type"
+          placeholder="Select"
+          options={[
+            { value: "Yes", label: "Yes" },
+            { value: "No", label: "No" },
+          ]}
+          defaultInputValue="Yes"
+          onChange={(option) => setLanguage(option ? option.value : " ")}
+          chakraStyles={{
+            control: (provided) => ({
+              ...provided,
+              textAlign: "left",
+            }),
+          }}
+        ></Select>
+      </FormControl>
+
+      <FormControl>
+        <FormLabel htmlFor="accessibility" fontWeight="bold">
+          Accessibility Accommodation
+        </FormLabel>
+        <Select
+          id="accessibility"
+          placeholder="Select"
+          options={[
+            { value: "Yes", label: "Yes" },
+            { value: "No", label: "No" },
+          ]}
+          defaultInputValue="Yes"
+          onChange={(option) =>
+            setAccessibilityAccommodation(option ? option.value : " ")
+          }
+          chakraStyles={{
+            control: (provided) => ({
+              ...provided,
+              textAlign: "left",
+            }),
+          }}
+        />
+      </FormControl>
+
+      <FormControl isRequired>
+        <FormLabel htmlFor="description" fontWeight="bold">
+          Description
+        </FormLabel>
+        <MDEditor className={style.preview} value={description} onChange={(e) => setDescription(e || "")} data-color-mode="light"/>
+      </FormControl>
+
+      <FormControl>
+        <FormLabel htmlFor="required-items" fontWeight="bold">
+          Checklist
+        </FormLabel>
+        <MDEditor className={style.preview} value={checkList} onChange={(e) => setChecklist(e || "")} data-color-mode="light"/>
+      </FormControl>
+    </Flex>
+  </Flex>
+
+  <Box display="flex" justifyContent="center" mt={4}>
+    <Button
+      colorScheme="yellow"
+      onClick={handleCreateEvent}
+      minWidth="150px"
+      width="20%"
+    >
+      Create Event
+    </Button>
+  </Box>
+</Box>
+
   );
 }
 
