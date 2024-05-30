@@ -35,6 +35,7 @@ export default function Login() {
   const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required');
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [signInProgress, setSignInProgress] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +44,7 @@ export default function Login() {
     setPasswordError(false);
     setEmailErrorMessage('Email is required');
     setPasswordErrorMessage('Password is required');
+    setSignInProgress(true)
 
     if (!isLoaded) {
       return;
@@ -61,14 +63,16 @@ export default function Login() {
       }
 
       if (completeSignIn.status === 'complete') {
-        // If complete, user exists and provided password match -- set session active
-        await setActive({ session: completeSignIn.createdSessionId });
         // can be hacked....?
         const user = await getUserDataFromEmail(email)
         console.log('email', email, 'user', user)
         await fetch('/api/user/cookies', {method: "POST", body:user})
 
+        // If complete, user exists and provided password match -- set session active
+        await setActive({ session: completeSignIn.createdSessionId });
+
         await revalidatePathServer("/")
+        setSignInProgress(false)
         // Redirect the user to a post sign-in route
         if (redirect_url){
             router.push(redirect_url);
@@ -89,6 +93,7 @@ export default function Login() {
         setEmailError(true);
       }
     }
+    setSignInProgress(false)
 
       //setSubmitted(true);
   };
@@ -150,7 +155,7 @@ export default function Login() {
         <FormControl mb={4}>
 
         <Flex justifyContent="center" alignItems="center">
-          <Button bg="#e0af48" color="black" width="full" onClick={handleSubmit} loadingText="Signing In">
+          <Button bg="#e0af48" color="black" width="full" onClick={handleSubmit} isLoading={signInProgress} loadingText="Signing In">
             Sign In           
           </Button>
         </Flex>

@@ -86,10 +86,10 @@ export default async function NavbarParent() {
         console.log('navbar: user has been grabbed')
         console.log('user', user)
         
-        if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
-        const name = `Hi ${user?.firstName}!`;
         console.log('navbar: getting user data')
         if (user){
+
+            const name = `Hi ${user?.firstName}!`;
             console.log('parsed user data')
             if (user?.role == "admin"){
             return <NavbarAdmin name={name}></NavbarAdmin>
@@ -102,20 +102,25 @@ export default async function NavbarParent() {
                 // fetch user on mongo and set cookies
                 const userRes = await getUserDataFromEmail(temp.emailAddresses[0].emailAddress)
                 if (userRes){
-                    await fetch("/api/user/cookies", {method: "POST", body: userRes})
+                    await fetch(getBaseUrl() + "/api/user/cookies", {method: "POST", body: userRes})
                     const tempUser = JSON.parse(userRes) as IUser
                     if (tempUser){
-                    if (tempUser?.role == "admin"){
-                        return <NavbarAdmin name={name}></NavbarAdmin>
+                        if (tempUser?.role == "admin"){
+                            return <NavbarAdmin name={`Hi ${tempUser.firstName}!`}></NavbarAdmin>
+                            }
+                        else{
+                            return <Navbar name={`Hi ${tempUser.firstName}`}/>
+                            }
                         }
-                    }
+                      
                     }
 
                 
             }
+            else{
+                return <Navbar name="Sign In / Log In"></Navbar>;
+            }
         }
-
-        return <Navbar name={name}></Navbar>;
     }
     catch(err){
         console.log(err)
