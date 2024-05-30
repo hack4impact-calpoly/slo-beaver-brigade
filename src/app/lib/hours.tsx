@@ -33,11 +33,13 @@ export function eventHours(event: IEvent) {
 export function eventHoursSpecific(users: IUser[], event : IEvent) {
   let totalTime= 0;
   users.forEach(user => {
-    user.eventsAttended.forEach(eventAttended => {
-      if(eventAttended.eventId.toString() === event._id){
-        totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-      }
-    })
+    if(user.eventsAttended){
+      user.eventsAttended.forEach(eventAttended => {
+        if(eventAttended.eventId.toString() === event._id){
+          totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
+        }
+      })
+    } 
   })
   return Math.floor(totalTime / 60) + ' Hours';
 }
@@ -47,32 +49,38 @@ export function eventHoursSpecific(users: IUser[], event : IEvent) {
 //for a specific event taking into account that individual hours can be modified
 export function eventTimeSpecific(user: IUser, event : IEvent) {
   let totalTime= 0;
-  user.eventsAttended.forEach(eventAttended => {
-    if(eventAttended.eventId.toString() === event._id){
-      totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-    }
-  })
+  if(user.eventsAttended){
+    user.eventsAttended.forEach(eventAttended => {
+      if(eventAttended.eventId.toString() === event._id){
+        totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
+      }
+    })
+  }
   return Math.floor(totalTime / 60) + ' hours ' + totalTime % 60 + ' min';
 }
 
 export function eventHoursNum(user: IUser, event : IEvent) {
   let totalTime= 0;
-  user.eventsAttended.forEach(eventAttended => {
-    if(eventAttended.eventId.toString() === event._id){
-      totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-    }
-  })
+  if(user.eventsAttended){
+    user.eventsAttended.forEach(eventAttended => {
+      if(eventAttended.eventId.toString() === event._id){
+        totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
+      }
+    })
+  }
   return Math.floor(totalTime / 60);
 }
 
 export function eventMinsNum(user: IUser, event : IEvent) {
   let totalTime= 0;
-  user.eventsAttended.forEach(eventAttended => {
-    if(eventAttended.eventId.toString() === event._id){
-      totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-    }
-  })
-  return Math.floor(totalTime / 60);
+  if(user.eventsAttended){
+    user.eventsAttended.forEach(eventAttended => {
+      if(eventAttended.eventId.toString() === event._id){
+        totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
+      }
+    })
+  }
+  return Math.floor(totalTime % 60);
 }
 
 

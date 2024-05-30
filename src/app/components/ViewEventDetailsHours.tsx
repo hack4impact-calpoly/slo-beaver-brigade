@@ -35,6 +35,9 @@ import{
 
 export default function ViewEventDetailsHours({event}: {event: IEvent}){
     const [attendees, setAttendees] = useState<IUser[]>([]);
+    const [addedAttendees, setAddedAttendees] = useState<IUser[]>([]);
+    const [origAttendees, setOrigAttendees] = useState<IUser[]>([]);
+    const [updatedEvent, setUpdatedEvent] = useState<IEvent>(event);
     const [editMode, setEditMode] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [name, setName] = useState("");
@@ -43,27 +46,105 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
     const [email, setEmail] = useState("")
     const toast = useToast();
 
+    //convert hours and minutes to readable time
+    const findEndTime = (hours : number, minutes : number) => {
+        console.log("hours: ", hours , "minutes: " , minutes);
+        const endTime = new Date(event.startTime);
+        if(minutes && hours){
+            const totalMinutes = (hours * 60) + minutes;
+            endTime.setMinutes(endTime.getMinutes() + totalMinutes);
+            console.log("endTime", endTime);
+            return endTime.toISOString();
+        }
+        else{
+            return event.endTime;
+        }
+    }
+
     const handleEditClick = () => {
+      if(editMode){
+        handleSaveClick()
+      }
       setEditMode(!editMode);
     };
   
     const handleSaveClick = () => {
-      setEditMode(false);
-      
+      console.log("added attendees", addedAttendees);
+      //update the event to include the new users
+      try{
+
+            fetch(`/api/events/${event._id}/`, {
+                method: "PATCH",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedEvent),
+            })
+            //update users so that this event is included in their
+            //events attended
+            console.log("on save", addedAttendees);
+            addedAttendees.forEach(user => {
+                console.log("user!", user)
+                fetch(`/api/user/${user._id}`, 
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(user),
+                })
+            })
+
+        }
+        catch(error){
+            console.log(error);
+            toast({
+                title: "Error",
+                description: "Error saving new users, please try again",
+                status: "error",
+                duration: 2500,
+                isClosable: true,
+            });
+        }
     };
 
-    const handleTimeChange = (event : React.ChangeEvent<HTMLInputElement>, attendee : IUser) => {
-
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, attendee : IUser, type: 'hours' | 'minutes') => {
+        const {value} = e.target;
+        console.log(value);
+        console.log(type);
+        if(value){  
+            const eventsAttended = attendee.eventsAttended.map(eventAttended => 
+                eventAttended.eventId === event._id
+                ? {...eventAttended, endTime : type === 'hours'
+                        ? new Date(findEndTime(parseInt(value), eventMinsNum(attendee, event)))
+                        : new Date(findEndTime(eventHoursNum(attendee, event), parseInt(value)))}
+                : eventAttended)
+            console.log(eventsAttended)
+            const user = {
+                ...attendee,
+                eventsAttended : eventsAttended
+            }
+            console.log("user", user);
+            //if the user has already been edited, then it is in the addedAttendees list,
+            //if this is the case, it modifies the list, but if the user is added, then it 
+            //adds them to the list
+            const idx = addedAttendees.findIndex(user => user._id === attendee._id)
+            if(idx !== -1){
+                const updatedAttendees = [...addedAttendees]
+                updatedAttendees[idx] = user
+                setAddedAttendees(updatedAttendees)
+            }
+            else{
+                setAddedAttendees([...addedAttendees, user])
+            }
+            const totalIdx = attendees.findIndex(user => user._id === attendee._id)
+            const totalAttendees = [...attendees]
+            totalAttendees[totalIdx] = user;
+            setAttendees(totalAttendees);
+        }
     }
 
     const handleAddUserClick = () => {
-        //convert hours and minutes to readable time
-        const findEndTime = (hours : number, minutes : number) => {
-            const endTime = new Date(event.startTime)
-            endTime.setTime(endTime.getTime() + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000))
-            return endTime.toISOString();
-        }
-
         //check to see if there is a user with the inputted email
         const getUser = async () => {
             const response = await fetch(`/api/user`);
@@ -91,44 +172,28 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
             }
         }
 
-        //if the user exists, then add user to event
-        //then add the event to the users events attended
-         getUserAndCheck().then(user => {
+        //if the user exists, then add user to the table,
+        //it will not interact with the backend/add it to the database until
+        //the user presses save
+        getUserAndCheck().then(user => {
             console.log(user)
             if (user) {
                 //add user to event
-                 const updatedEvent = {
-                     ...event,
-                     attendeeIds : [...event.attendeeIds, user._id]
+                const eventNewAttendees = {
+                     ...updatedEvent,
+                     attendeeIds : [...updatedEvent.attendeeIds, user._id]
                  }
-                 setAttendees([...attendees, user])
-                 fetch(`/api/events/${event._id}/`, {
-                     method: "PATCH",
-                     headers: {
-                       "Content-Type": "application/json",
-                     },
-                     body: JSON.stringify(updatedEvent),
-                })
-
-                //add event to user's eventsAttended
-                const updatedUser = {
+                 setUpdatedEvent(eventNewAttendees);
+                 const updatedUser = {
                     ...user,
                     eventsAttended : [...user.eventsAttended, 
                         {eventId : event._id,
                          startTime : event.startTime,
-                         endTime : findEndTime( parseInt(hour), parseInt(min))
-                    }]
+                         endTime : findEndTime(parseInt(hour), parseInt(min))
+                        }]
                 }
-                fetch(`/api/user/${user._id}`, 
-                {
-                    method: "PATCH",
-                    headers: {
-                       "Content-Type": "application/json",
-                     },
-                    body: JSON.stringify(updatedUser),
-                })
-                console.log(updatedUser)
-
+                setAttendees([...attendees, updatedUser]);
+                setAddedAttendees([...addedAttendees, updatedUser]);    
             }
         });
         
@@ -147,19 +212,28 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                 res.map(async (user) => {
                     data.push(await user.json())
                 })
-                setAttendees(data)
-                return
+                setAttendees(data);
+                setOrigAttendees(data);
+                return;
             })
             console.log(attendees)
+
         }
         fetchUsers()
     }, [event.attendeeIds])
+
+    useEffect(() => {
+        console.log("attendees", attendees);
+    }, [attendees]);
     
     useEffect(() => {
-        setEditMode(false)
+        setEditMode(false);
+        setAddedAttendees([]);
+        setUpdatedEvent(event);
+        setAttendees(origAttendees)
     }, [isOpen])
-    
 
+    
 
     return (
         <>
@@ -170,7 +244,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                 <Box w="100%" pl="3%" pr="3%" pb="3%" backgroundColor="#2B2B34" color="white">
                     <Text fontWeight={"bold"} marginY="15px">Event Details</Text>
                     <hr/>
-                    <ModalHeader color="#ECB94A" p="0%" marginY="20px" fontSize="25px">{event.eventName} - {event.attendeeIds.length} {event.attendeeIds.length > 1? "Volunteers" : "Volunteer"}, {eventHoursSpecific(attendees, event)}</ModalHeader>
+                    <ModalHeader color="#ECB94A" p="0%" marginY="20px" fontSize="25px" fontWeight="bold">{updatedEvent.eventName} - {updatedEvent.attendeeIds.length} {updatedEvent.attendeeIds.length > 1? "Volunteers" : "Volunteer"}, {eventHoursSpecific(attendees, updatedEvent)}</ModalHeader>
                     <Flex>
                         <TimeIcon width="25px" mt={"4px"}></TimeIcon>
                         <Text ml={"5px"}>{formatDateWeekday(event.endTime)}</Text>
@@ -215,7 +289,8 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                             <Input
                                             type="text"
                                             defaultValue={eventHoursNum(attendee, event)}
-                                            width="30px"
+                                            onChange={(e) => handleTimeChange(e, attendee, 'hours')}
+                                            width="40px"
                                             height="30px"
                                             p="7px"
                                             m="0px"
@@ -226,15 +301,13 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                             <Input
                                             type="text"
                                             defaultValue={eventMinsNum(attendee, event)}
-                                            onChange={(e) => handleTimeChange(e, attendee)}
-                                            width="30px"
+                                            onChange={(e) => handleTimeChange(e, attendee, 'minutes')}
+                                            width="40px"
                                             height="30px"
                                             p="7px"
                                             m="0px"
                                             backgroundColor="white"
                                             textAlign="center"
-                                            min="0"
-                                            max="0"
                                             />
                                             min
                                         </Flex>    
@@ -255,6 +328,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                             color="gray"
                                             textAlign="left"
                                             onChange={(e) => setName(e.target.value)}
+                                            value={name}
                                         />
                                     </Td>
                                     <Td>
@@ -262,21 +336,22 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                             <Input
                                             type="number"
                                             placeholder="0"
-                                            width="30px"
-                                            height="20px"
+                                            width="40px"
+                                            height="30px"
                                             p="0px"
                                             m="0px"
                                             backgroundColor="white"
                                             color="gray"
                                             textAlign="center"
                                             onChange={(e) => setHour(e.target.value)}
+                                            value={hour}
                                             />
                                             hours
                                             <Input
                                             type="number"
                                             placeholder="0"
-                                            width="30px"
-                                            height="20px"
+                                            width="40px"
+                                            height="30px"
                                             p="0px"
                                             m="0px"
                                             backgroundColor="white"
@@ -285,6 +360,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                             min="0"
                                             max="0"
                                             onChange={(e) => setMin(e.target.value)}
+                                            value={min}
                                             />
                                             min
                                         </Flex>    
@@ -301,6 +377,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                             color="gray"
                                             textAlign="left"
                                             onChange={(e) => setEmail(e.target.value)}
+                                            value={email}
                                         />
                                         <Button onClick={handleAddUserClick}>
                                             <Text color = "gray" mr="10px" fontWeight="normal">Add user</Text>

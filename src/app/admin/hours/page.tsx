@@ -35,6 +35,7 @@ const AttendedEvents = () => {
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
 
+
   async function fetchData(start: string, end: string): Promise<void> {
     // Fetch all events
     const eventsResponse = await fetch('/api/events/');
@@ -58,7 +59,7 @@ const AttendedEvents = () => {
     // Update state with events the user has signed up for
     setUserEvents(pastEvents);
   }
-
+  
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
@@ -75,6 +76,8 @@ const AttendedEvents = () => {
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
   }, [isSignedIn, user, isLoaded]);
+
+  
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {

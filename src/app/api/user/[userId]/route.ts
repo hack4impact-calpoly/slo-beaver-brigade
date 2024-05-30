@@ -1,6 +1,7 @@
 import connectDB from "@database/db";
 import User, { IUser } from "@database/userSchema";
 import { NextResponse, NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 
 type IParams = {
     params: {
@@ -75,30 +76,21 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
     const { userId } = params; // Destructure the userId from params
 
     try {
-        const { eventsRegistered,
-                eventsAttended }: IUser = await req.json();
-        
-        if(eventsRegistered){
-            
-        }
-        const user = await User.findOneAndUpdate(
-            { _id: userId },
-            {
-                $push: {
-                    eventsRegistered: eventsRegistered,
-                },
-                eventsAttended: eventsAttended,
-            }
-        );
-
+        const user = await User.findById(userId).orFail();
         if (!user) {
             return NextResponse.json(
                 { error: "User not found" },
                 { status: 404 }
             );
         }
-        console.log("updated user");
 
+        const { eventsAttended }: IUser = await req.json();
+        if(eventsAttended){
+            user.eventsAttended = eventsAttended;
+        }
+        console.log("updated user");
+        await user.save();
+        revalidateTag("users");
         return NextResponse.json("User updated: " + userId, { status: 200 });
     } catch (err) {
         console.error("Error updating user (UserId = " + userId + "):", err);

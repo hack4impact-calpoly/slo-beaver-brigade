@@ -32,7 +32,7 @@ export type EventInfo = {
 };
 
 export type AttendedEventInfo = {
-    eventId: Schema.Types.ObjectId;
+    eventId: string;
     startTime: Date;
     endTime: Date;
 };
