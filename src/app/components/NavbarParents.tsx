@@ -102,13 +102,17 @@ export default async function NavbarParent() {
                 // fetch user on mongo and set cookies
                 const userRes = await getUserDataFromEmail(temp.emailAddresses[0].emailAddress)
                 if (userRes){
-                    await fetch("/api/user/cookies", {method: "POST", body: userRes})
+                    await fetch(getBaseUrl() + "/api/user/cookies", {method: "POST", body: userRes})
                     const tempUser = JSON.parse(userRes) as IUser
                     if (tempUser){
-                    if (tempUser?.role == "admin"){
-                        return <NavbarAdmin name={`Hi ${tempUser.firstName}!`}></NavbarAdmin>
+                        if (tempUser?.role == "admin"){
+                            return <NavbarAdmin name={`Hi ${tempUser.firstName}!`}></NavbarAdmin>
+                            }
+                        else{
+                            return <Navbar name={`Hi ${tempUser.firstName}`}/>
+                            }
                         }
-                    }
+                      
                     }
 
                 
