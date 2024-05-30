@@ -5,6 +5,8 @@ import styles from "@styles/navbar/navbar.module.css";
 import { HamburgerIcon, Search2Icon, StarIcon, ExternalLinkIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import { SignOutButton } from "@clerk/clerk-react";
+import { removeUserCookie } from "app/actions/cookieactions";
+import { mutate } from "swr";
 
 export default function Navbar(props: { name: string }) {
   const [showNavbar, setShowNavbar] = useState(false);
@@ -19,7 +21,7 @@ export default function Navbar(props: { name: string }) {
 
   return (
     <nav className={`${styles.navbar} ${showNavbar && styles.active}`}>
-      <div className={styles.container}>
+      <div className={styles.container} style={{ fontFamily: 'Lato' }}>
         <div className={`${styles.nav_left} ${showNavbar && styles.active}`}>
           <Link href="/">
             <Image
@@ -42,22 +44,30 @@ export default function Navbar(props: { name: string }) {
             </div>
           }
         </div>   
-        <div
-          className={`${styles.nav_elements}  ${showNavbar && styles.active}`}
-        >
+        <div className={`${styles.nav_elements}  ${showNavbar && styles.active}`}>
           <ul>
             <li>
               <Link href="/" onClick={handleHideNavbar}>
-                Events
+                Discover Events
               </Link>
             </li>
-           <li>
-              <Link href="/calendar" onClick={handleHideNavbar}>
-                Calendar
-              </Link>
+            <li>
+                <Link href="/calendar" onClick={handleHideNavbar}>
+                  Calendar
+                </Link>
             </li>
             {(props.name != "Sign In / Log In") &&
               <>
+                <li>
+                  <Link href="/profile" onClick={handleHideNavbar}>
+                    My Account
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/admin/events" onClick={handleHideNavbar}>
+                    Manage Events
+                  </Link>
+                </li>
                 <li>
                   <Link href="/admin/users" onClick={handleHideNavbar}>
                     User List
@@ -65,14 +75,13 @@ export default function Navbar(props: { name: string }) {
                 </li>  
                 <li>
                   <Link href="/admin/hours" onClick={handleHideNavbar}>
-                    Hours
+                    Volunteer Log
                   </Link>
                 </li>
               </>
             }
           </ul>
         </div>
-          
         <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
           <ul>
             <li>
@@ -85,8 +94,10 @@ export default function Navbar(props: { name: string }) {
                 <li>
                   |
                 </li>
-                <li>
-                  <SignOutButton/>
+                <li onClick={async() => {await removeUserCookie(); mutate("/api/events?sort=asc")}}>
+                  <SignOutButton>
+                    <button>Sign Out</button>
+                  </SignOutButton>
                 </li>
               </>
             }

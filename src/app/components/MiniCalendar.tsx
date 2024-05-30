@@ -62,7 +62,7 @@ const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
       setStartTime(value);
     } else {
       setEndTime(value);
-    }
+  }
   };
 
   // Function to handle date selection from the input field
@@ -84,9 +84,10 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   // Effect hook to call onTimeChange function when start/end time changes
   useEffect(() => {
-    if (onTimeChange && startTime && endTime) {
+    if (onTimeChange) {
       onTimeChange(startTime, endTime);
     }
+
   }, [startTime, endTime, onTimeChange]);
 
   const renderDays = () => {

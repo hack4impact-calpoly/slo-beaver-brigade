@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from '@clerk/nextjs'
 import "./styles/globals.css";
 import Providers from "./Providers";
 import NavbarParent from "@components/NavbarParents";
-import { Lato } from "next/font/google";
-import { redirect, useRouter } from "next/navigation";
-import { getUserDbData } from "./lib/authentication";
+import { Lato, Montserrat } from "next/font/google";
 
 //! Update metadata to match your project
 export const metadata: Metadata = {
@@ -13,10 +12,9 @@ export const metadata: Metadata = {
   description: "Created with love.",
 };
 
-const lato = Lato({
-  weight: '400',
-  subsets: ['latin'],
-})
+
+const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
+
 
 
 export default function RootLayout({
@@ -26,13 +24,17 @@ export default function RootLayout({
 }) {
     
   return (
+    <ClerkProvider>
       <html lang="en">
-        <body  className={lato.className}>
-          <Providers>
-              <NavbarParent/>
-              {children}
-          </Providers>
+
+        <body  className={montserrat.className}>
+                <Providers>
+                    <NavbarParent/>
+                    {children}
+                    <SpeedInsights/>
+                </Providers>
           </body>
       </html>
+      </ClerkProvider>
   );
 }

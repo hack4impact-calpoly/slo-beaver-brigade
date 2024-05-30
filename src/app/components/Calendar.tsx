@@ -1,20 +1,20 @@
-"use client";
+"use client"
 import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import ineractionPlugin from "@fullcalendar/interaction";
+import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import style from "@styles/calendar/calendar.module.css";
-import { Schema } from "mongoose";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { IEvent } from "@database/eventSchema";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
 import StandaloneCreateEvent from "./StandaloneCreateEvent";
 import EventListRegister from "./EventList";
+import { Schema } from "mongoose";
 
-//FullCalendar Schema
+// FullCalendar Schema
 export type FCEvent = {
   id: string;
   title: string;
@@ -36,7 +36,7 @@ export type FCEvent = {
 
 export default function Calendar(props: {
   events: FCEvent[] | [];
-  admin: Boolean;
+  admin: boolean; // Updated admin to boolean
   dbevents: IEvent[];
 }) {
   const placeHolderEvent = {
@@ -52,57 +52,39 @@ export default function Calendar(props: {
     groupsAllowed: [],
     registeredIds: [],
   };
-  const buttonType = { myCustomButton: {} };
   const [showModal, setShowModal] = useState(false);
   const [showEventList, setShowEventList] = useState(false);
   const [showExpandedView, setShowExpandedView] = useState(false);
   const [getEvent, setEvent] = useState<IEvent | null>(null);
-
-  if (props.admin) {
-    buttonType.myCustomButton = {
-      text: "Add Event",
-      click: function () {
-        setShowModal(true);
-      },
-      hint: "Add Event Button",
-    };
-  } else {
-    buttonType.myCustomButton = {
-      text: "Sign Up",
-      click: function () {
-        setShowEventList(true);
-      },
-      hint: "Sign Up Button",
-    };
-  }
-
+  
   return (
     <div>
       <div className={style.wrapper}>
         <StandaloneCreateEvent
           showModal={showModal}
           setShowModal={setShowModal}
-        ></StandaloneCreateEvent>
-        <EventListRegister showModal={showEventList} setShowModal={setShowEventList}>
-        </EventListRegister>
+        />
+        <EventListRegister
+          showModal={showEventList}
+          setShowModal={setShowEventList}
+        />
         <ExpandedViewComponent
           eventDetails={getEvent}
           showModal={showExpandedView}
           setShowModal={setShowExpandedView}
-        ></ExpandedViewComponent>
+        />
         <FullCalendar
-          customButtons={buttonType}
           plugins={[
             dayGridPlugin,
-            ineractionPlugin,
+            interactionPlugin,
             timeGridPlugin,
             bootstrap5Plugin,
             listPlugin,
           ]}
           headerToolbar={{
-            left: "prev,next today",
+            left: "prev",
             center: "title",
-            right: "myCustomButton dayGridMonth,listMonth",
+            right: props.admin ? "next myCustomButton" : "next",
           }}
           events={props.events}
           nowIndicator={true}
@@ -110,14 +92,11 @@ export default function Calendar(props: {
           droppable={true}
           selectable={true}
           selectMirror={true}
-          // dateClick={{}}
-          // drop={}
-          eventClick={function (info) {
-            let clickedEvent = props.dbevents.filter(
-              (event) => event._id == info.event.id
-            )[0];
-
-            setEvent(clickedEvent);
+          eventClick={(info) => {
+            const clickedEvent = props.dbevents.find(
+              (event) => event._id === info.event.id
+            );
+            setEvent(clickedEvent || null);
             setShowExpandedView(true);
           }}
           initialView="dayGridMonth"

@@ -1,3 +1,20 @@
 .wrapper {
    margin: 10px;
   }
+ .preview ul{
+   list-style-type: circle;
+   padding-left: 2rem;
+ }
+
+ .preview ol{
+   list-style-type: decimal;
+   padding-left: 2rem;
+ }
+
+ .signup_button{
+    padding-right: 50px;
+ }
+
+ .login_button{
+    padding-right: 50px;
+ }

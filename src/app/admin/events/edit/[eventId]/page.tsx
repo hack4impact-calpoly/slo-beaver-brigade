@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { IUser } from "@database/userSchema";
 import { IEvent } from "@database/eventSchema";
 import { fallbackBackgroundImage } from "app/lib/random";
+import { useEventId } from "app/lib/swrfunctions";
 
 type IParams = {
   params: {
@@ -20,97 +21,8 @@ type IParams = {
 };
 
 export default function EditEventsPage({ params: { eventId } }: IParams) {
-  const [eventData, setEventData] = useState<IEvent>({
-    _id: "",
-    eventName: "",
-    eventImage: null,
-    checklist: "N/A",
-    eventType: "",
-    location: "",
-    description: "",
-    wheelchairAccessible: false,
-    spanishSpeakingAccommodation: false,
-    startTime: new Date(0),
-    endTime: new Date(0),
-    volunteerEvent: false,
-    groupsAllowed: [],
-    registeredIds: [],
-    attendeeIds: [],
-  });
+  const {eventData, isLoading, isError, mutate} = useEventId(eventId)
 
-  const [visitorData, setVisitorData] = useState<IUser[]>([
-    {
-      _id: "",
-      email: "",
-      phoneNumber: "",
-      firstName: "",
-      lastName: "",
-      age: -1,
-      gender: "",
-      role: "user",
-      eventsRegistered: [],
-      eventsAttended: [],
-      groupId: null,
-      recieveNewsletter: false
-    },
-  ]);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        const response = await fetch(`/api/events/${eventId}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error, status: ${response.status}`);
-        }
-        const data = await response.json();
-        data.startTime = new Date(data.startTime);
-        data.endTime = new Date(data.endTime);
-        setEventData(data);
-      } catch (error) {
-        console.error("Error fetching event data:", error);
-      }
-    };
-    fetchEventData();
-  }, [eventId]);
-
-  useEffect(() => {
-    const fetchVisitorData = async () => {
-      if (eventData.eventName !== "") {
-        const visitors: IUser[] = []
-        const visitorDataArray = await Promise.all(
-          eventData.registeredIds
-            .filter((userId) => userId !== null)
-            .map(async (userId) => {
-              const response = await fetch(`/api/user/${userId}`);
-              if (response.ok){
-                console.log('ok')
-                visitors.push(await response.json())
-              }
-              return null
-            })
-        );
-        setVisitorData(visitors);
-        setLoading(false);
-      }
-    };
-    fetchVisitorData();
-  }, [eventData]);
-
-  const emailLink = () => {
-    const emails = visitorData
-      .map((visitor) => visitor.email)
-      .filter((email) => !!email);
-    const subject = encodeURIComponent(eventData.eventName + " Update");
-    return `mailto:${emails.join(",")}?subject=${subject}`;
-  };
-
-  const handleEmailAllVisitors = () => {
-    const mailtoLink = emailLink();
-    console.log(mailtoLink);
-    window.location.href = mailtoLink;
-  };
 
   return (
     <Box className={styles.eventPage}>
@@ -121,16 +33,13 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         justify="space-between"
       >
         <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
+          <EditEventVisitorInfo eventId={eventId} />
           <Box className={styles.imageContainer}>
-            <img src={eventData.eventImage || "/beaver-eventcard.jpeg"} alt="cover"></img>
+            <img
+              src={eventData?.eventImage || "/beaver-eventcard.jpeg"}
+              alt="cover"
+            ></img>
           </Box>
-          <button
-            onClick={handleEmailAllVisitors}
-            className={styles.emailAllVisitors}
-          >
-            Email All Visitors
-          </button>
-          <EditEventVisitorInfo eventId={eventId}/>
         </Box>
         <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>
           <EditEventPrimaryInfo eventId={eventId} />

@@ -15,6 +15,11 @@
     width: 80%;
 }
 
+.loadingText {
+    position: absolute;
+    left: 50%;
+}
+
 .eventsList {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -22,30 +27,29 @@
     padding: 0;
     list-style: none;
 }
-
-.searchBar {
-    font-weight: bold;
-    color: black;
-    padding: 5px 20px 5px 20px;
-    border: 1.5px solid #337774;
-    border-radius: 10px;
-    width: 100%;
+.createAndSearchContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.sortSelect {
-    background-color: white;
-    color: #333;
-    padding: 10px 20px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
+.yellowButton {
+    background-color: #ecb94a;
+    border: none;
+    border-radius: 20px;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    white-space: nowrap;
 }
 
-.sortSelect:focus {
-    outline: none;
-    border-color: #aaa;
+.yellowButton:hover {
+    background-color: #d6a33e;
+    cursor: pointer;
 }
 
 .searchWrapper {
@@ -54,30 +58,71 @@
     width: fit-content;
 }
 
+.searchBar {
+    font-weight: bold;
+    font-size: 16px;
+    color: #337774;
+    border: 2px solid #337774;
+    border-radius: 10px;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+.filterContainer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 0px;
+}
+.filterHeader {
+    margin-left: 0px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
 .sortSelect {
-    padding: 5px;
+    background-color: white;
+    color: #333;
+    padding-right: 10px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 15px;
+    cursor: pointer;
     margin-bottom: 10px;
     border: 1px solid black;
-    border-radius: 5px;
+    border-radius: 10px;
     box-sizing: border-box;
+    width: fit-content;
 }
 
-.checkBoxes {
-    text-align: left;
+.sortSelect:focus {
+    outline: none;
+    border-color: #aaa;
 }
 
-.yellowButton {
-    padding: 12px 30px;
-    background-color: #ecb94a;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: bold;
+.checkboxLabel {
+    font-size: 15px;
+    white-space: nowrap;
 }
 
-.yellowButton:hover {
-    background-color: #d6a33e;
-    cursor: pointer;
+@media (max-width: 1400px) {
+    .cardContainer {
+        width: 61%;
+    }
+
+    .eventsList {
+        display: grid;
+        grid-template-columns: repeat(2, 0fr);
+        gap: 35px;
+        padding: 0;
+        list-style: none;
+    }
 }
 
 @media (max-width: 1200px) {
@@ -105,6 +150,13 @@
         align-items: center;
         gap: 10px;
     }
+
+    .filterGroupContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        gap: 50px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -121,12 +173,14 @@
 
     .searchBar,
     .sortSelect {
-        padding: 10px;
+        padding: 5px;
+        font-size: 12px;
     }
-
-    .checkBoxes label {
-        display: block;
-        margin-bottom: 5px;
+    .filterHeader {
+        font-size: 12px;
+    }
+    .checkboxLabel {
+        font-size: 12px;
     }
 
     .checkBoxes input[type="checkbox"] {

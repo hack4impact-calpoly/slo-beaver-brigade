@@ -1,24 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
+import Group from "@database/groupSchema";
 import { revalidateTag } from "next/cache";
 import { SortOrder } from "mongoose";
+import { cookies } from "next/headers";
+import { BareBoneIUser } from "app/components/NavbarParents";
+import User from "database/userSchema";
+import { IUser } from "app/admin/users/page";
 
 export async function GET(request: Request) {
     await connectDB(); // connect to db
     const { searchParams } = new URL(request.url);
-    const sort_order = searchParams.get("sort_order");
+    const sort_order = searchParams.get("sort");
     let sort: SortOrder = -1;
 
     if (sort_order && sort_order == "asc") {
         sort = 1;
     }
+    let user = null;
 
+    // get current user if applicable
     try {
-        // query for all events and sort by date
-        const events = await Event.find().sort({ startTime: sort }).orFail();
-        // returns all events in json format or errors
-        return NextResponse.json(events, { status: 200 });
+        const userCookie = cookies().get("user")?.value;
+        if (userCookie) {
+            user = JSON.parse(userCookie) as BareBoneIUser;
+            // query db for user with _id of user from cookie
+            const userDoc = (await User.findById(user._id)
+                .lean()
+                .orFail()) as IUser;
+
+            if (userDoc.role === "admin") {
+                const events = await Event.find()
+                    .sort({ startTime: sort })
+                    .lean();
+                return NextResponse.json(events, { status: 200 });
+            }
+            // Query for all groups that the user is in
+            const userGroups = await Group.find({ groupees: user._id }).lean();
+            const userGroupIds = userGroups.map((group) => group._id);
+
+            // Query for all events that are either not group-only or are in user's groups
+            const events = await Event.find({
+                $or: [
+                    { groupsOnly: false },
+                    { groupsOnly: { $exists: false } },
+                    { groupsAllowed: { $in: userGroupIds } },
+                    { registeredIds: { $in: [user._id] } },
+                    { attendeeIds: { $in: [user._id] } },
+                ],
+            })
+                .sort({ startTime: sort })
+                .lean();
+
+            return NextResponse.json(events, { status: 200 });
+        } else {
+            // If not user, simply return all events that don't have groupsOnly set to true
+            const events = await Event.find({
+                $or: [
+                    { groupsOnly: false },
+                    { groupsOnly: { $exists: false } },
+                ],
+            })
+                .sort({ startTime: sort })
+                .lean();
+
+            return NextResponse.json(events, { status: 200 });
+        }
     } catch (err) {
         return NextResponse.json("Failed to fetch events: " + err, {
             status: 400,
@@ -44,24 +92,20 @@ export async function GET(request: Request) {
 
 export async function POST(req: NextRequest) {
     await connectDB();
-    console.log("Connected to Db");
 
     const event: IEvent = await req.json();
 
     // create new event or return error
     try {
         const newEvent = new Event(event);
-        newEvent.volunteerEvent = (newEvent.eventType === "Volunteer");
-        console.log("New Event Data:", newEvent); // Add this line
+        newEvent.volunteerEvent = newEvent.eventType === "Volunteer";
 
-        await newEvent.save();
+        const createdEvent = await newEvent.save();
         revalidateTag("events");
-        return NextResponse.json("Event added successfully: " + newEvent, {
+        return NextResponse.json(createdEvent, {
             status: 200,
         });
     } catch (err: any) {
-        console.error("Error creating event:", err); // Add this line
-
         if (err.name === "ValidationError") {
             // Handle validation errors
             const errors = Object.values(err.errors).map(

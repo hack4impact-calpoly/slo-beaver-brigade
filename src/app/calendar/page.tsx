@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import Calendar from "@components/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
@@ -12,77 +13,153 @@ import {
 } from "@chakra-ui/react";
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
+import { getSelectedEvents } from "app/actions/eventsactions";
+import { EmailRSSComponent } from "app/components/EmailComponent";
+import { useEventsAscending } from "app/lib/swrfunctions";
 
-export default async function Page() {
-  const events = await getEvents();
-  let calEvent = events.map(Calendarify);
+export default function Page() {
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const {events, isLoading} = useEventsAscending()
+  const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([])
+  const [eventTypes, setEventTypes] = useState<string[]>([]);
 
-  //Ievent object to pass into calendar component
-  const dbEvent = JSON.parse(JSON.stringify(events));
+  useEffect(() => {
+    const fetchEventTypes = async () => {
+      try {
+        const response = await fetch("/api/events/bytype/eventType");
+        const data: string[] = await response.json();
+        const uniqueEventTypes = Array.from(
+          new Set([...data, "Volunteer", "Beaver Walk", "Pond Clean Up"])
+        );
+        setEventTypes(uniqueEventTypes);
+      } catch (error) {
+        console.error("Error fetching event types:", error);
+      }
+    };
 
-  
+    fetchEventTypes();
+  }, []);
+
+    useEffect(() => {
+    if (isLoading) return;
+    if (!events) return;
+
+    const eventTypes = selectedFilters.filter(
+      (filter) => filter !== "spanishSpeakingAccommodation" && filter !== "wheelchairAccessible"
+    );
+    const accessibilityFilters = selectedFilters.filter(
+      (filter) => filter === "spanishSpeakingAccommodation" || filter === "wheelchairAccessible"
+    );
+
+    const filtered = events.filter((event) => {
+      const matchesType = eventTypes.length === 0 || eventTypes.includes(event.eventType || "");
+      const matchesAccessibility = accessibilityFilters.every((filter) => {
+        if (filter === "spanishSpeakingAccommodation") return event.spanishSpeakingAccommodation;
+        if (filter === "wheelchairAccessible") return event.wheelchairAccessible;
+        return true;
+      });
+      return matchesType && matchesAccessibility;
+    });
+
+    setFilteredEvents(filtered);
+  }, [events, selectedFilters]);
+
+  const calEvent = filteredEvents.map(Calendarify);
+
   return (
-    <Flex className={style.page} direction="column" align="flex-end">
-      {" "}
-      {/* Set direction to column and align to flex-end */}
-      <Flex width="full">
-        <Box flex="1" margin="0" padding="0">
-          <Box className={style.header}>
+    <Box bg="white" minH="100vh" p="4">
+      <Flex className={style.page} direction="column" align="flex-end">
+        <Flex width="full" justify="space-between" alignItems="flex-start">
+          <Box
+            flex="1"
+            maxWidth="350px"
+            padding="0"
+            mt="2%" 
+            ml="5%"
+            bg="#F5F5F5"
+            borderRadius="md"
+            p="5"
+            pr="10"
+            pb="10"
+            boxShadow="sm"
+          >
             <Heading
               as="h1"
               textTransform="none"
               textAlign="left"
               padding="10px"
-              mb="5"
-              ml="2"
+              fontSize="24"
+              ml="5"
+              mb="3"
             >
-              Events Calendar
+              Event Filters
             </Heading>
+            <CheckboxGroup
+              colorScheme="green"
+              value={selectedFilters}
+              onChange={(values) =>
+                setSelectedFilters(values.map((value) => String(value)))
+              }
+            >
+              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
+                {eventTypes.map((eventType) => (
+                  <Checkbox key={eventType} value={eventType} colorScheme="teal">
+                    {eventType}
+                  </Checkbox>
+                ))}
+              </Stack>
+            </CheckboxGroup>
+            <Heading
+              as="h1"
+              textTransform="none"
+              textAlign="left"
+              padding="10px"
+              fontSize="24"
+              ml="5"
+              mt="10"
+              mb="3"
+            >
+              Accessibility Filters
+            </Heading>
+            <CheckboxGroup
+              colorScheme="yellow"
+              value={selectedFilters}
+              onChange={(values) =>
+                setSelectedFilters(values.map((value) => String(value)))
+              }
+            >
+              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
+                <Checkbox
+                  value="spanishSpeakingAccommodation"
+                >
+                  Spanish Speaking
+                </Checkbox>
+                <Checkbox
+                  value="wheelchairAccessible"
+                >
+                  Wheelchair Accessible
+                </Checkbox>
+              </Stack>
+            </CheckboxGroup>
+            <div className="ml-[40px] mt-10">
+              <EmailRSSComponent calendarURL="/api/events/calendar"/>
+            </div>
           </Box>
-          <Heading
-            as="h1"
-            textTransform="none"
-            textAlign="left"
-            padding="10px"
-            fontSize="lg"
-            color="gray.500"
-            ml="5"
+          <Box
+            flex="2"
+            padding="0"
+            mt="2%" 
+            mr="10%"
+            ml="5%"
+            bg="#F5F5F5"
+            borderRadius="md"
+            p="5"
+            boxShadow="sm"
           >
-            Filters
-          </Heading>
-          <CheckboxGroup colorScheme="green" defaultValue={[]}>
-            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="10">
-              <Checkbox value="watery_walk" colorScheme="teal">
-                Watery Walk
-              </Checkbox>
-              <Checkbox value="volunteer" colorScheme="yellow">
-                Volunteer
-              </Checkbox>
-              <Checkbox value="special_events" colorScheme="green">
-                Special Events
-              </Checkbox>
-            </Stack>
-          </CheckboxGroup>
-        </Box>
-        <Box flex="2" margin="10" padding="0">
-          {" "}
-          {/* Switch flex values for the calendar box */}
-          <Calendar events={calEvent} admin={false} dbevents={dbEvent} />
-        </Box>
+            <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
+    </Box>
   );
 }
-
-async function getEvents() {
-  await connectDB(); // connect to db
-  try {
-    // query for all events and sort by date
-    const events = await Event.find().sort({ date: -1 }).orFail();
-    // returns all events in json format or errors
-    return events;
-  } catch (err) {
-    return [];
-  }
-}
-

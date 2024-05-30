@@ -10,6 +10,9 @@ import {
   useBreakpointValue,
   Text,
   Input,
+  Wrap,
+  WrapItem,
+  TableContainer,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import style from '@styles/admin/users.module.css';
@@ -29,8 +32,15 @@ const AttendedEvents = () => {
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [startDateTime, setStartDateTime] = useState(new Date((new Date).setMonth((new Date).getMonth() - 1)).toString());
-  const [endDateTime, setEndDateTime] = useState((new Date).toString());
+  const [startDateTime, setStartDateTime] = useState(
+    new Date(new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(new Date().getHours() - 8))
+      .toISOString()
+      .substring(0, 10)
+  );
+  const [endDateTime, setEndDateTime] = useState(
+    new Date(new Date().setHours(new Date().getHours() - 8)).toISOString().substring(0, 10)
+  );
+  const [userFirstName, setUserFirstName] = useState('');
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
@@ -38,18 +48,19 @@ const AttendedEvents = () => {
   async function fetchData(start: string, end: string): Promise<void> {
     if (isSignedIn) {
       let userId = '';
+      let userFirstName = '';
       const userdata = await getUserDbData();
       if (userdata != null) {
         const user = JSON.parse(userdata) as IUser;
         userId = user._id;
+        userFirstName = user.firstName;
       }
-      
+      setUserFirstName(userFirstName);
+
       // Fetch all events
       const eventsResponse = await fetch('/api/events/');
       if (!eventsResponse.ok) {
-        throw new Error(
-          `Failed to fetch events: ${eventsResponse.statusText}`
-        );
+        throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
       }
       const allEvents = await eventsResponse.json();
 
@@ -57,7 +68,13 @@ const AttendedEvents = () => {
       setEndDateTime(end);
 
       // Filter events where the current user is an attendee
-      const userSignedUpEvents = filterUserSignedUpEvents(allEvents, userId, start, end);
+      const userSignedUpEvents = filterUserSignedUpEvents(
+        allEvents,
+        userId,
+        start,
+        end,
+        searchTerm
+      );
 
       const hours = calcHours(userSignedUpEvents);
       setTotalTime(hours);
@@ -68,23 +85,22 @@ const AttendedEvents = () => {
   }
 
   useEffect(() => {
-    console.log('Fetching user events...');
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
-      setEventsLoading(true);
-
       try {
         await fetchData(startDateTime, endDateTime);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
-        setEventsLoading(false); // Stop loading irrespective of outcome
+        setTimeout(() => {
+          setEventsLoading(false); // Stop loading irrespective of outcome
+        }, 200);
       }
     };
 
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded]);
+  }, [isSignedIn, user, isLoaded, searchTerm]);
 
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
@@ -104,71 +120,98 @@ const AttendedEvents = () => {
         flexDirection="column"
         margin="20px"
       >
-        <Text fontWeight="500" fontSize="32px" textAlign="center" margin="20px">
-          Congrats, You’ve done great this month! 🎉
-        </Text>
-        <Box
-          borderRadius="10.21px"
-          m="4"
-          p="20.42px"
-          paddingTop="54.46px"
-          paddingBottom="54.46px"
-          gap="9.36px"
-          bg="#337774"
-          color="#FBF9F9"
-        >
+        { totalTime === 0 ? (
           <Text
-            fontFamily="500"
-            fontSize="18.61px"
-            display="flex"
-            justifyContent="center"
+            fontWeight="500"
+            fontSize="32px"
             textAlign="center"
+            width="70%"
+            margin="95px"
           >
-            Total Volunteer Hours Accumulated
+            Looks like we could not find any events. 😢 Are you sure you
+            attended an event that matches the current search?
           </Text>
-          <Text
-            fontWeight="600"
-            fontSize="50.07px"
-            display="flex"
-            justifyContent="center"
-            textAlign="center"
-          >
-            {Math.floor(totalTime / 60)} h {totalTime % 60} min
-          </Text>
-        </Box>
-        <Box>
-          <Text display="inline">From:</Text>
-          <Input
-            placeholder="From:"
-            size="md"
-            type="datetime-local"
-            width="250px"
-            margin="10px"
-            onChange={async (e) => {
-              fetchData(e.target.value, endDateTime);
-            }}
-          />
-          <Text display="inline">To:</Text>
-          <Input
-            placeholder="To:"
-            size="md"
-            type="datetime-local"
-            width="250px"
-            margin="10px"
-            onChange={(e) => {
-              fetchData(startDateTime, e.target.value);
-            }}
-          />
-          <Input
-            placeholder="Event Search"
-            size="md"
-            width="250px"
-            margin="10px"
-          />
-        </Box>
+        ) : (
+          <Box>
+            <Text fontWeight="500" fontSize="32px" textAlign="center">
+              🎉 The beavers appreciate your amazing work, {userFirstName} 🎉
+            </Text>
+            <Box
+              borderRadius="10.21px"
+              m="4"
+              p="20.42px"
+              paddingTop="54.46px"
+              paddingBottom="54.46px"
+              gap="9.36px"
+              bg="#337774"
+              color="#FBF9F9"
+            >
+              <Text
+                fontFamily="500"
+                fontSize="18.61px"
+                display="flex"
+                justifyContent="center"
+                textAlign="center"
+              >
+                Total Volunteer Hours Accumulated
+              </Text>
+              <Text
+                fontWeight="600"
+                fontSize="50.07px"
+                display="flex"
+                justifyContent="center"
+                textAlign="center"
+              >
+                {Math.floor(totalTime / 60)} h {totalTime % 60} min
+              </Text>
+            </Box>
+          </Box>
+        )}
+        <Wrap justify='center'>
+          <WrapItem justifyItems="center" alignItems="center">
+            <Text display="inline">
+              From:
+            </Text>
+            <Input
+              size="md"
+              type="date"
+              width="250px"
+              margin="10px"
+              value={startDateTime}
+              onChange={async (e) => {
+                fetchData(e.target.value, endDateTime);
+              }}
+            />
+          </WrapItem>
+          <WrapItem justifyItems="center" alignItems="center">
+            <Text display="inline">
+              To:
+            </Text>
+            <Input
+              size="md"
+              type="date"
+              width="250px"
+              margin="10px"
+              value={endDateTime}
+              onChange={async (e) => {
+                fetchData(startDateTime, e.target.value);
+              }}
+            />
+          </WrapItem>
+          <WrapItem justifyItems="center" alignItems="center">
+            <Input
+              placeholder="Event Search"
+              size="md"
+              width="250px"
+              margin="10px"
+              display="flex"
+              flexDirection="row"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </WrapItem>
+        </Wrap>
       </Box>
-      <div className={style.tableContainer}>
-        <Box>
+      <TableContainer>
           <Table variant="striped" size={tableSize}>
             <Thead>
               <Tr>
@@ -187,8 +230,7 @@ const AttendedEvents = () => {
               ))}
             </Tbody>
           </Table>
-        </Box>
-      </div>
+        </TableContainer>
     </div>
   );
 };

@@ -22,7 +22,7 @@ export function calcHoursForAll(events: IEvent[]) {
   return totalTime;
 }
 
-// This function takes a list of events and calculates the total volunteer hours accumulated by all attendees
+// This function takes an event and calculates the total volunteer hours accumulated by all attendees
 export function eventHours(event: IEvent) {
   let totalTime = getDuration(event.startTime, event.endTime) * event.attendeeIds.length;
   return Math.floor(totalTime / 60) + 'h ' + totalTime % 60 + 'min';
@@ -84,21 +84,30 @@ export function eventMinsNum(user: IUser, event : IEvent) {
 }
 
 
+// This function takes an event and calculates the volunteer hours for the event
+export function eventIndividualHours(event: IEvent) {
+  let totalTime = getDuration(event.startTime, event.endTime);
+  let hours = Math.floor(totalTime / 60);
+  let minutes = totalTime % 60;
+  return hours + 'h ' + minutes + 'min';
+}
+
 // This function takes a list of events and filters out events where the current user isnt an attendee
 export function filterUserSignedUpEvents(
   events: IEvent[],
   userId: string,
   startDateTime: string,
-  endDateTime: string
+  endDateTime: string,
+  searchTerm: string
 ) {
   const filteredEvents = events.filter(
     (event: any) =>
       event.attendeeIds.includes(userId) &&
-      event.eventType == 'Volunteer' &&
+      event.volunteerEvent &&
       new Date(event.startTime) >= new Date(startDateTime) &&
-      new Date(event.endTime) <= new Date(endDateTime)
-  );
-  console.log(events, filteredEvents);
+      new Date(event.endTime.substring(0, 10)) <= new Date(endDateTime) &&
+      event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+  ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
 }
 
@@ -106,13 +115,14 @@ export function filterUserSignedUpEvents(
 export function filterPastEvents(
   events: IEvent[],
   startDateTime: string,
-  endDateTime: string
+  endDateTime: string,
+  searchTerm: string
 ) {
   const filteredEvents = events.filter((event: any) => 
-    (event.eventType == 'Volunteer') &&
-      (new Date(event.endTime) <= new Date(endDateTime)) &&
-      (new Date(event.startTime) >= new Date(startDateTime))
-  );
-  console.log(filteredEvents);
+    event.volunteerEvent &&
+    (new Date(event.startTime) >= new Date(startDateTime)) &&
+    (new Date(event.endTime.substring(0, 10)) <= new Date(endDateTime)) &&
+    event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+  ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
 }

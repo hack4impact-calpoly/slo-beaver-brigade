@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
+import User from "@database/userSchema";
 import { revalidateTag } from "next/cache";
 
 type IParams = {
@@ -11,7 +12,7 @@ type IParams = {
 
 export async function GET(req: NextRequest, { params }: IParams) {
     await connectDB(); // connect to db
-    const { eventId } = params; // another destructure
+    const { eventId } = params;
     try {
         const event = await Event.findById(eventId).orFail();
         return NextResponse.json(event);
@@ -25,10 +26,22 @@ export async function GET(req: NextRequest, { params }: IParams) {
 
 export async function DELETE(req: NextRequest, { params }: IParams) {
     await connectDB(); // connect to db
-    const { eventId } = params; // another destructure
+    const { eventId } = params;
 
     try {
         const event = await Event.findByIdAndDelete(eventId).orFail();
+
+        // Remove eventId from eventsRegistered and eventsAttended arrays of all users
+        await User.updateMany(
+            {},
+            {
+                $pull: {
+                    eventsRegistered: { eventId: eventId },
+                    eventsAttended: eventId,
+                },
+            }
+        );
+
         revalidateTag("events");
 
         return NextResponse.json("Event deleted: " + eventId, {
@@ -42,10 +55,10 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
     }
 }
 
-/** add user to atendee id */
+/** add user to attendee id */
 export async function PUT(req: NextRequest, { params }: IParams) {
     await connectDB(); // connect to db
-    const { eventId } = params; // another destructure
+    const { eventId } = params;
     const { userId } = await req.json();
     try {
         const event = await Event.findById(eventId).orFail();
@@ -65,13 +78,11 @@ export async function PUT(req: NextRequest, { params }: IParams) {
 
 export async function PATCH(req: NextRequest, { params }: IParams) {
     await connectDB(); // connect to db
-    const { eventId } = params; // another destructure
+    const { eventId } = params;
 
     try {
         const event = await Event.findById(eventId).orFail();
         if (req.body) {
-            //strip Event data from req json
-            console.log(req.body);
             const {
                 eventName,
                 location,
@@ -85,6 +96,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 groupsAllowed,
                 registeredIds,
                 attendeeIds,
+                groupsOnly,
             }: IEvent = await req.json();
             if (location) {
                 event.location = location;
@@ -123,6 +135,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (eventType) {
                 event.eventType = eventType;
             }
+            event.groupsOnly = groupsOnly;
         }
         await event.save();
         revalidateTag("events");

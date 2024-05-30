@@ -27,6 +27,20 @@
   color: white;
 }
 
+.backButton {
+  padding: 5px 30px 5px 30px;
+  border: 2px solid #337774;
+  color: #337774;
+  border-radius: 7px;
+  font-family: "Lato";
+  font-weight: bold;
+}
+
+.backButton:hover {
+  background-color: #e6f7f6;
+  color: black;
+}
+
 .temp {
   width: 100%;
   display: flex;
@@ -61,7 +75,7 @@
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  padding-bottom: 4%;
+  margin-bottom: 3%;
 }
 
 .visitorHeading {
@@ -102,9 +116,9 @@
 }
 
 .emailAllVisitors {
-  border:none;
+  border: none;
   font-weight: bold;
-  padding:0%;
+  padding: 0%;
   width: 100%;
   text-align: right;
   background-color: none;
@@ -114,11 +128,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding-right: 15px;
 }
 
-.emailAllVisitors:hover{
-    text-decoration-line: underline;
-    cursor: pointer;
+.emailAllVisitors:hover {
+  text-decoration-line: underline;
+  cursor: pointer;
 }
 
 .topBlock {
@@ -156,9 +171,9 @@
 }
 
 .checkBox {
-  padding: 2.25% 3% 1.5% 1.5%;
-  text-align: left;
-  width: 5%;
+  margin: 2.10% 3% 1.5% 20px;
+  text-align: center;
+  width: 10%;
   font-size: 15px;
 }
 
@@ -179,9 +194,9 @@
 }
 
 .emailColumn {
-  padding: 1.5% 3% 1.5% 3%;
+  padding: 1.5% 3% 5% 3%;
   text-align: left;
-  width: 60%;
+  width: 50%;
   font-size: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -203,9 +218,27 @@
   text-decoration-line: underline;
 }
 
+.tableContainer {
+  overflow: auto;
+  height: auto;
+  padding-bottom: 5px;
+  max-width: 800px; 
+  margin: 0 auto;
+}
+
+.boldText {
+  font-weight: bold;
+}
+
 .visitorTable {
   width: 100%;
   table-layout: fixed;
+}
+
+.visitorTable th,
+.visitorTable td {
+  padding: 7px;
+  margin: 2px;
 }
 
 .visitorInfoSmallHeader {
@@ -217,7 +250,6 @@
   border-radius: 10px;
   text-align: left;
   padding: 2%;
-  margin: 7% 0% 3% 0%;
 }
 
 .fieldInfo {
@@ -306,13 +338,19 @@
 }
 
 .infoBox {
-  padding-left: 5%;
-  padding-right: 5%;
-  width: 100%;
+  /* padding-left: 5%;
+  padding-right: 5%; */
+  border-radius: 10px; 
+  margin: 2% 0 -0.5% 5%;
+  width: 90%;
+  background-color: #ececec;
 }
 
-.tableContainer {
-  height: 26vh;
+.noVisitorsMessage {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #555;
 }
 
 @media (max-width: 1000px) {
