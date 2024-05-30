@@ -140,9 +140,9 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
           >
             <Box className={styles.infoBox} >
               <Text className={styles.visitorInfoSmallHeader}>
-                  Personal Info
+                  Account Info
               </Text>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ display: "flex"}} className={styles.accountInfo}>
                 <div style={{ width: "45%" }}>
                   <Text className={styles.fieldInfo}>
                   <Text as="span" className={styles.boldText}>Email</Text> <br></br> {visitorData.email ? visitorData.email : "N/A"}
