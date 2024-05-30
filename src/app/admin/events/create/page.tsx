@@ -350,8 +350,9 @@ const Page: React.FC = () => {
     <Box flex={{ base: "1", md: "0 1 30%" }}>
       <VStack alignItems="flex-start" mb={4} width="100%">
         <Box width="100%">
-          <Text fontWeight="bold" textAlign="left" mb="2">Event Preview</Text>
-          <VStack alignContent="center">
+        <VStack alignContent="center">
+          <Text fontWeight="bold" textAlign="left" zIndex="0">Event Preview</Text>
+            <Box alignContent="center">
             <EventPreviewComponent
               event={mockEvent}
               groupName={groups.find((group) => group._id === organizationIds[0])?.group_name || ""}
@@ -409,7 +410,8 @@ const Page: React.FC = () => {
               </FormControl>
               <ImageSelector width="50%" h="32" mt="2" borderRadius="10px" setPreselected={setPreselected} setImageURL={setImagePreview} />
             </HStack>
-            <Text fontWeight="bold" mt="5" textAlign="left">
+            </Box>
+            <Text fontWeight="bold" mt="5" mb="-3" textAlign="left">
               Date/Time
             </Text>
             <Flex justifyContent="center">
