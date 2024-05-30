@@ -17,13 +17,16 @@ import {
 import { IEvent } from "@database/eventSchema";
 import { Button } from "@styles/Button";
 import React, { useState, useEffect } from "react";
-import { CreatableSelect } from "chakra-react-select";
-import { useEventsAscending } from "app/lib/swrfunctions";
+import { CreatableSelect, Select } from "chakra-react-select";
+import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
+import { KeyedMutator } from "swr";
+import { IGroup } from "database/groupSchema";
+import { CreateTemporaryGroup } from "./ViewGroups";
 
-const EditEvent = ({event}: {event: IEvent}) => {
+const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups: IGroup[], mutate: KeyedMutator<IEvent>}) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // button open/close
+    const {groups, isLoading, mutateGroups} = useGroups()
 
-  const {mutate} = useEventsAscending()
   const [name, setName] = useState(event.eventName);
   const [loc, setLoc] = useState(event.location);
   const [date, setDate] = useState(getDate(event.startTime));
@@ -32,7 +35,8 @@ const EditEvent = ({event}: {event: IEvent}) => {
   const [desc, setDesc] = useState(event.description);
   const [type, setType] = useState(event.eventType);
   const [vol, setVol] = useState(event.volunteerEvent);
-  const [myGrp, setMyGrp] = useState(false);
+  const [myGrp, setMyGrp] = useState(event.groupsOnly);
+  const [selectedGroups, setSelectedGroups] = useState<IGroup[]>(initialGroups)
   const [wc, setWC] = useState(event.wheelchairAccessible);
   const [span, setSpan] = useState(event.spanishSpeakingAccommodation);
   const [eventTypes, setEventTypes] = useState<string[]>([]);
@@ -63,9 +67,6 @@ const EditEvent = ({event}: {event: IEvent}) => {
 
   const handleVolChange = () => {
     setVol(!vol);
-    if (vol) {
-      setMyGrp(false);
-    }
   };
   const handleMyGrp = () => setMyGrp(!myGrp);
   const handleWCChange = () => setWC(!wc);
@@ -74,17 +75,6 @@ const EditEvent = ({event}: {event: IEvent}) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   function HandleClose() {
-    setName(event.eventName);
-    setLoc(event.location);
-    setDate(getDate(event.startTime));
-    setStart(getTime(event.startTime));
-    setEnd(getTime(event.endTime));
-    setDesc(event.description);
-    setType(event.eventType);
-    setVol(event.volunteerEvent);
-    setMyGrp(false);
-    setWC(event.wheelchairAccessible);
-    setSpan(event.spanishSpeakingAccommodation);
     setIsSubmitted(false);
     onClose();
   }
@@ -130,7 +120,8 @@ const EditEvent = ({event}: {event: IEvent}) => {
       wheelchairAccessible: wc,
       spanishSpeakingAccommodation: span,
       volunteerEvent: vol,
-      groupsAllowed: myGrp ? [] : null,
+      groupsAllowed: selectedGroups.flatMap(group => group._id),
+      groupsOnly: myGrp,
       registeredIds: event.registeredIds ? event.registeredIds : [],
     };
 
@@ -144,14 +135,18 @@ const EditEvent = ({event}: {event: IEvent}) => {
     })
       .then((response) => response.text()) // Parsing JSON response
       .then((text) => {
-        mutate()
         console.log("Server response:", text);
         const data = text.startsWith("Event updated:")
           ? JSON.parse(text.substring("Event updated: ".length))
           : {};
         setIsSubmitted(true);
         HandleClose();
-        location.reload()
+        mutate((event) => {
+            if (event){
+                return {...event, ...eventData}
+            }
+            return event
+        })
       })
       .catch((error) => {
         console.error("Error editing event:", error);
@@ -295,6 +290,42 @@ const EditEvent = ({event}: {event: IEvent}) => {
                     isSearchable
                   />
                 </FormControl>
+            <FormControl marginTop='1rem'>
+              <FormLabel htmlFor="organization" fontWeight="bold">
+                Groups
+              </FormLabel>
+              <Select
+                id="organization"
+                placeholder="Select groups."
+                options={groups?.map((group) => ({
+                  value: group,
+                  label: group.group_name,
+                }))}
+                value={selectedGroups.map(group => ({
+                    value: group,
+                    label: group.group_name,
+                }))}
+                onChange={(selectedOptions) =>
+                  setSelectedGroups(
+                    selectedOptions
+                      ? selectedOptions.map((option) => option.value)
+                      : []
+                  )
+                }
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
+                isMulti
+                isClearable
+                isSearchable
+              />
+            </FormControl>
+        {myGrp && groups && <div className="mt-3 mb-5 ">
+          <CreateTemporaryGroup groups={selectedGroups} mutate={mutateGroups} setGroups={setSelectedGroups}/>
+            </div>}
               </Stack>
 
               <Switch
@@ -309,12 +340,10 @@ const EditEvent = ({event}: {event: IEvent}) => {
               <Switch
                 fontWeight="bold"
                 color="grey"
-                isDisabled={!vol}
-                isFocusable={!vol}
                 isChecked={myGrp}
                 onChange={handleMyGrp}
               >
-                Only My Group Allowed
+                Groups Only
               </Switch>
 
               <Switch

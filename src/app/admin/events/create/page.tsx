@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -24,7 +24,10 @@ import { Select, CreatableSelect } from "chakra-react-select";
 import MDEditor from "@uiw/react-md-editor";
 import style from "@styles/calendar/calendar.module.css";
 import ImageSelector from "app/components/ImageSelector";
-import { useEventsAscending } from "app/lib/swrfunctions";
+import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
+import { CreateTemporaryGroup } from "app/components/ViewGroups";
+import { IGroup } from "database/groupSchema";
+import { IEvent } from "database/eventSchema";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -41,7 +44,17 @@ const Page: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([])
+  // Specify type for group to avoid error
+  const {groups, isLoading, isError, mutateGroups} = useGroups()
+ const setGroups = useCallback((updateFunction: (groups: any[]) => any[]) => {
+    mutateGroups((currentGroups) => {
+      if (currentGroups) {
+        return updateFunction(currentGroups);
+      }
+      return currentGroups; // Return the same groups if currentGroups is undefined
+    }, false);
+  }, []);
   const [preselected, setPreselected] = useState<boolean>(false);
   const [location, setLocation] = useState("");
   const [language, setLanguage] = useState("Yes");
@@ -52,6 +65,9 @@ const Page: React.FC = () => {
   const [eventEnd, setEventEnd] = useState<string | null>(null);
   const [activeDate, setActiveDate] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
+  const [onlyInvitees, setOnlyInvitees] = useState<boolean>(false)
+  const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false)
+
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEventName(e.target.value);
@@ -189,7 +205,8 @@ const Page: React.FC = () => {
       startTime: new Date(eventStart),
       endTime: new Date(eventEnd),
       volunteerEvent: eventType === "Volunteer",
-      groupsAllowed: organizationIds,
+      groupsAllowed: groupsSelected.map(group => group._id as string),
+      groupsOnly: onlyInvitees
     };
 
     try {
@@ -205,8 +222,24 @@ const Page: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
-      mutate();
+      const event: IEvent= await response.json();
+      // send confirmation email if button was checked
+      if (sendEmailInvitees){
+        const res = await fetch('/api/events/' + event._id + "/groups/confirmation", 
+            {method: 'POST',
+            body: JSON.stringify({groupIds: groupsSelected.flatMap(group => group._id)})})
+        if (!res){
+            toast()
+        toast({
+                title: "Error",
+                description: "Failed to send emails.",
+                status: "error",
+                duration: 2500,
+                isClosable: true,
+            });
+                }
+      }
+        mutate()
       toast({
         title: "Event Created",
         description: "Your event has been successfully created.",
@@ -279,15 +312,7 @@ const Page: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const response = await fetch("/api/group");
-        if (!response.ok) {
-          throw new Error("Failed to fetch groups");
-        }
-        const data = await response.json();
-        setGroups(data);
-      } catch (error) {
+    if (isError){
         toast({
           title: "Error",
           description: "Failed to fetch groups",
@@ -295,10 +320,9 @@ const Page: React.FC = () => {
           duration: 2500,
           isClosable: true,
         });
-      }
-    };
-    fetchGroups();
-  }, [toast]);
+    }
+
+  }, [isError]);
 
   useEffect(() => {
     const fetchEventTypes = async () => {
@@ -471,37 +495,41 @@ const Page: React.FC = () => {
           />
         </FormControl>
 
-        <FormControl width="48%">
-          <FormLabel htmlFor="organization" fontWeight="bold">
-            Organization
-          </FormLabel>
-          <CreatableSelect
-            id="organization"
-            placeholder="Select or create organization"
-            options={groups.map((group) => ({
-              value: group._id,
-              label: group.group_name,
-            }))}
-            onChange={(selectedOptions) =>
-              setOrganizationIds(
-                selectedOptions
-                  ? selectedOptions.map((option) => option.value)
-                  : []
-              )
-            }
-            onCreateOption={handleCreateNewGroup}
-            chakraStyles={{
-              control: (provided) => ({
-                ...provided,
-                textAlign: "left",
-              }),
-            }}
-            isMulti
-            isClearable
-            isSearchable
-          />
-        </FormControl>
-      </HStack>
+            <FormControl width="48%">
+              <FormLabel htmlFor="organization" fontWeight="bold">
+                Groups
+              </FormLabel>
+              <CreatableSelect
+                id="organization"
+                placeholder="Select or create organization"
+                options={groups?.map((group) => ({
+                  value: group,
+                  label: group.group_name,
+                }))}
+                value={groupsSelected.map(group => ({
+                    value: group,
+                    label: group.group_name,
+                }))}
+                onChange={(selectedOptions) =>
+                  setGroupsSelected(
+                    selectedOptions
+                      ? selectedOptions.map((option) => option.value)
+                      : []
+                  )
+                }
+                onCreateOption={handleCreateNewGroup}
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
+                isMulti
+                isClearable
+                isSearchable
+              />
+            </FormControl>
+          </HStack>
 
       <FormControl isRequired>
         <FormLabel htmlFor="location" fontWeight="bold">
@@ -514,51 +542,79 @@ const Page: React.FC = () => {
         />
       </FormControl>
 
-      <FormControl>
-        <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
-          Spanish Speaking Accommodation
-        </FormLabel>
-        <Select
-          id="accommodation-type"
-          placeholder="Select"
-          options={[
-            { value: "Yes", label: "Yes" },
-            { value: "No", label: "No" },
-          ]}
-          defaultInputValue="Yes"
-          onChange={(option) => setLanguage(option ? option.value : " ")}
-          chakraStyles={{
-            control: (provided) => ({
-              ...provided,
-              textAlign: "left",
-            }),
-          }}
-        ></Select>
-      </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
+              Spanish Speaking Accommodation
+            </FormLabel>
+            <Select
+              id="accommodation-type"
+              placeholder="Yes"
+              options={[
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
+              ]}
+              defaultInputValue="Yes"
+              onChange={(option) => setLanguage(option ? option.value : " ")}
+              chakraStyles={{
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
+              }}
+            ></Select>
+          </FormControl>
 
-      <FormControl>
-        <FormLabel htmlFor="accessibility" fontWeight="bold">
-          Accessibility Accommodation
-        </FormLabel>
-        <Select
-          id="accessibility"
-          placeholder="Select"
-          options={[
-            { value: "Yes", label: "Yes" },
-            { value: "No", label: "No" },
-          ]}
-          defaultInputValue="Yes"
-          onChange={(option) =>
-            setAccessibilityAccommodation(option ? option.value : " ")
-          }
-          chakraStyles={{
-            control: (provided) => ({
-              ...provided,
-              textAlign: "left",
-            }),
-          }}
-        />
-      </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="accessibility" fontWeight="bold">
+              Accessibility Accommodation
+            </FormLabel>
+            <Select
+              id="accessibility"
+              placeholder="Yes"
+              options={[
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
+              ]}
+              defaultInputValue="Yes"
+              onChange={(option) =>
+                setAccessibilityAccommodation(option ? option.value : " ")
+              }
+              chakraStyles={{
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
+              }}
+            />
+          </FormControl>
+
+            <FormControl>
+            <FormLabel htmlFor="invitees" fontWeight="bold">
+              Invitees Only
+            </FormLabel>
+            <Select
+              id="invitees"
+              placeholder="No"
+              options={[
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
+              ]}
+              defaultInputValue="No"
+              onChange={(option) =>
+                setOnlyInvitees(option ? option.value == "Yes" : false)
+              }
+              chakraStyles={{
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
+              }}
+            />
+          </FormControl>
+          {onlyInvitees && groups && <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
+          <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>
+          <div className="flex flex-row gap-4 justify-center"> Notify Invitees: <Checkbox checked={sendEmailInvitees} onChange={() => setSendEmailInvitees((checked) => !checked)}></Checkbox></div>
+            </div>}
 
       <FormControl isRequired>
         <FormLabel htmlFor="description" fontWeight="bold">

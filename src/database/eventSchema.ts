@@ -5,6 +5,7 @@ export type IEvent = {
     eventName: string;
     eventImage: string | null;
     eventType: string | null;
+    groupsOnly?: boolean;
     location: string;
     description: string;
     checklist: string;
@@ -13,7 +14,7 @@ export type IEvent = {
     startTime: Date;
     endTime: Date;
     volunteerEvent: boolean;
-    groupsAllowed: string[] | null;
+    groupsAllowed: string[];
     attendeeIds: string[];
     registeredIds: string[];
 };
@@ -29,6 +30,7 @@ const eventSchema = new Schema({
     location: { type: String, required: true },
     description: { type: String, required: true },
     checklist: { type: String, required: false, default: "N/A" },
+    groupsOnly: { type: Boolean, required: false, default: false },
     wheelchairAccessible: { type: Boolean, required: false, default: false },
     spanishSpeakingAccommodation: {
         type: Boolean,
@@ -38,7 +40,11 @@ const eventSchema = new Schema({
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     volunteerEvent: { type: Boolean, required: true },
-    groupsAllowed: { type: [Schema.Types.ObjectId], required: false },
+    groupsAllowed: {
+        type: [Schema.Types.ObjectId],
+        required: false,
+        default: [],
+    },
     attendeeIds: {
         type: [Schema.Types.ObjectId],
         required: false,

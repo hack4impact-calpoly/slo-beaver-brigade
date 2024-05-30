@@ -32,7 +32,7 @@ export function EmailRSSComponent({calendarURL}: {calendarURL: string}){
             <PopoverCloseButton />
             <PopoverBody display="flex" flexDirection="column" justifyContent="space-around" height="200px">
             Copy the link below and paste it into any calendar app that takes iCal feeds (Google Calendar, iCal, Outlook, etc.) 
-             <input ref={initialFocusRef} className="text-black mb-10" autoFocus={true} value={calendarLink}></input>
+             <input ref={initialFocusRef} className="text-black mb-10" autoFocus={true} value={"https://" + calendarLink}></input>
             </PopoverBody>
         </PopoverContent>
         </Popover>

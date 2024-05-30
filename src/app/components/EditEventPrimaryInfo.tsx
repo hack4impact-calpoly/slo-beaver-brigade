@@ -5,76 +5,48 @@ import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
 import EditEvent from '@components/EditEvent';
 import editButton from '/docs/images/edit_details.svg'
+import { useEventId } from 'app/lib/swrfunctions';
+import { IGroup } from 'database/groupSchema';
 
 const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
     const [loading, setLoading] = useState(true);
-    const [eventData, setEventData] = useState<IEvent>({
-        _id: '',
-        eventName: '',
-        eventImage: null,
-        checklist: "N/A",
-        eventType: '',
-        location: '',
-        description: '',
-        wheelchairAccessible: false,
-        spanishSpeakingAccommodation: false,
-        startTime: new Date(0),
-        endTime: new Date(0),
-        volunteerEvent: false,
-        groupsAllowed: [],
-        registeredIds: [],
-        attendeeIds:[]
-    });
-
-    const [groupData, setGroupData] = useState([{
-        group_name: '',
-        groupees: [],
-    }])
+    const {eventData, isLoading, isError, mutate} = useEventId(eventId)
 
 
-    useEffect(() => {
-        const fetchEventData = async () => {
-            try {
-                const response = await fetch(`/api/events/${eventId}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error, status: ${response.status}`);
-                }
-                const data = await response.json();
-                data.startTime = new Date(data.startTime);
-                data.endTime = new Date(data.endTime);
-                setEventData(data);
+    const [groupData, setGroupData] = useState<IGroup[]>([])
 
-            } catch (error) {
-                console.error('Error fetching event data:', error);
-            }
-        };
-        fetchEventData();
-    }, [eventId]);
 
     //finds the host organization
     //this defines whether or not it is loading, because it is the last thing to be fetched
-    useEffect(() => {
-        const fetchGroupData = async () => {
-            if(eventData.eventName !== ""){
-                if(eventData.groupsAllowed && eventData.groupsAllowed.length !== 0){
-                    const groupDataArray = await Promise.all(eventData.groupsAllowed.map(async (groupId) =>
-                    {
-                        const response = await fetch(`/api/group/${groupId}`);
-                        return response.json();
-                    }))
-                    
-                    setGroupData(groupDataArray)
-                }
-                setLoading(false);
-            }
-        }
-        fetchGroupData()
-    }, [eventData]);
+ useEffect(() => {
+  // Check if necessary data is available and hasn't already been fetched
+  if (isLoading || !eventData || groupData.length > 1) return;
+
+  console.log('fetching groups')
+
+  const fetchGroupData = async () => {
+    if (eventData.eventName && eventData.groupsAllowed.length !== 0) {
+      const groupDataArray = await Promise.all(
+        eventData.groupsAllowed.map(async (groupId) => {
+          const response = await fetch(`/api/groups/${groupId}`);
+          return response.json();
+        })
+      );
+
+      setGroupData(groupDataArray);
+      console.log(groupDataArray)
+    }
+    setLoading(false); 
+  };
+
+  fetchGroupData();
+}, [eventData?.groupsAllowed]); // Only depend on groupsAllowed
     
 
     return (
+
         <Box className={styles.eventInformation}>
-            {loading ? (
+            {isLoading || !eventData  || loading ? (
                 <div className = {styles.visitorHeadingLoading}>
                  <Text style={{width: '50%'}}>Primary Information</Text>
                  <Spinner className = {styles.spinner} speed="0.8s" thickness="3px"/>
@@ -85,8 +57,8 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                 <Box className = {styles.visitorHeading}>
                     <Text style={{width: '50%'}}>Primary Information</Text>
                     <Box className = {styles.editEvent}>
-                        {eventData.description === '' ? 
-                        <Text className = {styles.originalEditText}>Edit Event Details</Text> : <EditEvent event={eventData}/>}
+                        {eventData?.description === '' ? 
+                        <Text className = {styles.originalEditText}>Edit Event Details</Text> : <EditEvent event={eventData} initialGroups={groupData} mutate={mutate}/>}
                     </Box>
                     <Image src={editButton.src} alt="editButton" className={styles.editButton}/>
                 </Box>
@@ -111,8 +83,10 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                     </Box>
                 </Box>
                 <Box className = {styles.bottomBlock}>
-                    <Text className = {styles.eventField}>Host Organization</Text>
-                    <Text className={styles.eventEntry}>{groupData[0].group_name !== '' ? groupData[0].group_name : 'None'}</Text>
+                    <Text className = {styles.eventField}>Groups</Text>
+                    {(groupData && groupData.length >= 1) ? groupData.map(group => {
+                        return <Text key={group._id} className={styles.eventEntry}>{group.group_name}</Text>
+                    }) : <Text className={styles.eventEntry}>None</Text>}
                     <Text className = {styles.eventField}>Languages</Text>
                     <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation? 'English, Spanish' : 'English'}</Text>
                     <Text className = {styles.eventField}>Disability Accommodations</Text>
