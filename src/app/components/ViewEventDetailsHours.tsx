@@ -48,12 +48,10 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
 
     //convert hours and minutes to readable time
     const findEndTime = (hours : number, minutes : number) => {
-        console.log("hours: ", hours , "minutes: " , minutes);
         const endTime = new Date(event.startTime);
         if(minutes && hours){
             const totalMinutes = (hours * 60) + minutes;
             endTime.setMinutes(endTime.getMinutes() + totalMinutes);
-            console.log("endTime", endTime);
             return endTime.toISOString();
         }
         else{
@@ -69,7 +67,6 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
     };
   
     const handleSaveClick = () => {
-      console.log("added attendees", addedAttendees);
       //update the event to include the new users
       try{
 
@@ -82,9 +79,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
             })
             //update users so that this event is included in their
             //events attended
-            console.log("on save", addedAttendees);
             addedAttendees.forEach(user => {
-                console.log("user!", user)
                 fetch(`/api/user/${user._id}`, 
                 {
                     method: "PATCH",
@@ -110,8 +105,6 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, attendee : IUser, type: 'hours' | 'minutes') => {
         const {value} = e.target;
-        console.log(value);
-        console.log(type);
         if(value){  
             const eventsAttended = attendee.eventsAttended.map(eventAttended => 
                 eventAttended.eventId === event._id
@@ -119,12 +112,10 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                         ? new Date(findEndTime(parseInt(value), eventMinsNum(attendee, event)))
                         : new Date(findEndTime(eventHoursNum(attendee, event), parseInt(value)))}
                 : eventAttended)
-            console.log(eventsAttended)
             const user = {
                 ...attendee,
                 eventsAttended : eventsAttended
             }
-            console.log("user", user);
             //if the user has already been edited, then it is in the addedAttendees list,
             //if this is the case, it modifies the list, but if the user is added, then it 
             //adds them to the list
@@ -176,7 +167,6 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
         //it will not interact with the backend/add it to the database until
         //the user presses save
         getUserAndCheck().then(user => {
-            console.log(user)
             if (user) {
                 //add user to event
                 const eventNewAttendees = {
@@ -216,14 +206,12 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                 setOrigAttendees(data);
                 return;
             })
-            console.log(attendees)
 
         }
         fetchUsers()
     }, [event.attendeeIds])
 
     useEffect(() => {
-        console.log("attendees", attendees);
     }, [attendees]);
     
     useEffect(() => {
