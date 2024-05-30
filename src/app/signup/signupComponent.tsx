@@ -55,12 +55,12 @@ export default function SignUp() {
     let userData = sessionStorage.getItem('userData');
     if(userData !== null){
       const parsedData = JSON.parse(userData); 
-      setFirstName(parsedData!.firstName);
-      setLastName(parsedData!.lastName);
-      setEmail(parsedData!.email);
-      setZipcode(parsedData!.zipcode);
+      console.log('user', userData)
+      setFirstName(parsedData.firstName);
+      setLastName(parsedData.lastName);
+      setEmail(parsedData.email);
+      setZipcode(parsedData.zipcode);
 
-      sessionStorage.removeItem('userData');
     }
   }
   ,[]);
@@ -93,6 +93,8 @@ export default function SignUp() {
      
 
         try {
+
+        sessionStorage.removeItem('userData');
           //create a clerk user
           await signUp.create({
             emailAddress: email,
@@ -105,6 +107,7 @@ export default function SignUp() {
             },
           });
  
+
 
           // send the email.
           await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
@@ -232,6 +235,7 @@ export default function SignUp() {
                   type="text"
                   placeholder="First Name"
                   variant="filled"
+                  value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required={true}
                 />
@@ -243,6 +247,7 @@ export default function SignUp() {
                   type="text"
                   placeholder="Last Name"
                   variant="filled"
+                  value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required={true}
                 />
@@ -254,6 +259,7 @@ export default function SignUp() {
                   type="text"
                   placeholder="Email"
                   variant="filled"
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required={true}
                 />
@@ -276,6 +282,7 @@ export default function SignUp() {
                   type="text"
                   placeholder="Zipcode"
                   variant="filled"
+                  value={zipcode}
                   onChange={(e) => setZipcode(e.target.value)}
                 />
                 <FormErrorMessage>Zipcode is required</FormErrorMessage>

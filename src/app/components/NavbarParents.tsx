@@ -86,10 +86,10 @@ export default async function NavbarParent() {
         console.log('navbar: user has been grabbed')
         console.log('user', user)
         
-        if (!user) return <Navbar name="Sign In / Log In"></Navbar>;
-        const name = `Hi ${user?.firstName}!`;
         console.log('navbar: getting user data')
         if (user){
+
+            const name = `Hi ${user?.firstName}!`;
             console.log('parsed user data')
             if (user?.role == "admin"){
             return <NavbarAdmin name={name}></NavbarAdmin>
@@ -106,16 +106,17 @@ export default async function NavbarParent() {
                     const tempUser = JSON.parse(userRes) as IUser
                     if (tempUser){
                     if (tempUser?.role == "admin"){
-                        return <NavbarAdmin name={name}></NavbarAdmin>
+                        return <NavbarAdmin name={`Hi ${tempUser.firstName}!`}></NavbarAdmin>
                         }
                     }
                     }
 
                 
             }
+            else{
+                return <Navbar name="Sign In / Log In"></Navbar>;
+            }
         }
-
-        return <Navbar name={name}></Navbar>;
     }
     catch(err){
         console.log(err)
