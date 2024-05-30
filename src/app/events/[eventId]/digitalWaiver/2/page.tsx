@@ -496,7 +496,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               Close
             </Button>
             <Button sx={{marginLeft: "5%"}}>
-              <a href="/signin">
+              <a href="/login">
                 Sign in
               </a>
             </Button>
