@@ -24,6 +24,8 @@ import { get } from 'http';
 import { getUserDbData } from 'app/lib/authentication';
 import { parse } from 'path';
 import { IUser } from '@database/userSchema';
+import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import "../fonts/fonts.css"
 
 const AttendedEvents = () => {
   //states
@@ -105,8 +107,8 @@ const AttendedEvents = () => {
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
     return (
-      <Text fontSize="lg" textAlign="center">
-        Loading events...
+      <Text fontFamily="Lato" fontSize="2xl" mt="5%" textAlign="center">
+        Loading Events...
       </Text>
     );
   }
@@ -123,26 +125,32 @@ const AttendedEvents = () => {
         { totalTime === 0 ? (
           <Text
             fontWeight="500"
-            fontSize="32px"
+            fontSize={["20px","26px","32px"]}
             textAlign="center"
             width="70%"
             margin="95px"
           >
-            Looks like we could not find any events. 😢 Are you sure you
-            attended an event that matches the current search?
+            No volunteering events found. Register for volunteering events to track your hours!
           </Text>
         ) : (
           <Box>
-            <Text fontWeight="500" fontSize="32px" textAlign="center">
+            <Text 
+              fontWeight="500" 
+              fontSize={["20px","26px","32px"]} 
+              textAlign="center"
+              mt="40px"
+              mb="40px">
               🎉 The beavers appreciate your amazing work, {userFirstName} 🎉
             </Text>
             <Box
-              borderRadius="10.21px"
+              borderRadius="10px"
               m="4"
-              p="20.42px"
-              paddingTop="54.46px"
-              paddingBottom="54.46px"
-              gap="9.36px"
+              mr={["30px","100px", "200px"]}
+              ml={["30px","100px", "200px"]}
+              p="20px"
+              paddingTop="30px"
+              paddingBottom="30px"
+              gap="9px"
               bg="#337774"
               color="#FBF9F9"
             >
@@ -153,11 +161,11 @@ const AttendedEvents = () => {
                 justifyContent="center"
                 textAlign="center"
               >
-                Total Volunteer Hours Accumulated
+                Total Volunteer Hours
               </Text>
               <Text
                 fontWeight="600"
-                fontSize="50.07px"
+                fontSize={["30px","40px","50px"]}
                 display="flex"
                 justifyContent="center"
                 textAlign="center"
@@ -170,13 +178,14 @@ const AttendedEvents = () => {
         <Wrap justify='center'>
           <WrapItem justifyItems="center" alignItems="center">
             <Text display="inline">
-              From:
+              From
             </Text>
             <Input
               size="md"
               type="date"
               width="250px"
               margin="10px"
+              focusBorderColor="#337774"
               value={startDateTime}
               onChange={async (e) => {
                 fetchData(e.target.value, endDateTime);
@@ -185,29 +194,42 @@ const AttendedEvents = () => {
           </WrapItem>
           <WrapItem justifyItems="center" alignItems="center">
             <Text display="inline">
-              To:
+              To
             </Text>
             <Input
               size="md"
               type="date"
               width="250px"
               margin="10px"
+              focusBorderColor="#337774"
               value={endDateTime}
               onChange={async (e) => {
                 fetchData(startDateTime, e.target.value);
               }}
             />
           </WrapItem>
-          <WrapItem justifyItems="center" alignItems="center">
-            <Input
-              placeholder="Event Search"
-              size="md"
-              width="250px"
-              margin="10px"
-              display="flex"
-              flexDirection="row"
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <WrapItem justifyItems="center" alignItems="center" display="flex">
+            <Box position="relative" display="flex" alignItems="center">
+              <Input
+                placeholder="Search Events"
+                size="md"
+                width="250px"
+                margin="10px"
+                //border="1px solid #337774"
+                //_hover={{ borderColor: '#337774' }}
+                focusBorderColor="#337774"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <MagnifyingGlassIcon
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  position: "absolute",
+                  right: "20px",
+                  //color: "#337774"
+                }}
+              />
+            </Box>
           </WrapItem>
         </Wrap>
       </Box>
