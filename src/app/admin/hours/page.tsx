@@ -21,6 +21,7 @@ import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration } from '../../lib/dates';
 import { calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import ViewEventDetailsHours from '../../components/ViewEventDetailsHours'
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
 import { set } from 'mongoose';
@@ -45,6 +46,7 @@ const AttendedEvents = () => {
 
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
+
 
   async function fetchData(start: string, end: string): Promise<void> {
     // Fetch all events
@@ -78,7 +80,7 @@ const AttendedEvents = () => {
       setUserFirstName(userFirstName);
     }
   }
-
+  
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
@@ -226,12 +228,7 @@ const AttendedEvents = () => {
                   <Td>{eventHours(event)}</Td>
                   <Td>{formatDate(event.startTime)}</Td>
                   <Td>
-                    <Link
-                      href={`events/edit/${event._id}`}
-                      className={style.viewDetails}
-                    >
-                      View Details
-                    </Link>
+                    <ViewEventDetailsHours event={event}></ViewEventDetailsHours>
                   </Td>
                 </Tr>
               ))}
