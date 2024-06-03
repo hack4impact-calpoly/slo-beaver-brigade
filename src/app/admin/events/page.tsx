@@ -194,6 +194,7 @@ const EventPreview = () => {
               focusBorderColor="#337774"
               borderColor="#337774"
               borderWidth="1.5px"
+              _hover={{ borderColor: '#337774' }}
             />
             <MagnifyingGlassIcon
               style={{

@@ -208,7 +208,6 @@ const AttendedEvents = () => {
               type="date"
               width="250px"
               margin="10px"
-              focusBorderColor="#337774"
               value={startDateTime}
               onChange={async (e) => {
                 fetchData(e.target.value, endDateTime);
@@ -222,7 +221,6 @@ const AttendedEvents = () => {
               type="date"
               width="250px"
               margin="10px"
-              focusBorderColor="#337774"
               value={endDateTime}
               onChange={async (e) => {
                 fetchData(startDateTime, e.target.value);
@@ -236,8 +234,8 @@ const AttendedEvents = () => {
                 size="md"
                 width="250px"
                 margin="10px"
-                //border="1px solid #337774"
-                //_hover={{ borderColor: '#337774' }}
+                border="1.5px solid #337774"
+                _hover={{ borderColor: '#337774' }}
                 focusBorderColor="#337774"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -247,7 +245,6 @@ const AttendedEvents = () => {
                   height: "20px",
                   position: "absolute",
                   right: "20px",
-                  //color: "#337774"
                 }}
               />
             </Box>
