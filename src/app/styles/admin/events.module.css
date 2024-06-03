@@ -34,7 +34,7 @@
 }
 
 .yellowButton {
-    background-color: #ecb94a;
+    background-color: #e0af48;    
     border: none;
     border-radius: 20px;
     cursor: pointer;
@@ -48,7 +48,7 @@
 }
 
 .yellowButton:hover {
-    background-color: #d6a33e;
+    background-color: #c19137;
     cursor: pointer;
 }
 
