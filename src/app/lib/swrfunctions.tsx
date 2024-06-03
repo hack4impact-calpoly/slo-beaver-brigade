@@ -52,7 +52,7 @@ export function useUsers() {
 
 export function useEventId(id: string){
   // revalidates every 10 minutes
-    const { data, error, isLoading, mutate } = useSWR<IEvent>(`/api/events/${id}`);
+    const { data, error, isLoading, isValidating, mutate } = useSWR<IEvent>(`/api/events/${id}`);
 
 
     const transformedData = data
@@ -64,7 +64,7 @@ export function useEventId(id: string){
     : null;
     return {
         eventData: transformedData,
-        isLoading: isLoading,
+        isLoading: isValidating,
         isError: error,
         mutate
     }
