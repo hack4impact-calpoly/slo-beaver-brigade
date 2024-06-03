@@ -204,6 +204,7 @@ const EventPreview = () => {
                 margin: "auto",
                 bottom: "10px",
                 right: "10px",
+                color: "#337774"
               }}
             />
           </div>

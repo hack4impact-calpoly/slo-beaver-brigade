@@ -245,6 +245,7 @@ const AttendedEvents = () => {
                   height: "20px",
                   position: "absolute",
                   right: "20px",
+                  color: "#337774"
                 }}
               />
             </Box>
