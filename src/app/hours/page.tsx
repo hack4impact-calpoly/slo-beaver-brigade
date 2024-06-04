@@ -19,7 +19,7 @@ import style from '@styles/admin/users.module.css';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../database/eventSchema';
 import { formatDate, formatDuration } from '../lib/dates';
-import { calcHours, filterUserSignedUpEvents } from '../lib/hours';
+import { calcHours, filterUserSignedUpEvents, filterEventsByType } from '../lib/hours';
 import { get } from 'http';
 import { getUserDbData } from 'app/lib/authentication';
 import { parse } from 'path';
@@ -65,13 +65,15 @@ const AttendedEvents = () => {
         throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
       }
       const allEvents = await eventsResponse.json();
+      const volunteerEvents = filterEventsByType(allEvents, "Volunteer");
+
 
       setStartDateTime(start);
       setEndDateTime(end);
 
       // Filter events where the current user is an attendee
       const userSignedUpEvents = filterUserSignedUpEvents(
-        allEvents,
+        volunteerEvents,
         userId,
         start,
         end,
