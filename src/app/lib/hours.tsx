@@ -69,3 +69,11 @@ export function filterPastEvents(
   ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   return filteredEvents;
 }
+
+export function filterEventsByType(
+  events: IEvent[],
+  eventType: string
+){
+  return events.filter(event => event.eventType?.toLowerCase() === eventType.toLowerCase());
+}
+

@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration, timeOfDay } from '../../lib/dates';
-import { calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import { calcHoursForAll, eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
 import { set } from 'mongoose';
@@ -68,9 +68,9 @@ const AttendedEvents = () => {
       throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
     }
     const allEvents: IEvent[] = await eventsResponse.json();
+    const volunteerEvents = filterEventsByType(allEvents, "Volunteer");
 
-
-    const csvData = allEvents.map((event: IEvent) => ({
+    const csvData = volunteerEvents.map((event: IEvent) => ({
       eventName: event.eventName,
       eventDate: formatDate(event.startTime),
       startTime: timeOfDay(event.startTime),
@@ -85,7 +85,7 @@ const AttendedEvents = () => {
     setEndDateTime(end);
 
     // Filter events where the current user is an attendee
-    const pastEvents = filterPastEvents(allEvents, start, end, searchTerm);
+    const pastEvents = filterPastEvents(volunteerEvents, start, end, searchTerm);
 
     let hours = calcHoursForAll(pastEvents);
     setTotalTime(hours);
