@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import styles from "../styles/userdashboard/MiniCalendar.module.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import HStack from "@chakra-ui/react"
 
 // Define type for the onTimeChange function
 type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
@@ -167,7 +168,7 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
               />
             </div>
             <div>
-              &nbsp;&nbsp;End Time :{" "}
+            &nbsp;End Time :{" "}
               <input
                 type="time"
                 className={styles.timeInput}

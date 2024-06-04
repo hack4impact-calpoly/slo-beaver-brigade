@@ -10,9 +10,17 @@
     height: 250px;
     color: #fbf9f9;
     position: relative;
-}
-
-.imageCard {
+    overflow: hidden; /* Ensure the image fits within the card */
+  }
+   .imageWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Place the image behind other elements */
+  }
+   .imageCard {
     border-radius: 8px;
     padding: 20px;
     transition: transform 0.3s ease;
@@ -25,64 +33,56 @@
     color: #fbf9f9;
     position: relative;
     width: 250px;
-}
-
-.imageCard h2 {
+    overflow: hidden; /* Ensure the image fits within the card */
+  }
+   .imageCard h2 {
     font-size: 1.5rem;
     font-weight: bold;
-}
-
-.imageCard h3 {
+  }
+   .imageCard h3 {
     font-size: 1rem;
     font-weight: 500;
-}
-
-.imageCard:hover {
+  }
+   .imageCard:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-}
-
-.bottomRow {
+  }
+   .bottomRow {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: last baseline;
-}
-
-.visitorCount {
+  }
+   .visitorCount {
     text-align: center;
-}
-
-.eventCard h2 {
+  }
+   .eventCard h2 {
     font-size: 1.5rem;
     font-weight: bold;
-}
-
-.eventCard h3 {
+  }
+   .eventCard h3 {
     font-size: 1rem;
     font-weight: 500;
-}
-
-.eventCard:hover {
+  }
+   .eventCard:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-}
-
-@media (max-width: 1200px) {
+  }
+   @media (max-width: 1200px) {
     .eventCard {
-        width: 45vw;
+      width: 45vw;
     }
-}
-
-@media (max-width: 768px) {
+  }
+   @media (max-width: 768px) {
     .eventCard {
-        width: 65vw;
+      width: 65vw;
     }
-}
-@media (max-width: 600px) {
+  }
+   @media (max-width: 600px) {
     .imageCard {
-        width: 200px;
+      width: 200px;
     }
-}
+  }
+ 
