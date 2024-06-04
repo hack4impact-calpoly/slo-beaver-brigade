@@ -19,6 +19,7 @@ import SingleVisitorComponent from "@components/SingleVisitorComponent";
 import { Schema } from "mongoose";
 import ViewGroups from "app/components/ViewGroups";
 import { useUsers } from "app/lib/swrfunctions";
+import "../../fonts/fonts.css";
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;

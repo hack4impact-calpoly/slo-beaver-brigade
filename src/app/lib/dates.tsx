@@ -75,3 +75,13 @@ export function getDuration(start: Date, end: Date){
 
     return `${formattedStart} - ${formattedEnd}`;
   };
+
+  // Convert to 12 hour time (ex. 1:00pm, 9:00am, etc)
+  export function timeOfDay(time: Date) {
+    const startTime = new Date(time);
+    return startTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    });
+  };
