@@ -6,6 +6,7 @@ import { HamburgerIcon, Search2Icon, StarIcon, ExternalLinkIcon, CloseIcon } fro
 import Image from "next/image";
 import { SignOutButton } from "@clerk/clerk-react";
 import { removeUserCookie } from "app/actions/cookieactions";
+import { mutate } from "swr";
 
 export default function Navbar(props: { name: string }) {
   const [showNavbar, setShowNavbar] = useState(false);
@@ -93,7 +94,7 @@ export default function Navbar(props: { name: string }) {
                 <li>
                   |
                 </li>
-                <li onClick={async() => await removeUserCookie()}>
+                <li onClick={async() => {await removeUserCookie(); mutate("/api/events?sort=asc")}}>
                   <SignOutButton>
                     <button>Sign Out</button>
                   </SignOutButton>

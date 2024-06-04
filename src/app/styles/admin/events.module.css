@@ -31,7 +31,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    
 }
 
 .yellowButton {
@@ -57,7 +56,6 @@
     position: relative;
     display: flex;
     width: fit-content;
-
 }
 
 .searchBar {
@@ -73,14 +71,11 @@
     padding-right: 10px;
     margin-top: 20px;
     margin-bottom: 0px;
-
-
 }
 .filterContainer {
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 0px;
-
 }
 .filterHeader {
     margin-left: 0px;
@@ -116,8 +111,19 @@
     white-space: nowrap;
 }
 
+@media (max-width: 1400px) {
+    .cardContainer {
+        width: 61%;
+    }
 
-
+    .eventsList {
+        display: grid;
+        grid-template-columns: repeat(2, 0fr);
+        gap: 35px;
+        padding: 0;
+        list-style: none;
+    }
+}
 
 @media (max-width: 1200px) {
     .mainContainer {
@@ -150,9 +156,7 @@
         justify-content: space-between;
         align-items: stretch;
         gap: 50px;
-
     }
-
 }
 
 @media (max-width: 768px) {
@@ -183,4 +187,3 @@
         margin-right: 5px;
     }
 }
-  
