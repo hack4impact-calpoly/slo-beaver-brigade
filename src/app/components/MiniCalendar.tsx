@@ -167,7 +167,7 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
               />
             </div>
             <div>
-              &nbsp;&nbsp;End Time :{" "}
+              End Time :{" "}
               <input
                 type="time"
                 className={styles.timeInput}
