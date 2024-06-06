@@ -12,7 +12,7 @@
 
 .buttonContainer {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 0 13% 25px;
 }
 
@@ -24,13 +24,14 @@
 }
 
 .yellowButton {
-    padding: 10px 30px;
+    padding: 8px 20px;
     background-color: #e0af48;
     border: none;
     border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
-    margin-left: 30px;
+    margin-left: 50px;
+    white-space: nowrap;
 }
 
 .yellowButton:hover {
@@ -42,6 +43,11 @@
     color: darkgray;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.viewGroupsContainer{
+    margin-left: 50px;
+    align-content: center;
 }
 
 .searchBar {
@@ -72,18 +78,17 @@
     padding: 25px;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1000px) {
     .buttonContainer {
         align-items: center;
         flex-direction: column-reverse;
         gap: 20px;
-        font-size: small;
     }
 
     .yellowButton {
-        padding: 8px 20px;
-        margin-right: 50px;
+        padding: 8px 20px;   
     }
+
 
     .tableContainer {
         font-size: 0.7rem;
@@ -106,6 +111,11 @@
         height: 37px;
         padding: 5px 10px 5px 20px;
     }
+
+    .searchWrapper {
+        width: 170px;
+        margin: -20px;
+    }
 }
 
 @media (max-width: 450px) {
@@ -119,7 +129,19 @@
         margin: 0;
     }
 
+    .viewGroupsContainer {
+        margin: 0;
+    }
+
+    .searchWrapper {
+        margin: 0px;
+    }
     .searchBar {
         width: 145px;
+    }
+    
+
+    .selectContainer {
+        margin-top: 10px;
     }
 }
