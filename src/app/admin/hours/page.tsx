@@ -19,12 +19,16 @@ import style from '@styles/admin/users.module.css';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
-import { formatDate, formatDuration } from '../../lib/dates';
-import { calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import { formatDate, formatDuration, timeOfDay } from '../../lib/dates';
+import { calcHoursForAll, eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
 import { set } from 'mongoose';
 import { getEvents } from 'app/actions/eventsactions';
+import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import { CSVLink } from "react-csv";
+import "../../fonts/fonts.css"
+
 
 const AttendedEvents = () => {
   //states
@@ -46,26 +50,49 @@ const AttendedEvents = () => {
   // table format
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
 
+  const [csvData, setCsvData] = useState<any[]>([]);
+  const [csvHeaders] = useState([
+    { label: "Event Name", key: "eventName" },
+    { label: "Date", key: "eventDate" },
+    { label: "Start Time", key: "startTime"},
+    { label: "Duration", key: "eventDuration" },
+    { label: "Number of Volunteers", key: "numberVolunteers" },
+    { label: "Volunteer Hours", key: "totalVolunteerHours" }
+  ]);
+
+
   async function fetchData(start: string, end: string): Promise<void> {
     // Fetch all events
     const eventsResponse = await fetch('/api/events/');
     if (!eventsResponse.ok) {
       throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
     }
-    const allEvents = await eventsResponse.json();
+    const allEvents: IEvent[] = await eventsResponse.json();
+    const volunteerEvents = filterEventsByType(allEvents, "Volunteer");
 
+    const csvData = volunteerEvents.map((event: IEvent) => ({
+      eventName: event.eventName,
+      eventDate: formatDate(event.startTime),
+      startTime: timeOfDay(event.startTime),
+      eventDuration:formatDuration(event.startTime, event.endTime),
+      numberVolunteers: event.attendeeIds.length,
+      totalVolunteerHours: eventHours(event)
+    }));
+
+    setCsvData(csvData);
+    
     setStartDateTime(start);
     setEndDateTime(end);
 
     // Filter events where the current user is an attendee
-    const pastEvents = filterPastEvents(allEvents, start, end, searchTerm);
+    const pastEvents = filterPastEvents(volunteerEvents, start, end, searchTerm);
 
     let hours = calcHoursForAll(pastEvents);
     setTotalTime(hours);
 
     // Update state with events the user has signed up for
     setUserEvents(pastEvents);
-
+   
     if (isSignedIn) {
       let userId = '';
       let userFirstName = '';
@@ -92,16 +119,18 @@ const AttendedEvents = () => {
         }, 200);
       }
     };
-
+    
+    
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
   }, [isSignedIn, user, isLoaded, searchTerm]);
 
+
   //return a loading message while waiting to fetch events
   if (!isLoaded || eventsLoading) {
     return (
-      <Text fontSize="lg" textAlign="center">
-        Loading events...
+      <Text fontFamily="Lato" fontSize="2xl" mt="5%" textAlign="center">
+        Loading Events...
       </Text>
     );
   }
@@ -113,35 +142,42 @@ const AttendedEvents = () => {
         justifyContent="center"
         alignItems="center"
         flexDirection="column"
-        marginLeft="20px"
-        marginRight="20px"
+        margin="20px"
       >
         { totalTime == 0 ? (
           <Text
             fontWeight="500"
-            fontSize="32px"
+            fontSize={["20px","26px","32px"]}
             textAlign="center"
             width="70%"
-            margin="80px"
+            margin={["40px","95px","95px"]}      
           >
-            Looks like we could not find any events. 😢 Are you sure there is an
-            event that matches the current search?
+            No volunteering events found.
+            Create volunteering events to track hours!
           </Text>
         ) : (
           <Box>
-            <Text fontWeight="500" fontSize="32px" textAlign="center">
-              🎉 Way to go Beaver Brigade!!! 🎉
+            <Text 
+              fontWeight="500" 
+              fontSize={["20px","30px","32px"]} 
+              textAlign="center"
+              mb="20px"
+              >
+              🎉 Amazing work, Beaver Brigade 🎉
             </Text>
             <Box
-              borderRadius="10.21px"
+              borderRadius="10px"
               m="4"
-              p="20.42px"
-              paddingTop="54.46px"
-              paddingBottom="54.46px"
-              gap="9.36px"
+              mr={["30px","100px", "200px"]}
+              ml={["30px","100px", "200px"]}
+              paddingTop="30px"
+              paddingBottom="30px"
+              paddingLeft={["50px","90px","90px"]}
+              paddingRight={["50px","90px","90px"]}
+              gap="9px"
               bg="#337774"
               color="#FBF9F9"
-              margin="20px"
+              whiteSpace={"nowrap"}
             >
               <Text
                 fontFamily="500"
@@ -154,7 +190,7 @@ const AttendedEvents = () => {
               </Text>
               <Text
                 fontWeight="600"
-                fontSize="50.07px"
+                fontSize={["30px","40px","50px"]}
                 display="flex"
                 justifyContent="center"
                 textAlign="center"
@@ -191,16 +227,41 @@ const AttendedEvents = () => {
               }}
             />
           </WrapItem>
-          <WrapItem justifyItems="center" alignItems="center">
-            <Input
-              placeholder="Event Search"
-              size="md"
-              width="250px"
-              margin="10px"
-              display="flex"
-              flexDirection="row"
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <WrapItem justifyItems="center" alignItems="center" display="flex">
+            <Box position="relative" display="flex" alignItems="center">
+              <Input
+                placeholder="Search Events"
+                size="md"
+                width="250px"
+                margin="10px"
+                border="1.5px solid #337774"
+                _hover={{ borderColor: '#337774' }}
+                focusBorderColor="#337774"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <MagnifyingGlassIcon
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  position: "absolute",
+                  right: "20px",
+                  color: "#337774"
+                }}
+              />
+            </Box>
+          </WrapItem>
+          <WrapItem>
+            <Box mt={"20px"} mb={"20px"}>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename="event-data.csv"
+                className={style.yellowButton}
+                target="_blank"
+              >
+                Export to CSV
+                </CSVLink>
+              </Box>
           </WrapItem>
         </Wrap>
       </Box>
@@ -211,7 +272,7 @@ const AttendedEvents = () => {
               <Tr>
                 <Th>Event Name</Th>
                 <Th>Duration</Th>
-                <Th>Num Attendees</Th>
+                <Th>Number of Volunteers</Th>
                 <Th>Total Hours From Event</Th>
                 <Th>Date</Th>
                 <Th></Th>
