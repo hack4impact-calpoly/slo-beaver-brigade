@@ -37,7 +37,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [zipcode, setZipcode] = useState('');
-  const [enableNewsletter, setEnableNewsletter] = useState<boolean>(true);
+  const [enableNewsletter, setEnableNewsletter] = useState<boolean>(false);
   //verification consts
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
