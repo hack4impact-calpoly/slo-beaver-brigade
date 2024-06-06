@@ -10,12 +10,14 @@ import {
   Checkbox,
   CheckboxGroup,
   Stack,
+  useMediaQuery
 } from "@chakra-ui/react";
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
 import { getSelectedEvents } from "app/actions/eventsactions";
 import { EmailRSSComponent } from "app/components/EmailComponent";
 import { useEventsAscending } from "app/lib/swrfunctions";
+import "../fonts/fonts.css"
 
 export default function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -66,29 +68,36 @@ export default function Page() {
 
   const calEvent = filteredEvents.map(Calendarify);
 
+  const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
+
+
   return (
     <Box bg="white" minH="100vh" p="4">
       <Flex className={style.page} direction="column" align="flex-end">
         <Flex width="full" justify="space-between" alignItems="flex-start">
+          {isLargerThan800 ? (
           <Box
             flex="1"
-            maxWidth="350px"
+            maxWidth="300px"
             padding="0"
             mt="2%" 
-            ml="5%"
+            ml="2%"
+            mr="2%"
             bg="#F5F5F5"
             borderRadius="md"
-            p="5"
+            pt="5"
             pr="10"
-            pb="10"
+            //pb="10"
             boxShadow="sm"
+            height="725px"
+            className="filterContainer"
           >
             <Heading
               as="h1"
               textTransform="none"
               textAlign="left"
               padding="10px"
-              fontSize="24"
+              fontSize="20"
               ml="5"
               mb="3"
             >
@@ -114,7 +123,7 @@ export default function Page() {
               textTransform="none"
               textAlign="left"
               padding="10px"
-              fontSize="24"
+              fontSize="20"
               ml="5"
               mt="10"
               mb="3"
@@ -145,16 +154,18 @@ export default function Page() {
               <EmailRSSComponent calendarURL="/api/events/calendar"/>
             </div>
           </Box>
+          ) : null}
           <Box
             flex="2"
             padding="0"
             mt="2%" 
-            mr="10%"
-            ml="5%"
+            mr="1%"
+            ml="1%"
             bg="#F5F5F5"
             borderRadius="md"
             p="5"
             boxShadow="sm"
+            maxHeight="800px"
           >
             <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
           </Box>

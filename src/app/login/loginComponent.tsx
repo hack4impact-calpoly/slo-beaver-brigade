@@ -155,7 +155,7 @@ export default function Login() {
         <FormControl mb={4}>
 
         <Flex justifyContent="center" alignItems="center">
-          <Button bg="#e0af48" color="black" width="full" onClick={handleSubmit} isLoading={signInProgress} loadingText="Signing In">
+          <Button bg="#e0af48" _hover={{ bg: "#C19137" }} color="black" width="full" onClick={handleSubmit} isLoading={signInProgress} loadingText="Signing In">
             Sign In           
           </Button>
         </Flex>

@@ -37,7 +37,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [zipcode, setZipcode] = useState('');
-  const [enableNewsletter, setEnableNewsletter] = useState<boolean>(true);
+  const [enableNewsletter, setEnableNewsletter] = useState<boolean>(false);
   //verification consts
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
@@ -325,7 +325,7 @@ export default function SignUp() {
                 </FormLabel>
               </FormControl>
               <FormControl mb={4}>
-                <Button loadingText="Submitting" bg="#337774" color="white"  width="full" onClick={handleSubmit}>
+                <Button loadingText="Submitting" bg="#337774" _hover={{ bg: "#4a9b99" }} color="white"  width="full" onClick={handleSubmit}>
                   Create Account
                 </Button>
               </FormControl>
@@ -359,7 +359,7 @@ export default function SignUp() {
                 />
               </FormControl>
               <FormControl mt={4} mb={4} isInvalid={submitAttempted}>
-                <Button loadingText="Verifying" isLoading={isVerifying} bg="#e0af48" color="black" width="full" onClick={onPressVerify}>
+                <Button loadingText="Verifying" isLoading={isVerifying} bg="#e0af48" _hover={{ bg: "#C19137" }} color="black" width="full" onClick={onPressVerify}>
                   Verify Email
                 </Button>
                 <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>
