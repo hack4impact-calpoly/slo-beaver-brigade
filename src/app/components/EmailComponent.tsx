@@ -21,17 +21,17 @@ export function EmailRSSComponent({calendarURL}: {calendarURL: string}){
         placement='bottom-end'
         >
         <PopoverTrigger>
-            <Button display="flex" justifyContent="space-between" width="120px">
-                <CalendarIcon/>Calendar
-            </Button>
+                <Button display="flex" bg="#e0af48" color="black" _hover={{ bg: "#C19137" }} width="150px">
+                    Copy Calendar
+                </Button>
         </PopoverTrigger>
         <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
             <PopoverHeader pt={4} fontWeight='bold' border='0'>
-            Copy your calendar! 
+            Copy to your calendar! 
             </PopoverHeader>
             <PopoverCloseButton />
             <PopoverBody display="flex" flexDirection="column" justifyContent="space-around" height="200px">
-            Copy the link below and paste it into any calendar app that takes iCal feeds (Google Calendar, iCal, Outlook, etc.) 
+            Copy the link below and paste into an iCal feed in Google Calendar, Outlook, etc.
              <input ref={initialFocusRef} className="text-black mb-10" autoFocus={true} value={"https://" + calendarLink}></input>
             </PopoverBody>
         </PopoverContent>
