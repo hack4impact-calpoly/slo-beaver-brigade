@@ -33,6 +33,7 @@ import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
 import { CreateTemporaryGroup } from "app/components/ViewGroups";
 import { IGroup } from "database/groupSchema";
 import { IEvent } from "database/eventSchema";
+import "../../../fonts/fonts.css";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -631,7 +632,10 @@ export default function Page() {
       </Flex>
       <Box display="flex" justifyContent="center" mt={4}>
         <Button
-          colorScheme="yellow"
+          loadingText="Creating"                 
+          bg="#e0af48"   
+          color="black"
+          _hover={{ bg: "#C19137" }}
           onClick={handleCreateEvent}
           minWidth="150px"
           width="20%"

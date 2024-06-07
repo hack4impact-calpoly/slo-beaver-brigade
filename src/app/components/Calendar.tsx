@@ -82,9 +82,11 @@ export default function Calendar(props: {
             listPlugin,
           ]}
           headerToolbar={{
-            left: "prev",
+            left: "prev next",
             center: "title",
-            right: props.admin ? "next myCustomButton" : "next",
+            end: "",
+            start: "",
+            right: ""
           }}
           events={props.events}
           nowIndicator={true}

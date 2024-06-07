@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration, timeOfDay } from '../../lib/dates';
-import { calcHoursForAll, eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
+import { eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
 import "../../fonts/fonts.css"

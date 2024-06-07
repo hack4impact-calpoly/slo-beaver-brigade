@@ -12,10 +12,16 @@ import {
   Checkbox,
   CheckboxGroup,
   Stack,
-  Box
+  Text,
+  Box,
+  Input
 } from "@chakra-ui/react";
+import Select from "react-select";
 import { getAllImagesS3 } from "app/actions/imageactions";
 import { useEventsAscending } from "app/lib/swrfunctions";
+import "../../fonts/fonts.css";
+
+// Your other imports and code
 
 // interface IEvent {
 //   _id: string;
@@ -38,7 +44,10 @@ const EventPreview = () => {
   const {events, isLoading} = useEventsAscending()
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("earliest");
+  const [sortOrder, setSortOrder] = useState<{ value: string; label: string}>({
+    value: "earliest",
+    label: "From Earliest"
+  });
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [wheelchairAccessible, setWheelchairAccessible] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
@@ -159,10 +168,15 @@ const EventPreview = () => {
       event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) =>
-      sortOrder === "earliest"
+      sortOrder.value === "earliest"  // Check This!
         ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
         : new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
     ) || [];
+  const sortOptions = [
+    { value: "earliest", label: "From Earliest" },
+    { value: "latest", label: "From Latest" }
+  ];
+  
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
@@ -171,25 +185,70 @@ const EventPreview = () => {
             <button className={style.yellowButton}>Create Event</button>
           </Link>
           <div className={style.searchWrapper}>
-            <input
+            <Input
               type="text"
               placeholder="Search Events"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={style.searchBar}
+              focusBorderColor="#337774"
+              borderColor="#337774"
+              borderWidth="1.5px"
+              _hover={{ borderColor: '#337774' }}
             />
             <MagnifyingGlassIcon
               style={{
-                width: "15px",
-                height: "15px",
+                width: "20px",
+                height: "20px",
                 position: "absolute",
                 margin: "auto",
-                bottom: "11px",
+                bottom: "10px",
                 right: "10px",
                 color: "#337774"
               }}
             />
           </div>
+          <div className={style.searchWrapper}>
+            <Select
+              id="sort-select"
+              value={sortOrder}
+              options={sortOptions}
+              onChange={(selectedOption) =>
+              setSortOrder(
+              selectedOption || { value: "earliest", label: "From Earliest" }
+                      )
+                    }     
+              className={style.sortSelect}
+              isClearable={false}
+              isSearchable={false}
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  borderRadius: "12px",
+                  height: "40px",
+                  width: "200px"
+                }),      
+                singleValue: (provided) => ({
+                  ...provided,
+                  color: "black"
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  color: state.isSelected ? "white" : "black"
+                }),
+                placeholder: (provided) => ({
+                  ...provided,
+                  color: "black"
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  width: "150px"
+                })
+              }}    
+            >
+            </Select>      
+          </div>
+          
         </div>
         <div className={style.filterGroupContainer}>
           <div className={style.filterContainer}>
@@ -205,14 +264,7 @@ const EventPreview = () => {
                   onChange={() => setShowPastEvents(!showPastEvents)}>
                     <div className={style.checkboxLabel}>Past Events</div>
                 </Checkbox>
-                <select
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value)}
-                    className={style.sortSelect}
-                  >
-                    <option value="earliest">From Earliest</option>
-                    <option value="latest">From Latest</option>
-                </select>
+               
               </Stack>
             </CheckboxGroup>
           </div>
@@ -256,9 +308,9 @@ const EventPreview = () => {
       </aside>
       {loading ? (
         <div className={style.cardContainer}>
-          <div className={style.emptyStateText}>
-          Loading events...
-          </div>
+          <Text fontFamily="Lato" fontSize="2xl" mt="5%" textAlign="center">
+          Loading Events...
+          </Text>
         </div>
       ) : filteredEvents.length > 0 ? (
         <div className={style.cardContainer}>
@@ -277,7 +329,9 @@ const EventPreview = () => {
         </div>
       ) : (
         <div className={style.cardContainer}>
-          <div className={style.emptyStateText}>No events to show</div>
+          <Text fontFamily="Lato" fontSize="2xl" mt="10%" textAlign="center">
+            No Events Found
+          </Text>        
         </div>
       )}
       {selectedEvent && (

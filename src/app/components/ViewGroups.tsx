@@ -421,11 +421,16 @@ export default function ViewGroups() {
     return (
       <>
       <EditGroup group={editGroup} setOpen={setOpenEditGroup} isOpen={openEditGroup} mutate={mutateGroups}/>
-    <Box
-          className={style.yellowButton}
-          onClick={onOpen}
-        >
+        <Box onClick={onOpen}>
+          <Button
+            bg="#337774"
+            color="white"
+            _hover={{ bg: "#4a9b99" }}
+            //padding={"0px 20px"}
+            borderRadius={"12px"}
+            fontWeight={"bold"}>
               <Text>View Groups</Text>
+          </Button>
         </Box>
 
   

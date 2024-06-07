@@ -83,12 +83,27 @@ export function getDuration(start: Date, end: Date){
   return minutes;
 };
 
-// Convert to 12 hour time (ex. 1:00pm, 9:00am, etc)
-export function timeOfDay(time: Date) {
-  const startTime = new Date(time);
-  return startTime.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  });
-};
+    if (!(end instanceof Date)) {
+      end = new Date(end); // Convert to Date object if not already
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "numeric", // "numeric" or "2-digit"
+      minute: "numeric", // "numeric" or "2-digit"
+    };
+
+    const formattedStart = start.toLocaleTimeString("en-US", options);
+    const formattedEnd = end.toLocaleTimeString("en-US", options);
+
+    return `${formattedStart} - ${formattedEnd}`;
+  };
+
+  // Convert to 12 hour time (ex. 1:00pm, 9:00am, etc)
+  export function timeOfDay(time: Date) {
+    const startTime = new Date(time);
+    return startTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    });
+  };
