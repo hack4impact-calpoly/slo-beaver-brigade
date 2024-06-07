@@ -23,8 +23,9 @@ import { formatDate, formatDuration } from '../../lib/dates';
 import { calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
-import { set } from 'mongoose';
-import { getEvents } from 'app/actions/eventsactions';
+import "../../fonts/fonts.css"
+import ViewEventDetailsHours from '../../components/ViewEventDetailsHours'
+
 
 const AttendedEvents = () => {
   //states
@@ -226,12 +227,7 @@ const AttendedEvents = () => {
                   <Td>{eventHours(event)}</Td>
                   <Td>{formatDate(event.startTime)}</Td>
                   <Td>
-                    <Link
-                      href={`events/edit/${event._id}`}
-                      className={style.viewDetails}
-                    >
-                      View Details
-                    </Link>
+                    <ViewEventDetailsHours></ViewEventDetailsHours>
                   </Td>
                 </Tr>
               ))}
