@@ -115,7 +115,8 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
                 eventAttended.eventId.toString() === event._id
                 ? {...eventAttended, endTime : type === 'hours'
                         ? new Date(findEndTime(parseInt(value), eventMinsNum(attendee, event)))
-                        : new Date(findEndTime(eventHoursNum(attendee, event), parseInt(value)))}
+                        : new Date(findEndTime(eventHoursNum(attendee, event), parseInt(value))),
+                    startTime : event.startTime }
                 : eventAttended)
             const user = {
                 ...attendee,
