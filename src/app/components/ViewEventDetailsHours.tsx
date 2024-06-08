@@ -31,6 +31,7 @@ import { formatDateWeekday, formatDateTime } from "app/lib/dates"
 import{
     TimeIcon, EditIcon, AddIcon,
 } from "@chakra-ui/icons"
+import { add } from "date-fns";
 
 
 export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent, onRefresh: () => void}){ 
@@ -48,12 +49,10 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
 
     //convert hours and minutes to readable time
     const findEndTime = (hours : number, minutes : number) => {
-        console.log("hours: ", hours , "minutes: " , minutes);
         const endTime = new Date(event.startTime);
-        if(minutes && hours){
+        if(minutes !== undefined && hours !== undefined){
             const totalMinutes = (hours * 60) + minutes;
             endTime.setMinutes(endTime.getMinutes() + totalMinutes);
-            console.log("endTime", endTime);
             return endTime.toISOString();
         }
         else{
@@ -69,7 +68,6 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
     };
   
     const handleSaveClick = async () => {
-      console.log("added attendees", addedAttendees);
       //update the event to include the new users
       try{
 
@@ -85,7 +83,6 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
             await eventPromise;
 
             const promise = addedAttendees.map(user => {
-                console.log("user!", user)
                 fetch(`/api/user/${user._id}`, 
                 {
                     method: "PATCH",
@@ -120,7 +117,6 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
                         ? new Date(findEndTime(parseInt(value), eventMinsNum(attendee, event)))
                         : new Date(findEndTime(eventHoursNum(attendee, event), parseInt(value)))}
                 : eventAttended)
-            console.log(eventsAttended)
             const user = {
                 ...attendee,
                 eventsAttended : eventsAttended
@@ -137,6 +133,7 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
             else{
                 setAddedAttendees([...addedAttendees, user])
             }
+            
             const totalIdx = attendees.findIndex(user => user._id === attendee._id)
             const totalAttendees = [...attendees]
             totalAttendees[totalIdx] = user;
@@ -176,7 +173,6 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
         //it will not interact with the backend/add it to the database until
         //the user presses save
         getUserAndCheck().then(user => {
-            console.log(user)
             if (user) {
                 //add user to event
                 const eventNewAttendees = {
@@ -216,14 +212,12 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
                 setOrigAttendees(data);
                 return;
             })
-            console.log(attendees)
 
         }
         fetchUsers()
     }, [event.attendeeIds])
 
     useEffect(() => {
-        console.log("attendees", attendees);
     }, [attendees]);
     
     useEffect(() => {

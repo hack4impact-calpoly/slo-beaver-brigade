@@ -43,6 +43,7 @@ const AttendedEvents = () => {
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [refresh, setRefresh] = useState(false);
+  const [originalTotalTime, setOriginalTotalTime] = useState(0);
   const [startDateTime, setStartDateTime] = useState(
     new Date(new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(new Date().getHours() - 8))
       .toISOString()
@@ -68,7 +69,6 @@ const AttendedEvents = () => {
 
 
   async function fetchData(start: string, end: string): Promise<void> {
-    (console.log("called 2"))
     // Fetch all events
     const eventsResponse = await fetch('/api/events/');
     if (!eventsResponse.ok) {
@@ -93,8 +93,8 @@ const AttendedEvents = () => {
     // Filter events where the current user is an attendee
     const pastEvents = filterPastEvents(volunteerEvents, start, end, searchTerm);
     //Fetch all the users associated with each past event
-    console.log(pastEvents)
-    pastEvents.forEach(async (event) => {
+    let eventTotalTime = 0
+    const promise = pastEvents.map(async (event) => {
       let time = 0
       const promise = event.attendeeIds.map(async (attendee) => {
         const userResponse = await fetch('/api/user/' + attendee);
@@ -109,10 +109,12 @@ const AttendedEvents = () => {
         ...prev,
         [event._id]: `${Math.floor(time / 60)}h ${time % 60}min`,
       }))
-      setTotalTime(totalTime + time)
-    })
+      eventTotalTime += time
 
-    
+      
+    })
+    await Promise.all(promise);
+    setTotalTime(eventTotalTime);
     // Update state with events the user has signed up for
     setUserEvents(pastEvents);
    
@@ -130,7 +132,6 @@ const AttendedEvents = () => {
   }
 
   const handleRefresh = () => {
-    console.log("called")
     setTotalTime(0);
     setRefresh(!refresh)
   }
@@ -139,7 +140,8 @@ const AttendedEvents = () => {
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
       try {
-        fetchData(startDateTime, endDateTime);
+        const promise = fetchData(startDateTime, endDateTime);
+        await promise;
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -152,6 +154,7 @@ const AttendedEvents = () => {
     
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
+   
   }, [isSignedIn, user, isLoaded, searchTerm, refresh]);
 
 
