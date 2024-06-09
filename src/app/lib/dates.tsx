@@ -14,6 +14,33 @@ export function formatDate(date: Date){
   return date.toLocaleDateString('en-US', options);
 };
 
+export function formatDateWeekday(date: Date){
+  if (!(date instanceof Date)) {
+    date = new Date(date); // Convert to Date object if not already
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  };
+  return date.toLocaleDateString('en-US', options);
+};
+
+export function formatDateTime(date: Date){
+  if (!(date instanceof Date)) {
+    date = new Date(date); // Convert to Date object if not already
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  };
+  return date.toLocaleTimeString('en-US', options);
+};
+
 // given two dates convert time range into xxh xx min
 export function formatDuration(start: Date, end: Date){
   if (!(start instanceof Date)) {
@@ -55,26 +82,27 @@ export function getDuration(start: Date, end: Date){
 
   return minutes;
 };
-  // convert date into xx:xx XM - xx:xx XM
-  export const formatDateTimeRange = (start: Date, end: Date) => {
-    if (!(start instanceof Date)) {
-      start = new Date(start); // Convert to Date object if not already
-    }
 
-    if (!(end instanceof Date)) {
-      end = new Date(end); // Convert to Date object if not already
-    }
 
-    const options: Intl.DateTimeFormatOptions = {
-      hour: "numeric", // "numeric" or "2-digit"
-      minute: "numeric", // "numeric" or "2-digit"
-    };
+export const formatDateTimeRange = (start: Date, end: Date) => {
+  if (!(start instanceof Date)) {
+    start = new Date(start); // Convert to Date object if not already
+  }
 
-    const formattedStart = start.toLocaleTimeString("en-US", options);
-    const formattedEnd = end.toLocaleTimeString("en-US", options);
+  if (!(end instanceof Date)) {
+    end = new Date(end); // Convert to Date object if not already
+  }
 
-    return `${formattedStart} - ${formattedEnd}`;
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "numeric", // "numeric" or "2-digit"
+    minute: "numeric", // "numeric" or "2-digit"
   };
+
+  const formattedStart = start.toLocaleTimeString("en-US", options);
+  const formattedEnd = end.toLocaleTimeString("en-US", options);
+
+  return `${formattedStart} - ${formattedEnd}`;
+};
 
   // Convert to 12 hour time (ex. 1:00pm, 9:00am, etc)
   export function timeOfDay(time: Date) {

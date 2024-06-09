@@ -20,23 +20,30 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration, timeOfDay } from '../../lib/dates';
-import { calcHoursForAll, eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
+import { eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
+import "../../fonts/fonts.css"
+import ViewEventDetailsHours from '../../components/ViewEventDetailsHours'
 import { set } from 'mongoose';
 import { getEvents } from 'app/actions/eventsactions';
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { CSVLink } from "react-csv";
 import "../../fonts/fonts.css"
+import { eventHoursNum } from '../../lib/hours';
+import { eventMinsNum } from '../../lib/hours';
 
 
 const AttendedEvents = () => {
   //states
   const { isSignedIn, user, isLoaded } = useUser();
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
+  const [eventToTime, setEventToTime] = useState<{[key: string]: string}>({});
   const [eventsLoading, setEventsLoading] = useState(true);
   const [totalTime, setTotalTime] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [refresh, setRefresh] = useState(false);
+  const [originalTotalTime, setOriginalTotalTime] = useState(0);
   const [startDateTime, setStartDateTime] = useState(
     new Date(new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(new Date().getHours() - 8))
       .toISOString()
@@ -69,7 +76,6 @@ const AttendedEvents = () => {
     }
     const allEvents: IEvent[] = await eventsResponse.json();
     const volunteerEvents = filterEventsByType(allEvents, "Volunteer");
-
     const csvData = volunteerEvents.map((event: IEvent) => ({
       eventName: event.eventName,
       eventDate: formatDate(event.startTime),
@@ -86,10 +92,29 @@ const AttendedEvents = () => {
 
     // Filter events where the current user is an attendee
     const pastEvents = filterPastEvents(volunteerEvents, start, end, searchTerm);
+    //Fetch all the users associated with each past event
+    let eventTotalTime = 0
+    const promise = pastEvents.map(async (event) => {
+      let time = 0
+      const promise = event.attendeeIds.map(async (attendee) => {
+        const userResponse = await fetch('/api/user/' + attendee);
+        if (!userResponse.ok) {
+          throw new Error(`Failed to fetch events: ${userResponse.statusText}`);
+        }
+        const user: IUser = await userResponse.json();
+        time = time + eventHoursNum(user, event) * 60 + eventMinsNum(user, event)
+      })
+      await Promise.all(promise);
+      setEventToTime((prev) => ({
+        ...prev,
+        [event._id]: `${Math.floor(time / 60)}h ${time % 60}min`,
+      }))
+      eventTotalTime += time
 
-    let hours = calcHoursForAll(pastEvents);
-    setTotalTime(hours);
-
+      
+    })
+    await Promise.all(promise);
+    setTotalTime(eventTotalTime);
     // Update state with events the user has signed up for
     setUserEvents(pastEvents);
    
@@ -106,11 +131,17 @@ const AttendedEvents = () => {
     }
   }
 
+  const handleRefresh = () => {
+    setTotalTime(0);
+    setRefresh(!refresh)
+  }
+
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
       if (!isLoaded) return; //ensure that user data is loaded
       try {
-        fetchData(startDateTime, endDateTime);
+        const promise = fetchData(startDateTime, endDateTime);
+        await promise;
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -123,7 +154,8 @@ const AttendedEvents = () => {
     
     // Call the function to fetch user data and events
     fetchUserDataAndEvents();
-  }, [isSignedIn, user, isLoaded, searchTerm]);
+   
+  }, [isSignedIn, user, isLoaded, searchTerm, refresh]);
 
 
   //return a loading message while waiting to fetch events
@@ -284,15 +316,10 @@ const AttendedEvents = () => {
                   <Td>{event.eventName}</Td>
                   <Td>{formatDuration(event.startTime, event.endTime)}</Td>
                   <Td>{event.attendeeIds.length}</Td>
-                  <Td>{eventHours(event)}</Td>
+                  <Td>{eventToTime[event._id]}</Td>
                   <Td>{formatDate(event.startTime)}</Td>
                   <Td>
-                    <Link
-                      href={`events/edit/${event._id}`}
-                      className={style.viewDetails}
-                    >
-                      View Details
-                    </Link>
+                    <ViewEventDetailsHours event={event} onRefresh={handleRefresh}></ViewEventDetailsHours>
                   </Td>
                 </Tr>
               ))}
