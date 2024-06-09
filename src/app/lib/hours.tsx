@@ -128,7 +128,8 @@ export function filterUserSignedUpEvents(
   events: IEvent[],
   userId: string,
   startDateTime: string,
-  endDateTime: string
+  endDateTime: string,
+  searchTerm: string
 ) {
   const filteredEvents = events.filter(
     (event: any) =>
@@ -136,6 +137,8 @@ export function filterUserSignedUpEvents(
       event.eventType == 'Volunteer' &&
       new Date(event.startTime) >= new Date(startDateTime) &&
       new Date(event.endTime) <= new Date(endDateTime)
+        &&
+    event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
   );
   console.log(events, filteredEvents);
   return filteredEvents;

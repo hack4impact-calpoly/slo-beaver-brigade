@@ -310,7 +310,7 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
                                     <Td>{attendee.email}</Td>
                                 </Tr>
                                 ))}
-                                <Tr p="2px">
+                                {/* <Tr p="2px">
                                     <Td>
                                         <Input
                                             type="text"
@@ -381,7 +381,7 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
                                         
                                     </Td>
 
-                                </Tr>
+                                </Tr> */}
                             </Tbody>: 
                             (<Tbody>
                                 {attendees.map((attendee) => (
