@@ -50,6 +50,7 @@ export default function SignUp() {
   const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required');
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     let userData = sessionStorage.getItem('userData');
@@ -137,6 +138,7 @@ export default function SignUp() {
   // Verify User Email Code
   const onPressVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsVerifying(true)
 
     if (!isLoaded) {
       return;
@@ -150,6 +152,7 @@ export default function SignUp() {
         // create mongoose account
         /*  investigate the response, to see if there was an error
          or if the user needs to complete more steps.*/
+         setIsVerifying(false)
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === 'complete') {
@@ -196,6 +199,7 @@ export default function SignUp() {
                 }
             }
 
+            setIsVerifying(false)
             await revalidatePathServer("/")
             // Redirect the user to a post sign-up route
             if (redirect_url) {
@@ -208,8 +212,10 @@ export default function SignUp() {
 
       }
     } catch (err) {
+        setIsVerifying(false)
       console.error(JSON.stringify(err, null, 2));
     }
+
   };
 
   const handleTogglePassword = () => {
@@ -353,7 +359,7 @@ export default function SignUp() {
                 />
               </FormControl>
               <FormControl mt={4} mb={4} isInvalid={submitAttempted}>
-                <Button loadingText="Verifying" bg="#e0af48" color="black" width="full" onClick={onPressVerify}>
+                <Button loadingText="Verifying" isLoading={isVerifying} bg="#e0af48" color="black" width="full" onClick={onPressVerify}>
                   Verify Email
                 </Button>
                 <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>

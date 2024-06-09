@@ -260,7 +260,7 @@ const UserList = () => {
         {/* {isLoading && !users  && !isError && <div>Loading...</div>}
         {isError && <div>Error occurred.</div>} */}
 
-        {isLoading && !isError && 'Loading...'}
+        {(isLoading  || loading)&& !isError && 'Loading...'}
         {isError && 'Error occurred.'}
         {!isLoading && !loading &&
             <Box>
@@ -287,6 +287,7 @@ const UserList = () => {
                     </Tr>
                 ) : (
                     filteredUsers.map((user) => (
+                    
                     <Tr key={user._id}>
                         <Td>{`${user.firstName} ${user.lastName}`}</Td>
                         <Td>{user.email}</Td>

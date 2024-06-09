@@ -94,6 +94,9 @@ export default async function NavbarParent() {
             if (user?.role == "admin"){
             return <NavbarAdmin name={name}></NavbarAdmin>
             }
+            else{
+                return <Navbar name={name}></Navbar>
+            }
         }
         else{
             // manually check if user is logged in
