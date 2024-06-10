@@ -38,6 +38,9 @@ const nextConfig = {
             bodySizeLimit: "10mb",
         },
     },
+    images: {
+        domains: ['beaverimages.s3.us-west-1.amazonaws.com'],
+    }
 };
 module.exports = nextConfig;
 
