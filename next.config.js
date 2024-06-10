@@ -39,7 +39,12 @@ const nextConfig = {
         },
     },
     images: {
-        domains: ['beaverimages.s3.us-west-1.amazonaws.com'],
+        remotePatterns: [
+            {
+              protocol: "https",
+              hostname: "beaverimages.s3.us-west-1.amazonaws.com",
+            },
+        ]
     }
 };
 module.exports = nextConfig;
