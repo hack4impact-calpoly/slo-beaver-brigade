@@ -765,7 +765,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             color="white"
                             marginRight='1rem'
                             className="bold-text"
-                            >Invite only.</Text>
+                            >Invite Only</Text>
                                 <LockIcon color='wheat'/>
                             </div>
                             }

@@ -174,8 +174,16 @@
 }
   
 @media (max-width: 570px) {
-   .filterGroupContainer {
-        display: none
+   .filterContainerTypeAccessibility {
+        display: none;
+   }
+
+   .filterContainer{
+    margin-top: 0px;
+   }
+
+   .filterHeader{
+    margin-top: 0px;
    }
 
    .sortSelect {

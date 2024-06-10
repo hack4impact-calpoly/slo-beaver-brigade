@@ -268,7 +268,7 @@ const EventPreview = () => {
               </Stack>
             </CheckboxGroup>
           </div>
-          <div className={style.filterContainer}>
+          <div className={style.filterContainerTypeAccessibility}>
             <div className={style.filterHeader}>Event Type</div>
             <CheckboxGroup colorScheme="green" defaultValue={[]}>
               <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
@@ -287,7 +287,7 @@ const EventPreview = () => {
               </Stack>
             </CheckboxGroup>
           </div>
-          <div className={style.filterContainer}>
+          <div className={style.filterContainerTypeAccessibility}>
             <div className={style.filterHeader}>Accessibility</div>
             <CheckboxGroup colorScheme="green" defaultValue={[]}>
               <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
