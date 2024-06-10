@@ -1,7 +1,7 @@
 import React from "react";
 import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
-import { Image } from "@chakra-ui/react";
+import ChakraNextImage from "./ChakraNextImage";
 
 interface EventPreviewProps {
   event: IEvent;
@@ -51,7 +51,7 @@ const EventCard: React.FC<EventPreviewProps> = ({
       className={style.eventCard}
       onClick={onClick}
     >
-      <Image
+      <ChakraNextImage
         src={event.eventImage || "/beaver-eventcard.jpeg"}
         alt="Event Image"
         objectFit={"cover"}
@@ -59,9 +59,8 @@ const EventCard: React.FC<EventPreviewProps> = ({
         zIndex={"-1"}
         top="0"
         left="0"
-        width="100%"
-        height="100%"
         borderRadius={"8px"}
+        layout="fill"
       />
 
       <div className={style.eventTitle}>

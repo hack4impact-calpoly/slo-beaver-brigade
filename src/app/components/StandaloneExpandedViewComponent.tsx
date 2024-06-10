@@ -13,7 +13,6 @@ import {
   Text,
   Box,
   useMediaQuery,
-  Image
 } from "@chakra-ui/react";
 import React, { useRef, useState,useEffect } from 'react';
 import { IEvent } from "@database/eventSchema";
@@ -27,6 +26,7 @@ import { getUserDbData } from "app/lib/authentication";
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import style from "@styles/calendar/calendar.module.css";
 import { KeyedMutator } from "swr";
+import ChakraNextImage from "./ChakraNextImage";
 
 interface Props {
   eventDetails: IEvent | null;
@@ -128,7 +128,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
       <ModalOverlay/>
       <ModalContent mt={"5rem"} mb={"1rem"} borderRadius={"20px"}>
         <ModalHeader fontWeight="bold" fontFamily= {'Lato'} position="relative" color={"white"}>
-        <Image
+        <ChakraNextImage
         src={eventDetails.eventImage || "/beaver-eventcard.jpeg"}
         alt="Event Image"
         objectFit="cover"
@@ -136,8 +136,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
         zIndex="-1"
         top="0"
         left="0"
-        width="100%"
-        height="100%"
+        layout="fill"
         borderRadius={"20px 20px 0px 0px"}
       />
           <Flex justify={"left"} ml={"5%"}>

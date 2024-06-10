@@ -1,8 +1,9 @@
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Text,  Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Box, IconButton, Image } from "@chakra-ui/react";
+import { Text,  Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Box, IconButton } from "@chakra-ui/react";
 import { getAllImagesS3, removeImageS3 } from "app/actions/imageactions";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from "@styles/admin/eventCard.module.css";
+import ChakraNextImage from "./ChakraNextImage";
 
 type Props = {
     setImageURL: Dispatch<SetStateAction<string | null>>, 
@@ -30,7 +31,7 @@ const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
         className={style.imageCard}
         onClick={onClick}
         >
-        <Image
+        <ChakraNextImage
             src={image || "/beaver-eventcard.jpeg"}
             alt="Event Image"
             objectFit="cover"
@@ -38,10 +39,9 @@ const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
             zIndex="-1"
             top="0"
             left="0"
-            width="100%"
-            height="100%"
             filter={"brightness(50%)"}
             borderRadius={"8px"}
+            layout="fill"
         />
         <div className={style.eventTitle} style={{ display: 'flex', flexDirection: "row" }}>
             <h2>Your Event Name</h2>

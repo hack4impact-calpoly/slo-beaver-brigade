@@ -27,6 +27,7 @@ import ExpandedViewComponent from "./components/StandaloneExpandedViewComponent"
 import "./fonts/fonts.css";
 import { useEventsAscending } from "app/lib/swrfunctions";
 import { LockIcon } from "@chakra-ui/icons";
+import ChakraNextImage from "./components/ChakraNextImage";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -496,7 +497,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                        borderRadius="20px"
                        className={style.registeredEventBox}
                      >
-                      <Image
+                      <ChakraNextImage
                           src={event.eventImage || "/beaver-eventcard.jpeg"}
                           alt="Event Image"
                           objectFit="cover"
@@ -504,8 +505,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           zIndex="-1"
                           top="0"
                           left="0"
-                          width="100%"
-                          height="100%"
+                          layout="fill"
                           borderRadius={"20px"}
                         />   
                        <Heading
@@ -679,7 +679,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                         className={style.eventBox}
                         flex="1 0 40%" // Adjust the width as needed
                       > 
-                        <Image
+                        <ChakraNextImage
                           src={event.eventImage || "/beaver-eventcard.jpeg"}
                           alt="Event Image"
                           objectFit="cover"
@@ -687,8 +687,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           zIndex="-1"
                           top="0"
                           left="0"
-                          width="100%"
-                          height="100%"
+                          layout="fill"
                           borderRadius={"20px"}
                         />                                              
                         <Heading
