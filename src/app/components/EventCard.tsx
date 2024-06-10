@@ -2,6 +2,7 @@ import React from "react";
 import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
 import { fallbackBackgroundImage } from "app/lib/random";
+import { Image } from "@chakra-ui/react";
 
 interface EventPreviewProps {
   event: IEvent;
@@ -50,14 +51,21 @@ const EventCard: React.FC<EventPreviewProps> = ({
   return (
     <div
       className={style.eventCard}
-      style={{
-        background: backgroundImage,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backdropFilter: "brightness(50%)"
-      }}
       onClick={onClick}
     >
+      <Image
+        src={event.eventImage || "/beaver-eventcard.jpeg"}
+        alt="Event Image"
+        objectFit={"cover"}
+        position={"absolute"}
+        zIndex={"-1"}
+        top="0"
+        left="0"
+        width="100%"
+        height="100%"
+        borderRadius={"8px"}
+      />
+
       <div className={style.eventTitle}>
         <h2>{event.eventName}</h2>
       </div>
