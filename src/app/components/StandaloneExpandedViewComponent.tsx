@@ -127,7 +127,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" >
       <ModalOverlay/>
       <ModalContent mt={"5rem"} mb={"1rem"} borderRadius={"20px"}>
-        <ModalHeader fontWeight="bold" fontFamily= {'Lato'} position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"20px 20px 0px 0px"}>
+        <ModalHeader fontWeight="bold" fontFamily= {'Lato'} position="relative" color={"white"}>
         <Image
         src={eventDetails.eventImage || "/beaver-eventcard.jpeg"}
         alt="Event Image"
