@@ -156,7 +156,6 @@ export default function SignUp() {
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
         // create mongoose user
         //creates data object from form data
         const data = {
@@ -202,6 +201,7 @@ export default function SignUp() {
             setIsVerifying(false)
             await revalidatePathServer("/")
             // Redirect the user to a post sign-up route
+            await setActive({ session: completeSignUp.createdSessionId });
             if (redirect_url) {
             router.push(redirect_url);
             } else {

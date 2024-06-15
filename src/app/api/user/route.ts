@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
                 role: savedUser.role,
-                id: savedUser._id,
+                _id: savedUser._id,
             })
         );
 

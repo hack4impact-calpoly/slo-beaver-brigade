@@ -207,6 +207,7 @@ const {isSignedIn, user, isLoaded} = useUser()
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       
+      console.log(events, isError)
       const userSignedUpEvents = events.filter(
         event => event.registeredIds.includes(userData?._id) && new Date(event.endTime) >= currentDate  
       );
