@@ -10,7 +10,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 export async function POST(req: NextRequest) {
     try {
         const { firstName, lastName, role, _id } = await req.json();
-        
+
         if (!firstName || !lastName || !role || !_id) {
             return NextResponse.json("Cookies failed to be set.", {
                 status: 500,
@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
             { expires: expirationDate }
         );
     } catch (err) {
-        
         return NextResponse.json("Cookies failed to be set.", { status: 500 });
     }
     return NextResponse.json("Cookies for user have been set.");
@@ -32,15 +31,12 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
     try {
-        
         let userCookie = cookies().get("user");
 
         if (userCookie) {
-            
             return NextResponse.json(userCookie.value);
         }
 
-        
         const clerk_user = await currentUser();
 
         if (!clerk_user) {
@@ -51,12 +47,7 @@ export async function GET() {
             );
         }
 
-        
         await connectDB();
-
-        
-            `Looking for user with email: ${clerk_user.emailAddresses[0].emailAddress}`
-        );
         const user = await User.findOne(
             { email: clerk_user.emailAddresses[0].emailAddress },
             "firstName lastName role"
