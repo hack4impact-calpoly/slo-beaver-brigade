@@ -44,7 +44,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
             method: 'DELETE'
             });
             if (response.ok) {
-                console.log('Event deleted successfully');
+                
                 // Redirect or update UI as needed
             } else {
                 console.error('Failed to delete event:', response.statusText);

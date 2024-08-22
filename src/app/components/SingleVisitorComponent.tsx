@@ -92,7 +92,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   };
 
   const handleRoleChange = async () => {
-    console.log("role change");
+    
     try {
       const result =
         userRole === "admin"

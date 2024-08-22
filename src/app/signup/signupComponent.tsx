@@ -56,7 +56,7 @@ export default function SignUp() {
     let userData = sessionStorage.getItem('userData');
     if(userData !== null){
       const parsedData = JSON.parse(userData); 
-      console.log('user', userData)
+      
       setFirstName(parsedData.firstName);
       setLastName(parsedData.lastName);
       setEmail(parsedData.email);
@@ -130,7 +130,7 @@ export default function SignUp() {
       
     catch (error) {
       // Handle the error
-      console.log('Error:', error);
+      
         setSubmitAttempted(true);
     }
   };
@@ -153,7 +153,7 @@ export default function SignUp() {
         /*  investigate the response, to see if there was an error
          or if the user needs to complete more steps.*/
          setIsVerifying(false)
-        console.log(JSON.stringify(completeSignUp, null, 2));
+        
       }
       if (completeSignUp.status === 'complete') {
         // create mongoose user
@@ -178,7 +178,7 @@ export default function SignUp() {
 
         }
         else{
-            console.log('creating user in mongo')
+            
             res = await fetch('/api/user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -188,13 +188,13 @@ export default function SignUp() {
 
         if ((res && res.ok) || userRes){
 
-            console.log('waiting redirect')
+            
             if (enableNewsletter){
-                console.log('adding to newsletter')
-                const newsRes = await addToNewsletter(email)
-                console.log('res news, ', newsRes)
+                
+                const newsRes = await addToNewsletter(email, data.firstName, data.lastName, data.zipcode);
+                
                 if (!newsRes){
-                    console.log('failed to add to newsletter.')
+                    console.error("Failed to add user to newsletter")
                 }
             }
 
@@ -319,9 +319,9 @@ export default function SignUp() {
               </FormControl>
               <FormControl style={{display: "flex", flexDirection:"row"}} mb={4}>
                 <FormLabel fontWeight="600">Join the Beaver Brigade Newsletter?
-                <Checkbox style={{verticalAlign: "middle", marginLeft: "10px"}} checked={enableNewsletter} onClick={() => {
-                  setEnableNewsletter(!enableNewsletter)
-                }}></Checkbox>
+                <Checkbox style={{verticalAlign: "middle", marginLeft: "10px"}} checked={enableNewsletter} onChange={() => {
+                    setEnableNewsletter(!enableNewsletter)
+                }} ></Checkbox>
                 </FormLabel>
               </FormControl>
               <FormControl mb={4}>

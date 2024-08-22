@@ -13,7 +13,7 @@ export async function GET(request: Request) {
             .sort({ startTime: sort })
             .lean()
             .orFail();
-        console.log("events fetched", events);
+
         // returns all events in json format or errors
         return NextResponse.json(events, { status: 200 });
     } catch (err) {

@@ -78,7 +78,7 @@ export default function ImageSelector({setImageURL, setPreselected}: Props) {
         const loadImages = async () => {
             const res = await getAllImagesS3()
             const imageRes = JSON.parse(res)
-            console.log(imageRes)
+            
             setImages(imageRes)
         } 
         loadImages()

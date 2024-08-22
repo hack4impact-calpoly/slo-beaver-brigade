@@ -122,7 +122,7 @@ export const CreateTemporaryGroup = ({ groups, setGroups,  mutate }: {groups: IG
                     }
                 }, {revalidate: false})
                 setGroups(groups => [...groups, data])
-                console.log('new group', data)
+                
                 onClose()
             }
         else{

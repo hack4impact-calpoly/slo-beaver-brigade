@@ -3,7 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from '@clerk/nextjs'
 import "./styles/globals.css";
 import Providers from "./Providers";
-import NavbarParent, { BareBoneIUser, getUserCookie } from "@components/NavbarParents";
+import NavbarParent, { BareBoneIUser, getUserCookie } from "app/components/navbar/NavbarParents";
 import { Lato, Montserrat } from "next/font/google";
 import { getBaseUrl } from "./lib/random";
 

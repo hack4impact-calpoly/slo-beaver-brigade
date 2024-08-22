@@ -5,7 +5,7 @@ import Group from "@database/groupSchema";
 import { revalidateTag } from "next/cache";
 import { SortOrder } from "mongoose";
 import { cookies } from "next/headers";
-import { BareBoneIUser } from "app/components/NavbarParents";
+import { BareBoneIUser } from "app/components/navbar/NavbarParents";
 import User from "database/userSchema";
 import { IUser } from "app/admin/users/page";
 
@@ -28,13 +28,12 @@ export async function GET(request: Request) {
         const userCookie = cookies().get("user")?.value;
         if (userCookie) {
             user = JSON.parse(userCookie) as BuggyIUser;
-            console.log("cookie user", user);
+
             // query db for user with _id of user from cookie
             const userDoc = (await User.findById(user._id || user.id)
                 .lean()
                 .orFail()) as IUser;
 
-            console.log("user doc", userDoc);
             if (userDoc.role === "admin") {
                 const events = await Event.find()
                     .sort({ startTime: sort })

@@ -20,7 +20,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
             vevent.updatePropertyWithValue("dtstart", dtstart);
             vevent.updatePropertyWithValue("dtend", dtend);
             vevent.updatePropertyWithValue("description", event.description);
-            console.log(event);
 
             comp.addSubcomponent(vevent);
         });

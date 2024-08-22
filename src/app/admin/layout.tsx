@@ -1,14 +1,14 @@
 import { ReactNode } from "react";
 import { Montserrat } from "next/font/google";
-import Sidebar from "@components/Sidebar";
+import Sidebar from "app/components/navigation/Sidebar";
 import style from "@styles/admin/layout.module.css";
-import TabBar from "../components/TabBar";
+import TabBar from "../components/navigation/TabBar";
 import { getUserDbData } from "app/lib/authentication";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import connectDB from "database/db";
 import User, { IUser } from "database/userSchema";
-import { BareBoneIUser } from "app/components/NavbarParents";
+import { BareBoneIUser } from "app/components/navbar/NavbarParents";
 type Props = {
   children: ReactNode;
 };
@@ -20,7 +20,7 @@ const getUserRoleFromId = async(id: string) => {
         return user.role
     }
     catch (err) {
-        console.log('user not found: ' + err)
+        
         return 'guest'
     }
 }
@@ -31,14 +31,14 @@ const Layout = async (props: Props) => {
 
     if (process.env.DEV_MODE != "true"){
         // get user role
-        console.log('admin getting user')
+        
         const res = cookies().get('user')?.value
         
         if (res){
             const cookieUser = JSON.parse(res) as BareBoneIUser
-            console.log('cookie found, getting role')
+            
             const user = await getUserRoleFromId(cookieUser?._id)
-            console.log('validated role')
+            
             if (user != "admin"){
                 redirect("/")
             }

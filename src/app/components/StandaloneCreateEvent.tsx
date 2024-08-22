@@ -92,7 +92,7 @@ import {
           registeredIds: [],
           };
   
-          console.log("New Event Data:", eventData);
+          
   
           fetch("/api/events", {
           method: "POST",

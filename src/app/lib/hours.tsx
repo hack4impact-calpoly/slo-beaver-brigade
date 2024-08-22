@@ -140,7 +140,7 @@ export function filterUserSignedUpEvents(
         &&
     event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  console.log(events, filteredEvents);
+  
   return filteredEvents;
 }
 

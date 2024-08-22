@@ -83,11 +83,11 @@ const EventPreview = () => {
       try {
         // const res = await getEvents(-1, -1)
         // if (!res){
-        //     console.log("Error getting events.")
+        //     
         //     return;
         // }
         // const data = JSON.parse(res)
-        // console.log(data)
+        // 
         // setEvents(
         //   data.map((event: IEvent) => ({
         //     ...event,
@@ -321,7 +321,7 @@ const EventPreview = () => {
                 <EventPreviewComponent
                   event={event}
                   groupName={groupNames[event._id]}
-                  onClick={() => console.log()}
+                  onClick={() => 
                 /></Link>
               </li>
             ))}

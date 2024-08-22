@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import Calendar from "@components/Calendar";
+import Calendar from "app/components/calendar/Calendar";
 import Event, { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
 import {
