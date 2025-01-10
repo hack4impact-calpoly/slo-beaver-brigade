@@ -126,7 +126,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
       registeredIds: event.registeredIds ? event.registeredIds : [],
     };
 
-    console.log("New Event Data:", eventData);
+    
     fetch(`/api/events/${event._id}/`, {
       method: "PATCH",
       headers: {
@@ -136,7 +136,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
     })
       .then((response) => response.text()) // Parsing JSON response
       .then((text) => {
-        console.log("Server response:", text);
+        
         const data = text.startsWith("Event updated:")
           ? JSON.parse(text.substring("Event updated: ".length))
           : {};

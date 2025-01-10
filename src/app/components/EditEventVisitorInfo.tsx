@@ -46,7 +46,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
 
   const handleEmailAllVisitors = () => {
     const mailtoLink = emailLink();
-    console.log(mailtoLink);
+    
     window.location.href = mailtoLink;
   };
 
@@ -70,7 +70,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
             const waivers = await waiverResponse.json();
-            console.log('waivers fetched', waivers)
+            
             debugger;
             waivers.forEach((waiver: IWaiver) => {
               if (!visitors[waiver.parentUserId]) {
@@ -97,7 +97,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 });
               });
             });
-            console.log(visitors)
+            
           } else {
             console.error(
               "Error fetching waivers:",
@@ -122,7 +122,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 const response = await fetch(`/api/user/${userId}`);
                 if (response.ok) {
                   const user = await response.json();
-                  console.log('user', user)
+                  
                   if (!visitors[user._id]) {
                     visitors[user._id] = { parent: user, dependents: [] };
                   } else {

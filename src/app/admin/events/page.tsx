@@ -17,27 +17,8 @@ import {
   Input
 } from "@chakra-ui/react";
 import Select from "react-select";
-import { getAllImagesS3 } from "app/actions/imageactions";
 import { useEventsAscending } from "app/lib/swrfunctions";
 import "../../fonts/fonts.css";
-
-// Your other imports and code
-
-// interface IEvent {
-//   _id: string;
-//   eventName: string;
-//   location: string;
-//   description: string;
-//   wheelchairAccessible: boolean;
-//   spanishSpeakingAccommodation: boolean;
-//   startTime: Date;
-//   endTime: Date;
-//   volunteerEvent: boolean;
-//   visitorCount?: number;
-//   groupsAllowed: ObjectId[];
-//   registeredIds: ObjectId[];
-//   digitalWaiver: string | null;
-// }
 
 const EventPreview = () => {
   //states
@@ -81,22 +62,6 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // const res = await getEvents(-1, -1)
-        // if (!res){
-        //     console.log("Error getting events.")
-        //     return;
-        // }
-        // const data = JSON.parse(res)
-        // console.log(data)
-        // setEvents(
-        //   data.map((event: IEvent) => ({
-        //     ...event,
-        //     startTime: new Date(event.startTime),
-        //     endTime: new Date(event.endTime),
-        //     groupsAllowed: event.groupsAllowed || [],
-        //   }))
-        // );
-
         if (!events){
             return
         }
@@ -318,10 +283,10 @@ const EventPreview = () => {
             {filteredEvents.map((event) => (
               <li key={event._id} className={style.eventItem}>
                 <Link href={"/admin/events/edit/" + event._id}>
-                <EventPreviewComponent
-                  event={event}
-                  groupName={groupNames[event._id]}
-                  onClick={() => console.log()}
+                    <EventPreviewComponent
+                    event={event}
+                    groupName={groupNames[event._id]}
+                    onClick={() => handleEventClick(event)}
                 /></Link>
               </li>
             ))}

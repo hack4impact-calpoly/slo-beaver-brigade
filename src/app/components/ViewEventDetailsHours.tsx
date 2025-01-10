@@ -97,7 +97,7 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
 
         }
         catch(error){
-            console.log(error);
+            
             toast({
                 title: "Error",
                 description: "Error saving new users, please try again",
@@ -152,7 +152,7 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
         const getUserAndCheck = async () => {
             const result = await getUser();
             if (!result) {
-                console.log("No users found");
+                
                 return;
             }
             const filteredUsers = result.filter((user : IUser)=> user.email === email);

@@ -74,7 +74,7 @@ const ForgotPasswordPage: NextPage = () => {
           router.push('/');
 
         } else {
-          console.log(result);
+          
         }
       })
       .catch(err => {

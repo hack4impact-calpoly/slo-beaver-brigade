@@ -42,13 +42,12 @@ export async function POST(req: NextRequest) {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
                 role: savedUser.role,
-                id: savedUser._id,
+                _id: savedUser._id,
             })
         );
 
         return NextResponse.json({ _id: savedUser._id }, { status: 200 });
     } catch (error) {
-        console.log((error as Error).name);
         return NextResponse.json(
             { error: (error as Error).message },
             { status: 500 }

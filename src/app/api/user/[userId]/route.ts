@@ -3,7 +3,6 @@ import User, { IUser } from "@database/userSchema";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
 
-
 type IParams = {
     params: {
         userId: string;
@@ -73,7 +72,6 @@ export async function POST(
 export async function PATCH(req: NextRequest, { params }: IParams) {
     await connectDB(); // Connect to the database
 
-    console.log("in patch");
     const { userId } = params; // Destructure the userId from params
 
     try {
@@ -86,7 +84,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         }
 
         const { eventsAttended }: IUser = await req.json();
-        if(eventsAttended){
+        if (eventsAttended) {
             user.eventsAttended = eventsAttended;
         }
         await user.save();

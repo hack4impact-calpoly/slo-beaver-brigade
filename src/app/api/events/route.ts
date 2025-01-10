@@ -5,10 +5,13 @@ import Group from "@database/groupSchema";
 import { revalidateTag } from "next/cache";
 import { SortOrder } from "mongoose";
 import { cookies } from "next/headers";
-import { BareBoneIUser } from "app/components/NavbarParents";
+import { BareBoneIUser } from "app/components/navbar/NavbarParents";
 import User from "database/userSchema";
 import { IUser } from "app/admin/users/page";
 
+interface BuggyIUser extends BareBoneIUser {
+    id: string;
+}
 export async function GET(request: Request) {
     await connectDB(); // connect to db
     const { searchParams } = new URL(request.url);
@@ -24,9 +27,10 @@ export async function GET(request: Request) {
     try {
         const userCookie = cookies().get("user")?.value;
         if (userCookie) {
-            user = JSON.parse(userCookie) as BareBoneIUser;
+            user = JSON.parse(userCookie) as BuggyIUser;
+
             // query db for user with _id of user from cookie
-            const userDoc = (await User.findById(user._id)
+            const userDoc = (await User.findById(user._id || user.id)
                 .lean()
                 .orFail()) as IUser;
 

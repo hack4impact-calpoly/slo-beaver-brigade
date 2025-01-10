@@ -9,9 +9,9 @@ import style from "@styles/calendar/calendar.module.css";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { IEvent } from "@database/eventSchema";
-import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
-import StandaloneCreateEvent from "./StandaloneCreateEvent";
-import EventListRegister from "./EventList";
+import ExpandedViewComponent from "../StandaloneExpandedViewComponent";
+import StandaloneCreateEvent from "../StandaloneCreateEvent";
+import EventListRegister from "../EventList";
 import { Schema } from "mongoose";
 
 // FullCalendar Schema

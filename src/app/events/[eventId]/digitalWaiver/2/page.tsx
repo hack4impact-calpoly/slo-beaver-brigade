@@ -66,7 +66,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
       if (res) {
         setUserData(JSON.parse(res));
         setValidEmail(true);
-        console.log("valid email");
+        
       }
       setLoadingUser(false);
     };
@@ -76,7 +76,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   useEffect(() => {
     // Check if all required fields are filled
     if (userData) {
-      console.log("form filled");
+      
       setFormFilled(true);
       return;
     }
@@ -165,7 +165,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               //call to update the user object
               const res = await addToRegistered(userData._id, eventId, waiverId)
               if (res) {
-                console.log('added')
+                
 
                 mutate(data => {
                     if (data){
@@ -185,7 +185,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(emailBody)
                 })
-                console.log(confirmRes.status)
+                
                 //on success, return to the home page
                 router.push("/")
                 
@@ -223,7 +223,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           lastName
         );
         if (!userRes) {
-          console.log("server error while creating guest user");
+          
           return;
         }
         user = JSON.parse(userRes);
@@ -267,7 +267,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                     }
                     return data
                 })
-                    console.log('added')
+                    
                     const emailBody = {"email": user.email}
                     await fetch("/api/confirmation/" + eventId, {
                         method: 'POST',

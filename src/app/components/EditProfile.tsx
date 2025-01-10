@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { IUser } from '@database/userSchema';
 import { PencilIcon } from "@heroicons/react/16/solid";
+import { addToNewsletter, removeFromNewsletter } from 'app/actions/mailingactions';
 
 //import { Button } from '@styles/Button'
 import React, {useState, useEffect} from 'react';
@@ -82,8 +83,15 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
         zipcode: user_zipcode
       };
   
-      console.log("New User Data:", updatedUserData);
+      
       try {
+        if (updatedUserData.receiveNewsletter) {
+            const res = await addToNewsletter(updatedUserData.email, updatedUserData.firstName, updatedUserData.lastName, updatedUserData.zipcode);
+            console.log(res)
+        } else {
+            const res = await removeFromNewsletter(updatedUserData.email);
+            console.log(res)
+        }
         const response = await fetch(`/api/profile/${userData?._id}/`, {
           method: "PATCH",
           headers: {
@@ -94,12 +102,12 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
         if (response.ok) {
           setIsSubmitted(true);
           handleClose();
-          window.location.reload();
+        //   window.location.reload();
         } else {
           console.error("Failed to update user data");
         }
       } catch (error) {
-        console.log("Error editing user:", error);
+        
       }
     }
 

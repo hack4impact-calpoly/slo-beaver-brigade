@@ -13,7 +13,7 @@ import {
   isSameMonth,
   eachDayOfInterval,
 } from "date-fns";
-import styles from "../styles/userdashboard/MiniCalendar.module.css";
+import styles from '@styles/userdashboard/MiniCalendar.module.css';
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 // Define type for the onTimeChange function

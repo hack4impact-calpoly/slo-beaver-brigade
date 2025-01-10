@@ -19,7 +19,7 @@ export default function UserProfile() {
         if (userRes) {
           const userData = JSON.parse(userRes);
           setUserData(userData);
-          console.log(userData)
+          
         }
       } catch (error) {
         console.error("Error fetching user data:", error);

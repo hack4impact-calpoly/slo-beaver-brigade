@@ -21,7 +21,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import MiniCalendar from "../../../components/MiniCalendar";
+import MiniCalendar from "../../../components/calendar/MiniCalendar";
 import { formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
@@ -206,7 +206,7 @@ export default function Page() {
     // Try to upload image
     const file = fileInputRef?.current?.files?.[0] ?? null;
     let imageurl = null;
-    console.log('image preview', preselected)
+    
     if (file || preselected) {
         if (!preselected){
     imageurl = await uploadFileS3Bucket(file);
@@ -245,7 +245,7 @@ export default function Page() {
 
     // Attempt to create event via API and handle response
     try {
-        console.log('images', imageurl)
+        
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
@@ -466,7 +466,7 @@ export default function Page() {
                   label: type,
                 }))}
                 onChange={(option) => {
-                  console.log(option);
+                  
                   setEventType(option ? option.value : "");
                 }}
                 chakraStyles={{
