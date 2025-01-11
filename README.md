@@ -13,7 +13,7 @@ Just a cool little beaver project.
 
 ### Purpose
 
-To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more. 
+To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more.
 
 ### Team
 
@@ -22,7 +22,7 @@ The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of
 - [Tyler Kim](https://www.linkedin.com/) - Project Manager
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead
 - [Vasanth Pugalenthi](https://www.linkedin.com/) - Tech Lead
-- [Jason Jelincic](https://www.linkedin.com/in/jasonjelincic/) - Software Developer
+- [Jason Jelincic](https://www.linkedin.com/in/jasonjelincic/) - Tech Lead
 - [Ella Hagen](https://www.linkedin.com/) - Software Developer
 - [HanYu Wu](https://www.linkedin.com/in/hanyu-wu04/) - Software Developer
 - [Sohini Pillay](https://www.linkedin.com/) - Software Developer
@@ -31,6 +31,8 @@ The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of
 - [Logan Costello](www.linkedin.com/in/logancostello) - Software Developer
 - [Noah Giboney](https://www.linkedin.com/in/noah-giboney-896847261/) - Software Developer
 - [Shawn Gill](https://www.linkedin.com/in/shawngill404/) - Software Developer
+- [Brady Welsh](https://www.linkedin.com/in/brady-welsh7/) - Software Developer
+- [Emily Lai](https://www.linkedin.com/in/emily-y-lai/) - Software Developer
 - [Vinpatrik Magdangal](https://www.linkedin.com/in/vinpatrik-magdangal-23269b222/) - Software Developepr
 
 ## Getting Started And Contributing
