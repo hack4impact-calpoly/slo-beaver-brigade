@@ -13,7 +13,7 @@ Just a cool little beaver project.
 
 ### Purpose
 
-To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more. 
+To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more.
 
 ### Team
 
@@ -32,6 +32,7 @@ The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of
 - [Noah Giboney](https://www.linkedin.com/in/noah-giboney-896847261/) - Software Developer
 - [Shawn Gill](https://www.linkedin.com/in/shawngill404/) - Software Developer
 - [Brady Welsh](https://www.linkedin.com/in/brady-welsh7/) - Software Developer
+- [Emily Lai](https://www.linkedin.com/in/emily-y-lai/) - Software Developer
 
 ## Getting Started And Contributing
 
