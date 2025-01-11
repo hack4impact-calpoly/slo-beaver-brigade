@@ -22,7 +22,7 @@ The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of
 - [Tyler Kim](https://www.linkedin.com/) - Project Manager
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead
 - [Vasanth Pugalenthi](https://www.linkedin.com/) - Tech Lead
-- [Jason Jelincic](https://www.linkedin.com/in/jasonjelincic/) - Software Developer
+- [Jason Jelincic](https://www.linkedin.com/in/jasonjelincic/) - Tech Lead
 - [Ella Hagen](https://www.linkedin.com/) - Software Developer
 - [HanYu Wu](https://www.linkedin.com/in/hanyu-wu04/) - Software Developer
 - [Sohini Pillay](https://www.linkedin.com/) - Software Developer
