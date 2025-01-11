@@ -31,6 +31,7 @@ The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of
 - [Logan Costello](www.linkedin.com/in/logancostello) - Software Developer
 - [Noah Giboney](https://www.linkedin.com/in/noah-giboney-896847261/) - Software Developer
 - [Shawn Gill](https://www.linkedin.com/in/shawngill404/) - Software Developer
+- [Vinpatrik Magdangal](https://www.linkedin.com/in/vinpatrik-magdangal-23269b222/) - Software Developepr
 
 ## Getting Started And Contributing
 
