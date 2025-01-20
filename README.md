@@ -35,6 +35,7 @@ The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of
 - [Brady Welsh](https://www.linkedin.com/in/brady-welsh7/) - Software Developer
 - [Emily Lai](https://www.linkedin.com/in/emily-y-lai/) - Software Developer
 - [Vinpatrik Magdangal](https://www.linkedin.com/in/vinpatrik-magdangal-23269b222/) - Software Developepr
+- [Ethan Trantalis](https://www.linkedin.com/in/ethan-trantalis)
 
 ## Getting Started And Contributing
 
