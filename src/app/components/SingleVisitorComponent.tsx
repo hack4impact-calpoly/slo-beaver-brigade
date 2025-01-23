@@ -29,6 +29,7 @@ import { IEvent } from "database/eventSchema";
 import makeUserAdmin from "../actions/makeUserAdmin";
 import makeAdminUser from "../actions/makeAdminUser";
 import { FaRegTrashAlt } from "react-icons/fa";
+import DeleteConfirmation from "./DeleteConfirmation";
 
 interface Event {
   _id: string;
@@ -53,6 +54,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(visitorData.role);
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -89,6 +91,8 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
     }
   }, [visitorData]);
 
+  
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
   };
@@ -105,6 +109,12 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       console.error("Error updating role:", error);
     }
   };
+
+  const closeFromChild = () => {
+    onClose();
+  };
+
+
 
   return (
     <>
@@ -220,18 +230,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                   Revert to User
                 </Button>
               )}
-              <Button
-              mt={2}
-              color="#d93636"
-              bg="white"
-              border="2px"
-              _hover={{ bg: "#d93636", color: "white" }}
-              >
-              <Icon color="36d936" fontSize="1.4rem" p={0.5}>
-                <FaRegTrashAlt />
-              </Icon>
-                Delete User
-              </Button>
+              <DeleteConfirmation closeFromChild={closeFromChild}> </DeleteConfirmation>
               </Flex>
           </ModalBody>
         </ModalContent>
