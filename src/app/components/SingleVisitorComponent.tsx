@@ -18,6 +18,7 @@ import {
   Tbody,
   Td,
   useDisclosure,
+  Icon,
   Center,
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
@@ -27,6 +28,7 @@ import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
 import makeUserAdmin from "../actions/makeUserAdmin";
 import makeAdminUser from "../actions/makeAdminUser";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 interface Event {
   _id: string;
@@ -225,6 +227,9 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
               border="2px"
               _hover={{ bg: "#d93636", color: "white" }}
               >
+              <Icon color="36d936" fontSize="1.4rem" p={0.5}>
+                <FaRegTrashAlt />
+              </Icon>
                 Delete User
               </Button>
               </Flex>
