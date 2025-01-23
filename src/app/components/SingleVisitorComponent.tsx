@@ -195,14 +195,14 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                 </Text>
               )}
             </Box>
-            <Flex direction="column" align="center" p={4}>
+            <Flex direction="row" align="center" justify="center" gap={8} p={4}>
             {userRole === "user" ? (
                 <Button
                   mt={2}
-                  color="#d93636"
+                  color="#36d936"
                   bg="white"
                   border="2px"
-                  _hover={{ bg: "#d93636", color: "white" }}
+                  _hover={{ bg: "#36d936", color: "white" }}
                   onClick={handleRoleChange}
                 >
                   Make Admin
@@ -218,6 +218,15 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                   Revert to User
                 </Button>
               )}
+              <Button
+              mt={2}
+              color="#d93636"
+              bg="white"
+              border="2px"
+              _hover={{ bg: "#d93636", color: "white" }}
+              >
+                Delete User
+              </Button>
               </Flex>
           </ModalBody>
         </ModalContent>
