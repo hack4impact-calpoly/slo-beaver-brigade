@@ -71,7 +71,7 @@ export default function Page() {
   const [eventEnd, setEventEnd] = useState("");
   const [activeDate, setActiveDate] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
-  const [onlyInvitees, setOnlyInvitees] = useState<boolean>(false)
+  const [onlyGroups, setOnlyGroups] = useState<boolean>(false)
   const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false)
 
 
@@ -240,7 +240,7 @@ export default function Page() {
       endTime: eventEnd,
       volunteerEvent: eventType === "Volunteer",
       groupsAllowed: groupsSelected.map(group => group._id as string),
-      groupsOnly: onlyInvitees
+      groupsOnly: onlyGroups
     };
 
     // Attempt to create event via API and handle response
@@ -575,7 +575,7 @@ export default function Page() {
 
             <FormControl>
             <FormLabel htmlFor="invitees" fontWeight="bold">
-              Invitees Only
+              Only Available to Selected Groups
             </FormLabel>
             <Select
               id="invitees"
@@ -586,7 +586,7 @@ export default function Page() {
               ]}
               defaultInputValue="No"
               onChange={(option) =>
-                setOnlyInvitees(option ? option.value == "Yes" : false)
+                setOnlyGroups(option ? option.value == "Yes" : false)
               }
               chakraStyles={{
                 control: (provided) => ({
@@ -596,9 +596,9 @@ export default function Page() {
               }}
             />
           </FormControl>
-          {onlyInvitees && groups && <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
+          {onlyGroups && groups && <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
           <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>
-          <div className="flex flex-row gap-4 justify-center"> Notify Invitees: <Checkbox checked={sendEmailInvitees} onChange={() => setSendEmailInvitees((checked) => !checked)}></Checkbox></div>
+          <div className="flex flex-row gap-4 justify-center"> Notify Group Individuals: <Checkbox checked={sendEmailInvitees} onChange={() => setSendEmailInvitees((checked) => !checked)}></Checkbox></div>
             </div>}
 
           <FormControl isRequired>
