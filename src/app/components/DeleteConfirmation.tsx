@@ -27,8 +27,13 @@ import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 import { FaRegTrashAlt } from "react-icons/fa";
 
+interface DeleteProps {
+    closeFromChild: React.MouseEventHandler<HTMLButtonElement>;
+    children?: React.ReactNode;
+}
 
-function DeleteConfirmation(props: { closeFromChild: React.MouseEventHandler<HTMLButtonElement> | undefined; }) {
+
+function DeleteConfirmation({closeFromChild, children}: DeleteProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -91,7 +96,7 @@ function DeleteConfirmation(props: { closeFromChild: React.MouseEventHandler<HTM
                         bg="#d93636"
                         color="white"
                         _hover={{ bg: "#d93636", color: "white" }}
-                        onClick={props.closeFromChild}
+                        onClick={closeFromChild}
                     >
                         Yes
                     </Button>
