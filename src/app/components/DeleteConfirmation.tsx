@@ -29,11 +29,12 @@ import { FaRegTrashAlt } from "react-icons/fa";
 
 interface DeleteProps {
     closeFromChild: React.MouseEventHandler<HTMLButtonElement>;
+    userData: IUser | null;
     children?: React.ReactNode;
 }
 
 
-function DeleteConfirmation({closeFromChild, children}: DeleteProps) {
+function DeleteConfirmation({closeFromChild, userData}: DeleteProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
