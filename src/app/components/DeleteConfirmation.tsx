@@ -29,7 +29,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 
 interface DeleteProps {
     closeFromChild: React.MouseEventHandler<HTMLButtonElement>;
-    userData: IUser | null;
+    userData: IUser;
     children?: React.ReactNode;
 }
 
@@ -37,6 +37,16 @@ interface DeleteProps {
 function DeleteConfirmation({closeFromChild, userData}: DeleteProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    async function handleDelete(){
+
+        const res = await fetch(`/api/user/${userData._id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        closeFromChild;
+    }
 
 
     return (<>
@@ -97,7 +107,7 @@ function DeleteConfirmation({closeFromChild, userData}: DeleteProps) {
                         bg="#d93636"
                         color="white"
                         _hover={{ bg: "#d93636", color: "white" }}
-                        onClick={closeFromChild}
+                        onClick={handleDelete}
                     >
                         Yes
                     </Button>

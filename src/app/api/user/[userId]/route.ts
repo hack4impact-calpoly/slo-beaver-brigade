@@ -98,3 +98,39 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         );
     }
 }
+
+export async function DELETE(req: NextRequest, {params}: IParams) {
+
+    await connectDB(); // Connect to the database
+
+    const { userId } = params; // Destructure the userId from params
+
+
+
+    try {
+
+
+        const user = await User.findByIdAndDelete(userId).orFail();
+
+
+        if (!user) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json("User deleted: " + userId, { status: 200 });
+
+
+    } catch (err) {
+        console.error("Error deleting user (UserId = " + userId + "):", err);
+        return NextResponse.json(
+            "User not deleted (UserId = " + userId + ") " + err,
+            { status: 400 }
+        );
+    }
+
+
+
+}
