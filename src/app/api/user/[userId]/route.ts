@@ -2,6 +2,8 @@ import connectDB from "@database/db";
 import User, { IUser } from "@database/userSchema";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
+import { clerkClient } from '@clerk/nextjs/server'
+
 
 type IParams = {
     params: {
@@ -105,10 +107,17 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
 
     const { userId } = params; // Destructure the userId from params
 
+    const bodyText = await new Response(req.body).text();
+    const body = JSON.parse(bodyText);
 
 
     try {
 
+
+
+
+        const client = await clerkClient;
+        await client.users.deleteUser(body);
 
         const user = await User.findByIdAndDelete(userId).orFail();
 

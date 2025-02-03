@@ -230,7 +230,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                   Revert to User
                 </Button>
               )}
-              <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData}> </DeleteConfirmation>
+              <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false}> </DeleteConfirmation>
               </Flex>
           </ModalBody>
         </ModalContent>

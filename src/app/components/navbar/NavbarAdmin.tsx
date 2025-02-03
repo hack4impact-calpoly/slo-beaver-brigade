@@ -94,6 +94,7 @@ export default function Navbar(props: { name: string }) {
                 <li>
                   |
                 </li>
+                
                 <li onClick={async() => {await removeUserCookie(); mutate("/api/events?sort=asc")}}>
                   <SignOutButton>
                     <button>Sign Out</button>

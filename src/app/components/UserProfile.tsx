@@ -57,7 +57,7 @@ export default function UserProfile() {
           
          </div>  
          <div>
-            <DeleteConfirmation closeFromChild={closeFromChild} userData={userData}></DeleteConfirmation>
+            <DeleteConfirmation closeFromChild={closeFromChild} userData={userData} isSelf={true}></DeleteConfirmation>
          </div>
 
         </div>

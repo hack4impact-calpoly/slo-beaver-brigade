@@ -26,26 +26,39 @@ import { IUser } from "@database/userSchema";
 import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 import { FaRegTrashAlt } from "react-icons/fa";
+import {useUser} from "@clerk/nextjs";
+
 
 interface DeleteProps {
     closeFromChild: React.MouseEventHandler<HTMLButtonElement>;
-    userData: IUser;
+    userData: IUser | null;
     children?: React.ReactNode;
+    isSelf: boolean;
 }
 
 
-function DeleteConfirmation({closeFromChild, userData}: DeleteProps) {
+function DeleteConfirmation({closeFromChild, userData, isSelf}: DeleteProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const {user} = useUser();
 
     async function handleDelete(){
 
-        const res = await fetch(`/api/user/${userData._id}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        });
 
-        closeFromChild;
+
+        if (userData!=null && user!=null) {
+            const clerk_id = user.id;
+
+            const res = await fetch(`/api/user/${userData._id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(clerk_id),
+            });
+
+
+        }
+
+
     }
 
 
@@ -107,7 +120,7 @@ function DeleteConfirmation({closeFromChild, userData}: DeleteProps) {
                         bg="#d93636"
                         color="white"
                         _hover={{ bg: "#d93636", color: "white" }}
-                        onClick={handleDelete}
+                        onClick={async() => {await handleDelete(); closeFromChild}}
                     >
                         Yes
                     </Button>
