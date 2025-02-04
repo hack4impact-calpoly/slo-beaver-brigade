@@ -26,7 +26,9 @@ import { IUser } from "@database/userSchema";
 import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 import { FaRegTrashAlt } from "react-icons/fa";
-import {useUser} from "@clerk/nextjs";
+import {useUser, useClerk} from "@clerk/nextjs";
+import { removeUserCookie } from "app/actions/cookieactions";
+import { mutate } from "swr";
 
 
 interface DeleteProps {
@@ -41,8 +43,16 @@ function DeleteConfirmation({closeFromChild, userData, isSelf}: DeleteProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {user} = useUser();
+    const {signOut} = useClerk();
 
     async function handleDelete(){
+
+
+        // Remove cookies when the user signs out
+        if (isSelf) {
+            await removeUserCookie(); 
+            signOut({ redirectUrl: '/' });
+        }
 
 
 
@@ -57,6 +67,8 @@ function DeleteConfirmation({closeFromChild, userData, isSelf}: DeleteProps) {
 
 
         }
+
+
 
 
     }

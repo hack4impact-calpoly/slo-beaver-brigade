@@ -119,6 +119,8 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
         const client = await clerkClient;
         await client.users.deleteUser(body);
 
+
+
         const user = await User.findByIdAndDelete(userId).orFail();
 
 
