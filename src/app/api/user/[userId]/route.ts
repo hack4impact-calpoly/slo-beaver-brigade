@@ -1,5 +1,7 @@
 import connectDB from "@database/db";
 import User, { IUser } from "@database/userSchema";
+import Group from "@database/groupSchema";
+import Event from "@database/eventSchema";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
 import { clerkClient } from '@clerk/nextjs/server'
@@ -127,7 +129,20 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
             );
         }
 
-        console.log(userId);
+
+        // Remove user from groups
+        await Group.updateMany({groupees: userId}, 
+            {$pull: {groupees: userId}});
+        
+
+        // Update events - set attendee ID to be null
+        await Event.updateMany({attendeeIds: userId},
+            {$pull: {attendeeIds: userId}, $push: {attendeeIds: null}}
+        )
+
+        await Event.updateMany({registeredIds: userId},
+            {$pull: {registeredIds: userId}, $push: {registeredIds: null}}
+        )
 
         return NextResponse.json("User deleted: " + userId, { status: 200 });
 
