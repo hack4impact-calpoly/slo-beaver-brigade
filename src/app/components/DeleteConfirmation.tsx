@@ -74,7 +74,6 @@ function DeleteConfirmation({closeFromChild, userData, isSelf, removeFunction}: 
                 removeFunction(userData._id);
             }    
         }
-
         
         onClose();
 
@@ -117,7 +116,7 @@ function DeleteConfirmation({closeFromChild, userData, isSelf, removeFunction}: 
                 >
                 <Flex direction="column" align="left" p={4}>
                     <Text>
-                        Delete User
+                        Delete Account
                     </Text>
                           
                 </Flex>
