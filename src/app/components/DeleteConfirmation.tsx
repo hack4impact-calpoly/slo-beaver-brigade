@@ -36,10 +36,12 @@ interface DeleteProps {
     userData: IUser | null;
     children?: React.ReactNode;
     isSelf: boolean;
+    removeFunction?: (userId: string) => void;
+
 }
 
 
-function DeleteConfirmation({closeFromChild, userData, isSelf}: DeleteProps) {
+function DeleteConfirmation({closeFromChild, userData, isSelf, removeFunction}: DeleteProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -67,8 +69,13 @@ function DeleteConfirmation({closeFromChild, userData, isSelf}: DeleteProps) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(email),
             });
+
+            if (removeFunction) {
+                removeFunction(userData._id);
+            }    
         }
 
+        
         onClose();
 
 

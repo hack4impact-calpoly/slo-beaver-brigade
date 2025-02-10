@@ -49,7 +49,12 @@ interface Event {
   registeredIds: Schema.Types.ObjectId[];
 }
 
-function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
+interface SingleVisitorComponentProps {
+  visitorData: IUser;
+  removeFunction: (userId: string) => void;
+}
+
+function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorComponentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -230,7 +235,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                   Revert to User
                 </Button>
               )}
-              <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false}> </DeleteConfirmation>
+              <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false} removeFunction={removeFunction}> </DeleteConfirmation>
               </Flex>
           </ModalBody>
         </ModalContent>

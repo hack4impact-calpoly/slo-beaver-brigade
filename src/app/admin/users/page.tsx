@@ -73,6 +73,7 @@ const capitalizeFirstLetter = (str: string): string => {
 const UserList = () => {
   // states
   const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
@@ -149,7 +150,8 @@ const UserList = () => {
     fetchUsers();
   }, [isError, isLoading]);
 
-  const filteredUsers = customUser
+  useEffect(() => {
+    setFilteredUsers(customUser
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -159,12 +161,20 @@ const UserList = () => {
       sortOrder.value === "firstName"
         ? a.firstName.localeCompare(b.firstName)
         : a.lastName.localeCompare(b.lastName)
-    );
+    ));
+  }, [customUser]);
+
+
 
   const sortOptions = [
     { value: "firstName", label: "First Name" },
     { value: "lastName", label: "Last Name" },
   ];
+
+  const removeUser = (userId: string) => {
+    const newUsers = customUser.filter((user) => user._id != userId);
+    setUsers(newUsers);
+  }
 
 
   const csvData = customUser.map((user) => ({
@@ -316,10 +326,10 @@ const UserList = () => {
                         <Td>{`${user.firstName} ${user.lastName}`}</Td>
                         <Td>{user.email}</Td>
                         <Td>{user.totalHoursFormatted}</Td>
-
+ 
                         <Td>{capitalizeFirstLetter(user.role)}</Td>
                         <Td>
-                        <SingleVisitorComponent visitorData={user} />
+                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} />
                         </Td>
                     </Tr>
                     ))
