@@ -108,18 +108,14 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
     const { userId } = params; // Destructure the userId from params
 
     const bodyText = await new Response(req.body).text();
-    const body = JSON.parse(bodyText);
+    const email = JSON.parse(bodyText);
 
 
     try {
 
 
-
-
-        const client = await clerkClient;
-        await client.users.deleteUser(body);
-
-
+        const clerkUser = await clerkClient.users.getUserList({emailAddress: [email]});
+        await clerkClient.users.deleteUser(clerkUser.data[0].id);
 
         const user = await User.findByIdAndDelete(userId).orFail();
 
@@ -130,6 +126,8 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
                 { status: 404 }
             );
         }
+
+        console.log(userId);
 
         return NextResponse.json("User deleted: " + userId, { status: 200 });
 

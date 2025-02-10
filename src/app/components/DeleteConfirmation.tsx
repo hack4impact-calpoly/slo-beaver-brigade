@@ -42,8 +42,11 @@ interface DeleteProps {
 function DeleteConfirmation({closeFromChild, userData, isSelf}: DeleteProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const {user} = useUser();
+
+
     const {signOut} = useClerk();
+    // const {user} = useUser();
+
 
     async function handleDelete(){
 
@@ -55,20 +58,18 @@ function DeleteConfirmation({closeFromChild, userData, isSelf}: DeleteProps) {
         }
 
 
-
-        if (userData!=null && user!=null) {
-            const clerk_id = user.id;
+        if (userData!=null) {
+            //const clerk_id = user.id;
+            const email = userData.email;
 
             const res = await fetch(`/api/user/${userData._id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(clerk_id),
+                body: JSON.stringify(email),
             });
-
-
         }
 
-
+        onClose();
 
 
     }
