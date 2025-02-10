@@ -216,10 +216,10 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
             {userRole === "user" ? (
                 <Button
                   mt={2}
-                  color="#36d936"
+                  color="#337774"
                   bg="white"
                   border="2px"
-                  _hover={{ bg: "#36d936", color: "white" }}
+                  _hover={{ bg: "#337774", color: "white" }}
                   onClick={handleRoleChange}
                 >
                   Make Admin
