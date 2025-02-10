@@ -5,6 +5,7 @@ import { Audit } from "app/lib/audit";
 import { Card, CardBody, Heading, Text } from "@chakra-ui/react";
 import { CgProfile } from "react-icons/cg";
 import { RiArrowRightSLine } from "react-icons/ri";
+import { px } from "framer-motion";
 
 const AuditPreview = () => {
   return (
@@ -14,6 +15,9 @@ const AuditPreview = () => {
       onClick={() =>
         console.log("Audit preview clicked (expansion to be implemented)")
       }
+      borderRadius="lg"
+      borderWidth="1px"
+      borderColor="gray.400"
     >
       <CardBody className={style.auditContent}>
         <CgProfile className={style.auditIcon} />
