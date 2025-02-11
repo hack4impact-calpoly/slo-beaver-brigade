@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import style from "@styles/admin/audit.module.css";
-import { Audit } from "app/lib/audit";
 import { Card, CardBody, Heading, Text } from "@chakra-ui/react";
 import { CgProfile } from "react-icons/cg";
 import { RiArrowRightSLine } from "react-icons/ri";
