@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
+import GoogleCalendarPicker from "../../../components/calendar/GoogleCalendarPicker";
 import { formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
@@ -42,7 +43,7 @@ type Group = {
 };
 
 export default function Page() {
-    const {mutate} = useEventsAscending()
+  const { mutate } = useEventsAscending();
   const toast = useToast();
   const router = useRouter();
   const [eventName, setEventName] = useState("");
@@ -50,10 +51,10 @@ export default function Page() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
-  const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([])
+  const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([]);
   // Specify type for group to avoid error
-  const {groups, isLoading, isError, mutateGroups} = useGroups()
- const setGroups = useCallback((updateFunction: (groups: any[]) => any[]) => {
+  const { groups, isLoading, isError, mutateGroups } = useGroups();
+  const setGroups = useCallback((updateFunction: (groups: any[]) => any[]) => {
     mutateGroups((currentGroups) => {
       if (currentGroups) {
         return updateFunction(currentGroups);
@@ -65,15 +66,15 @@ export default function Page() {
   const [location, setLocation] = useState("");
   const [language, setLanguage] = useState("Yes");
   const [description, setDescription] = useState("");
-  const [accessibilityAccommodation, setAccessibilityAccommodation] = useState("Yes");
+  const [accessibilityAccommodation, setAccessibilityAccommodation] =
+    useState("Yes");
   const [checkList, setChecklist] = useState("N/A");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
   const [activeDate, setActiveDate] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
-  const [onlyGroups, setOnlyGroups] = useState<boolean>(false)
-  const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false)
-
+  const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
+  const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false);
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEventName(e.target.value);
@@ -96,9 +97,9 @@ export default function Page() {
   //Parse and format start and end time from user input
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
-    if(start && end){
+    if (start && end) {
       const timeFormat =
-      start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
+        start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
 
       // Parse the start and end times as dates on the active date
       const parsedStartTime = parse(
@@ -111,20 +112,20 @@ export default function Page() {
         timeFormat,
         new Date(`${activeDate}T00:00:00`)
       );
-        
+
       // Format the adjusted dates back into ISO strings
       const formattedStartDateTime = formatISO(parsedStartTime);
       const formattedEndDateTime = formatISO(parsedEndTime);
       // Update the state with the formatted date times
       setEventStart(formattedStartDateTime);
       setEventEnd(formattedEndDateTime);
-    };
-    if(!start){
+    }
+    if (!start) {
       setEventStart("");
-    };
-    if(!end){
+    }
+    if (!end) {
       setEventEnd("");
-    };
+    }
   };
   // Update active date upon change from MiniCalendar
   const handleDateChangeFromCalendar = (newDate: string) => {
@@ -143,7 +144,7 @@ export default function Page() {
 
   // Handle file selection for the event cover image and set preview
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPreselected(false)
+    setPreselected(false);
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
@@ -156,7 +157,6 @@ export default function Page() {
       setCoverImage(file);
     }
   };
-
 
   // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
@@ -177,25 +177,36 @@ export default function Page() {
         isClosable: true,
       });
       return;
-    }
-    else if (
-      eventStart === "" || eventEnd === "" || activeDate === ""
-    ){
+    } 
+    
+    // Validate recurring event dates
+    if (!recurringOptions.startDate || !recurringOptions.endDate) {
       toast({
         title: "Error",
-        description: "Event date and time are not set",
+        description: "Event start and end dates are not set",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+      return;
+    } 
+    
+    if (recurringOptions.endDate < recurringOptions.startDate) {
+      toast({
+        title: "Error",
+        description: "End date cannot be before start date",
         status: "error",
         duration: 2500,
         isClosable: true,
       });
       return;
     }
-    else if(
-      eventEnd < eventStart
-    ){
+
+    // Validate weekly recurrence
+    if (recurringOptions.frequency === 'weekly' && recurringOptions.daysOfWeek.length === 0) {
       toast({
         title: "Error",
-        description: "End time is before start time",
+        description: "Please select at least one day for weekly recurring events",
         status: "error",
         duration: 2500,
         isClosable: true,
@@ -206,26 +217,25 @@ export default function Page() {
     // Try to upload image
     const file = fileInputRef?.current?.files?.[0] ?? null;
     let imageurl = null;
-    
+
     if (file || preselected) {
-        if (!preselected){
-    imageurl = await uploadFileS3Bucket(file);
+      if (!preselected) {
+        imageurl = await uploadFileS3Bucket(file);
         if (!imageurl) {
-            console.error("Failed to create the event: image upload.");
-            toast({
+          console.error("Failed to create the event: image upload.");
+          toast({
             title: "Error",
             description: "Failed to create the event",
             status: "error",
             duration: 2500,
             isClosable: true,
-            });
-            return;
-        }    }
-        else{
-            imageurl = imagePreview
+          });
+          return;
         }
-        }
-   
+      } else {
+        imageurl = imagePreview;
+      }
+    }
 
     const eventData = {
       eventName,
@@ -236,16 +246,57 @@ export default function Page() {
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: language === "Yes",
-      startTime: eventStart,
-      endTime: eventEnd,
+      startTime: recurringOptions.startDate,
+      endTime: recurringOptions.endDate,
       volunteerEvent: eventType === "Volunteer",
-      groupsAllowed: groupsSelected.map(group => group._id as string),
-      groupsOnly: onlyGroups
+      groupsAllowed: groupsSelected.map((group) => group._id as string),
+      groupsOnly: onlyGroups,
+      recurring: {
+        frequency: recurringOptions.frequency,
+        daysOfWeek: recurringOptions.daysOfWeek,
+        endDate: recurringOptions.endDate
+      }
+    };
+
+    const createGoogleCalendarEvent = async (eventData: any) => {
+      try {
+        const response = await fetch('/api/google-calendar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            summary: eventData.eventName,
+            location: eventData.location,
+            description: eventData.description,
+            start: {
+              dateTime: eventData.startTime,
+              timeZone: 'America/Los_Angeles', // Adjust to your timezone
+            },
+            end: {
+              dateTime: eventData.endTime,
+              timeZone: 'America/Los_Angeles', // Adjust to your timezone
+            },
+            recurrence: eventData.recurring ? [
+              `RRULE:FREQ=${eventData.recurring.frequency.toUpperCase()};UNTIL=${eventData.recurring.endDate.replace(/-/g, '')}T235959Z${eventData.recurring.daysOfWeek.length > 0 ? ';BYDAY=' + eventData.recurring.daysOfWeek.join(',') : ''}`
+            ] : undefined,
+          }),
+        });
+    
+        if (!response.ok) {
+          throw new Error('Failed to create Google Calendar event');
+        }
+    
+        return await response.json();
+      } catch (error) {
+        console.error('Error creating Google Calendar event:', error);
+        throw error;
+      }
     };
 
     // Attempt to create event via API and handle response
     try {
-        
+      // Create event in your database
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
@@ -258,24 +309,46 @@ export default function Page() {
         throw new Error("HTTP error! status: $(response.status)");
       }
 
-      const event: IEvent= await response.json();
-      // send confirmation email if button was checked
-      if (sendEmailInvitees){
-        const res = await fetch('/api/events/' + event._id + "/groups/confirmation", 
-            {method: 'POST',
-            body: JSON.stringify({groupIds: groupsSelected.flatMap(group => group._id)})})
-        if (!res){
-            toast()
+      const event: IEvent = await response.json();
+
+      // Create Google Calendar event
+      try {
+        await createGoogleCalendarEvent(eventData);
+      } catch (calendarError) {
+        console.error("Failed to create Google Calendar event:", calendarError);
+        // Optionally show a warning toast but continue with the flow
         toast({
-                title: "Error",
-                description: "Failed to send emails.",
-                status: "error",
-                duration: 2500,
-                isClosable: true,
-            });
-                }
+          title: "Warning",
+          description: "Event created but failed to sync with Google Calendar",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
       }
-        mutate()
+
+      // send confirmation email if button was checked
+      if (sendEmailInvitees) {
+        const res = await fetch(
+          "/api/events/" + event._id + "/groups/confirmation",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              groupIds: groupsSelected.flatMap((group) => group._id),
+            }),
+          }
+        );
+        if (!res) {
+          toast({
+            title: "Error",
+            description: "Failed to send emails.",
+            status: "error",
+            duration: 2500,
+            isClosable: true,
+          });
+        }
+      }
+      
+      mutate();
       toast({
         title: "Event Created",
         description: "Your event has been successfully created.",
@@ -294,7 +367,7 @@ export default function Page() {
         isClosable: true,
       });
     }
-  };
+};
 
   const handleCreateNewGroup = async (groupName: string) => {
     const groupData = {
@@ -352,16 +425,15 @@ export default function Page() {
 
   // Fetch groups data on component mount
   useEffect(() => {
-    if (isError){
-        toast({
-          title: "Error",
-          description: "Failed to fetch groups",
-          status: "error",
-          duration: 2500,
-          isClosable: true,
-        });
+    if (isError) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch groups",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
     }
-
   }, [isError]);
 
   // Fetching different event types
@@ -381,27 +453,43 @@ export default function Page() {
 
     fetchEventTypes();
   }, []);
+  
+  interface RecurringOptions {
+    startDate: string;
+    endDate: string;
+    daysOfWeek: string[];
+    frequency: string;
+  }
 
-  
-  
+  const [recurringOptions, setRecurringOptions] = useState<RecurringOptions>({
+    startDate: '',
+    endDate: '',
+    daysOfWeek: [], // initialize as empty string array
+    frequency: 'weekly',
+  });
+
   return (
     <Box p={8} mx="10">
       <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
         Create New Event
       </Text>
 
-    {/* image uploading */}
-    <Flex flexDir={{ base: "column", md: "row" }} flex="1" gap={{base: "10px", md: "50px"}}>
+      {/* image uploading */}
+      <Flex
+        flexDir={{ base: "column", md: "row" }}
+        flex="1"
+        gap={{ base: "10px", md: "50px" }}
+      >
         <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
-            <Input
+          <Input
             id="cover-image"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
             ref={fileInputRef}
             hidden // Hide the actual input
-            />
-            <Box
+          />
+          <Box
             position="relative"
             borderWidth="1px"
             p="4"
@@ -416,14 +504,18 @@ export default function Page() {
             justifyContent="center"
             alignItems="center"
             flexDirection="column"
-            >
+          >
             {!imagePreview ? (
-                <>
+              <>
                 <Text>Upload Image</Text>
-                <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
-                </>
+                <IconButton
+                  aria-label="Upload image"
+                  icon={<AddIcon />}
+                  mt="2"
+                />
+              </>
             ) : (
-                <Image
+              <Image
                 src={imagePreview}
                 alt="Event cover preview"
                 position="absolute"
@@ -433,11 +525,14 @@ export default function Page() {
                 height="100%"
                 objectFit="cover"
                 zIndex={0}
-                />
+              />
             )}
-            </Box>
+          </Box>
         </FormControl>
-        <ImageSelector setPreselected={setPreselected} setImageURL={setImagePreview}></ImageSelector>
+        <ImageSelector
+          setPreselected={setPreselected}
+          setImageURL={setImagePreview}
+        ></ImageSelector>
       </Flex>
 
       <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
@@ -466,7 +561,6 @@ export default function Page() {
                   label: type,
                 }))}
                 onChange={(option) => {
-                  
                   setEventType(option ? option.value : "");
                 }}
                 chakraStyles={{
@@ -491,9 +585,9 @@ export default function Page() {
                   value: group,
                   label: group.group_name,
                 }))}
-                value={groupsSelected.map(group => ({
-                    value: group,
-                    label: group.group_name,
+                value={groupsSelected.map((group) => ({
+                  value: group,
+                  label: group.group_name,
                 }))}
                 onChange={(selectedOptions) =>
                   setGroupsSelected(
@@ -573,7 +667,7 @@ export default function Page() {
             />
           </FormControl>
 
-            <FormControl>
+          <FormControl>
             <FormLabel htmlFor="invitees" fontWeight="bold">
               Only Available to Selected Groups
             </FormLabel>
@@ -596,23 +690,46 @@ export default function Page() {
               }}
             />
           </FormControl>
-          {onlyGroups && groups && <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
-          <CreateTemporaryGroup groups={groupsSelected} mutate={mutateGroups} setGroups={setGroupsSelected}/>
-          <div className="flex flex-row gap-4 justify-center"> Notify Group Individuals: <Checkbox checked={sendEmailInvitees} onChange={() => setSendEmailInvitees((checked) => !checked)}></Checkbox></div>
-            </div>}
+          {onlyGroups && groups && (
+            <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
+              <CreateTemporaryGroup
+                groups={groupsSelected}
+                mutate={mutateGroups}
+                setGroups={setGroupsSelected}
+              />
+              <div className="flex flex-row gap-4 justify-center">
+                {" "}
+                Notify Group Individuals:{" "}
+                <Checkbox
+                  checked={sendEmailInvitees}
+                  onChange={() => setSendEmailInvitees((checked) => !checked)}
+                ></Checkbox>
+              </div>
+            </div>
+          )}
 
           <FormControl isRequired>
             <FormLabel htmlFor="description" fontWeight="bold">
               Description
             </FormLabel>
-            <MDEditor className={style.preview} value={description} onChange={(e) => setDescription(e || "")} data-color-mode="light"/>
+            <MDEditor
+              className={style.preview}
+              value={description}
+              onChange={(e) => setDescription(e || "")}
+              data-color-mode="light"
+            />
           </FormControl>
 
           <FormControl>
             <FormLabel htmlFor="required-items" fontWeight="bold">
               Checklist
             </FormLabel>
-            <MDEditor className={style.preview} value={checkList} onChange={(e) => setChecklist(e || "")} data-color-mode="light"/>
+            <MDEditor
+              className={style.preview}
+              value={checkList}
+              onChange={(e) => setChecklist(e || "")}
+              data-color-mode="light"
+            />
           </FormControl>
         </VStack>
         <Flex flex="1">
@@ -621,19 +738,36 @@ export default function Page() {
               Date/Time
             </Text>
             {/* MiniCalendar */}
-            <FormControl ml="-4" isRequired>
+            {/* <FormControl ml="-4" isRequired>
               <MiniCalendar
                 onTimeChange={(start, end) => handleTimeChange(start, end)}
                 onDateChange={(date) => handleDateChangeFromCalendar(date)}
               />
-            </FormControl>
+            </FormControl> */}
+
+            <Flex flex="1">
+              <VStack alignItems="flex-start" spacing={4}>
+                <Text fontWeight="bold">Date/Time</Text>
+                <FormControl isRequired>
+                  <GoogleCalendarPicker
+                    onDateTimeSelect={(start, end) => {
+                      setEventStart(start);
+                      setEventEnd(end);
+                    }}
+                    onRecurringOptionsChange={(options: RecurringOptions) => {
+                      setRecurringOptions(options);
+                    }}
+                  />
+                </FormControl>
+              </VStack>
+            </Flex>
           </VStack>
         </Flex>
       </Flex>
       <Box display="flex" justifyContent="center" mt={4}>
         <Button
-          loadingText="Creating"                 
-          bg="#e0af48"   
+          loadingText="Creating"
+          bg="#e0af48"
           color="black"
           _hover={{ bg: "#C19137" }}
           onClick={handleCreateEvent}
