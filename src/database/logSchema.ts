@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 export type ILog = {
     _id: string;
-    user: Schema.Types.ObjectId;
+    user: string;
     action: string;
     date: Date;
     link: Schema.Types.ObjectId;
@@ -10,7 +10,7 @@ export type ILog = {
 
 const logSchema = new Schema({
     user: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
     action: {
