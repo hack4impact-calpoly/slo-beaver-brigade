@@ -158,10 +158,15 @@ export default function Page() {
     }
   };
 
+
   // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
     debugger;
     // Form validation before submission
+    console.log("recurringOptions:", recurringOptions);
+    console.log("startDate:", recurringOptions.startDate);
+    console.log("endDate:", recurringOptions.endDate);
+
     if (
       !eventName ||
       !eventType ||
@@ -177,9 +182,9 @@ export default function Page() {
         isClosable: true,
       });
       return;
-    } 
-    
-    // Validate recurring event dates
+    }
+
+    // Validate dates
     if (!recurringOptions.startDate || !recurringOptions.endDate) {
       toast({
         title: "Error",
@@ -189,8 +194,8 @@ export default function Page() {
         isClosable: true,
       });
       return;
-    } 
-    
+    }
+
     if (recurringOptions.endDate < recurringOptions.startDate) {
       toast({
         title: "Error",
@@ -202,11 +207,30 @@ export default function Page() {
       return;
     }
 
-    // Validate weekly recurrence
-    if (recurringOptions.frequency === 'weekly' && recurringOptions.daysOfWeek.length === 0) {
+    if (
+      recurringOptions.frequency === "weekly" &&
+      recurringOptions.daysOfWeek.length === 0
+    ) {
       toast({
         title: "Error",
-        description: "Please select at least one day for weekly recurring events",
+        description:
+          "Please select at least one day for weekly recurring events",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+      return;
+    }
+
+    // Validate weekly recurrence
+    if (
+      recurringOptions.frequency === "weekly" &&
+      recurringOptions.daysOfWeek.length === 0
+    ) {
+      toast({
+        title: "Error",
+        description:
+          "Please select at least one day for weekly recurring events",
         status: "error",
         duration: 2500,
         isClosable: true,
@@ -251,19 +275,21 @@ export default function Page() {
       volunteerEvent: eventType === "Volunteer",
       groupsAllowed: groupsSelected.map((group) => group._id as string),
       groupsOnly: onlyGroups,
-      recurring: {
-        frequency: recurringOptions.frequency,
-        daysOfWeek: recurringOptions.daysOfWeek,
-        endDate: recurringOptions.endDate
-      }
+      ...(recurringOptions.frequency && {
+        recurring: {
+          frequency: recurringOptions.frequency,
+          daysOfWeek: recurringOptions.daysOfWeek,
+          endDate: recurringOptions.endDate,
+        },
+      }),
     };
 
     const createGoogleCalendarEvent = async (eventData: any) => {
       try {
-        const response = await fetch('/api/google-calendar', {
-          method: 'POST',
+        const response = await fetch("/api/google-calendar", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             summary: eventData.eventName,
@@ -271,32 +297,33 @@ export default function Page() {
             description: eventData.description,
             start: {
               dateTime: eventData.startTime,
-              timeZone: 'America/Los_Angeles', // Adjust to your timezone
+              timeZone: "America/Los_Angeles",
             },
             end: {
               dateTime: eventData.endTime,
-              timeZone: 'America/Los_Angeles', // Adjust to your timezone
+              timeZone: "America/Los_Angeles",
             },
-            recurrence: eventData.recurring ? [
-              `RRULE:FREQ=${eventData.recurring.frequency.toUpperCase()};UNTIL=${eventData.recurring.endDate.replace(/-/g, '')}T235959Z${eventData.recurring.daysOfWeek.length > 0 ? ';BYDAY=' + eventData.recurring.daysOfWeek.join(',') : ''}`
-            ] : undefined,
+            recurrence: eventData.recurring
+              ? [
+                  `RRULE:FREQ=${eventData.recurring.frequency.toUpperCase()};UNTIL=${eventData.recurring.endDate.replace(/-/g, "")}T235959Z${eventData.recurring.daysOfWeek.length > 0 ? ";BYDAY=" + eventData.recurring.daysOfWeek.join(",") : ""}`,
+                ]
+              : undefined,
           }),
         });
-    
+
         if (!response.ok) {
-          throw new Error('Failed to create Google Calendar event');
+          throw new Error("Failed to create Google Calendar event");
         }
-    
+
         return await response.json();
       } catch (error) {
-        console.error('Error creating Google Calendar event:', error);
+        console.error("Error creating Google Calendar event:", error);
         throw error;
       }
     };
 
     // Attempt to create event via API and handle response
     try {
-      // Create event in your database
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
@@ -347,7 +374,7 @@ export default function Page() {
           });
         }
       }
-      
+
       mutate();
       toast({
         title: "Event Created",
@@ -367,7 +394,7 @@ export default function Page() {
         isClosable: true,
       });
     }
-};
+  };
 
   const handleCreateNewGroup = async (groupName: string) => {
     const groupData = {
@@ -453,7 +480,7 @@ export default function Page() {
 
     fetchEventTypes();
   }, []);
-  
+
   interface RecurringOptions {
     startDate: string;
     endDate: string;
@@ -462,10 +489,10 @@ export default function Page() {
   }
 
   const [recurringOptions, setRecurringOptions] = useState<RecurringOptions>({
-    startDate: '',
-    endDate: '',
+    startDate: "",
+    endDate: "",
     daysOfWeek: [], // initialize as empty string array
-    frequency: 'weekly',
+    frequency: "weekly",
   });
 
   return (
