@@ -19,6 +19,7 @@ import {
   Stack,
   Textarea,
   IconButton,
+  MenuItem,
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
@@ -50,6 +51,11 @@ export default function Page() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [templates, setTemplates] = useState([
+    { id: 1, name: "Volunteer Meetup", type: "Volunteer", location: "Park" },
+    { id: 2, name: "Charity Drive", type: "Fundraiser", location: "Community Hall" },
+  ]);
   const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([])
   // Specify type for group to avoid error
   const {groups, isLoading, isError, mutateGroups} = useGroups()
@@ -92,6 +98,31 @@ export default function Page() {
       }
     });
   };
+
+  const handleSelectTemplate = (template) => {
+    setSelectedTemplate(template);
+    setEventName(template.name);
+    setEventType(template.type);
+    setLocation(template.location);
+  };
+  
+  const handleSaveAsTemplate = () => {
+    const newTemplate = {
+      id: templates.length + 1,
+      name: eventName,
+      type: eventType,
+      location: location,
+    };
+    setTemplates([...templates, newTemplate]);
+    toast({
+      title: "Template Saved",
+      description: "This event has been saved as a template.",
+      status: "success",
+      duration: 2500,
+      isClosable: true,
+    });
+  };
+  
 
   //Parse and format start and end time from user input
   const handleTimeChange = (start: string, end: string) => {
@@ -386,9 +417,23 @@ export default function Page() {
   
   return (
     <Box p={8} mx="10">
-      <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
-        Create New Event
-      </Text>
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+        <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
+          Create New Event
+        </Text>
+        <Menu>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            {selectedTemplate ? selectedTemplate.name : "Select Template"}
+          </MenuButton>
+          <MenuList>
+            {templates.map((template) => (
+              <MenuItem key={template.id} onClick={() => handleSelectTemplate(template)}>
+                {template.name}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      </Flex>
 
     {/* image uploading */}
     <Flex flexDir={{ base: "column", md: "row" }} flex="1" gap={{base: "10px", md: "50px"}}>
@@ -630,17 +675,25 @@ export default function Page() {
           </VStack>
         </Flex>
       </Flex>
-      <Box display="flex" justifyContent="center" mt={4}>
+      <Box display="flex" justifyContent="center" mt={4} gap={4}>
         <Button
-          loadingText="Creating"                 
-          bg="#e0af48"   
+          loadingText="Creating"
+          bg="#e0af48"
           color="black"
           _hover={{ bg: "#C19137" }}
           onClick={handleCreateEvent}
           minWidth="150px"
-          width="20%"
         >
           Create Event
+        </Button>
+        <Button
+          bg="#48a0e0"
+          color="white"
+          _hover={{ bg: "#377ab8" }}
+          onClick={handleSaveAsTemplate}
+          minWidth="150px"
+        >
+          Save as Template
         </Button>
       </Box>
     </Box>
