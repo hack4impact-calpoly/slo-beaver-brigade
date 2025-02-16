@@ -138,13 +138,30 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
         
 
         // Update events - set attendee ID to be null
-        await Event.updateMany({attendeeIds: userId},
-            {$pull: {attendeeIds: userId}, $push: {attendeeIds: null}}
-        )
+        await Event.updateMany(
+            {attendeeIds: userId},  // Find documents where userId exists in attendeeIds
+            { 
+                $set: { 
+                    attendeeIds: 
+                        // Directly replace all elements with `null`
+                        await Event.aggregate([{ $match: { attendeeIds: userId }}])
+                }
+            }
+        );
 
-        await Event.updateMany({registeredIds: userId},
-            {$pull: {registeredIds: userId}, $push: {registeredIds: null}}
-        )
+        // Update events - set attendee ID to be null
+        await Event.updateMany(
+            {registeredIds: userId},  // Find documents where userId exists in attendeeIds
+            { 
+                $set: { 
+                    attendeeIds: 
+                        // Directly replace all elements with `null`
+                        await Event.aggregate([{ $match: { registeredIds: userId }}])
+                }
+            }
+        );
+
+        
 
         // Log deletion to admin log
         await Log.create({
