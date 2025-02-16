@@ -51,7 +51,7 @@ interface Event {
 
 interface SingleVisitorComponentProps {
   visitorData: IUser;
-  removeFunction: (userId: string) => void;
+  removeFunction?: (userId: string) => void;
 }
 
 function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorComponentProps) {
