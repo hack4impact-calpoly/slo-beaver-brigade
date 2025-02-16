@@ -23,7 +23,7 @@ const logSchema = new Schema({
     },
     link: {
         type: Schema.Types.ObjectId,
-        required: true,
+        required: false,
     },
 });
 

@@ -4,7 +4,9 @@ import Group from "@database/groupSchema";
 import Event from "@database/eventSchema";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
-import { clerkClient } from '@clerk/nextjs/server'
+import { clerkClient } from '@clerk/nextjs/server';
+import Log from "@database/logSchema";
+
 
 
 type IParams = {
@@ -112,9 +114,7 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
     const bodyText = await new Response(req.body).text();
     const email = JSON.parse(bodyText);
 
-
     try {
-
 
         const clerkUser = await clerkClient.users.getUserList({emailAddress: [email]});
         await clerkClient.users.deleteUser(clerkUser.data[0].id);
@@ -129,20 +129,44 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
             );
         }
 
-
         // Remove user from groups
         await Group.updateMany({groupees: userId}, 
             {$pull: {groupees: userId}});
         
 
         // Update events - set attendee ID to be null
-        await Event.updateMany({attendeeIds: userId},
-            {$pull: {attendeeIds: userId}, $push: {attendeeIds: null}}
-        )
+        await Event.updateMany(
+            {attendeeIds: userId},  // Find documents where userId exists in attendeeIds
+            { 
+                $set: { 
+                    attendeeIds: 
+                        // Directly replace all elements with `null`
+                        await Event.aggregate([{ $match: { attendeeIds: userId }}])
+                }
+            }
+        );
 
-        await Event.updateMany({registeredIds: userId},
-            {$pull: {registeredIds: userId}, $push: {registeredIds: null}}
-        )
+        // Update events - set attendee ID to be null
+        await Event.updateMany(
+            {registeredIds: userId},  // Find documents where userId exists in attendeeIds
+            { 
+                $set: { 
+                    attendeeIds: 
+                        // Directly replace all elements with `null`
+                        await Event.aggregate([{ $match: { registeredIds: userId }}])
+                }
+            }
+        );
+
+        
+
+        // Log deletion to admin log
+        await Log.create({
+            user: `${user.firstName} ${user.lastName}`,
+            action: "deleted account",
+            date: new Date(),
+            link: null
+          });
 
         return NextResponse.json("User deleted: " + userId, { status: 200 });
 
