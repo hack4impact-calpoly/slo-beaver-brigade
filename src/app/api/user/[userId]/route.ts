@@ -114,9 +114,7 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
     const bodyText = await new Response(req.body).text();
     const email = JSON.parse(bodyText);
 
-
     try {
-
 
         const clerkUser = await clerkClient.users.getUserList({emailAddress: [email]});
         await clerkClient.users.deleteUser(clerkUser.data[0].id);
