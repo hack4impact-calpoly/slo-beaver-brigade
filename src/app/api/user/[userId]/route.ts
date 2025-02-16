@@ -4,7 +4,9 @@ import Group from "@database/groupSchema";
 import Event from "@database/eventSchema";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
-import { clerkClient } from '@clerk/nextjs/server'
+import { clerkClient } from '@clerk/nextjs/server';
+import Log from "@database/logSchema";
+
 
 
 type IParams = {
@@ -143,6 +145,14 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
         await Event.updateMany({registeredIds: userId},
             {$pull: {registeredIds: userId}, $push: {registeredIds: null}}
         )
+
+        // Log deletion to admin log
+        await Log.create({
+            user: `${user.firstName} ${user.lastName}`,
+            action: "deleted account",
+            date: new Date(),
+            link: null
+          });
 
         return NextResponse.json("User deleted: " + userId, { status: 200 });
 
