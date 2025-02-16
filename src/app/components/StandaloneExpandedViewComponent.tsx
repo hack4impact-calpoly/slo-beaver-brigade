@@ -10,15 +10,13 @@ import {
   FormLabel,
   Flex,
   Button,
-  Spacer,
   Text,
   Box,
-  useMediaQuery
+  useMediaQuery,
 } from "@chakra-ui/react";
 import React, { useRef, useState,useEffect } from 'react';
 import { IEvent } from "@database/eventSchema";
 import { CalendarIcon,TimeIcon} from '@chakra-ui/icons';
-import { fallbackBackgroundImage } from "app/lib/random";
 import { PiMapPinFill } from "react-icons/pi";
 import { MdCloseFullscreen } from "react-icons/md";
 import Link from "next/link";
@@ -28,6 +26,7 @@ import { getUserDbData } from "app/lib/authentication";
 import MarkdownPreview from '@uiw/react-markdown-preview';
 import style from "@styles/calendar/calendar.module.css";
 import { KeyedMutator } from "swr";
+import ChakraNextImage from "./ChakraNextImage";
 
 interface Props {
   eventDetails: IEvent | null;
@@ -122,14 +121,24 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
     hour12: true,
   });
 
-  const backgroundImage = fallbackBackgroundImage(eventDetails.eventImage)
   const url = `/events/${eventDetails._id}/digitalWaiver/1`
   return (
   <>
     <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" >
       <ModalOverlay/>
       <ModalContent mt={"5rem"} mb={"1rem"} borderRadius={"20px"}>
-        <ModalHeader bg={backgroundImage} fontWeight="bold" fontFamily= {'Lato'} position="relative" color={"white"} backgroundSize={"cover"} backgroundPosition={"60% 45%"} borderRadius={"20px 20px 0px 0px"}>
+        <ModalHeader fontWeight="bold" fontFamily= {'Lato'} position="relative" color={"white"}>
+        <ChakraNextImage
+        src={eventDetails.eventImage || "/beaver-eventcard.jpeg"}
+        alt="Event Image"
+        objectFit="cover"
+        position="absolute"
+        zIndex="-1"
+        top="0"
+        left="0"
+        layout="fill"
+        borderRadius={"20px 20px 0px 0px"}
+      />
           <Flex justify={"left"} ml={"5%"}>
             <Text fontSize={["2xl","2xl","5xl"]} opacity={"85%"}>{eventDetails.eventName}</Text>
           </Flex>
