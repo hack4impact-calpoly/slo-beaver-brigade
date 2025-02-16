@@ -124,7 +124,6 @@ const UserList = () => {
           const eventsAttendedNames = await Promise.all(
             user.eventsAttended.map((event) => fetchEventName(event.eventId))
           );
-
           return {
             ...user,
             totalHoursFormatted: formatHours(
@@ -297,22 +296,22 @@ const UserList = () => {
         {/* {isLoading && !users  && !isError && <div>Loading...</div>}
         {isError && <div>Error occurred.</div>}
                  */}
-            <Box>
+          <Box>
             <Table
-                variant="striped"
-                size={tableSize}
-                className={style.customTable}
+              variant="striped"
+              size={tableSize}
+              className={style.customTable}
             >
-                <Thead>
-                <Tr>
-                    <Th>Name</Th>
-                    <Th>Email</Th>
-                    <Th>Total Hours</Th>
-                    <Th>Role</Th>
-                    <Th></Th>
-                </Tr>
-                </Thead>
-                <Tbody>
+              <Thead>
+              <Tr>
+                  <Th>Name</Th>
+                  <Th>Email</Th>
+                  <Th>Total Hours</Th>
+                  <Th>Role</Th>
+                  <Th></Th>
+              </Tr>
+              </Thead>
+              <Tbody>
                 {filteredUsers.length === 0 ? (
                     <Tr>
                     <Td colSpan={5} textAlign="center">
@@ -326,7 +325,7 @@ const UserList = () => {
                         <Td>{`${user.firstName} ${user.lastName}`}</Td>
                         <Td>{user.email}</Td>
                         <Td>{user.totalHoursFormatted}</Td>
- 
+  
                         <Td>{capitalizeFirstLetter(user.role)}</Td>
                         <Td>
                         <SingleVisitorComponent visitorData={user} removeFunction={removeUser} />
@@ -334,9 +333,9 @@ const UserList = () => {
                     </Tr>
                     ))
                 )}
-                </Tbody>
-                </Table>
-            </Box>
+              </Tbody>
+            </Table>
+          </Box>
       </div>
     </div>
   );
