@@ -129,7 +129,6 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
             );
         }
 
-
         // Remove user from groups
         await Group.updateMany({groupees: userId}, 
             {$pull: {groupees: userId}});
