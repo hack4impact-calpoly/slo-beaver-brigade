@@ -143,20 +143,12 @@ function DeleteConfirmation({closeFromChild, userData, isSelf, removeFunction}: 
                     >
                         Yes
                     </Button>
-
                 </Flex>
-
             </ModalBody>
-
-            </ModalContent>
+          </ModalContent>
         </Modal>
-
-
     </>
     );
-
-
-
 }
 
 export default DeleteConfirmation;
