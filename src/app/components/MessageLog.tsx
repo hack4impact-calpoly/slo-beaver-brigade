@@ -9,10 +9,11 @@ import { useRouter } from "next/navigation";
 import { ILog } from "@/database/logSchema";
 
 interface MessageLogProps {
-  log: ILog;
+  log: ILog; // Expects a log object
 }
 
 const MessageLog: React.FC<MessageLogProps> = ({ log }) => {
+    
   const router = useRouter();
 
   const formatDate = (date: Date): string => {
@@ -36,7 +37,7 @@ const MessageLog: React.FC<MessageLogProps> = ({ log }) => {
       });
     }
   };
-
+// Handles clicking on a log entry - navigates to either event or user page
   const handleClick = () => {
     if (log.link) {
       router.push(`/events/${log.link}`);
@@ -46,6 +47,7 @@ const MessageLog: React.FC<MessageLogProps> = ({ log }) => {
   };
 
   return (
+    // Renders a card with the log information
     <Card
       className={style.auditPreview}
       role="button"

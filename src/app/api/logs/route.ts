@@ -2,6 +2,7 @@ import connectDB from "@/database/db";
 import Log from "@/database/logSchema";
 import { NextResponse } from "next/server";
 
+// GET endpoint to fetch logs
 export async function GET() {
   try {
     await connectDB();
@@ -20,7 +21,7 @@ export async function GET() {
   }
 }
 
-// Helper function to create logs
+// Helper function to create logs and add to db
 export async function createLog(userId: string, action: string, linkId?: string) {
   try {
     await connectDB();
