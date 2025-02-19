@@ -157,7 +157,22 @@ export default function Page() {
       setCoverImage(file);
     }
   };
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  interface RecurringOptions {
+    startDate: string;
+    endDate: string;
+    daysOfWeek: string[];
+    frequency: string;
+  }
 
+  const [recurringOptions, setRecurringOptions] = useState<RecurringOptions>({
+    startDate: "",
+    endDate: "",
+    daysOfWeek: [], // initialize as empty string array
+    frequency: "weekly",
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
@@ -200,21 +215,6 @@ export default function Page() {
       toast({
         title: "Error",
         description: "End date cannot be before start date",
-        status: "error",
-        duration: 2500,
-        isClosable: true,
-      });
-      return;
-    }
-
-    if (
-      recurringOptions.frequency === "weekly" &&
-      recurringOptions.daysOfWeek.length === 0
-    ) {
-      toast({
-        title: "Error",
-        description:
-          "Please select at least one day for weekly recurring events",
         status: "error",
         duration: 2500,
         isClosable: true,
@@ -286,33 +286,93 @@ export default function Page() {
 
     const createGoogleCalendarEvent = async (eventData: any) => {
       try {
+        // Parse the start date and times
+        const startDate = new Date(eventData.startTime);
+        const [startHours, startMinutes] = eventData.startTime
+          .split("T")[1]
+          .split(":");
+        const [endHours, endMinutes] = eventData.endTime
+          .split("T")[1]
+          .split(":");
+
+        // For both recurring and non-recurring events, end time should be on the same day as start time
+        const eventStartDateTime = new Date(startDate);
+        eventStartDateTime.setHours(
+          parseInt(startHours),
+          parseInt(startMinutes),
+          0
+        );
+
+        const eventEndDateTime = new Date(startDate); // Use start date for end time
+        eventEndDateTime.setHours(parseInt(endHours), parseInt(endMinutes), 0);
+
+        let calendarEventData = {
+          summary: eventData.eventName,
+          location: eventData.location,
+          description: eventData.description,
+          start: {
+            dateTime: eventStartDateTime.toISOString(),
+            timeZone: "America/Los_Angeles",
+          },
+          end: {
+            dateTime: eventEndDateTime.toISOString(),
+            timeZone: "America/Los_Angeles",
+          },
+        } as {
+          summary: string;
+          location: string;
+          description: string;
+          start: { dateTime: string; timeZone: string };
+          end: { dateTime: string; timeZone: string };
+          recurrence?: string[];
+        };
+
+        // Add recurrence rule only if it's a recurring event
+        if (eventData.recurring && eventData.recurring.frequency) {
+          const untilDate = new Date(eventData.recurring.endDate);
+          untilDate.setHours(23, 59, 59);
+          const untilDateString =
+            untilDate.toISOString().replace(/[:-]/g, "").split(".")[0] + "Z";
+
+          let recurrenceRule = `FREQ=${eventData.recurring.frequency.toUpperCase()};UNTIL=${untilDateString}`;
+
+          if (
+            eventData.recurring.frequency === "weekly" &&
+            eventData.recurring.daysOfWeek.length > 0
+          ) {
+            const selectedDays = eventData.recurring.daysOfWeek.filter(
+              (day) => day
+            );
+            if (selectedDays.length > 0) {
+              recurrenceRule += `;BYDAY=${selectedDays.join(",")}`;
+            }
+          } else if (eventData.recurring.frequency === "monthly") {
+            const dayOfWeek = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"][
+              startDate.getDay()
+            ];
+            const weekOfMonth = Math.ceil(startDate.getDate() / 7);
+            recurrenceRule += `;BYDAY=${weekOfMonth}${dayOfWeek}`;
+          }
+
+          calendarEventData.recurrence = [`RRULE:${recurrenceRule}`];
+        }
+
+        console.log("Sending to Google Calendar:", calendarEventData);
+
         const response = await fetch("/api/google-calendar", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            summary: eventData.eventName,
-            location: eventData.location,
-            description: eventData.description,
-            start: {
-              dateTime: eventData.startTime,
-              timeZone: "America/Los_Angeles",
-            },
-            end: {
-              dateTime: eventData.endTime,
-              timeZone: "America/Los_Angeles",
-            },
-            recurrence: eventData.recurring
-              ? [
-                  `RRULE:FREQ=${eventData.recurring.frequency.toUpperCase()};UNTIL=${eventData.recurring.endDate.replace(/-/g, "")}T235959Z${eventData.recurring.daysOfWeek.length > 0 ? ";BYDAY=" + eventData.recurring.daysOfWeek.join(",") : ""}`,
-                ]
-              : undefined,
-          }),
+          body: JSON.stringify(calendarEventData),
         });
 
         if (!response.ok) {
-          throw new Error("Failed to create Google Calendar event");
+          const errorData = await response.json();
+          console.error("Google Calendar API Error:", errorData);
+          throw new Error(
+            errorData.details || "Failed to create Google Calendar event"
+          );
         }
 
         return await response.json();
@@ -321,7 +381,6 @@ export default function Page() {
         throw error;
       }
     };
-
     // Attempt to create event via API and handle response
     try {
       const response = await fetch("/api/events", {
@@ -395,6 +454,8 @@ export default function Page() {
       });
     }
   };
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const handleCreateNewGroup = async (groupName: string) => {
     const groupData = {
@@ -480,20 +541,6 @@ export default function Page() {
 
     fetchEventTypes();
   }, []);
-
-  interface RecurringOptions {
-    startDate: string;
-    endDate: string;
-    daysOfWeek: string[];
-    frequency: string;
-  }
-
-  const [recurringOptions, setRecurringOptions] = useState<RecurringOptions>({
-    startDate: "",
-    endDate: "",
-    daysOfWeek: [], // initialize as empty string array
-    frequency: "weekly",
-  });
 
   return (
     <Box p={8} mx="10">
@@ -761,9 +808,7 @@ export default function Page() {
         </VStack>
         <Flex flex="1">
           <VStack alignItems="flex-start">
-            <Text fontWeight="bold" mb="-4">
-              Date/Time
-            </Text>
+
             {/* MiniCalendar */}
             {/* <FormControl ml="-4" isRequired>
               <MiniCalendar

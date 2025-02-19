@@ -1,19 +1,24 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { 
-  Box, 
-  VStack, 
-  HStack, 
-  Checkbox, 
-  Text, 
-  Input, 
-  FormControl, 
+import React, { useState } from "react";
+import {
+  Box,
+  VStack,
+  HStack,
+  Checkbox,
+  Text,
+  Input,
+  FormControl,
   FormLabel,
   Stack,
   Select,
   Switch,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
+
+interface DayOfWeek {
+  label: string;
+  value: string;
+}
 
 interface GoogleCalendarPickerProps {
   onDateTimeSelect: (startTime: string, endTime: string) => void;
@@ -26,27 +31,29 @@ interface GoogleCalendarPickerProps {
   }) => void;
 }
 
-const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({ 
-  onDateTimeSelect, 
-  onRecurringOptionsChange 
+const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
+  onDateTimeSelect,
+  onRecurringOptionsChange,
 }) => {
-  const calendarId = encodeURIComponent(process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_ID || '');
+  const calendarId = encodeURIComponent(
+    process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_ID || ""
+  );
   const [isRecurring, setIsRecurring] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [frequency, setFrequency] = useState('weekly');
+  const [frequency, setFrequency] = useState("weekly");
 
-  const daysOfWeek = [
-    { label: 'Sunday', value: 'SU' },
-    { label: 'Monday', value: 'MO' },
-    { label: 'Tuesday', value: 'TU' },
-    { label: 'Wednesday', value: 'WE' },
-    { label: 'Thursday', value: 'TH' },
-    { label: 'Friday', value: 'FR' },
-    { label: 'Saturday', value: 'SA' },
+  const daysOfWeek: DayOfWeek[] = [
+    { label: "Sunday", value: "SU" },
+    { label: "Monday", value: "MO" },
+    { label: "Tuesday", value: "TU" },
+    { label: "Wednesday", value: "WE" },
+    { label: "Thursday", value: "TH" },
+    { label: "Friday", value: "FR" },
+    { label: "Saturday", value: "SA" },
   ];
 
   const handleDateTimeChange = () => {
@@ -56,18 +63,37 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
   };
 
   const updateRecurringOptions = () => {
-    onRecurringOptionsChange({
-      isRecurring,
+    console.log("Current values:", {
       startDate,
-      endDate: isRecurring ? endDate : startDate,
-      daysOfWeek: selectedDays,
-      frequency,
+      startTime,
+      endDate,
+      endTime,
     });
+
+    if (startDate) {
+      const fullStartDate = startTime ? `${startDate}T${startTime}` : startDate;
+
+      const fullEndDate =
+        endDate && endTime ? `${endDate}T${endTime}` : endDate || startDate;
+
+      console.log("Updating with dates:", {
+        fullStartDate,
+        fullEndDate,
+      });
+
+      onRecurringOptionsChange({
+        isRecurring,
+        startDate: fullStartDate,
+        endDate: fullEndDate,
+        daysOfWeek: selectedDays,
+        frequency: isRecurring ? frequency : "",
+      });
+    }
   };
 
   return (
     <Stack spacing={4} width="100%">
-      <Box 
+      {/* <Box
         width="400px"
         height="400px"
         borderRadius="md"
@@ -79,27 +105,34 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
         <iframe
           src={`https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=America%2FLos_Angeles&mode=WEEK&showNav=1&showTitle=0&showPrint=0&showTabs=1&showCalendars=0&height=400&wkst=1&bgcolor=%23ffffff&showDate=1`}
           style={{
-            border: 'none',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'transparent',
+            border: "none",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "transparent",
           }}
           frameBorder="0"
           scrolling="no"
         />
-      </Box>
+      </Box> */}
 
       <FormControl display="flex" alignItems="center">
         <FormLabel htmlFor="recurring-toggle" mb="0">
           Recurring Event?
         </FormLabel>
-        <Switch 
-          id="recurring-toggle" 
+        <Switch
+          id="recurring-toggle"
           isChecked={isRecurring}
           onChange={(e) => {
             setIsRecurring(e.target.checked);
             if (!e.target.checked) {
-              setEndDate(startDate); // Reset end date to start date when switching to non-recurring
+              //cleae recurring data when switching to non recur
+              setSelectedDays([]);
+              setFrequency("weekly");
+              //update parent component with cleared recur data
+              updateRecurringOptions();
+            }
+            if (!e.target.checked) {
+              setEndDate(startDate); //reset end date to start date when switching to non recur
             }
             updateRecurringOptions();
           }}
@@ -112,11 +145,11 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
           type="date"
           value={startDate}
           onChange={(e) => {
+            console.log("Start date changed:", e.target.value);
             setStartDate(e.target.value);
             if (!isRecurring) {
-              setEndDate(e.target.value); // Update end date if not recurring
+              setEndDate(e.target.value);
             }
-            handleDateTimeChange();
             updateRecurringOptions();
           }}
         />
@@ -128,8 +161,9 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
           type="time"
           value={startTime}
           onChange={(e) => {
+            console.log("Start time changed:", e.target.value);
             setStartTime(e.target.value);
-            handleDateTimeChange();
+            updateRecurringOptions();
           }}
         />
       </FormControl>
@@ -140,13 +174,16 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
           type="time"
           value={endTime}
           onChange={(e) => {
+            console.log("End time changed:", e.target.value);
             setEndTime(e.target.value);
-            handleDateTimeChange();
+            updateRecurringOptions();
           }}
         />
       </FormControl>
 
-      <FormControl>
+      {isRecurring && (
+        <>
+          <FormControl>
             <FormLabel>End Date</FormLabel>
             <Input
               type="date"
@@ -156,18 +193,27 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
                 handleDateTimeChange();
                 updateRecurringOptions();
               }}
+              style={{ display: isRecurring ? "block" : "none" }} // Hide if not recurring
             />
           </FormControl>
-
-      {isRecurring && (
-        <>
           <FormControl>
             <FormLabel>Repeat</FormLabel>
-            <Select 
+            <Select
               value={frequency}
               onChange={(e) => {
-                setFrequency(e.target.value);
-                updateRecurringOptions();
+                const newFrequency = e.target.value;
+                setFrequency(newFrequency);
+                if (newFrequency !== "weekly") {
+                  setSelectedDays([]);
+                }
+
+                onRecurringOptionsChange({
+                  isRecurring,
+                  startDate,
+                  endDate,
+                  daysOfWeek: newFrequency === "weekly" ? selectedDays : [], 
+                  frequency: newFrequency,
+                });
               }}
             >
               <option value="daily">Daily</option>
@@ -176,17 +222,17 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
             </Select>
           </FormControl>
 
-          {frequency === 'weekly' && (
+          {frequency === "weekly" && (
             <FormControl>
               <FormLabel>Repeat on</FormLabel>
               <HStack wrap="wrap" spacing={4}>
-                {daysOfWeek.map((day) => (
+                {daysOfWeek.map((day: DayOfWeek) => (
                   <Checkbox
                     key={day.value}
                     isChecked={selectedDays.includes(day.value)}
                     onChange={() => {
                       const newDays = selectedDays.includes(day.value)
-                        ? selectedDays.filter(d => d !== day.value)
+                        ? selectedDays.filter((d) => d !== day.value)
                         : [...selectedDays, day.value];
                       setSelectedDays(newDays);
                       updateRecurringOptions();
