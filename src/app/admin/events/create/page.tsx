@@ -445,7 +445,7 @@ export default function Page() {
         ></ImageSelector>
       </Flex>
 
-      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
+      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6} mt={6}>
         <VStack spacing={4} align="stretch" flex="1">
           <FormControl isRequired>
             <FormLabel htmlFor="event-name" fontWeight="bold">
@@ -617,37 +617,10 @@ export default function Page() {
               </div>
             </div>
           )}
-
-          <HStack spacing={4} align="start">
-            <FormControl isRequired flex={1}>
-              <FormLabel htmlFor="description" fontWeight="bold">
-                Description
-              </FormLabel>
-              <MDEditor
-                className={style.preview}
-                value={description}
-                onChange={(e) => setDescription(e || "")}
-                data-color-mode="light"
-              />
-            </FormControl>
-
-            <FormControl flex={1}>
-              <FormLabel htmlFor="required-items" fontWeight="bold">
-                Checklist
-              </FormLabel>
-              <MDEditor
-                className={style.preview}
-                value={checkList}
-                onChange={(e) => setChecklist(e || "")}
-                data-color-mode="light"
-              />
-            </FormControl>
-          </HStack>
-          
         </VStack>
         <Flex flex="1">
           <VStack alignItems="flex-start">
-            <Text fontWeight="bold" mb="-4">
+            <Text fontWeight="bold"  mt={{ base: "-16", md: "0" }} mb="-4">
               Date/Time
             </Text>
             {/* MiniCalendar */}
@@ -660,6 +633,38 @@ export default function Page() {
           </VStack>
         </Flex>
       </Flex>
+
+      <Stack
+        direction={{ base: "column", lg: "row" }}
+        spacing={4}
+        align="start"
+        w="100%"
+      >
+        <FormControl isRequired flex={1}>
+          <FormLabel htmlFor="description" fontWeight="bold">
+            Description
+          </FormLabel>
+          <MDEditor
+            className={style.preview}
+            value={description}
+            onChange={(e) => setDescription(e || "")}
+            data-color-mode="light"
+          />
+        </FormControl>
+
+        <FormControl flex={1}>
+          <FormLabel htmlFor="required-items" fontWeight="bold">
+            Checklist
+          </FormLabel>
+          <MDEditor
+            className={style.preview}
+            value={checkList}
+            onChange={(e) => setChecklist(e || "")}
+            data-color-mode="light"
+          />
+        </FormControl>
+      </Stack>
+
       <Box display="flex" justifyContent="center" mt={4}>
         <Button
           loadingText="Creating"
