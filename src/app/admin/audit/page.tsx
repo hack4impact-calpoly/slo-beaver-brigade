@@ -7,6 +7,7 @@ import { Text, Input, Select, Spinner, Center } from "@chakra-ui/react";
 import useSWR from "swr";
 import { ILog } from "@/database/logSchema";
 
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const AuditPage = () => {
   const { data: logs, error, isLoading } = useSWR<ILog[]>('/api/logs', fetcher);
