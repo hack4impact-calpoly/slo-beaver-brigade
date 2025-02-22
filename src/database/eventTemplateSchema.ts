@@ -14,7 +14,6 @@ export interface IEventTemplate {
   endTime: Date;
 }
 
-
 const eventTemplateSchema = new Schema({
   eventName: {
     type: String,
