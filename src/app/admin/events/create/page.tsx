@@ -41,6 +41,7 @@ type Group = {
   group_name: string;
 };
 
+
 export default function Page() {
   const { mutate } = useEventsAscending();
   const toast = useToast();
