@@ -3,6 +3,7 @@ import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
 import User from "@database/userSchema";
 import { revalidateTag } from "next/cache";
+import Log from "@database/logSchema";
 
 type IParams = {
     params: {
@@ -41,6 +42,13 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
                 },
             }
         );
+        
+        await Log.create({
+            user: `example user`,
+            action: `deleted event ${event.eventName}`,
+            date: new Date(),
+            link: eventId,
+        });
 
         revalidateTag("events");
 

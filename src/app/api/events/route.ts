@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { BareBoneIUser } from "app/components/navbar/NavbarParents";
 import User from "database/userSchema";
 import { IUser } from "app/admin/users/page";
+import Log from "@database/logSchema";
 
 interface BuggyIUser extends BareBoneIUser {
     id: string;
@@ -106,6 +107,14 @@ export async function POST(req: NextRequest) {
 
         const createdEvent = await newEvent.save();
         revalidateTag("events");
+
+        await Log.create({
+            user: `example user`,
+            action: `created event ${createdEvent.eventName}`,
+            date: new Date(),
+            link: createdEvent._id,
+        });
+
         return NextResponse.json(createdEvent, {
             status: 200,
         });
