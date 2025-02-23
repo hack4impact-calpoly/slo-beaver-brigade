@@ -4,6 +4,8 @@ import Event, { IEvent } from "@database/eventSchema";
 import User from "@database/userSchema";
 import { revalidateTag } from "next/cache";
 import Log from "@database/logSchema";
+import { IUser } from "@database/userSchema";
+import { getUserDbData } from "app/lib/authentication";
 
 type IParams = {
     params: {
@@ -28,6 +30,7 @@ export async function GET(req: NextRequest, { params }: IParams) {
 export async function DELETE(req: NextRequest, { params }: IParams) {
     await connectDB(); // connect to db
     const { eventId } = params;
+    let userData: IUser;
 
     try {
         const event = await Event.findByIdAndDelete(eventId).orFail();
@@ -43,8 +46,17 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
             }
         );
         
+        const userRes = await getUserDbData();
+        if(userRes) {
+            userData = JSON.parse(userRes);
+        } else {
+            return NextResponse.json("Could not fetch user data. ", {
+                status: 500,
+            });
+        }
+
         await Log.create({
-            user: `example user`,
+            user: `${userData.firstName} ${userData.lastName}`,
             action: `deleted event ${event.eventName}`,
             date: new Date(),
             link: eventId,
