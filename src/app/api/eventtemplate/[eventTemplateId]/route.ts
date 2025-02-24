@@ -23,6 +23,29 @@ export async function GET(req: NextRequest, {params} : IParams) {
         )
     }
 
+}
 
+export async function DELETE(req: NextRequest, {params}: IParams) {
+    await connectDB();
+    const { eventTemplateId } = params;
 
+    try {
+        const eventTemplate = await EventTemplate.findByIdAndDelete(eventTemplateId).orFail();
+        revalidateTag("eventTemplates");
+
+        // For now, I didn't make it so other tables would be affected by this. 
+        // Not sure if this will be the case later, but the Event Template schema hasn't been merged with main at time of 
+        // working on this.
+
+        return NextResponse.json("Event template deleted: " + eventTemplateId, {
+            status: 200,
+        });
+
+    } catch (err: any) {
+        return NextResponse.json(
+            "Event not deleted (EventTemplateId = " + eventTemplateId + ") " + err,
+            { status: 400 }
+        );
+
+    }
 }
