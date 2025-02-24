@@ -42,6 +42,7 @@ type Group = {
   group_name: string;
 };
 
+
 export default function Page() {
   const { mutate } = useEventsAscending();
   const toast = useToast();
@@ -424,6 +425,7 @@ export default function Page() {
           }
         );
         if (!res) {
+          toast();
           toast({
             title: "Error",
             description: "Failed to send emails.",
@@ -433,7 +435,6 @@ export default function Page() {
           });
         }
       }
-
       mutate();
       toast({
         title: "Event Created",
@@ -609,7 +610,7 @@ export default function Page() {
         ></ImageSelector>
       </Flex>
 
-      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6}>
+      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6} mt={6}>
         <VStack spacing={4} align="stretch" flex="1">
           <FormControl isRequired>
             <FormLabel htmlFor="event-name" fontWeight="bold">
@@ -650,7 +651,7 @@ export default function Page() {
 
             <FormControl width="48%">
               <FormLabel htmlFor="organization" fontWeight="bold">
-                Groups
+                Assign Groups
               </FormLabel>
               <CreatableSelect
                 id="organization"
@@ -701,12 +702,11 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accommodation-type"
-              placeholder="Yes"
+              placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
-              defaultInputValue="Yes"
               onChange={(option) => setLanguage(option ? option.value : " ")}
               chakraStyles={{
                 control: (provided) => ({
@@ -723,12 +723,11 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accessibility"
-              placeholder="Yes"
+              placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
-              defaultInputValue="Yes"
               onChange={(option) =>
                 setAccessibilityAccommodation(option ? option.value : " ")
               }
@@ -747,12 +746,11 @@ export default function Page() {
             </FormLabel>
             <Select
               id="invitees"
-              placeholder="No"
+              placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
-              defaultInputValue="No"
               onChange={(option) =>
                 setOnlyGroups(option ? option.value == "Yes" : false)
               }
@@ -781,30 +779,6 @@ export default function Page() {
               </div>
             </div>
           )}
-
-          <FormControl isRequired>
-            <FormLabel htmlFor="description" fontWeight="bold">
-              Description
-            </FormLabel>
-            <MDEditor
-              className={style.preview}
-              value={description}
-              onChange={(e) => setDescription(e || "")}
-              data-color-mode="light"
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="required-items" fontWeight="bold">
-              Checklist
-            </FormLabel>
-            <MDEditor
-              className={style.preview}
-              value={checkList}
-              onChange={(e) => setChecklist(e || "")}
-              data-color-mode="light"
-            />
-          </FormControl>
         </VStack>
         <Flex flex="1">
           <VStack alignItems="flex-start">
@@ -836,6 +810,38 @@ export default function Page() {
           </VStack>
         </Flex>
       </Flex>
+
+      <Stack
+        direction={{ base: "column", lg: "row" }}
+        spacing={4}
+        align="start"
+        w="100%"
+      >
+        <FormControl isRequired flex={1}>
+          <FormLabel htmlFor="description" fontWeight="bold">
+            Description
+          </FormLabel>
+          <MDEditor
+            className={style.preview}
+            value={description}
+            onChange={(e) => setDescription(e || "")}
+            data-color-mode="light"
+          />
+        </FormControl>
+
+        <FormControl flex={1}>
+          <FormLabel htmlFor="required-items" fontWeight="bold">
+            Checklist
+          </FormLabel>
+          <MDEditor
+            className={style.preview}
+            value={checkList}
+            onChange={(e) => setChecklist(e || "")}
+            data-color-mode="light"
+          />
+        </FormControl>
+      </Stack>
+
       <Box display="flex" justifyContent="center" mt={4}>
         <Button
           loadingText="Creating"

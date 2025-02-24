@@ -73,6 +73,7 @@ const capitalizeFirstLetter = (str: string): string => {
 const UserList = () => {
   // states
   const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
@@ -123,7 +124,6 @@ const UserList = () => {
           const eventsAttendedNames = await Promise.all(
             user.eventsAttended.map((event) => fetchEventName(event.eventId))
           );
-
           return {
             ...user,
             totalHoursFormatted: formatHours(
@@ -149,7 +149,8 @@ const UserList = () => {
     fetchUsers();
   }, [isError, isLoading]);
 
-  const filteredUsers = customUser
+  useEffect(() => {
+    setFilteredUsers(customUser
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -159,12 +160,20 @@ const UserList = () => {
       sortOrder.value === "firstName"
         ? a.firstName.localeCompare(b.firstName)
         : a.lastName.localeCompare(b.lastName)
-    );
+    ));
+  }, [customUser]);
+
+
 
   const sortOptions = [
     { value: "firstName", label: "First Name" },
     { value: "lastName", label: "Last Name" },
   ];
+
+  const removeUser = (userId: string) => {
+    const newUsers = customUser.filter((user) => user._id != userId);
+    setUsers(newUsers);
+  }
 
 
   const csvData = customUser.map((user) => ({
@@ -287,22 +296,22 @@ const UserList = () => {
         {/* {isLoading && !users  && !isError && <div>Loading...</div>}
         {isError && <div>Error occurred.</div>}
                  */}
-            <Box>
+          <Box>
             <Table
-                variant="striped"
-                size={tableSize}
-                className={style.customTable}
+              variant="striped"
+              size={tableSize}
+              className={style.customTable}
             >
-                <Thead>
-                <Tr>
-                    <Th>Name</Th>
-                    <Th>Email</Th>
-                    <Th>Total Hours</Th>
-                    <Th>Role</Th>
-                    <Th></Th>
-                </Tr>
-                </Thead>
-                <Tbody>
+              <Thead>
+              <Tr>
+                  <Th>Name</Th>
+                  <Th>Email</Th>
+                  <Th>Total Hours</Th>
+                  <Th>Role</Th>
+                  <Th></Th>
+              </Tr>
+              </Thead>
+              <Tbody>
                 {filteredUsers.length === 0 ? (
                     <Tr>
                     <Td colSpan={5} textAlign="center">
@@ -316,17 +325,17 @@ const UserList = () => {
                         <Td>{`${user.firstName} ${user.lastName}`}</Td>
                         <Td>{user.email}</Td>
                         <Td>{user.totalHoursFormatted}</Td>
-
+  
                         <Td>{capitalizeFirstLetter(user.role)}</Td>
                         <Td>
-                        <SingleVisitorComponent visitorData={user} />
+                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} />
                         </Td>
                     </Tr>
                     ))
                 )}
-                </Tbody>
-                </Table>
-            </Box>
+              </Tbody>
+            </Table>
+          </Box>
       </div>
     </div>
   );

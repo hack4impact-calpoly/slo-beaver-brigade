@@ -8,6 +8,8 @@ import { cookies } from "next/headers";
 import { BareBoneIUser } from "app/components/navbar/NavbarParents";
 import User from "database/userSchema";
 import { IUser } from "app/admin/users/page";
+import Log from "@database/logSchema";
+import { getUserDbData } from "app/lib/authentication";
 
 interface BuggyIUser extends BareBoneIUser {
     id: string;
@@ -96,8 +98,8 @@ export async function GET(request: Request) {
 
 export async function POST(req: NextRequest) {
     await connectDB();
-
     const event: IEvent = await req.json();
+    let userData: IUser;
 
     // create new event or return error
     try {
@@ -106,6 +108,23 @@ export async function POST(req: NextRequest) {
 
         const createdEvent = await newEvent.save();
         revalidateTag("events");
+
+        const userRes = await getUserDbData();
+        if(userRes) {
+            userData = JSON.parse(userRes);
+        } else {
+            return NextResponse.json("Could not fetch user data. ", {
+                status: 500,
+            });
+        }
+
+        await Log.create({
+            user: `${userData.firstName} ${userData.lastName}`,
+            action: `created event ${createdEvent.eventName}`,
+            date: new Date(),
+            link: createdEvent._id,
+        });
+
         return NextResponse.json(createdEvent, {
             status: 200,
         });
