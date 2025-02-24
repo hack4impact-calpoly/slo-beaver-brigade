@@ -21,7 +21,7 @@
   background-color: #2b2b33;
   position: sticky;
   z-index: 9999;
-  width: 100vw;
+  width: 100%;
 }
 
 .nav_left {
