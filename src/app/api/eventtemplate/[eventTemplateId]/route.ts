@@ -57,6 +57,8 @@ export async function PUT(req: NextRequest, {params}: IParams) {
     try {
         const eventTemplate = await EventTemplate.findById(eventTemplateId).orFail();
 
+        // TODO: COMPARE VALUES OF BODY WITH EVENT TEMPLATE OBJECT (WILL NEED SCHEMA COMPLETED)
+
         await eventTemplate.save();
         revalidateTag("eventTemplates");
         return NextResponse.json("Event template updated: " + eventTemplate, { status: 200 });
