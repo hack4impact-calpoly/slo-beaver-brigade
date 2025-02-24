@@ -20,23 +20,3 @@ export async function GET() {
     );
   }
 }
-
-// Helper function to create logs and add to db
-export async function createLog(userId: string, action: string, linkId?: string) {
-  try {
-    await connectDB();
-    
-    const logEntry = new Log({
-      user: userId,
-      action: action,
-      date: new Date(),
-      link: linkId || null
-    });
-    
-    await logEntry.save();
-    return true;
-  } catch (error) {
-    console.error("Error creating log:", error);
-    return false;
-  }
-}

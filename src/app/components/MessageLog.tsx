@@ -7,6 +7,7 @@ import { RiArrowRightSLine } from "react-icons/ri";
 import style from "@styles/admin/audit.module.css";
 import { useRouter } from "next/navigation";
 import { ILog } from "@/database/logSchema";
+import { useState, useEffect } from "react";
 
 interface MessageLogProps {
   log: ILog; // Expects a log object
@@ -15,17 +16,24 @@ interface MessageLogProps {
 const MessageLog: React.FC<MessageLogProps> = ({ log }) => {
     
   const router = useRouter();
+  
 
+  
+ // Create a state variable to store the formatted date
+const [formattedDate, setFormattedDate] = useState<string>('');
+
+// Format the date to be more human-readable after the component mounts
+useEffect(() => {
   const formatDate = (date: Date): string => {
     const now = new Date();
     const logDate = new Date(date);
     const diffInHours = (now.getTime() - logDate.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 24) {
-      return `Today at ${logDate.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit', 
-        hour12: true 
+      return `Today at ${logDate.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
       })}`;
     } else {
       return logDate.toLocaleDateString('en-US', {
@@ -37,6 +45,11 @@ const MessageLog: React.FC<MessageLogProps> = ({ log }) => {
       });
     }
   };
+
+  setFormattedDate(formatDate(log.date));
+}, [log.date]);
+
+
 // Handles clicking on a log entry - navigates to either event or user page
   const handleClick = () => {
     if (log.link) {
@@ -62,7 +75,7 @@ const MessageLog: React.FC<MessageLogProps> = ({ log }) => {
           <Heading size="md">
             {log.user} {log.action}
           </Heading>
-          <Text>{formatDate(log.date)}</Text>
+          <Text>{formattedDate}</Text>
         </div>
         <RiArrowRightSLine className={style.auditIcon} />
       </CardBody>

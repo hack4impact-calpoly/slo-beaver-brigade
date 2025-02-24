@@ -1,6 +1,6 @@
 'use client';
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import style from "@styles/admin/audit.module.css";
 import MessageLog from "../../components/MessageLog";
 import { Text, Input, Select, Spinner, Center } from "@chakra-ui/react";
@@ -12,6 +12,16 @@ const AuditPage = () => {
   const { data: logs, error, isLoading } = useSWR<ILog[]>('/api/logs', fetcher);
   const [userFilter, setUserFilter] = useState("");
   const [actionFilter, setActionFilter] = useState("");
+  const [mounted, setMounted] = useState(false); // Helps prevent flickering on initial load
+
+// Set mounted to true after the component mounts to prevent flickering
+useEffect(() => {
+  setMounted(true); // Only on client side load
+}, []);
+
+if (!mounted) {
+  return <Center p={8}><Spinner size="xl" /></Center>;
+}
 
   const filteredLogs = logs?.filter(log => {
     const matchesUser = userFilter ? 
@@ -22,6 +32,8 @@ const AuditPage = () => {
       true;
     return matchesUser && matchesAction;
   });
+
+
 
   return (
     <div className={style.page}>
@@ -73,6 +85,7 @@ const AuditPage = () => {
       </main>
     </div>
   );
+
 };
 
 export default AuditPage;
