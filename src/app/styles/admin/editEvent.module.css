@@ -13,7 +13,7 @@
   font-size: 23px;
 }
 
-.deleteButton {
+.headerDeleteButton {
   padding: 5px 30px 5px 30px;
   border: 2px solid #d93636;
   color: #d93636;
@@ -22,7 +22,7 @@
   font-weight: bold;
 }
 
-.deleteButton:hover {
+.deleteButton:hover, .headerDeleteButton:hover {
   background-color: #f2b3b3;
   color: white;
 }
@@ -291,7 +291,8 @@
 
 .confirmDeletion {
   width: 30%;
-  height: 35%;
+  min-height: fit-content;
+  max-height: 35vh;
   padding: 70px;
   border-radius: 15px;
   background-color: white;
@@ -306,10 +307,20 @@
   margin-top: 5%;
   font-size: 15px;
   justify-content: space-between;
+  align-items: center;
+}
+
+.deleteButton {
+  padding: 15px 50px 15px 50px;
+  border: 2px solid #d93636;
+  color: #d93636;
+  border-radius: 7px;
+  font-family: "Lato";
+  font-weight: bold;
 }
 
 .cancelButton {
-  padding: 5px 30px 5px 30px;
+  padding: 15px 50px 15px 50px;
   border: 2px solid #989898;
   color: #989898;
   background-color: white;

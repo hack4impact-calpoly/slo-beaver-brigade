@@ -22,7 +22,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         const { isOpen, onOpen, onClose } = useDisclosure() 
         return(
             <>
-            <button className={styles.deleteButton} onClick={onOpen}>Delete Event</button>
+            <button className={styles.headerDeleteButton} onClick={onOpen}>Delete Event</button>
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay/>
               <ModalContent className={styles.confirmDeletion} maxW="40rem">
