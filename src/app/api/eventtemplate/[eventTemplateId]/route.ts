@@ -49,3 +49,23 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
 
     }
 }
+
+export async function PUT(req: NextRequest, {params}: IParams) {
+    await connectDB();
+    const {eventTemplateId} = params;
+
+    try {
+        const eventTemplate = await EventTemplate.findById(eventTemplateId).orFail();
+
+        await eventTemplate.save();
+        revalidateTag("eventTemplates");
+        return NextResponse.json("Event template updated: " + eventTemplate, { status: 200 });
+
+    } catch (err: any) {
+        return NextResponse.json(
+            "Event template not updated (EventId = " + eventTemplateId + ") " + err,
+            { status: 400 }
+        );
+
+    }
+}
