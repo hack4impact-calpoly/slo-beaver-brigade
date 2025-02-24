@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse, userAgent } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
 import Group from "@database/groupSchema";
@@ -9,7 +9,7 @@ import { BareBoneIUser } from "app/components/navbar/NavbarParents";
 import User from "database/userSchema";
 import { IUser } from "app/admin/users/page";
 import Log from "@database/logSchema";
-import { getUserDataFromEmail, getUserDbData } from "app/lib/authentication";
+import { getUserDbData } from "app/lib/authentication";
 
 interface BuggyIUser extends BareBoneIUser {
     id: string;
