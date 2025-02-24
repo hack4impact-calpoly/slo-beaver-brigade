@@ -4,11 +4,6 @@ import EventTemplate, { IEventTemplate } from "@database/eventTemplateSchema";
 import { revalidateTag } from "next/cache";
 
 
-export async function GET(request: Request) {
-    await connectDB();
-
-
-}
 
 
 // FOR CREATING AN EVENT TEMPLATE
