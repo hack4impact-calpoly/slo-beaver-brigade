@@ -292,7 +292,7 @@
   width: 30%;
   min-height: fit-content;
   max-height: 35vh;
-  padding: 70px;
+  padding: 5%;
   border-radius: 15px;
   background-color: white;
   font-family: "Lato";
@@ -307,10 +307,12 @@
   font-size: 15px;
   justify-content: space-between;
   align-items: center;
+  gap: 5px;
+  flex-direction: row;
 }
 
 .confirmationButton {
-  padding: 15px 50px 15px 50px;
+  padding: 10px 40px 10px 40px;
   border-radius: 7px;
   font-family: "Lato";
   font-weight: bold;
@@ -376,5 +378,12 @@
 
   .tableContainer th, .tableContainer td {
     padding: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .cancelOrDelete {
+    flex-direction: column-reverse;
+    gap: 10px;
   }
 }

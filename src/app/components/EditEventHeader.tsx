@@ -25,7 +25,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
             <button className={`${styles.headerDeleteButton} ${styles.headerButton}`} onClick={onOpen}>Delete Event</button>
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay/>
-              <ModalContent className={styles.confirmDeletion} maxW="40rem">
+              <ModalContent className={styles.confirmDeletion} maxW="fit-content">
                 <ModalHeader style={{width:"100%"}}>Please confirm deletion of {eventName} Event.</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody className={styles.cancelOrDelete}>
