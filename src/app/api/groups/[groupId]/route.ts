@@ -72,7 +72,7 @@ export async function DELETE(request: Request, {params}: {params: { groupId: Str
             user: `${userData.firstName} ${userData.lastName}`,
             action: `deleted group ${group.group_name}`,
             date: new Date(),
-            link: null
+            link: userData._id,
           });
 
 
