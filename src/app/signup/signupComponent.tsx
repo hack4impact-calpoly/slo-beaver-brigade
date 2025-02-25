@@ -60,7 +60,6 @@ export default function SignUp() {
 
   useEffect(() => {
     let userData = sessionStorage.getItem("userData");
-    console.log("Retrieved userData from sessionStorage:", userData);
 
     if (userData) {
       const parsedData = JSON.parse(userData);
@@ -70,7 +69,7 @@ export default function SignUp() {
       setPassword(parsedData.password || "");
       setZipcode(parsedData.zipcode || "");
       setPhone(parsedData.phone || "");
-      setEnableNewsletter(parsedData.enableNewsletter || false);
+      setEnableNewsletter(parsedData.enableNewsletter ?? false);
     }
   }, [pendingVerification]);
 
@@ -102,6 +101,7 @@ export default function SignUp() {
         firstName,
         lastName,
         email,
+        password,
         phone,
         zipcode,
         enableNewsletter,
@@ -352,9 +352,9 @@ export default function SignUp() {
                 Join the Beaver Brigade Newsletter?
                 <Checkbox
                   style={{ verticalAlign: "middle", marginLeft: "10px" }}
-                  checked={enableNewsletter}
-                  onChange={() => {
-                    setEnableNewsletter(!enableNewsletter);
+                  isChecked={enableNewsletter}
+                  onChange={(e) => {
+                    setEnableNewsletter(e.target.checked);
                   }}
                 ></Checkbox>
               </FormLabel>
@@ -432,15 +432,18 @@ export default function SignUp() {
               onClick={() => {
                 setPendingVerification(false);
                 setCode("");
+
                 const userData = sessionStorage.getItem("userData");
+
                 if (userData) {
                   const parsedData = JSON.parse(userData);
                   setFirstName(parsedData.firstName || "");
                   setLastName(parsedData.lastName || "");
                   setEmail(parsedData.email || "");
+                  setPassword(parsedData.password || "");
                   setZipcode(parsedData.zipcode || "");
                   setPhone(parsedData.phone || "");
-                  setEnableNewsletter(parsedData.enableNewsletter || false);
+                  setEnableNewsletter(parsedData.enableNewsletter ?? false);
                 }
               }}
             >
