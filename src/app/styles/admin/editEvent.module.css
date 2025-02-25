@@ -312,7 +312,7 @@
 }
 
 .confirmationButton {
-  padding: 10px 40px 10px 40px;
+  padding: 10px 30px 10px 30px;
   border-radius: 7px;
   font-family: "Lato";
   font-weight: bold;
@@ -381,7 +381,7 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 300px) {
   .cancelOrDelete {
     flex-direction: column-reverse;
     gap: 10px;
