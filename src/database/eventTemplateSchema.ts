@@ -16,7 +16,6 @@ export type IEvent = {
     volunteerEvent: boolean;
     groupsAllowed: string[];
     attendeeIds: string[];
-    registeredIds: string[];
 };
 
 // Mongoose schema
@@ -24,22 +23,21 @@ export type IEvent = {
 mongoose.Schema.ObjectId.get((v) => v.toString());
 mongoose.Schema.Types.Date.get((v) => v.toString());
 const eventTemplateSchema = new Schema({
-    eventName: { type: String, required: true },
+    eventName: { type: String, required: false },
     eventImage: { type: String, required: false },
     eventType: { type: String, required: false },
-    location: { type: String, required: true },
-    description: { type: String, required: true },
-    checklist: { type: String, required: false, default: "N/A" },
-    groupsOnly: { type: Boolean, required: false, default: false },
-    wheelchairAccessible: { type: Boolean, required: false, default: false },
+    location: { type: String, required: false },
+    description: { type: String, required: false },
+    checklist: { type: String, required: false },
+    groupsOnly: { type: Boolean, required: false },
+    wheelchairAccessible: { type: Boolean, required: false },
     spanishSpeakingAccommodation: {
         type: Boolean,
         required: false,
-        default: false,
     },
-    startTime: { type: Date, required: true },
-    endTime: { type: Date, required: true },
-    volunteerEvent: { type: Boolean, required: true },
+    startTime: { type: Date, required: false },
+    endTime: { type: Date, required: false },
+    volunteerEvent: { type: Boolean, required: false },
     groupsAllowed: {
         type: [Schema.Types.ObjectId],
         required: false,
@@ -48,11 +46,6 @@ const eventTemplateSchema = new Schema({
     attendeeIds: {
         type: [Schema.Types.ObjectId],
         required: false,
-        default: [],
-    },
-    registeredIds: {
-        type: [Schema.Types.ObjectId],
-        required: true,
         default: [],
     },
 });
