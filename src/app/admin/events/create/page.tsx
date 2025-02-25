@@ -309,7 +309,7 @@ export default function Page() {
     setGroups((currentGroups) => [...currentGroups, optimisticNewGroup]);
 
     try {
-      const response = await fetch("/api/group", {
+      const response = await fetch("/api/groups", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(groupData),
@@ -487,7 +487,7 @@ export default function Page() {
 
             <FormControl width="48%">
               <FormLabel htmlFor="organization" fontWeight="bold">
-                Groups
+                Assign Groups
               </FormLabel>
               <CreatableSelect
                 id="organization"
@@ -538,12 +538,11 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accommodation-type"
-              placeholder="Yes"
+              placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
-              defaultInputValue="Yes"
               onChange={(option) => setLanguage(option ? option.value : " ")}
               chakraStyles={{
                 control: (provided) => ({
@@ -560,12 +559,11 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accessibility"
-              placeholder="Yes"
+              placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
-              defaultInputValue="Yes"
               onChange={(option) =>
                 setAccessibilityAccommodation(option ? option.value : " ")
               }
@@ -584,12 +582,11 @@ export default function Page() {
             </FormLabel>
             <Select
               id="invitees"
-              placeholder="No"
+              placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
-              defaultInputValue="No"
               onChange={(option) =>
                 setOnlyGroups(option ? option.value == "Yes" : false)
               }
