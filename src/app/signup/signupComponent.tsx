@@ -324,10 +324,12 @@ export default function SignUp() {
             >
               <FormLabel fontWeight="600">Password</FormLabel>
               <Input
+                key={password}
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 variant="filled"
                 pr="4.5rem"
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required={true}
               />
