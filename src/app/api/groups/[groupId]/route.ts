@@ -2,6 +2,7 @@ import connectDB from "@database/db";
 import Group from "@database/groupSchema";
 import Event from "@database/eventSchema";
 import Log from "@database/logSchema";
+import { getUserDbData } from "app/lib/authentication";
 
 // Dynamic GET request to get group by ID
 export async function GET(
@@ -54,6 +55,27 @@ export async function DELETE(request: Request, {params}: {params: { groupId: Str
             {groupsAllowed: id}, 
             {$pull: {groupsAllowed: id}},
         );
+
+
+        // Log this deletion
+
+        const user = await getUserDbData();
+        if (user == null) {
+            return Response.json("Could not fetch user data. ", {
+                    status: 500,
+                });
+        }
+
+        const userData = JSON.parse(user);
+
+        await Log.create({
+            user: `${userData.firstName} ${userData.lastName}`,
+            action: `deleted group ${group.group_name}`,
+            date: new Date(),
+            link: null
+          });
+
+
 
         // TODO: Will probably need to write a method for deleting group from EventTemplate
         
