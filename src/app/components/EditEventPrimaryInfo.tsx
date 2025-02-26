@@ -45,7 +45,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
 
     return (
 
-        <Box className={styles.eventInformation}>
+        <Box className={styles.eventInformation} pb="5">
             {isLoading || !eventData  || loading ? (
                 <div className = {styles.visitorHeadingLoading}>
                  <Text style={{width: '50%'}}>Primary Information</Text>

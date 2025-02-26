@@ -35,6 +35,16 @@
   color: #337774;
 }
 
+.saveButton {
+  border: 2px solid #ffffff;
+  color: #ffffff;
+}
+
+.saveButton:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
 .backButton:hover {
   background-color: #e6f7f6;
   color: black;
@@ -90,7 +100,6 @@
   padding-top: 5px;
   text-align: left;
   display: flex;
-  margin-bottom: 1.5vh;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -154,7 +163,7 @@
   font-weight: bold;
   text-align: left;
   font-size: 16px;
-  margin: 1.5vh 0vw 1.5vh 0vw;
+  margin: 15px 0px 15px 0px;
 }
 
 .eventEntry {
@@ -220,7 +229,8 @@
 .tableContainer {
   overflow: auto;
   height: auto;
-  padding-bottom: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   max-width: 800px; 
   margin: 0 auto;
 }
