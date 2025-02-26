@@ -19,6 +19,10 @@ export async function POST(req: NextRequest) {
         const createdEventTemplate = await newEventTemplate.save();
         revalidateTag("eventTemplates");
 
+        return NextResponse.json(newEventTemplate, {
+            status: 200,
+        });
+
 
 
     } catch (err: any) {
