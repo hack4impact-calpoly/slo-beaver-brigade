@@ -8,10 +8,6 @@ import Image from "next/image";
 import EditEventPrimaryInfo from "@components/EditEventPrimaryInfo";
 import EditEventVisitorInfo from "@components/EditEventVisitorInfo";
 import EditEventHeader from "@components/EditEventHeader";
-import { useEffect, useState } from "react";
-import { IUser } from "@database/userSchema";
-import { IEvent } from "@database/eventSchema";
-import { fallbackBackgroundImage } from "app/lib/random";
 import { useEventId } from "app/lib/swrfunctions";
 
 type IParams = {
