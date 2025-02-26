@@ -180,7 +180,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
           </ModalHeader>
           <ModalCloseButton cursor="pointer" color="white" size="l" marginTop= "15px" marginRight="5px" />
 
-          <ModalBody fontFamily="Lato" fontWeight="bold" p={[5, 5, 5, 5]}>
+          <ModalBody fontFamily="Lato" p={[5, 5, 5, 5]}>
             <Stack spacing={3}>
               <FormControl isInvalid={name === "" && isSubmitted}>
                 <FormLabel color="grey" fontWeight="bold">Event Name</FormLabel>
