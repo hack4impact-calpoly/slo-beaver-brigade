@@ -28,6 +28,6 @@ const logSchema = new Schema({
 });
 
 const Log =
-    mongoose.models["logTest"] || mongoose.model("logTest", logSchema);
+    mongoose.models["devLogs"] || mongoose.model("devLogs", logSchema);
 
 export default Log;
