@@ -50,7 +50,7 @@ export async function removeRegistered(userid: string, eventid: string ) {
 
         return true;
     } catch (err) {
-        console.log(err);
+        
         return false;
     }
 }
@@ -76,7 +76,7 @@ export async function handleEventDeletion(eventid: string) {
 
         return true;
     } catch (err) {
-        console.log(err);
+        
         return false;
     }
 }
@@ -87,5 +87,5 @@ export async function revalidatePathServer(path: string) {
         BASE_URL = process.env.DEV_BASE_URL;
     }
     revalidatePath(BASE_URL + path);
-    console.log('revalidated path');
+    
 }

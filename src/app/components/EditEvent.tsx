@@ -22,6 +22,7 @@ import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
 import { KeyedMutator } from "swr";
 import { IGroup } from "database/groupSchema";
 import { CreateTemporaryGroup } from "./ViewGroups";
+import "../fonts/fonts.css";
 
 const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups: IGroup[], mutate: KeyedMutator<IEvent>}) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // button open/close
@@ -125,7 +126,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
       registeredIds: event.registeredIds ? event.registeredIds : [],
     };
 
-    console.log("New Event Data:", eventData);
+    
     fetch(`/api/events/${event._id}/`, {
       method: "PATCH",
       headers: {
@@ -135,7 +136,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
     })
       .then((response) => response.text()) // Parsing JSON response
       .then((text) => {
-        console.log("Server response:", text);
+        
         const data = text.startsWith("Event updated:")
           ? JSON.parse(text.substring("Event updated: ".length))
           : {};
@@ -172,18 +173,18 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
 
       <Modal isOpen={isOpen} onClose={HandleClose} size="xl">
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader bg="#a3caf0" fontWeight="bold" position="relative">
+        <ModalContent fontFamily="Lato" borderRadius="10px">
+          <ModalHeader bg="#337774" color="white" fontWeight="bold" position="relative" borderRadius="10px 10px 0px 0px">
             Edit Event
           </ModalHeader>
-          <ModalCloseButton size="l" />
+          <ModalCloseButton cursor="pointer" color="white" size="l" marginTop= "15px" marginRight="5px" />
 
           <ModalBody>
             <Stack spacing={3}>
               <FormControl isInvalid={name === "" && isSubmitted}>
+                <FormLabel color="grey" fontWeight="bold">Event Name</FormLabel>
                 <Input
-                  variant="flushed"
-                  placeholder="Event Name"
+                  placeholder=""
                   fontWeight="bold"
                   value={name}
                   onChange={handleNameChange}
@@ -191,9 +192,9 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
               </FormControl>
 
               <FormControl isInvalid={loc === "" && isSubmitted}>
+                <FormLabel color="grey" fontWeight="bold">Event Location</FormLabel>
                 <Input
-                  variant="flushed"
-                  placeholder="Event Location"
+                  placeholder=""
                   fontWeight="bold"
                   value={loc}
                   onChange={handleLocationChange}
@@ -202,7 +203,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
 
               <Stack spacing={0}>
                 <FormControl isInvalid={date === "" && isSubmitted}>
-                  <FormLabel color="grey" fontWeight="bold">
+                  <FormLabel color="grey" fontFamily="Lato" fontWeight="bold">
                     Event Date
                   </FormLabel>
                   <Input
@@ -328,6 +329,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
             </div>}
               </Stack>
 
+              {/* Commenting out because redundant; using eventType prop instead
               <Switch
                 fontWeight="bold"
                 color="grey"
@@ -336,14 +338,14 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
               >
                 Volunteer Event
               </Switch>
-
+              */}    
               <Switch
                 fontWeight="bold"
                 color="grey"
                 isChecked={myGrp}
                 onChange={handleMyGrp}
               >
-                Groups Only
+                Only Available to Selected Groups
               </Switch>
 
               <Switch

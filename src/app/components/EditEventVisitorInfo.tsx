@@ -46,7 +46,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
 
   const handleEmailAllVisitors = () => {
     const mailtoLink = emailLink();
-    console.log(mailtoLink);
+    
     window.location.href = mailtoLink;
   };
 
@@ -70,6 +70,8 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
             const waivers = await waiverResponse.json();
+            
+            debugger;
             waivers.forEach((waiver: IWaiver) => {
               if (!visitors[waiver.parentUserId]) {
                 visitors[waiver.parentUserId] = {
@@ -95,15 +97,20 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 });
               });
             });
-            console.log(visitors)
+            
           } else {
             console.error(
               "Error fetching waivers:",
-              await waiverResponse.json()
             );
+            setLoading(false);
+            return;
           }
         } catch (error) {
           console.error("Error fetching waivers:", error);
+
+            setLoading(false);
+            return
+
         }
 
         // Fetch user data for registered IDs
@@ -115,6 +122,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 const response = await fetch(`/api/user/${userId}`);
                 if (response.ok) {
                   const user = await response.json();
+                  
                   if (!visitors[user._id]) {
                     visitors[user._id] = { parent: user, dependents: [] };
                   } else {
@@ -168,12 +176,14 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             Visitors
             <div className={styles.visitorCount}>
               (
-              {
-                Object.values(visitorData).flatMap((group) => [
-                  group.parent,
-                  ...group.dependents,
-                ]).length
-              }
+                {
+                    sortedVisitorEntries.reduce((prev, cur) => {
+                        if (cur[1].parent._id !== "placeholder") {
+                            return prev + 1;
+                        }
+                        return prev;
+                    }, 0)
+                }
               )
             </div>
             <button
@@ -195,7 +205,6 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                     ([parentId, group], parentIndex) => (
                       
                       <React.Fragment key={parentIndex}>
-                      
                         {group.parent._id != "placeholder" && (
                         <tr className={styles.visitorRow}>
                           <td className={styles.checkBox}>

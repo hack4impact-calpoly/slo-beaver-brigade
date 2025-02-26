@@ -37,7 +37,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [zipcode, setZipcode] = useState('');
-  const [enableNewsletter, setEnableNewsletter] = useState<boolean>(true);
+  const [enableNewsletter, setEnableNewsletter] = useState<boolean>(false);
   //verification consts
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
@@ -50,12 +50,13 @@ export default function SignUp() {
   const [emailErrorMessage, setEmailErrorMessage] = useState('Email is required');
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     let userData = sessionStorage.getItem('userData');
     if(userData !== null){
       const parsedData = JSON.parse(userData); 
-      console.log('user', userData)
+      
       setFirstName(parsedData.firstName);
       setLastName(parsedData.lastName);
       setEmail(parsedData.email);
@@ -129,7 +130,7 @@ export default function SignUp() {
       
     catch (error) {
       // Handle the error
-      console.log('Error:', error);
+      
         setSubmitAttempted(true);
     }
   };
@@ -137,6 +138,7 @@ export default function SignUp() {
   // Verify User Email Code
   const onPressVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsVerifying(true)
 
     if (!isLoaded) {
       return;
@@ -150,10 +152,10 @@ export default function SignUp() {
         // create mongoose account
         /*  investigate the response, to see if there was an error
          or if the user needs to complete more steps.*/
-        console.log(JSON.stringify(completeSignUp, null, 2));
+         setIsVerifying(false)
+        
       }
       if (completeSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
         // create mongoose user
         //creates data object from form data
         const data = {
@@ -176,7 +178,7 @@ export default function SignUp() {
 
         }
         else{
-            console.log('creating user in mongo')
+            
             res = await fetch('/api/user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -186,18 +188,20 @@ export default function SignUp() {
 
         if ((res && res.ok) || userRes){
 
-            console.log('waiting redirect')
+            
             if (enableNewsletter){
-                console.log('adding to newsletter')
-                const newsRes = await addToNewsletter(email)
-                console.log('res news, ', newsRes)
+                
+                const newsRes = await addToNewsletter(email, data.firstName, data.lastName, data.zipcode);
+                
                 if (!newsRes){
-                    console.log('failed to add to newsletter.')
+                    console.error("Failed to add user to newsletter")
                 }
             }
 
+            setIsVerifying(false)
             await revalidatePathServer("/")
             // Redirect the user to a post sign-up route
+            await setActive({ session: completeSignUp.createdSessionId });
             if (redirect_url) {
             router.push(redirect_url);
             } else {
@@ -208,8 +212,10 @@ export default function SignUp() {
 
       }
     } catch (err) {
+        setIsVerifying(false)
       console.error(JSON.stringify(err, null, 2));
     }
+
   };
 
   const handleTogglePassword = () => {
@@ -313,13 +319,13 @@ export default function SignUp() {
               </FormControl>
               <FormControl style={{display: "flex", flexDirection:"row"}} mb={4}>
                 <FormLabel fontWeight="600">Join the Beaver Brigade Newsletter?
-                <Checkbox style={{verticalAlign: "middle", marginLeft: "10px"}} checked={enableNewsletter} onClick={() => {
-                  setEnableNewsletter(!enableNewsletter)
-                }}></Checkbox>
+                <Checkbox style={{verticalAlign: "middle", marginLeft: "10px"}} checked={enableNewsletter} onChange={() => {
+                    setEnableNewsletter(!enableNewsletter)
+                }} ></Checkbox>
                 </FormLabel>
               </FormControl>
               <FormControl mb={4}>
-                <Button loadingText="Submitting" bg="#337774" color="white"  width="full" onClick={handleSubmit}>
+                <Button loadingText="Submitting" bg="#337774" _hover={{ bg: "#4a9b99" }} color="white"  width="full" onClick={handleSubmit}>
                   Create Account
                 </Button>
               </FormControl>
@@ -353,7 +359,7 @@ export default function SignUp() {
                 />
               </FormControl>
               <FormControl mt={4} mb={4} isInvalid={submitAttempted}>
-                <Button loadingText="Verifying" bg="#e0af48" color="black" width="full" onClick={onPressVerify}>
+                <Button loadingText="Verifying" isLoading={isVerifying} bg="#e0af48" _hover={{ bg: "#C19137" }} color="black" width="full" onClick={onPressVerify}>
                   Verify Email
                 </Button>
                 <FormErrorMessage>Error has occured in server. Please contact email: hack4impact@calpoly.edu</FormErrorMessage>

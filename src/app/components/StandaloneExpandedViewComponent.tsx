@@ -163,50 +163,8 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
           </Flex>
         </ModalHeader>
         <ModalBody fontFamily={"Lato"}>
-          <Flex mt={["5%","5%","2%"]} display={"flex"} justifyContent={"center"} alignItems={"center"} alignContent={"center"}>
-            {signedIn ? (
-              <>
-                {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ? (
-                  <Button
-                    onClick={onOpen}
-                    bg="#337774"
-                    color="white"
-                    _hover={{ bg: "#4a9b99" }}
-                    fontWeight={"600"}
-                    width={"250px"}
-                  >
-                    Cancel Reservation
-                  </Button>
-                ) : (
-                  <Link href={url}>
-                    <Button
-                      bg="#e0af48"
-                      color="black"
-                      _hover={{ bg: "#C19137" }}
-                      fontWeight={"600"}
-                      width={"250px"}
-                    >
-                      Register
-                    </Button>
-                  </Link>
-                )}
-              </>
-            ) : (
-              <Link href={url}>
-                <Button
-                  bg="#e0af48"
-                  color="black"
-                  _hover={{ bg: "#C19137" }}
-                  fontWeight={"600"}
-                  width={"250px"}
-                >
-                  Register
-                </Button>
-              </Link>
-            )
-          }               
-          </Flex>
-          <Stack spacing={4} width={"100%"}>
+          
+          <Stack overflow="scroll" height='300px' spacing={4} width={"100%"}>
               <Flex direction={"column"}>
                 <Flex justifyContent={"space-between"} > 
                   <FormLabel color="black" fontWeight="bold" fontSize={"2xl"} ml={"5%"} mt={["10%","10%","2%"]}>
@@ -287,6 +245,49 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
               </Flex>       
               }      
           </Stack>
+        <Flex mt={["5%","5%","2%"]} display={"flex"} justifyContent={"end"} alignItems={"center"} alignContent={"center"}>
+            {signedIn ? (
+              <>
+                {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ? (
+                  <Button
+                    onClick={onOpen}
+                    bg="#337774"
+                    color="white"
+                    _hover={{ bg: "#4a9b99" }}
+                    fontWeight={"600"}
+                    width={"250px"}
+                  >
+                    Cancel Reservation
+                  </Button>
+                ) : (
+                  <Link href={url}>
+                    <Button
+                      bg="#e0af48"
+                      color="black"
+                      _hover={{ bg: "#C19137" }}
+                      fontWeight={"600"}
+                      width={"250px"}
+                    >
+                      Register
+                    </Button>
+                  </Link>
+                )}
+              </>
+            ) : (
+              <Link href={url}>
+                <Button
+                  bg="#e0af48"
+                  color="black"
+                  _hover={{ bg: "#C19137" }}
+                  fontWeight={"600"}
+                  width={"250px"}
+                >
+                  Register
+                </Button>
+              </Link>
+            )
+          }               
+          </Flex>
         </ModalBody>
       </ModalContent>
     </Modal>

@@ -10,14 +10,14 @@ export async function uploadFileS3Bucket(file: File | null){
     
     const fileBuffer = Buffer.from(await file.arrayBuffer())
     const urlEncodedFilename = encodeURI(file.name)
-    console.log(file)
+    
 
     const presSignedURL = await createPresignedUrlWithClient(file.name, file.type)
 
     const myHeaders = new Headers({ 'Content-Type': file.type });
-    console.log(presSignedURL)
+    
     const res = await fetch(presSignedURL, {method: "PUT", headers: myHeaders, body: await file.arrayBuffer()})
-    console.log(res)
+    
     const url = getImageUploadFileURL(urlEncodedFilename)
     return url
 

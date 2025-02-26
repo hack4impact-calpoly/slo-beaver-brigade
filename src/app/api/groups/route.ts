@@ -24,9 +24,6 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     // Connect to the database
     await connectDB();
-    console.log("Connected to DB");
-
-    console.log("Request Body:", req.body);
 
     // Parse the incoming request body
     const groupData: IGroup = await req.json();
@@ -36,7 +33,7 @@ export async function POST(req: NextRequest) {
         const newGroup = new Group(groupData);
 
         await newGroup.save();
-        console.log("New Group Data:", newGroup);
+
         return NextResponse.json(newGroup, {
             status: 200,
         });

@@ -1,7 +1,13 @@
 import connectDB from "@database/db";
 import User, { IUser } from "@database/userSchema";
+import Group from "@database/groupSchema";
+import Event from "@database/eventSchema";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
+import { clerkClient } from '@clerk/nextjs/server';
+import Log from "@database/logSchema";
+
+
 
 type IParams = {
     params: {
@@ -72,7 +78,6 @@ export async function POST(
 export async function PATCH(req: NextRequest, { params }: IParams) {
     await connectDB(); // Connect to the database
 
-    console.log("in patch");
     const { userId } = params; // Destructure the userId from params
 
     try {
@@ -85,10 +90,9 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         }
 
         const { eventsAttended }: IUser = await req.json();
-        if(eventsAttended){
+        if (eventsAttended) {
             user.eventsAttended = eventsAttended;
         }
-        console.log("updated user");
         await user.save();
         revalidateTag("users");
         return NextResponse.json("User updated: " + userId, { status: 200 });
@@ -99,4 +103,82 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             { status: 400 }
         );
     }
+}
+
+export async function DELETE(req: NextRequest, {params}: IParams) {
+
+    await connectDB(); // Connect to the database
+
+    const { userId } = params; // Destructure the userId from params
+
+    const bodyText = await new Response(req.body).text();
+    const email = JSON.parse(bodyText);
+
+    try {
+
+        const clerkUser = await clerkClient.users.getUserList({emailAddress: [email]});
+        await clerkClient.users.deleteUser(clerkUser.data[0].id);
+
+        const user = await User.findByIdAndDelete(userId).orFail();
+
+
+        if (!user) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
+            );
+        }
+
+        // Remove user from groups
+        await Group.updateMany({groupees: userId}, 
+            {$pull: {groupees: userId}});
+        
+
+        // Update events - set attendee ID to be null
+        await Event.updateMany(
+            {attendeeIds: userId},  // Find documents where userId exists in attendeeIds
+            { 
+                $set: { 
+                    attendeeIds: 
+                        // Directly replace all elements with `null`
+                        await Event.aggregate([{ $match: { attendeeIds: userId }}])
+                }
+            }
+        );
+
+        // Update events - set attendee ID to be null
+        await Event.updateMany(
+            {registeredIds: userId},  // Find documents where userId exists in attendeeIds
+            { 
+                $set: { 
+                    attendeeIds: 
+                        // Directly replace all elements with `null`
+                        await Event.aggregate([{ $match: { registeredIds: userId }}])
+                }
+            }
+        );
+
+        
+
+        // Log deletion to admin log
+        await Log.create({
+            user: `${user.firstName} ${user.lastName}`,
+            action: "deleted account",
+            date: new Date(),
+            link: null
+          });
+
+        return NextResponse.json("User deleted: " + userId, { status: 200 });
+
+
+    } catch (err) {
+        console.error("Error deleting user (UserId = " + userId + "):", err);
+        return NextResponse.json(
+            "User not deleted (UserId = " + userId + ") " + err,
+            { status: 400 }
+        );
+    }
+
+
+
 }

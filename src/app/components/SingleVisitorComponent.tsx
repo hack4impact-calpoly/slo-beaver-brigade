@@ -18,6 +18,7 @@ import {
   Tbody,
   Td,
   useDisclosure,
+  Icon,
   Center,
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
@@ -27,6 +28,8 @@ import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
 import makeUserAdmin from "../actions/makeUserAdmin";
 import makeAdminUser from "../actions/makeAdminUser";
+import { FaRegTrashAlt } from "react-icons/fa";
+import DeleteConfirmation from "./DeleteConfirmation";
 
 interface Event {
   _id: string;
@@ -46,11 +49,17 @@ interface Event {
   registeredIds: Schema.Types.ObjectId[];
 }
 
-function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
+interface SingleVisitorComponentProps {
+  visitorData: IUser;
+  removeFunction?: (userId: string) => void;
+}
+
+function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorComponentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(visitorData.role);
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -87,12 +96,14 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
     }
   }, [visitorData]);
 
+  
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
   };
 
   const handleRoleChange = async () => {
-    console.log("role change");
+    
     try {
       const result =
         userRole === "admin"
@@ -104,10 +115,16 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
     }
   };
 
+  const closeFromChild = () => {
+    onClose();
+  };
+
+
+
   return (
     <>
       <div className={styles.link}>
-        <Text onClick={onOpen}>Details & Role</Text>
+        <Text onClick={onOpen}>Details</Text>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -140,9 +157,9 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
           >
             <Box className={styles.infoBox} >
               <Text className={styles.visitorInfoSmallHeader}>
-                  Personal Info
+                  Account Info
               </Text>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ display: "flex"}} className={styles.accountInfo}>
                 <div style={{ width: "45%" }}>
                   <Text className={styles.fieldInfo}>
                   <Text as="span" className={styles.boldText}>Email</Text> <br></br> {visitorData.email ? visitorData.email : "N/A"}
@@ -195,14 +212,14 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                 </Text>
               )}
             </Box>
-            <Flex direction="column" align="center" p={4}>
+            <Flex direction="row" align="center" justify="center" gap={8} p={4}>
             {userRole === "user" ? (
                 <Button
                   mt={2}
-                  color="#d93636"
+                  color="#337774"
                   bg="white"
                   border="2px"
-                  _hover={{ bg: "#d93636", color: "white" }}
+                  _hover={{ bg: "#337774", color: "white" }}
                   onClick={handleRoleChange}
                 >
                   Make Admin
@@ -218,6 +235,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                   Revert to User
                 </Button>
               )}
+              <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false} removeFunction={removeFunction}> </DeleteConfirmation>
               </Flex>
           </ModalBody>
         </ModalContent>
