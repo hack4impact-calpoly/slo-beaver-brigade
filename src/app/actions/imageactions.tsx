@@ -36,7 +36,7 @@ export async function removeImageS3(url: string){
     // The object key is the last segment of the pathname
     const key = decodeURI(pathSegments[pathSegments.length - 1]);
 
-    console.log(key)
+    
     const command = new DeleteObjectCommand({
         Bucket: process.env.S3_BUCKET_NAME,
         Key: key,
@@ -44,7 +44,7 @@ export async function removeImageS3(url: string){
 
     try {
         const response = await s3Client.send(command);
-        console.log(response);
+        
     } catch (err) {
         console.error(err);
   }

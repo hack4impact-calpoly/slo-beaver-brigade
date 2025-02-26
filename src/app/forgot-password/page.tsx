@@ -74,7 +74,7 @@ const ForgotPasswordPage: NextPage = () => {
           router.push('/');
 
         } else {
-          console.log(result);
+          
         }
       })
       .catch(err => {
@@ -104,7 +104,7 @@ const ForgotPasswordPage: NextPage = () => {
                   onChange={e => setEmail(e.target.value)}
                 />
               </FormControl>
-              <Button loadingText="Sending Code" bg="#e0af48" color="black" type="submit" width="full">
+              <Button loadingText="Sending Code" bg="#e0af48" _hover={{ bg: "#C19137" }} color="black" type="submit" width="full">
                 Send Reset Code
               </Button>
               {error && <FormErrorMessage>{error}</FormErrorMessage>}
@@ -135,7 +135,7 @@ const ForgotPasswordPage: NextPage = () => {
                 />
               </FormControl>
             
-              <Button loadingText="Submitting" bg="#e0af48" color="black" type="submit" width="full">
+              <Button loadingText="Submitting" bg="#e0af48" _hover={{ bg: "#C19137" }} color="black" type="submit" width="full">
                 Reset Password
               </Button>
               {error && <FormErrorMessage>{error}</FormErrorMessage>}

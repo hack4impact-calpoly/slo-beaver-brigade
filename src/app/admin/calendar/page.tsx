@@ -1,5 +1,5 @@
 import React from 'react'
-import Calendar from '@components/Calendar'
+import Calendar from 'app/components/calendar/Calendar'
 import style from "@styles/calendar/eventpage.module.css"
 import { Calendarify } from 'app/lib/calendar';
 import Event from "@database/eventSchema"

@@ -9,9 +9,9 @@ import style from "@styles/calendar/calendar.module.css";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { IEvent } from "@database/eventSchema";
-import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
-import StandaloneCreateEvent from "./StandaloneCreateEvent";
-import EventListRegister from "./EventList";
+import ExpandedViewComponent from "../StandaloneExpandedViewComponent";
+import StandaloneCreateEvent from "../StandaloneCreateEvent";
+import EventListRegister from "../EventList";
 import { Schema } from "mongoose";
 
 // FullCalendar Schema
@@ -82,13 +82,15 @@ export default function Calendar(props: {
             listPlugin,
           ]}
           headerToolbar={{
-            left: "prev",
+            left: "prev,next today",
             center: "title",
-            right: props.admin ? "next myCustomButton" : "next",
+            end: "",
+            start: "",
+            right: "timeGridWeek,dayGridMonth"
           }}
           events={props.events}
           nowIndicator={true}
-          editable={true}
+          editable={false}
           droppable={true}
           selectable={true}
           selectMirror={true}
@@ -99,7 +101,7 @@ export default function Calendar(props: {
             setEvent(clickedEvent || null);
             setShowExpandedView(true);
           }}
-          initialView="dayGridMonth"
+          initialView="timeGridWeek"
           contentHeight="600px"
           eventDisplay="block"
         />

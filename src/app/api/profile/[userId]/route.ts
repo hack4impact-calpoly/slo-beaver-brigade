@@ -1,9 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@database/db'; 
-import User, { IUser } from '@database/userSchema';
+import { NextApiRequest, NextApiResponse } from "next";
+import connectDB from "@database/db";
+import User, { IUser } from "@database/userSchema";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
-
 
 type IParams = {
     params: {
@@ -11,23 +10,21 @@ type IParams = {
     };
 };
 
-
 export async function PATCH(req: NextRequest, { params }: IParams) {
-    await connectDB(); 
+    await connectDB();
     const { userId } = params;
 
     try {
         const user = await User.findById(userId).orFail();
         if (req.body) {
-            console.log(req.body);
             const {
                 firstName,
                 lastName,
                 email,
                 phoneNumber,
                 receiveNewsletter,
-                zipcode
-            }: IUser = await req.json()
+                zipcode,
+            }: IUser = await req.json();
             if (firstName) {
                 user.firstName = firstName;
             }
@@ -41,10 +38,9 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 user.phoneNumber = phoneNumber;
             }
             if (zipcode) {
-                user.zipcode = zipcode
+                user.zipcode = zipcode;
             }
             user.receiveNewsletter = receiveNewsletter;
-            
         }
         await user.save();
         revalidateTag("events");
@@ -57,4 +53,3 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         );
     }
 }
-     

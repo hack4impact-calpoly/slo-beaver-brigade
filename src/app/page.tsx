@@ -119,7 +119,7 @@ const {isSignedIn, user, isLoaded} = useUser()
 
  const sortFuncGroups = (a:IEvent, b:IEvent) => {
 
-    console.log(a.groupsOnly, b.groupsOnly)
+    
     if (a.groupsOnly){
         if (b.groupsOnly){
             return 0
@@ -179,7 +179,7 @@ const {isSignedIn, user, isLoaded} = useUser()
             const res = await getUserDataFromEmail(user.emailAddresses[0].emailAddress)
             if (res){
                 const user = JSON.parse(res)
-                console.log(user)
+                
                 setUserData(user)
             }
         }
@@ -198,17 +198,19 @@ const {isSignedIn, user, isLoaded} = useUser()
     if (!parsed || !events){
         return
     }
-    console.log('use effect')
-    console.log(isSignedIn)
+    
+    
  
     if (events && isSignedIn && parsed && userData) {
-      console.log("userData:" + userData)
-      console.log('events', events)
+
+      
+      
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       
+      
       const userSignedUpEvents = events.filter(
-        event => event.registeredIds.includes(userData?._id)
+        event => event.registeredIds.includes(userData?._id) && new Date(event.endTime) >= currentDate  
       );
       
       const eventsUserHasntRegistered = events.filter(
@@ -225,7 +227,7 @@ const {isSignedIn, user, isLoaded} = useUser()
       setUnregisteredEvents(filteredEvents);
     } else {
       const currentDate = new Date();
-      const upcomingEvents = events.filter(
+      const upcomingEvents = events?.filter(
         event => new Date(event.endTime) > currentDate &&
         (!selectedEventType || event.eventType === selectedEventType) // Filter by event type if selected
       );

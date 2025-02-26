@@ -32,7 +32,6 @@ import{
     TimeIcon, EditIcon, AddIcon,
 } from "@chakra-ui/icons"
 
-
 export default function ViewEventDetailsHours({event}: {event: IEvent}){
     const [attendees, setAttendees] = useState<IUser[]>([]);
     const [addedAttendees, setAddedAttendees] = useState<IUser[]>([]);
@@ -193,8 +192,7 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
         setHour("")
         setMin("")       
     }
-
-
+  
     useEffect(() => {
         const fetchUsers = async () => {
             await Promise.all(event.attendeeIds.map((id) => fetch("/api/user/" + id))).then((res) => {
@@ -373,7 +371,6 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
                                         </Button>
                                         
                                     </Td>
-
                                 </Tr>
                             </Tbody>: 
                             (<Tbody>

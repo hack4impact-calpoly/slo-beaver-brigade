@@ -75,7 +75,6 @@ async function sendInvite(emails: string[], event: IEvent) {
                     console.error(err);
                     reject(err);
                 } else {
-                    console.log("sent: ", info);
                     resolve(info);
                 }
             }
@@ -111,7 +110,7 @@ export async function POST(
         }).lean();
         users.forEach((user) => emails.push(user.email));
         sendInvite(emails, event);
-        console.log("sent email.");
+
         return NextResponse.json("Sent email.");
     } catch (err) {
         return NextResponse.json("Failed to get event.", { status: 500 });

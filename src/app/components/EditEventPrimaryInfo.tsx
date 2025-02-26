@@ -22,7 +22,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
   // Check if necessary data is available and hasn't already been fetched
   if (isLoading || !eventData || groupData.length > 1) return;
 
-  console.log('fetching groups')
+  
 
   const fetchGroupData = async () => {
     if (eventData.eventName && eventData.groupsAllowed.length !== 0) {
@@ -34,7 +34,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
       );
 
       setGroupData(groupDataArray);
-      console.log(groupDataArray)
+      
     }
     setLoading(false); 
   };

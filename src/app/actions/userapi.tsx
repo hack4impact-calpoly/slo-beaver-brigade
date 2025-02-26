@@ -48,11 +48,11 @@ export async function createGuestFromEmail(email: string, zipcode: string, first
             // search for user in db
             const user: IUser = await User.create({role: "guest", email, firstName, lastName, zipcode})
 
-            console.log("Created guest user.", user)
+            
             return JSON.stringify(user)
 
         } catch (error) {
-            console.log(error)
+            
             return null
         }
 }
@@ -64,11 +64,11 @@ export async function transitionGuestById(id: string){
             // search for user in db
             const user: IUser = await User.findByIdAndUpdate(id, {role: 'user'}).orFail()
 
-            console.log("Made user to guest.", user)
+            
             return JSON.stringify(user)
 
         } catch (error) {
-            console.log(error)
+            
             return null
         }
 }
