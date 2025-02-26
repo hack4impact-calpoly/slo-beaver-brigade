@@ -59,13 +59,13 @@ export default function Login() {
       if (completeSignIn.status !== 'complete') {
         // The status can also be `needs_factor_on', 'needs_factor_two', or 'needs_identifier'
         // Please see https://clerk.com/docs/references/react/use-sign-in#result-status for  more information
-        console.log(JSON.stringify(completeSignIn, null, 2));
+        
       }
 
       if (completeSignIn.status === 'complete') {
         // can be hacked....?
         const user = await getUserDataFromEmail(email)
-        console.log('email', email, 'user', user)
+        
         await fetch('/api/user/cookies', {method: "POST", body:user})
 
         // If complete, user exists and provided password match -- set session active

@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Popover, PopoverTrigger, Button, PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, PopoverFooter, ButtonGroup, Input } from "@chakra-ui/react"
+import { Box, Text, Popover, PopoverTrigger, Button, PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, PopoverFooter, ButtonGroup, Input } from "@chakra-ui/react"
 import { CalendarIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react"
 
@@ -21,11 +21,12 @@ export function EmailRSSComponent({calendarURL}: {calendarURL: string}){
         placement='bottom-end'
         >
         <PopoverTrigger>
-                <Button display="flex" bg="#e0af48" color="black" _hover={{ bg: "#C19137" }} width="150px">
-                    Copy Calendar
-                </Button>
+            <Button display="flex" justifyContent="space-between" width="200px" height="50px" bg="#2c3e50" color="white" _hover={{bg: "#1e2b37"}} _active={{bg: "#1e2b37"}}>
+                <CalendarIcon/>
+                <Text>Export Calendar</Text>
+            </Button>
         </PopoverTrigger>
-        <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
+        <PopoverContent color='white' bg='#2c3e50' borderColor='#2c3e50'>
             <PopoverHeader pt={4} fontWeight='bold' border='0'>
             Copy to your calendar! 
             </PopoverHeader>

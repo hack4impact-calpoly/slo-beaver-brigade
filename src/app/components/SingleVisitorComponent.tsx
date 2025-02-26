@@ -18,6 +18,7 @@ import {
   Tbody,
   Td,
   useDisclosure,
+  Icon,
   Center,
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
@@ -27,6 +28,8 @@ import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
 import makeUserAdmin from "../actions/makeUserAdmin";
 import makeAdminUser from "../actions/makeAdminUser";
+import { FaRegTrashAlt } from "react-icons/fa";
+import DeleteConfirmation from "./DeleteConfirmation";
 
 interface Event {
   _id: string;
@@ -46,11 +49,17 @@ interface Event {
   registeredIds: Schema.Types.ObjectId[];
 }
 
-function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
+interface SingleVisitorComponentProps {
+  visitorData: IUser;
+  removeFunction?: (userId: string) => void;
+}
+
+function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorComponentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(visitorData.role);
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -87,12 +96,14 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
     }
   }, [visitorData]);
 
+  
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
   };
 
   const handleRoleChange = async () => {
-    console.log("role change");
+    
     try {
       const result =
         userRole === "admin"
@@ -103,6 +114,12 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
       console.error("Error updating role:", error);
     }
   };
+
+  const closeFromChild = () => {
+    onClose();
+  };
+
+
 
   return (
     <>
@@ -195,14 +212,14 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                 </Text>
               )}
             </Box>
-            <Flex direction="column" align="center" p={4}>
+            <Flex direction="row" align="center" justify="center" gap={8} p={4}>
             {userRole === "user" ? (
                 <Button
                   mt={2}
-                  color="#d93636"
+                  color="#337774"
                   bg="white"
                   border="2px"
-                  _hover={{ bg: "#d93636", color: "white" }}
+                  _hover={{ bg: "#337774", color: "white" }}
                   onClick={handleRoleChange}
                 >
                   Make Admin
@@ -218,6 +235,7 @@ function SingleVisitorComponent({ visitorData }: { visitorData: IUser }) {
                   Revert to User
                 </Button>
               )}
+              <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false} removeFunction={removeFunction}> </DeleteConfirmation>
               </Flex>
           </ModalBody>
         </ModalContent>

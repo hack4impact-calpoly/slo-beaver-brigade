@@ -7,6 +7,8 @@ import EditProfile from "@components/EditProfile"
 import { getUserDbData } from "app/lib/authentication";
 import { IUser } from "database/userSchema";
 import "../fonts/fonts.css";
+import DeleteConfirmation from "./DeleteConfirmation";
+import { StatUpArrow } from "@chakra-ui/react";
 
 export default function UserProfile() {
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -19,7 +21,7 @@ export default function UserProfile() {
         if (userRes) {
           const userData = JSON.parse(userRes);
           setUserData(userData);
-          console.log(userData)
+          
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -32,9 +34,14 @@ export default function UserProfile() {
 
   }, []);
 
+  const closeFromChild = () => {
+    return null;
+  }
+
  return(
    <div className={styles.profileContainer}>
      <div className={styles.formContainer}>
+      <div className={styles.formDelete}>
        <div className={`${styles.formGroup} ${styles.accountDetails}`}>
          <div className={`${styles.highlight} ${styles.accountHeader}`}>
            <h2 className={styles.containerTitle}>
@@ -45,9 +52,17 @@ export default function UserProfile() {
            <div>
               <div className={styles.fieldTitle}>Email Address</div>
                 {userData ? userData?.email : <div>Loading...</div>}
+              </div>
             </div>
+          
+         </div>  
+         <div>
+            <DeleteConfirmation closeFromChild={closeFromChild} userData={userData} isSelf={true}></DeleteConfirmation>
          </div>
-       </div>
+
+        </div>
+
+       
        <div className={`${styles.formGroup} ${styles.personalDetails}`}>
          <div className={`${styles.highlight} ${styles.personalHeader}`}>
            <h2 className={styles.containerTitle}>
@@ -77,7 +92,7 @@ export default function UserProfile() {
               </span>
           </div>
          </div>
-       </div>      
+       </div>     
       </div>
     </div> 
   )

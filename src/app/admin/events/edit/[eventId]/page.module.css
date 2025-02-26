@@ -1,5 +1,5 @@
 .eventPage {
-    padding: 3vh 5vw 10vh 5vw;
+    padding: 1% 5vw 10vh 5vw;
 }
 
 .header {
@@ -10,20 +10,6 @@
 .eventTitle {
     font-family: "Lato";
     font-size: 23px;
-}
-
-.deleteButton {
-    padding: 5px 30px 5px 30px;
-    border: 2px solid #d93636;
-    color: #d93636;
-    border-radius: 7px;
-    font-family: "Lato";
-    font-weight: bold;
-}
-
-.deleteButton:hover {
-    background-color: #f2b3b3;
-    color: white;
 }
 
 .temp {
@@ -251,4 +237,19 @@
     background-color: #ffffff;
     color: #4a4848;
     border: 2px solid #4a4848;
+}
+
+
+.deleteButton {
+    padding: 5px 30px 5px 30px;
+    border: 2px solid #d93636;
+    color: #d93636;
+    border-radius: 7px;
+    font-family: "Lato";
+    font-weight: bold;
+}
+
+.deleteButton:hover {
+    background-color: #f2b3b3;
+    color: white;
 }

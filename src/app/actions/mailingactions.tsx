@@ -1,6 +1,8 @@
 'use server'
 
-import mailchimp from "@mailchimp/mailchimp_marketing"
+import mailchimp, { Status } from "@mailchimp/mailchimp_marketing"
+import crypto from 'crypto'
+
 
 /**
  * Mailchimp API key can be generated at: https://mailchimp.com/help/about-api-keys/
@@ -14,43 +16,74 @@ mailchimp.setConfig({
 
 export async function getLists(){
     const response = await mailchimp.lists.getAllLists()
-    console.log(response)
+    
     return true
 }
 
-export async function addToNewsletter(email_address: string) {
+export async function addToNewsletter(email_address: string, first_name: string, last_name: string, zipcode: string) {
+    // hash email address using md5
+
+    if (!process.env.NEWSLETTER_ID){
+        console.log("No newsletter found.")
+        return false
+    }
+    const subscriber_hash = crypto.createHash('md5').update(email_address).digest('hex');
     try{
+
         const newletterid = process.env.NEWSLETTER_ID
+        console.log('trying to add user')
         if (!newletterid){
-            console.log('issue occured with api key, mailchimp newsletter id.')
+            console.log("No newsletter found.")
             return false
         }
-        
-        const response = await mailchimp.lists.addListMember(newletterid, {email_address, status: "subscribed"})
-        console.log(response);
-        console.log('added')
-        if (response.status == 200){
-            return true
+        const body = {
+            email_address: email_address,
+            status: "subscribed" as Status,
+            merge_fields: {
+                FNAME: first_name,
+                LNAME: last_name,
+                MMERGE5: Number(zipcode)
+            }
         }
-        return false
+        await mailchimp.lists.addListMember(newletterid, body)
     }
-    catch(err){
-        console.log(err)
-        return false
+    catch (err) {
+        try{
+            const newletterid = process.env.NEWSLETTER_ID
+            if (!newletterid){
+                return false
+            }
+            
+            await mailchimp.lists.updateListMember(newletterid, subscriber_hash, {status: "subscribed"})
+        }
+        catch(err){
+            return false
+        }
+
     }
+    return true
 }
 
 export async function removeFromNewsletter(email_address: string) {
-    const newletterid = process.env.NEWSLETTER_ID
-    if (!newletterid){
-        console.log('issue occured with api key, mailchimp newsletter id.')
+    debugger;
+    if (!process.env.NEWSLETTER_ID){
+        console.log("No newsletter found.")
         return false
     }
-    
-    const response = await mailchimp.lists.addListMember(newletterid, {email_address, status: "unsubscribed"})
-    console.log(response);
-    if (response.status == 200){
-        return true
+
+    const subscriber_hash = crypto.createHash('md5').update(email_address).digest('hex');
+    try{
+
+        const member = await mailchimp.lists.getListMember(process.env.NEWSLETTER_ID, subscriber_hash)
+        if (member.status == 'subscribed'){
+            mailchimp.lists.updateListMember(process.env.NEWSLETTER_ID , email_address, {status: "unsubscribed"})
+            return true
+        }
     }
-    return false
+    catch(err){
+        console.error(err)
+        return false
+    }
+    return true
+    
 }

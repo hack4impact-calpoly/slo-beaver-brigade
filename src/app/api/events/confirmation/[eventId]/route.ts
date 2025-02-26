@@ -71,7 +71,6 @@ async function send(emails: string[], event: IEvent) {
                     console.error(err);
                     reject(err);
                 } else {
-                    console.log("sent: ", info);
                     resolve(info);
                 }
             }
@@ -92,7 +91,7 @@ export async function POST(
     try {
         const event = await Event.findById(params.eventId).orFail();
         send([email], event);
-        console.log("sent email.");
+
         return NextResponse.json("Sent email.");
     } catch (err) {
         return NextResponse.json("Failed to get event.", { status: 500 });

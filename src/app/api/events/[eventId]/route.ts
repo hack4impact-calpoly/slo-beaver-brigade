@@ -3,6 +3,9 @@ import connectDB from "@database/db";
 import Event, { IEvent } from "@database/eventSchema";
 import User from "@database/userSchema";
 import { revalidateTag } from "next/cache";
+import Log from "@database/logSchema";
+import { IUser } from "@database/userSchema";
+import { getUserDbData } from "app/lib/authentication";
 
 type IParams = {
     params: {
@@ -27,6 +30,7 @@ export async function GET(req: NextRequest, { params }: IParams) {
 export async function DELETE(req: NextRequest, { params }: IParams) {
     await connectDB(); // connect to db
     const { eventId } = params;
+    let userData: IUser;
 
     try {
         const event = await Event.findByIdAndDelete(eventId).orFail();
@@ -41,6 +45,22 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
                 },
             }
         );
+        
+        const userRes = await getUserDbData();
+        if(userRes) {
+            userData = JSON.parse(userRes);
+        } else {
+            return NextResponse.json("Could not fetch user data. ", {
+                status: 500,
+            });
+        }
+
+        await Log.create({
+            user: `${userData.firstName} ${userData.lastName}`,
+            action: `deleted event ${event.eventName}`,
+            date: new Date(),
+            link: eventId,
+        });
 
         revalidateTag("events");
 
@@ -95,6 +115,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 volunteerEvent,
                 groupsAllowed,
                 registeredIds,
+                attendeeIds,
                 groupsOnly,
             }: IEvent = await req.json();
             if (location) {
@@ -130,6 +151,9 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             }
             if (eventType) {
                 event.eventType = eventType;
+            }
+            if (attendeeIds){
+                event.attendeeIds = attendeeIds;
             }
             event.groupsOnly = groupsOnly;
         }

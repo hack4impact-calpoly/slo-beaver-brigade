@@ -13,9 +13,7 @@ export async function GET(
 
         const waivers = await Waiver.find({ eventId: id });
 
-        console.log("waivers", waivers);
         if (waivers.length === 0) {
-            console.log("No waivers found");
             return NextResponse.json(
                 { error: "No waivers found" },
                 { status: 404 }

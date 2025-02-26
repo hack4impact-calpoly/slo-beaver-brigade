@@ -6,12 +6,16 @@
   margin: 0 auto;
   padding: 20px;
   margin-top: 40px;
+
  }
  
  
  .formGroup {
   margin-bottom: 20px;
+  margin-left: auto;
  }
+
+ 
  
  
  .highlight {
@@ -22,12 +26,14 @@
  
  
  .accountDetails {
-  width: 25%;
+  width: 100%;
   float: left;
   background-color: #fbf9f9;
   height: 200px;
   border-radius: 10px;
   padding-bottom: 4%;
+  display: flex;
+  flex-direction: column;
  }
  
  .personalDetails {
@@ -35,6 +41,8 @@
   height: 300px;
   border-radius: 10px;
   padding-bottom: 4%;
+  display: flex;
+  flex-direction: column;
  }
  
  .accountDetails .formFields > div > p {
@@ -104,6 +112,7 @@
  
  .formContainer {
   overflow: hidden;
+  display: flex;
  }
  
  
@@ -217,4 +226,12 @@
     width: 30%;
   }
 }
+}
+
+
+.formDelete {
+  display:flex;
+  flex-direction: column;
+  width: 25%;
+  align-items: center;
 }
