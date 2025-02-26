@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { IEvent } from "@database/eventSchema";
 import { Button } from "@styles/Button";
+import styles from "@styles/admin/editEvent.module.css";
 import React, { useState, useEffect } from "react";
 import { CreatableSelect, Select } from "chakra-react-select";
 import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
@@ -171,7 +172,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
         Edit Event Details
       </Button>
 
-      <Modal isOpen={isOpen} onClose={HandleClose} size="xl">
+      <Modal isOpen={isOpen} onClose={HandleClose} size="lg">
         <ModalOverlay />
         <ModalContent fontFamily="Lato" borderRadius="10px">
           <ModalHeader bg="#337774" color="white" fontWeight="bold" position="relative" borderRadius="10px 10px 0px 0px">
@@ -179,7 +180,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
           </ModalHeader>
           <ModalCloseButton cursor="pointer" color="white" size="l" marginTop= "15px" marginRight="5px" />
 
-          <ModalBody>
+          <ModalBody fontFamily="Lato" fontWeight="bold" p={[5, 5, 5, 5]}>
             <Stack spacing={3}>
               <FormControl isInvalid={name === "" && isSubmitted}>
                 <FormLabel color="grey" fontWeight="bold">Event Name</FormLabel>
@@ -367,10 +368,8 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
               </Switch>
             </Stack>
           </ModalBody>
-
-          <ModalFooter>
-            <Button onClick={HandleClose}>Close</Button>
-            <Button onClick={HandleSubmit}>Confirm</Button>
+          <ModalFooter justifyContent="center" bg="#337774" borderRadius="0px 0px 10px 10px">
+            <button className={`${styles.saveButton} ${styles.confirmationButton}`} onClick={HandleSubmit}>Save Changes</button>
           </ModalFooter>
         </ModalContent>
       </Modal>

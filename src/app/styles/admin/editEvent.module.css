@@ -35,6 +35,16 @@
   color: #337774;
 }
 
+.saveButton {
+  border: 2px solid #ffffff;
+  color: #ffffff;
+}
+
+.saveButton:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
 .backButton:hover {
   background-color: #e6f7f6;
   color: black;
