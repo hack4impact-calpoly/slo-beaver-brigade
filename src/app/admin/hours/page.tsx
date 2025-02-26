@@ -19,8 +19,8 @@ import style from '@styles/admin/users.module.css';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
-import { formatDate, formatDuration } from '../../lib/dates';
-import { calcHoursForAll, eventHours, filterPastEvents } from '../../lib/hours';
+import { formatDate, formatDuration, timeOfDay } from '../../lib/dates';
+import { calcHoursForAll, eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
 import ViewEventDetailsHours from '../../components/ViewEventDetailsHours'
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';

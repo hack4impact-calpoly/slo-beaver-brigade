@@ -120,65 +120,6 @@ export function eventIndividualHours(event: IEvent) {
   return totalHours + 'h ' + totalMin + 'min';
 }
 
-
-
-
-//This function takes a list of users and calculates the total volunteer hours (without minutes) by all attendees
-//for a specific event taking into account that individual hours can be modified
-export function eventHoursSpecific(users: IUser[], event : IEvent) {
-  let totalTime= 0;
-  users.forEach(user => {
-    if(user.eventsAttended){
-      user.eventsAttended.forEach(eventAttended => {
-        if(eventAttended.eventId.toString() === event._id){
-          totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-        }
-      })
-    } 
-  })
-  return Math.floor(totalTime / 60) + ' Hours';
-}
-
-
-//This function takes a user and calculates the volunteer hours with minutes 
-//for a specific event taking into account that individual hours can be modified
-export function eventTimeSpecific(user: IUser, event : IEvent) {
-  let totalTime= 0;
-  if(user.eventsAttended){
-    user.eventsAttended.forEach(eventAttended => {
-      if(eventAttended.eventId.toString() === event._id){
-        totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-      }
-    })
-  }
-  return Math.floor(totalTime / 60) + ' hours ' + totalTime % 60 + ' min';
-}
-
-export function eventHoursNum(user: IUser, event : IEvent) {
-  let totalTime= 0;
-  if(user.eventsAttended){
-    user.eventsAttended.forEach(eventAttended => {
-      if(eventAttended.eventId.toString() === event._id){
-        totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-      }
-    })
-  }
-  return Math.floor(totalTime / 60);
-}
-
-export function eventMinsNum(user: IUser, event : IEvent) {
-  let totalTime= 0;
-  if(user.eventsAttended){
-    user.eventsAttended.forEach(eventAttended => {
-      if(eventAttended.eventId.toString() === event._id){
-        totalTime += getDuration(eventAttended.startTime, eventAttended.endTime)
-      }
-    })
-  }
-  return Math.floor(totalTime % 60);
-}
-
-
 // This function takes a list of events and filters out events where the current user isnt an attendee
 export function filterUserSignedUpEvents(
   events: IEvent[],
