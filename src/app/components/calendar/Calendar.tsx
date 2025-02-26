@@ -90,7 +90,7 @@ export default function Calendar(props: {
           }}
           events={props.events}
           nowIndicator={true}
-          editable={true}
+          editable={false}
           droppable={true}
           selectable={true}
           selectMirror={true}
