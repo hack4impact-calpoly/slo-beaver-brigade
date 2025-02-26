@@ -7,8 +7,6 @@ import { revalidateTag } from "next/cache";
 import { clerkClient } from '@clerk/nextjs/server';
 import Log from "@database/logSchema";
 
-
-
 type IParams = {
     params: {
         userId: string;

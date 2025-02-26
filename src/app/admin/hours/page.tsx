@@ -25,7 +25,6 @@ import ViewEventDetailsHours from '../../components/ViewEventDetailsHours'
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
 import "../../fonts/fonts.css"
-import ViewEventDetailsHours from '../../components/ViewEventDetailsHours'
 import { set } from 'mongoose';
 import { getEvents } from 'app/actions/eventsactions';
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
@@ -67,7 +66,6 @@ const AttendedEvents = () => {
     { label: "Number of Volunteers", key: "numberVolunteers" },
     { label: "Volunteer Hours", key: "totalVolunteerHours" }
   ]);
-
 
   async function fetchData(start: string, end: string): Promise<void> {
     // Fetch all events
