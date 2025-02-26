@@ -32,7 +32,6 @@ import{
     TimeIcon, EditIcon, AddIcon,
 } from "@chakra-ui/icons"
 
-
 export default function ViewEventDetailsHours({event}: {event: IEvent}){
     const [attendees, setAttendees] = useState<IUser[]>([]);
     const [addedAttendees, setAddedAttendees] = useState<IUser[]>([]);
@@ -195,179 +194,6 @@ export default function ViewEventDetailsHours({event}: {event: IEvent}){
     }
 
 
-=========
-import { add } from "date-fns";
-
-
-export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent, onRefresh: () => void}){ 
-    const [attendees, setAttendees] = useState<IUser[]>([]);
-    const [addedAttendees, setAddedAttendees] = useState<IUser[]>([]);
-    const [origAttendees, setOrigAttendees] = useState<IUser[]>([]);
-    const [updatedEvent, setUpdatedEvent] = useState<IEvent>(event);
-    const [editMode, setEditMode] = useState(false);
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [name, setName] = useState("");
-    const [hour, setHour] = useState("");
-    const [min, setMin] = useState("");
-    const [email, setEmail] = useState("")
-    const toast = useToast();
-
-    //convert hours and minutes to readable time
-    const findEndTime = (hours : number, minutes : number) => {
-        const endTime = new Date(event.startTime);
-        if(minutes !== undefined && hours !== undefined){
-            const totalMinutes = (hours * 60) + minutes;
-            endTime.setMinutes(endTime.getMinutes() + totalMinutes);
-            return endTime.toISOString();
-        }
-        else{
-            return event.endTime;
-        }
-    }
-
-    const handleEditClick = () => {
-      if(editMode){
-        handleSaveClick()
-      }
-      setEditMode(!editMode);
-    };
-  
-    const handleSaveClick = async () => {
-      //update the event to include the new users
-      try{
-
-            const eventPromise = fetch(`/api/events/${event._id}/`, {
-                method: "PATCH",
-                headers: {
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedEvent),
-            })
-            //update users so that this event is included in their
-            //events attended
-            await eventPromise;
-
-            const promise = addedAttendees.map(user => {
-                fetch(`/api/user/${user._id}`, 
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(user),
-                })
-            })
-            await Promise.all(promise)
-            onRefresh();
-
-        }
-        catch(error){
-            
-            toast({
-                title: "Error",
-                description: "Error saving new users, please try again",
-                status: "error",
-                duration: 2500,
-                isClosable: true,
-            });
-        }
-    };
-
-    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, attendee : IUser, type: 'hours' | 'minutes') => {
-        const {value} = e.target;
-        if(value){  
-            const eventsAttended = attendee.eventsAttended.map(eventAttended => 
-                eventAttended.eventId.toString() === event._id
-                ? {...eventAttended, endTime : type === 'hours'
-                        ? new Date(findEndTime(parseInt(value), eventMinsNum(attendee, event)))
-                        : new Date(findEndTime(eventHoursNum(attendee, event), parseInt(value))),
-                    startTime : event.startTime }
-                : eventAttended)
-            const user = {
-                ...attendee,
-                eventsAttended : eventsAttended
-            }
-            //if the user has already been edited, then it is in the addedAttendees list,
-            //if this is the case, it modifies the list, but if the user is added, then it 
-            //adds them to the list
-            const idx = addedAttendees.findIndex(user => user._id === attendee._id)
-            if(idx !== -1){
-                const updatedAttendees = [...addedAttendees]
-                updatedAttendees[idx] = user
-                setAddedAttendees(updatedAttendees)
-            }
-            else{
-                setAddedAttendees([...addedAttendees, user])
-            }
-            
-            const totalIdx = attendees.findIndex(user => user._id === attendee._id)
-            const totalAttendees = [...attendees]
-            totalAttendees[totalIdx] = user;
-            setAttendees(totalAttendees);
-        }
-    }
-
-    const handleAddUserClick = () => {
-        //check to see if there is a user with the inputted email
-        const getUser = async () => {
-            const response = await fetch(`/api/user`);
-            return response.json();
-        }
-
-        const getUserAndCheck = async () => {
-            const result = await getUser();
-            if (!result) {
-                
-                return;
-            }
-            const filteredUsers = result.filter((user : IUser)=> user.email === email);
-            if (filteredUsers.length === 0) {
-                toast({
-                    title: "Error",
-                    description: "User account does not exist",
-                    status: "error",
-                    duration: 2500,
-                    isClosable: true,
-                  });
-                return;
-            } else {
-                return filteredUsers[0]; // Return the first filtered user
-            }
-        }
-
-        //if the user exists, then add user to the table,
-        //it will not interact with the backend/add it to the database until
-        //the user presses save
-        getUserAndCheck().then(user => {
-            if (user) {
-                //add user to event
-                const eventNewAttendees = {
-                     ...updatedEvent,
-                     attendeeIds : [...updatedEvent.attendeeIds, user._id]
-                 }
-                 setUpdatedEvent(eventNewAttendees);
-                 const updatedUser = {
-                    ...user,
-                    eventsAttended : [...user.eventsAttended, 
-                        {eventId : event._id,
-                         startTime : event.startTime,
-                         endTime : findEndTime(parseInt(hour), parseInt(min))
-                        }]
-                }
-                setAttendees([...attendees, updatedUser]);
-                setAddedAttendees([...addedAttendees, updatedUser]);    
-            }
-        });
-        
-        //reset to default values
-        setName("")
-        setEmail("")
-        setHour("")
-        setMin("")       
-    }
-
-
->>>>>>>>> Temporary merge branch 2
     useEffect(() => {
         const fetchUsers = async () => {
             await Promise.all(event.attendeeIds.map((id) => fetch("/api/user/" + id))).then((res) => {
@@ -393,8 +219,6 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
         setUpdatedEvent(event);
         setAttendees(origAttendees)
     }, [isOpen])
-
-    
 
     return (
         <>
@@ -547,7 +371,6 @@ export default function ViewEventDetailsHours({event, onRefresh}: {event: IEvent
                                         
                                     </Td>
 
-<<<<<<<<< Temporary merge branch 1
                                 </Tr>
                             </Tbody>: 
                             (<Tbody>
