@@ -1,7 +1,7 @@
 import React from "react";
 import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
-import { fallbackBackgroundImage } from "app/lib/random";
+import ChakraNextImage from "./ChakraNextImage";
 
 interface EventPreviewProps {
   event: IEvent;
@@ -46,18 +46,23 @@ const EventCard: React.FC<EventPreviewProps> = ({
     return `${formattedStartTime} - ${formattedEndTime}`;
   };
 
-  const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
   return (
     <div
       className={style.eventCard}
-      style={{
-        background: backgroundImage,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backdropFilter: "brightness(50%)"
-      }}
       onClick={onClick}
     >
+      <ChakraNextImage
+        src={event.eventImage || "/beaver-eventcard.jpeg"}
+        alt="Event Image"
+        objectFit={"cover"}
+        position={"absolute"}
+        zIndex={"-1"}
+        top="0"
+        left="0"
+        borderRadius={"8px"}
+        layout="fill"
+      />
+
       <div className={style.eventTitle}>
         <h2>{event.eventName}</h2>
       </div>

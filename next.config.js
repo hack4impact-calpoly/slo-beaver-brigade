@@ -38,6 +38,14 @@ const nextConfig = {
             bodySizeLimit: "10mb",
         },
     },
+    images: {
+        remotePatterns: [
+            {
+              protocol: "https",
+              hostname: "slobeaverpics.s3.us-west-1.amazonaws.com",
+            },
+        ]
+    }
 };
 module.exports = nextConfig;
 

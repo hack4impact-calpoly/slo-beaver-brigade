@@ -3,8 +3,7 @@ import { Text,  Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalClo
 import { getAllImagesS3, removeImageS3 } from "app/actions/imageactions";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from "@styles/admin/eventCard.module.css";
-import { IEvent } from "@database/eventSchema";
-import { fallbackBackgroundImage } from "app/lib/random";
+import ChakraNextImage from "./ChakraNextImage";
 
 type Props = {
     setImageURL: Dispatch<SetStateAction<string | null>>, 
@@ -12,11 +11,8 @@ type Props = {
 
 }
 
-
-
 const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
     const [isVisible, setIsVisible] = useState(true);
-    const backgroundImage = fallbackBackgroundImage(image, "/beaver-eventcard.jpeg");
 
     const handleDeleteClick = async (e: React.MouseEvent<SVGElement, MouseEvent>) => {
         e.stopPropagation()
@@ -33,14 +29,20 @@ const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
         <div
         role="group"
         className={style.imageCard}
-        style={{
-            background: backgroundImage,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backdropFilter: "brightness(50%)",
-        }}
         onClick={onClick}
         >
+        <ChakraNextImage
+            src={image || "/beaver-eventcard.jpeg"}
+            alt="Event Image"
+            objectFit="cover"
+            position="absolute"
+            zIndex="-1"
+            top="0"
+            left="0"
+            filter={"brightness(50%)"}
+            borderRadius={"8px"}
+            layout="fill"
+        />
         <div className={style.eventTitle} style={{ display: 'flex', flexDirection: "row" }}>
             <h2>Your Event Name</h2>
 
@@ -64,10 +66,6 @@ const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
     );
 };
 
-
-
-
-// TODO: add parent that loads images and passes to selector
 
 export default function ImageSelector({setImageURL, setPreselected}: Props) {
 
@@ -124,7 +122,6 @@ export default function ImageSelector({setImageURL, setPreselected}: Props) {
             </ModalFooter>
         </ModalContent>
         </Modal>
-
 
       </>
     )
