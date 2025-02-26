@@ -42,7 +42,7 @@ const nextConfig = {
         remotePatterns: [
             {
               protocol: "https",
-              hostname: "beaverimages.s3.us-west-1.amazonaws.com",
+              hostname: "slobeaverpics.s3.us-west-1.amazonaws.com",
             },
         ]
     }
