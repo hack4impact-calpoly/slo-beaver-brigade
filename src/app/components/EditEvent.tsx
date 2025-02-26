@@ -345,7 +345,7 @@ const EditEvent = ({event, initialGroups, mutate}: {event: IEvent, initialGroups
                 isChecked={myGrp}
                 onChange={handleMyGrp}
               >
-                Groups Only
+                Only Available to Selected Groups
               </Switch>
 
               <Switch

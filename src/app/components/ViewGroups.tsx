@@ -111,7 +111,7 @@ export const CreateTemporaryGroup = ({ groups, setGroups,  mutate }: {groups: IG
             groupees: selectedUsers,
             temporary: true
         }
-        const res = await fetch("/api/group", {method: "POST", body: JSON.stringify(group)})
+        const res = await fetch("/api/groups", {method: "POST", body: JSON.stringify(group)})
         if (res.ok){
    
                 setSelectedUsers([])
@@ -188,7 +188,7 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
             group_name: groupName,
             groupees: selectedUsers
         }
-        const res = await fetch("/api/group", {method: "POST", body: JSON.stringify(group)})
+        const res = await fetch("/api/groups", {method: "POST", body: JSON.stringify(group)})
         if (res.ok){
             toast({
                     title: "Group Created",
@@ -355,7 +355,7 @@ const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isO
 
     const deleteGroup = async () => {
         
-        const res = await fetch("/api/group/" + group._id, {method: "DELETE"})
+        const res = await fetch("/api/groups/" + group._id, {method: "DELETE"})
         if (res.ok){
             toast({
                     title: "Group Removed",
