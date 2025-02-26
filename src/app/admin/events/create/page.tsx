@@ -380,8 +380,8 @@ export default function Page() {
   }, []);
 
   return (
-    <Box p={8} mx="10">
-      <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
+    <Box p={[0, 8, 8, 8]} mx="10">
+      <Text fontSize="2xl" fontWeight="bold" color="black" mt={0} mb={3}>
         Create New Event
       </Text>
 
