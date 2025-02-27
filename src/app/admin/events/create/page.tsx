@@ -309,7 +309,7 @@ export default function Page() {
     setGroups((currentGroups) => [...currentGroups, optimisticNewGroup]);
 
     try {
-      const response = await fetch("/api/group", {
+      const response = await fetch("/api/groups", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(groupData),
@@ -380,8 +380,8 @@ export default function Page() {
   }, []);
 
   return (
-    <Box p={8} mx="10">
-      <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
+    <Box p={[0, 8, 8, 8]} mx="10">
+      <Text fontSize="2xl" fontWeight="bold" color="black" mt={0} mb={3}>
         Create New Event
       </Text>
 

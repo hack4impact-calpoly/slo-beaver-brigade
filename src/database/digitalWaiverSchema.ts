@@ -24,6 +24,6 @@ const digitalWaiverSchema = new Schema({
 });
 
 const Waiver =
-    mongoose.models["waiver"] || mongoose.model("waiver", digitalWaiverSchema);
+    mongoose.models["devWaiver"] || mongoose.model("devWaiver", digitalWaiverSchema);
 
 export default Waiver;
