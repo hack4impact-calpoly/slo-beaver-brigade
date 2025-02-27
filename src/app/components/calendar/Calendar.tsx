@@ -101,7 +101,7 @@ export default function Calendar(props: {
             setEvent(clickedEvent || null);
             setShowExpandedView(true);
           }}
-          initialView="timeGridWeek"
+          initialView="dayGridMonth"
           contentHeight="600px"
           eventDisplay="block"
         />
