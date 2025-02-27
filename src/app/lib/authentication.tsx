@@ -33,6 +33,7 @@ export async function getUserDataFromEmail(email: string){
         return JSON.stringify(user);
     }
     catch(err){
+        
         return null
     }
 
