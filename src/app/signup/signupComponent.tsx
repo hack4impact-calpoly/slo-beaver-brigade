@@ -186,7 +186,7 @@ export default function SignUp() {
           });
         }
 
-        if ((res ?? res.ok) || userRes) {
+        if ((res && res.ok) || userRes) {
           if (enableNewsletter) {
             const newsRes = await addToNewsletter(
               email,
@@ -289,7 +289,6 @@ export default function SignUp() {
             >
               <FormLabel fontWeight="600">Phone Number</FormLabel>
               <Input
-                key={phone}
                 type="text"
                 placeholder="Phone"
                 variant="filled"
@@ -324,7 +323,6 @@ export default function SignUp() {
             >
               <FormLabel fontWeight="600">Password</FormLabel>
               <Input
-                key={password}
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 variant="filled"
@@ -399,7 +397,7 @@ export default function SignUp() {
             </Flex>
           </Box>
           <Box mt={12} fontFamily="Lato">
-            <FormControl mb={4} isRequired>
+            <FormControl mb={2} isRequired>
               <FormLabel fontWeight="600">Email Verification Code</FormLabel>
               <Input
                 type="text"
@@ -408,49 +406,51 @@ export default function SignUp() {
                 onChange={(e) => setCode(e.target.value)}
               />
             </FormControl>
-            <FormControl mt={4} mb={4} isInvalid={submitAttempted}>
+            <Box display={"flex"} flexDirection={['column', 'row']} justifyContent={['center', 'space-between']} alignItems={['center', 'space-between']}>
               <Button
-                loadingText="Verifying"
-                isLoading={isVerifying}
                 bg="#e0af48"
                 _hover={{ bg: "#C19137" }}
                 color="black"
-                width="full"
-                onClick={onPressVerify}
+                w="150px"
+                mt={2} mr={0} mb={2} ml={0}
+                onClick={() => {
+                  setPendingVerification(false);
+                  setCode("");
+
+                  const userData = sessionStorage.getItem("userData");
+
+                  if (userData) {
+                    const parsedData = JSON.parse(userData);
+                    setFirstName(parsedData.firstName || "");
+                    setLastName(parsedData.lastName || "");
+                    setEmail(parsedData.email || "");
+                    setPassword(parsedData.password || "");
+                    setZipcode(parsedData.zipcode || "");
+                    setPhone(parsedData.phone || "");
+                    setEnableNewsletter(parsedData.enableNewsletter ?? false);
+                  }
+                }}
               >
-                Verify Email
+                Back
               </Button>
-              <FormErrorMessage>
-                Error has occured in server. Please contact email:
-                hack4impact@calpoly.edu
-              </FormErrorMessage>
-            </FormControl>
-            <Button
-              mt={4}
-              bg="#e0af48"
-              _hover={{ bg: "#C19137" }}
-              color="black"
-              width="full"
-              onClick={() => {
-                setPendingVerification(false);
-                setCode("");
-
-                const userData = sessionStorage.getItem("userData");
-
-                if (userData) {
-                  const parsedData = JSON.parse(userData);
-                  setFirstName(parsedData.firstName || "");
-                  setLastName(parsedData.lastName || "");
-                  setEmail(parsedData.email || "");
-                  setPassword(parsedData.password || "");
-                  setZipcode(parsedData.zipcode || "");
-                  setPhone(parsedData.phone || "");
-                  setEnableNewsletter(parsedData.enableNewsletter ?? false);
-                }
-              }}
-            >
-              Back
-            </Button>
+              <FormControl isInvalid={submitAttempted} w="150px" mt={2} mr={0} mb={2} ml={0}>
+                <Button
+                  loadingText="Verifying"
+                  isLoading={isVerifying}
+                  bg="#e0af48"
+                  _hover={{ bg: "#C19137" }}
+                  color="black"
+                  w="150px"
+                  onClick={onPressVerify}
+                >
+                  Verify Email
+                </Button>
+                <FormErrorMessage>
+                  Error has occured in server. Please contact email:
+                  hack4impact@calpoly.edu
+                </FormErrorMessage>
+              </FormControl>
+            </Box>
           </Box>
         </>
       )}
