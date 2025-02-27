@@ -13,27 +13,36 @@
   font-size: 23px;
 }
 
-.deleteButton {
+.headerButton {
   padding: 5px 30px 5px 30px;
-  border: 2px solid #d93636;
-  color: #d93636;
   border-radius: 7px;
   font-family: "Lato";
   font-weight: bold;
 }
 
-.deleteButton:hover {
+.headerDeleteButton {
+  border: 2px solid #d93636;
+  color: #d93636;
+}
+
+.deleteButton:hover, .headerDeleteButton:hover {
   background-color: #f2b3b3;
   color: white;
 }
 
 .backButton {
-  padding: 5px 30px 5px 30px;
   border: 2px solid #337774;
   color: #337774;
-  border-radius: 7px;
-  font-family: "Lato";
-  font-weight: bold;
+}
+
+.saveButton {
+  border: 2px solid #ffffff;
+  color: #ffffff;
+}
+
+.saveButton:hover {
+  background-color: #ffffff;
+  color: #000000;
 }
 
 .backButton:hover {
@@ -91,7 +100,6 @@
   padding-top: 5px;
   text-align: left;
   display: flex;
-  margin-bottom: 1.5vh;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -155,7 +163,7 @@
   font-weight: bold;
   text-align: left;
   font-size: 16px;
-  margin: 1.5vh 0vw 1.5vh 0vw;
+  margin: 15px 0px 15px 0px;
 }
 
 .eventEntry {
@@ -221,7 +229,8 @@
 .tableContainer {
   overflow: auto;
   height: auto;
-  padding-bottom: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   max-width: 800px; 
   margin: 0 auto;
 }
@@ -291,8 +300,9 @@
 
 .confirmDeletion {
   width: 30%;
-  height: 35%;
-  padding: 70px;
+  min-height: fit-content;
+  max-height: 35vh;
+  padding: 5%;
   border-radius: 15px;
   background-color: white;
   font-family: "Lato";
@@ -306,16 +316,27 @@
   margin-top: 5%;
   font-size: 15px;
   justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  flex-direction: row;
 }
 
-.cancelButton {
-  padding: 5px 30px 5px 30px;
-  border: 2px solid #989898;
-  color: #989898;
-  background-color: white;
+.confirmationButton {
+  padding: 10px 30px 10px 30px;
   border-radius: 7px;
   font-family: "Lato";
   font-weight: bold;
+}
+
+.deleteButton {
+  border: 2px solid #d93636;
+  color: #d93636;
+}
+
+.cancelButton {
+  border: 2px solid #989898;
+  color: #989898;
+  background-color: white;
 }
 
 .cancelButton:hover {
@@ -367,5 +388,12 @@
 
   .tableContainer th, .tableContainer td {
     padding: 8px;
+  }
+}
+
+@media (max-width: 300px) {
+  .cancelOrDelete {
+    flex-direction: column-reverse;
+    gap: 10px;
   }
 }

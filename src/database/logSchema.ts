@@ -23,11 +23,11 @@ const logSchema = new Schema({
     },
     link: {
         type: Schema.Types.ObjectId,
-        required: true,
+        required: false,
     },
 });
 
 const Log =
-    mongoose.models["logTest"] || mongoose.model("logTest", logSchema);
+    mongoose.models["devLogs"] || mongoose.model("devLogs", logSchema);
 
 export default Log;

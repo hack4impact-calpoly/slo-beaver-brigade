@@ -28,7 +28,7 @@ export function useEventsAscending() {
 
 export function useGroups() {
     // revalidates every 10 minutes
-    const { data, error, isLoading, mutate } = useSWR<IGroup[]>('/api/group');
+    const { data, error, isLoading, mutate } = useSWR<IGroup[]>('/api/groups');
 
     return {
         groups: data,

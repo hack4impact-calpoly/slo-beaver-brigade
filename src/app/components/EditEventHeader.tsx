@@ -22,15 +22,15 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         const { isOpen, onOpen, onClose } = useDisclosure() 
         return(
             <>
-            <button className={styles.deleteButton} onClick={onOpen}>Delete Event</button>
+            <button className={`${styles.headerDeleteButton} ${styles.headerButton}`} onClick={onOpen}>Delete Event</button>
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay/>
-              <ModalContent className={styles.confirmDeletion} maxW="40rem">
-                <ModalHeader style={{width:"100%"}}>Please confirm deletion of {eventName} Event.</ModalHeader>
+              <ModalContent className={styles.confirmDeletion} maxW="fit-content">
+                <ModalHeader style={{width:"100%", textAlign:"center"}}>Please confirm deletion of {eventName} Event.</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody className={styles.cancelOrDelete}>
-                    <button className={styles.cancelButton} onClick={onClose}>Cancel</button>
-                    <button className={styles.deleteButton} onClick={onDelete}>Delete</button>
+                    <button className={`${styles.cancelButton} ${styles.confirmationButton}`} onClick={onClose}>Cancel</button>
+                    <button className={`${styles.deleteButton} ${styles.confirmationButton}`} onClick={onDelete}>Delete</button>
                 </ModalBody>
               </ModalContent>
             </Modal>
@@ -61,7 +61,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
 
     return(
         <Box className = {styles.header}>
-             <button className={styles.backButton} onClick={() => router.back()}>Back</button>
+             <button className={`${styles.backButton} ${styles.headerButton}`} onClick={() => router.back()}>Back</button>
             <DeleteEvent eventName={eventData?.eventName || "Error."} onDelete={handleDelete}/>
         </Box>
     );

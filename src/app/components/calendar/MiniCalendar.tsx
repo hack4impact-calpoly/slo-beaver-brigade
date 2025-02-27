@@ -124,55 +124,57 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.datepicker}>
-        <div className={styles.topMargin}>
-          <div className={styles.monthSelector}>
-            <button className={styles.arrowButton} onClick={handlePrevMonth}>
-              <ChevronLeftIcon />
-            </button>
-            <span className={styles.monthName}>
-              {format(selectedDate, "MMMM yyyy")}
-            </span>
-            <button className={styles.arrowButton} onClick={handleNextMonth}>
-              <ChevronRightIcon />
-            </button>
+      <div className={styles.dateTimeSection}>
+        <div className={styles.datepicker}>
+          <div className={styles.topMargin}>
+            <div className={styles.monthSelector}>
+              <button className={styles.arrowButton} onClick={handlePrevMonth}>
+                <ChevronLeftIcon />
+              </button>
+              <span className={styles.monthName}>
+                {format(selectedDate, "MMMM yyyy")}
+              </span>
+              <button className={styles.arrowButton} onClick={handleNextMonth}>
+                <ChevronRightIcon />
+              </button>
+            </div>
+          </div>
+          <div className={styles.calendarGrid}>
+            {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((dayName, index) => (
+              <div key={index} className={styles.dayText}>
+                {dayName}
+              </div>
+            ))}
+            {renderDays()}
           </div>
         </div>
-        <div className={styles.calendarGrid}>
-          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((dayName, index) => (
-            <div key={index} className={styles.dayText}>
-              {dayName}
-            </div>
-          ))}
-          {renderDays()}
-        </div>
         {selectedDay && (
-          <div className={styles.timeSelector}>
-            <div>
-            &nbsp;&nbsp;Date :{" "}
+          <div className={styles.dateTimeInputs}>
+            <div className={styles.inputGroup}>
+              <label>Date : </label>
               <input
-              type="date"
-              className={styles.timeInput}
-              value={activeDate}
-              onChange={handleDateChange}
+                type="date"
+                value={activeDate}
+                onChange={handleDateChange}
+                className={styles.timeInput}
               />
             </div>
-            <div>
-              Start Time :{" "}
+            <div className={styles.inputGroup}>
+              <label>Start Time : </label>
               <input
                 type="time"
-                className={styles.timeInput}
                 value={startTime}
                 onChange={(e) => handleTimeChange(e, "start")}
+                className={styles.timeInput}
               />
             </div>
-            <div>
-              End Time :{" "}
+            <div className={styles.inputGroup}>
+              <label>End Time : </label>
               <input
                 type="time"
-                className={styles.timeInput}
                 value={endTime}
                 onChange={(e) => handleTimeChange(e, "end")}
+                className={styles.timeInput}
               />
             </div>
           </div>
