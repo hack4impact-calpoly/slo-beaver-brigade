@@ -7,6 +7,7 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  MenuItem,
   FormControl,
   FormLabel,
   Input,
@@ -33,6 +34,7 @@ import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
 import { CreateTemporaryGroup } from "app/components/ViewGroups";
 import { IGroup } from "database/groupSchema";
 import { IEvent } from "database/eventSchema";
+import { ITemplateEvent } from "database/eventTemplateSchema";
 import "../../../fonts/fonts.css";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
@@ -47,6 +49,45 @@ export default function Page() {
   const toast = useToast();
   const router = useRouter();
   const [eventName, setEventName] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState<IEvent | null>(null);
+  const [templates, setTemplates] = useState<ITemplateEvent[]>([
+    {
+      _id: "1",
+      eventName: "Volunteer Meetup",
+      eventImage: null,
+      eventType: "Volunteer",
+      location: "Central Park",
+      description: "Community service event.",
+      checklist: "Bring gloves, trash bags",
+      groupsOnly: false,
+      wheelchairAccessible: true,
+      spanishSpeakingAccommodation: false,
+      startTime: new Date(),
+      endTime: new Date(),
+      volunteerEvent: true,
+      groupsAllowed: [],
+      attendeeIds: ["123", "456"], // Example registered users
+      registeredIds: [],
+    },
+    {
+      _id: "2",
+      eventName: "Charity Drive",
+      eventImage: null,
+      eventType: "Fundraiser",
+      location: "Community Hall",
+      description: "Fundraiser for local charities.",
+      checklist: "Bring donations",
+      groupsOnly: false,
+      wheelchairAccessible: true,
+      spanishSpeakingAccommodation: true,
+      startTime: new Date(),
+      endTime: new Date(),
+      volunteerEvent: false,
+      groupsAllowed: ["789"], // Example allowed groups
+      attendeeIds: ["456", "789"], // Example registered users
+      registeredIds: [],
+    },
+  ]);
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
@@ -141,6 +182,60 @@ export default function Page() {
       fileInputRef.current.click();
     }
   };
+
+  const handleSelectTemplate = (template: ITemplateEvent) => {
+    setSelectedTemplate(template);
+    setEventName(template.eventName || "");
+    setEventType(template.eventType || "");
+    setLocation(template.location || "");
+    setDescription(template.description || "");
+    setChecklist(template.checklist || "");
+    setOnlyGroups(template.groupsOnly || false);
+    setAccessibilityAccommodation(template.wheelchairAccessible ? "Yes" : "No");
+    setLanguage(template.spanishSpeakingAccommodation ? "Yes" : "No");
+    setEventStart(template.startTime ? new Date(template.startTime).toISOString() : "");
+    setEventEnd(template.endTime ? new Date(template.endTime).toISOString() : "");
+  
+    // Fix: Ensure 'groupees' is included when setting groupsSelected
+    setGroupsSelected(
+      template.groupsAllowed.map(id => ({
+        _id: id,
+        group_name: `Group ${id}`,
+        groupees: [], // 👈 Include an empty array for now (since we don't have group members)
+      }))
+    );
+  };
+  
+  const handleSaveAsTemplate = async () => {
+    const newTemplate: ITemplateEvent = {
+      _id: (templates.length + 1).toString(),
+      eventName,
+      eventImage: null, // Modify if supporting images
+      eventType,
+      location,
+      description,
+      checklist: checkList,
+      groupsOnly: onlyGroups,
+      wheelchairAccessible: accessibilityAccommodation === "Yes",
+      spanishSpeakingAccommodation: language === "Yes",
+      startTime: eventStart ? new Date(eventStart) : new Date(),
+      endTime: eventEnd ? new Date(eventEnd) : new Date(),
+      volunteerEvent: eventType === "Volunteer",
+      groupsAllowed: groupsSelected.map(group => group._id), // Save selected groups
+      attendeeIds: [], // Templates don't track attendees initially
+      registeredIds: [],
+    };
+  
+    setTemplates([...templates, newTemplate]);
+  
+    toast({
+      title: "Template Saved",
+      description: "This event has been saved as a template.",
+      status: "success",
+      duration: 2500,
+      isClosable: true,
+    });
+  };  
 
   // Handle file selection for the event cover image and set preview
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -381,9 +476,23 @@ export default function Page() {
 
   return (
     <Box p={[0, 8, 8, 8]} mx="10">
-      <Text fontSize="2xl" fontWeight="bold" color="black" mt={0} mb={3}>
-        Create New Event
-      </Text>
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+    <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
+      Create New Event
+    </Text>
+    <Menu>
+      <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+        {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
+      </MenuButton>
+      <MenuList>
+        {templates.map((template) => (
+          <MenuItem key={template._id} onClick={() => handleSelectTemplate(template)}>
+            {template.eventName}
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  </Flex>
 
       {/* image uploading */}
       <Flex
@@ -663,7 +772,7 @@ export default function Page() {
         </FormControl>
       </Stack>
 
-      <Box display="flex" justifyContent="center" mt={4}>
+      <Box display="flex" justifyContent="center" mt={4} gap={4}>
         <Button
           loadingText="Creating"
           bg="#e0af48"
@@ -671,9 +780,17 @@ export default function Page() {
           _hover={{ bg: "#C19137" }}
           onClick={handleCreateEvent}
           minWidth="150px"
-          width="20%"
         >
           Create Event
+        </Button>
+        <Button
+          bg="#48a0e0"
+          color="white"
+          _hover={{ bg: "#377ab8" }}
+          onClick={handleSaveAsTemplate}
+          minWidth="150px"
+        >
+          Save as Template
         </Button>
       </Box>
     </Box>
