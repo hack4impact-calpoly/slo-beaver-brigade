@@ -75,15 +75,6 @@ export async function POST(
     }
 }
 
-// create a new audit log upon changing a users permissions
-async function logPermissionChange(user: IUser, action: string) {
-    await Log.create({
-        user: `${user.firstName} ${user.lastName}`,
-        action: action,
-        date: new Date(),
-    });
-}
-
 export async function PATCH(req: NextRequest, { params }: IParams) {
     await connectDB(); // Connect to the database
 
@@ -130,7 +121,11 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             // action for audit log
             const action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to ${role}`;
 
-            await logPermissionChange(user, action);
+            await Log.create({
+                user: `${user.firstName} ${user.lastName}`,
+                action: action,
+                date: new Date(),
+            });
 
             return NextResponse.json("User updated: " + targetUserId, { status: 200 });
         }
