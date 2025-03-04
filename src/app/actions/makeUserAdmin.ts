@@ -1,6 +1,7 @@
 "use server"
 import User from "@database/userSchema";
 import connectDB from "database/db";
+import Log from "@database/logSchema";
 
 const makeUserAdmin = async (email: string) => {
   await connectDB();
@@ -14,6 +15,13 @@ const makeUserAdmin = async (email: string) => {
     if (!user) {
       throw new Error(`User with email ${email} not found`);
     }
+
+    // add an audit log entry
+    await Log.create({
+      user: `${user.firstName} ${user.lastName}`,
+      action: `changed ${user.firstName} ${user.lastName} to admin`,
+      date: new Date(),
+    });
 
     return user.toObject();
   } catch (error) {
