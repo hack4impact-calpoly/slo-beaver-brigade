@@ -119,7 +119,14 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             await targetUser.save();
             
             // action for audit log
-            const action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to ${role}`;
+            let action;
+            if (role === "admin") {
+                action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to admin`;
+            } else if (role === "user") {
+                action = `reverted ${targetUser.firstName} ${targetUser.lastName}'s role to user`;
+            } else {
+                action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to ${role}`;
+            }
 
             await Log.create({
                 user: `${user.firstName} ${user.lastName}`,
