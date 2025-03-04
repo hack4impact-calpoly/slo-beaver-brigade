@@ -75,6 +75,15 @@ export async function POST(
     }
 }
 
+// create a new audit log upon changing a users permissions
+async function logPermissionChange(user: IUser, action: string) {
+    await Log.create({
+        user: `${user.firstName} ${user.lastName}`,
+        action: action,
+        date: new Date(),
+    });
+}
+
 export async function PATCH(req: NextRequest, { params }: IParams) {
     await connectDB(); // Connect to the database
 
@@ -89,7 +98,40 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             );
         }
 
-        const { eventsAttended }: IUser = await req.json();
+        // const { role, eventsAttended }: { role?: string, eventsAttended?: string[] } = await req.json();
+        const { eventsAttended, role, targetUserId}: { eventsAttended?: string[], role?: string, targetUserId?: string } = await req.json();
+
+        // Handle permission updates (Only allow admins to change permissions)
+        const allowedRoles = ["user", "admin"]; // list of allowed roles (should this be defined somewhere else?)
+        if (role && targetUserId) {
+            if (!allowedRoles.includes(role)) {
+                return NextResponse.json({ error: `Invalid role: ${role}` }, { status: 400 });
+            }
+            if (!user.role.includes("admin")) {
+                return NextResponse.json({ error: "Must be admin to change permissions." }, { status: 403 });
+            }
+
+            // find target user
+            const targetUser = await User.findById(targetUserId).orFail();
+            if (!targetUser) {
+                return NextResponse.json(
+                    { error: "Target user not found" },
+                    { status: 404 }
+                );
+            }
+
+            // update role
+            targetUser.role = role;
+            await targetUser.save();
+            
+            // action for audit log
+            const action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to ${role}`;
+
+            await logPermissionChange(user, action);
+
+            return NextResponse.json("User updated: " + targetUserId, { status: 200 });
+        }
+
         if (eventsAttended) {
             user.eventsAttended = eventsAttended;
         }
