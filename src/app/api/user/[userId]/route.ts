@@ -101,7 +101,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         const { eventsAttended, role, targetUserId}: { eventsAttended?: string[], role?: string, targetUserId?: string } = await req.json();
 
         // Handle permission updates (Only allow admins to change permissions)
-        const allowedRoles = ["user", "admin"]; // list of allowed roles (should this be defined somewhere else?)
+        const allowedRoles = ["user", "admin", "superAdmin"]; // list of allowed roles
         if (role && targetUserId) {
             if (!allowedRoles.includes(role)) {
                 return NextResponse.json({ error: `Invalid role: ${role}` }, { status: 400 });
@@ -117,6 +117,10 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                     { error: "Target user not found" },
                     { status: 404 }
                 );
+            }
+
+            if (targetUser.role === role) {
+                return NextResponse.json({ error: "User already has that role." }, { status: 400 });
             }
 
             // update role
@@ -219,7 +223,4 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
             { status: 400 }
         );
     }
-
-
-
 }
