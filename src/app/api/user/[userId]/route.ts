@@ -98,7 +98,6 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             );
         }
 
-        // const { role, eventsAttended }: { role?: string, eventsAttended?: string[] } = await req.json();
         const { eventsAttended, role, targetUserId}: { eventsAttended?: string[], role?: string, targetUserId?: string } = await req.json();
 
         // Handle permission updates (Only allow admins to change permissions)
