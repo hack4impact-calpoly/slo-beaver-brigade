@@ -42,7 +42,6 @@ type Group = {
   group_name: string;
 };
 
-
 export default function Page() {
   const { mutate } = useEventsAscending();
   const toast = useToast();
@@ -456,8 +455,6 @@ export default function Page() {
     }
   };
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
   const handleCreateNewGroup = async (groupName: string) => {
     const groupData = {
       group_name: groupName,
@@ -696,7 +693,7 @@ export default function Page() {
             />
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
               Spanish Speaking Accommodation
             </FormLabel>
@@ -717,7 +714,7 @@ export default function Page() {
             ></Select>
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="accessibility" fontWeight="bold">
               Accessibility Accommodation
             </FormLabel>
@@ -740,7 +737,7 @@ export default function Page() {
             />
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="invitees" fontWeight="bold">
               Only Available to Selected Groups
             </FormLabel>
@@ -762,7 +759,9 @@ export default function Page() {
               }}
             />
           </FormControl>
-          {onlyGroups && groups && (
+          {/* {onlyGroups && groups && (  #remove the comments on this line and
+           the brackets below have the button be hidden again, just in case we
+            want it hidden in the guture*/}
             <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
               <CreateTemporaryGroup
                 groups={groupsSelected}
@@ -778,11 +777,10 @@ export default function Page() {
                 ></Checkbox>
               </div>
             </div>
-          )}
+          {/* )} */}
         </VStack>
         <Flex flex="1">
           <VStack alignItems="flex-start">
-
             {/* MiniCalendar */}
             {/* <FormControl ml="-4" isRequired>
               <MiniCalendar
