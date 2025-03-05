@@ -72,7 +72,6 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
 
     if (startDate) {
       const fullStartDate = startTime ? `${startDate}T${startTime}` : startDate;
-
       const fullEndDate =
         endDate && endTime ? `${endDate}T${endTime}` : endDate || startDate;
 
@@ -92,160 +91,152 @@ const GoogleCalendarPicker: React.FC<GoogleCalendarPickerProps> = ({
   };
 
   return (
-    <Stack spacing={4} width="100%">
-      {/* <Box
-        width="400px"
-        height="400px"
-        borderRadius="md"
-        overflow="hidden"
-        border="1px solid"
-        borderColor="gray.200"
-        mb={4}
-      >
-        <iframe
-          src={`https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=America%2FLos_Angeles&mode=WEEK&showNav=1&showTitle=0&showPrint=0&showTabs=1&showCalendars=0&height=400&wkst=1&bgcolor=%23ffffff&showDate=1`}
-          style={{
-            border: "none",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "transparent",
-          }}
-          frameBorder="0"
-          scrolling="no"
-        />
-      </Box> */}
-
-      <FormControl display="flex" alignItems="center">
-        <FormLabel htmlFor="recurring-toggle" mb="0">
-          Recurring Event?
-        </FormLabel>
-        <Switch
-          id="recurring-toggle"
-          isChecked={isRecurring}
-          onChange={(e) => {
-            setIsRecurring(e.target.checked);
-            if (!e.target.checked) {
-              //cleae recurring data when switching to non recur
-              setSelectedDays([]);
-              setFrequency("weekly");
-              //update parent component with cleared recur data
-              updateRecurringOptions();
-            }
-            if (!e.target.checked) {
-              setEndDate(startDate); //reset end date to start date when switching to non recur
-            }
-            updateRecurringOptions();
-          }}
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel>Start Date</FormLabel>
-        <Input
-          type="date"
-          value={startDate}
-          onChange={(e) => {
-            console.log("Start date changed:", e.target.value);
-            setStartDate(e.target.value);
-            if (!isRecurring) {
-              setEndDate(e.target.value);
-            }
-            updateRecurringOptions();
-          }}
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel>Start Time</FormLabel>
-        <Input
-          type="time"
-          value={startTime}
-          onChange={(e) => {
-            console.log("Start time changed:", e.target.value);
-            setStartTime(e.target.value);
-            updateRecurringOptions();
-          }}
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel>End Time</FormLabel>
-        <Input
-          type="time"
-          value={endTime}
-          onChange={(e) => {
-            console.log("End time changed:", e.target.value);
-            setEndTime(e.target.value);
-            updateRecurringOptions();
-          }}
-        />
-      </FormControl>
-
-      {isRecurring && (
-        <>
-          <FormControl>
-            <FormLabel>End Date</FormLabel>
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                handleDateTimeChange();
+    <Stack spacing={4} width="100%" minWidth="40vw">
+      <Box width="100%">
+        <FormControl display="flex" alignItems="center" width="100%" mb={4}>
+          <FormLabel htmlFor="recurring-toggle" mb="0">
+            Recurring Event?
+          </FormLabel>
+          <Switch
+            id="recurring-toggle"
+            isChecked={isRecurring}
+            onChange={(e) => {
+              setIsRecurring(e.target.checked);
+              if (!e.target.checked) {
+                setSelectedDays([]);
+                setFrequency("weekly");
                 updateRecurringOptions();
-              }}
-              style={{ display: isRecurring ? "block" : "none" }} // Hide if not recurring
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Repeat</FormLabel>
-            <Select
-              value={frequency}
-              onChange={(e) => {
-                const newFrequency = e.target.value;
-                setFrequency(newFrequency);
-                if (newFrequency !== "weekly") {
-                  setSelectedDays([]);
-                }
+              }
+              if (!e.target.checked) {
+                setEndDate(startDate);
+              }
+              updateRecurringOptions();
+            }}
+          />
+        </FormControl>
 
-                onRecurringOptionsChange({
-                  isRecurring,
-                  startDate,
-                  endDate,
-                  daysOfWeek: newFrequency === "weekly" ? selectedDays : [], 
-                  frequency: newFrequency,
-                });
-              }}
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-            </Select>
-          </FormControl>
-
-          {frequency === "weekly" && (
-            <FormControl>
-              <FormLabel>Repeat on</FormLabel>
-              <HStack wrap="wrap" spacing={4}>
-                {daysOfWeek.map((day: DayOfWeek) => (
-                  <Checkbox
-                    key={day.value}
-                    isChecked={selectedDays.includes(day.value)}
-                    onChange={() => {
-                      const newDays = selectedDays.includes(day.value)
-                        ? selectedDays.filter((d) => d !== day.value)
-                        : [...selectedDays, day.value];
-                      setSelectedDays(newDays);
-                      updateRecurringOptions();
-                    }}
-                  >
-                    {day.label}
-                  </Checkbox>
-                ))}
-              </HStack>
+        <Stack spacing={4} width="100%">
+          {/* Date Selection */}
+          <HStack spacing={4} width="100%" align="flex-start">
+            <FormControl width="50%">
+              <FormLabel>Start Date</FormLabel>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                  console.log("Start date changed:", e.target.value);
+                  setStartDate(e.target.value);
+                  if (!isRecurring) {
+                    setEndDate(e.target.value);
+                  }
+                  updateRecurringOptions();
+                }}
+              />
             </FormControl>
+
+            <FormControl width="50%">
+              <FormLabel>End Date</FormLabel>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  handleDateTimeChange();
+                  updateRecurringOptions();
+                }}
+                isDisabled={!isRecurring}
+                opacity={isRecurring ? 1 : 0.5}
+                _disabled={{
+                  cursor: "not-allowed",
+                  opacity: 0.5,
+                }}
+              />
+            </FormControl>
+          </HStack>
+
+          {/* Time Selection */}
+          <HStack spacing={4} width="100%" align="flex-start">
+            <FormControl width="50%">
+              <FormLabel>Start Time</FormLabel>
+              <Input
+                type="time"
+                value={startTime}
+                onChange={(e) => {
+                  console.log("Start time changed:", e.target.value);
+                  setStartTime(e.target.value);
+                  updateRecurringOptions();
+                }}
+              />
+            </FormControl>
+
+            <FormControl width="50%">
+              <FormLabel>End Time</FormLabel>
+              <Input
+                type="time"
+                value={endTime}
+                onChange={(e) => {
+                  console.log("End time changed:", e.target.value);
+                  setEndTime(e.target.value);
+                  updateRecurringOptions();
+                }}
+              />
+            </FormControl>
+          </HStack>
+
+          {isRecurring && (
+            <>
+              <FormControl width="100%">
+                <FormLabel>Repeat</FormLabel>
+                <Select
+                  value={frequency}
+                  onChange={(e) => {
+                    const newFrequency = e.target.value;
+                    setFrequency(newFrequency);
+                    if (newFrequency !== "weekly") {
+                      setSelectedDays([]);
+                    }
+
+                    onRecurringOptionsChange({
+                      isRecurring,
+                      startDate,
+                      endDate,
+                      daysOfWeek: newFrequency === "weekly" ? selectedDays : [],
+                      frequency: newFrequency,
+                    });
+                  }}
+                >
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </Select>
+              </FormControl>
+
+              {frequency === "weekly" && (
+                <FormControl width="100%">
+                  <FormLabel>Repeat on</FormLabel>
+                  <HStack wrap="wrap" spacing={4}>
+                    {daysOfWeek.map((day: DayOfWeek) => (
+                      <Checkbox
+                        key={day.value}
+                        isChecked={selectedDays.includes(day.value)}
+                        onChange={() => {
+                          const newDays = selectedDays.includes(day.value)
+                            ? selectedDays.filter((d) => d !== day.value)
+                            : [...selectedDays, day.value];
+                          setSelectedDays(newDays);
+                          updateRecurringOptions();
+                        }}
+                      >
+                        {day.label}
+                      </Checkbox>
+                    ))}
+                  </HStack>
+                </FormControl>
+              )}
+            </>
           )}
-        </>
-      )}
+        </Stack>
+      </Box>
     </Stack>
   );
 };
