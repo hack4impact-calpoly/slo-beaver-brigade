@@ -51,6 +51,6 @@ const eventTemplateSchema = new Schema({
 });
 
 const Event =
-    mongoose.models["eventsTemplateTest"] ?? mongoose.model("eventsTemplateTest", eventTemplateSchema);
+    mongoose.models["devEventsTemplates"] ?? mongoose.model("devEventsTemplates", eventTemplateSchema);
 
 export default Event;

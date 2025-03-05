@@ -9,6 +9,7 @@ import {
   Flex,
   Button,
   useBreakpointValue,
+  Image,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import Slider from "react-slick";
@@ -17,19 +18,16 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { css } from "@emotion/react";
 import "@emotion/react";
-import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
-import { getEvents } from "./actions/eventsactions";
-import { getUserDataFromEmail, getUserDbData } from "@app/lib/authentication";
+import { getUserDataFromEmail } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
-import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
-import { EmailRSSComponent } from "./components/EmailComponent";
 import ExpandedViewComponent from "./components/StandaloneExpandedViewComponent";
 import "./fonts/fonts.css";
 import { useEventsAscending } from "app/lib/swrfunctions";
 import { LockIcon } from "@chakra-ui/icons";
+import ChakraNextImage from "./components/ChakraNextImage";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -482,7 +480,6 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              <Slider {...settings}>
                {userEvents.length > 0 ? (
                  userEvents.map((event) => {
-                   const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
                    return (
                    <Box 
                       key={event._id} 
@@ -490,7 +487,8 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                       px="4" 
                       pt="20px"
                       pb="20px" 
-                      onClick={() => setupViewEventModal(event)}>
+                      onClick={() => setupViewEventModal(event)}
+                    >
                      
                      <Box
                        position="relative"
@@ -500,14 +498,18 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                        textAlign="left"
                        borderRadius="20px"
                        className={style.registeredEventBox}
-                       style={{
-                         //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                         background: backgroundImage,
-                         backgroundSize: "cover",
-                         backgroundRepeat: "no-repeat",
-                         backgroundPosition: "center",
-                       }}
                      >
+                      <ChakraNextImage
+                          src={event.eventImage || "/beaver-eventcard.jpeg"}
+                          alt="Event Image"
+                          objectFit="cover"
+                          position="absolute"
+                          zIndex="-1"
+                          top="0"
+                          left="0"
+                          layout="fill"
+                          borderRadius={"20px"}
+                        />   
                        <Heading
                          as="h1"
                          size="2xl"
@@ -664,18 +666,10 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
             <Slider {...unregisteredEventSettings}>
               {unregisteredEvents.length > 0 ? (
                 unregisteredEvents.map((event) => {
-                  const backgroundImage = fallbackBackgroundImage(event.eventImage, "/beaver-eventcard.jpeg")
                   return (
                     <Box key={event._id} textAlign="center" px="0" mb="4" onClick={() => setupViewEventModal(event)}>
                       <Box
                         key={event._id}
-                        style={{
-                          //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                          background: backgroundImage,
-                          backgroundSize: "cover",
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "left 40%"
-                        }}
                         position="relative"
                         borderWidth="1px"
                         p="4"
@@ -686,7 +680,18 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                         borderRadius="20px"
                         className={style.eventBox}
                         flex="1 0 40%" // Adjust the width as needed
-                      >                                               
+                      > 
+                        <ChakraNextImage
+                          src={event.eventImage || "/beaver-eventcard.jpeg"}
+                          alt="Event Image"
+                          objectFit="cover"
+                          position="absolute"
+                          zIndex="-1"
+                          top="0"
+                          left="0"
+                          layout="fill"
+                          borderRadius={"20px"}
+                        />                                              
                         <Heading
                           as="h1"
                           size="3xl"
@@ -767,7 +772,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             color="white"
                             marginRight='1rem'
                             className="bold-text"
-                            >Invite only.</Text>
+                            >Invite Only</Text>
                                 <LockIcon color='wheat'/>
                             </div>
                             }

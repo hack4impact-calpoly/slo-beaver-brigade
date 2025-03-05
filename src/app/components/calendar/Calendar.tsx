@@ -82,15 +82,15 @@ export default function Calendar(props: {
             listPlugin,
           ]}
           headerToolbar={{
-            left: "prev next",
+            left: "prev,next today",
             center: "title",
             end: "",
             start: "",
-            right: ""
+            right: "timeGridWeek,dayGridMonth"
           }}
           events={props.events}
           nowIndicator={true}
-          editable={true}
+          editable={false}
           droppable={true}
           selectable={true}
           selectMirror={true}

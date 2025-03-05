@@ -2,9 +2,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 import styles from "./page.module.css";
-import defaultBeaver from "/docs/images/DefaultBeaver.jpeg";
 import "../../../../fonts/fonts.css";
-import Image from "next/image";
 import EditEventPrimaryInfo from "@components/EditEventPrimaryInfo";
 import EditEventVisitorInfo from "@components/EditEventVisitorInfo";
 import EditEventHeader from "@components/EditEventHeader";
