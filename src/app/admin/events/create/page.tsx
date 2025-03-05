@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
+import GoogleCalendarPicker from "../../../components/calendar/GoogleCalendarPicker";
 import { formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
@@ -40,7 +41,6 @@ type Group = {
   _id: string;
   group_name: string;
 };
-
 
 export default function Page() {
   const { mutate } = useEventsAscending();
@@ -157,11 +157,31 @@ export default function Page() {
       setCoverImage(file);
     }
   };
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  interface RecurringOptions {
+    startDate: string;
+    endDate: string;
+    daysOfWeek: string[];
+    frequency: string;
+  }
+
+  const [recurringOptions, setRecurringOptions] = useState<RecurringOptions>({
+    startDate: "",
+    endDate: "",
+    daysOfWeek: [], // initialize as empty string array
+    frequency: "weekly",
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
     debugger;
     // Form validation before submission
+    console.log("recurringOptions:", recurringOptions);
+    console.log("startDate:", recurringOptions.startDate);
+    console.log("endDate:", recurringOptions.endDate);
+
     if (
       !eventName ||
       !eventType ||
@@ -177,19 +197,40 @@ export default function Page() {
         isClosable: true,
       });
       return;
-    } else if (eventStart === "" || eventEnd === "" || activeDate === "") {
+    }
+
+    // Validate dates
+    if (!recurringOptions.startDate || !recurringOptions.endDate) {
       toast({
         title: "Error",
-        description: "Event date and time are not set",
+        description: "Event start and end dates are not set",
         status: "error",
         duration: 2500,
         isClosable: true,
       });
       return;
-    } else if (eventEnd < eventStart) {
+    }
+
+    if (recurringOptions.endDate < recurringOptions.startDate) {
       toast({
         title: "Error",
-        description: "End time is before start time",
+        description: "End date cannot be before start date",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+      return;
+    }
+
+    // Validate weekly recurrence
+    if (
+      recurringOptions.frequency === "weekly" &&
+      recurringOptions.daysOfWeek.length === 0
+    ) {
+      toast({
+        title: "Error",
+        description:
+          "Please select at least one day for weekly recurring events",
         status: "error",
         duration: 2500,
         isClosable: true,
@@ -229,13 +270,117 @@ export default function Page() {
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: language === "Yes",
-      startTime: eventStart,
-      endTime: eventEnd,
+      startTime: recurringOptions.startDate,
+      endTime: recurringOptions.endDate,
       volunteerEvent: eventType === "Volunteer",
       groupsAllowed: groupsSelected.map((group) => group._id as string),
       groupsOnly: onlyGroups,
+      ...(recurringOptions.frequency && {
+        recurring: {
+          frequency: recurringOptions.frequency,
+          daysOfWeek: recurringOptions.daysOfWeek,
+          endDate: recurringOptions.endDate,
+        },
+      }),
     };
 
+    const createGoogleCalendarEvent = async (eventData: any) => {
+      try {
+        // Parse the start date and times
+        const startDate = new Date(eventData.startTime);
+        const [startHours, startMinutes] = eventData.startTime
+          .split("T")[1]
+          .split(":");
+        const [endHours, endMinutes] = eventData.endTime
+          .split("T")[1]
+          .split(":");
+
+        // For both recurring and non-recurring events, end time should be on the same day as start time
+        const eventStartDateTime = new Date(startDate);
+        eventStartDateTime.setHours(
+          parseInt(startHours),
+          parseInt(startMinutes),
+          0
+        );
+
+        const eventEndDateTime = new Date(startDate); // Use start date for end time
+        eventEndDateTime.setHours(parseInt(endHours), parseInt(endMinutes), 0);
+
+        let calendarEventData = {
+          summary: eventData.eventName,
+          location: eventData.location,
+          description: eventData.description,
+          start: {
+            dateTime: eventStartDateTime.toISOString(),
+            timeZone: "America/Los_Angeles",
+          },
+          end: {
+            dateTime: eventEndDateTime.toISOString(),
+            timeZone: "America/Los_Angeles",
+          },
+        } as {
+          summary: string;
+          location: string;
+          description: string;
+          start: { dateTime: string; timeZone: string };
+          end: { dateTime: string; timeZone: string };
+          recurrence?: string[];
+        };
+
+        // Add recurrence rule only if it's a recurring event
+        if (eventData.recurring && eventData.recurring.frequency) {
+          const untilDate = new Date(eventData.recurring.endDate);
+          untilDate.setHours(23, 59, 59);
+          const untilDateString =
+            untilDate.toISOString().replace(/[:-]/g, "").split(".")[0] + "Z";
+
+          let recurrenceRule = `FREQ=${eventData.recurring.frequency.toUpperCase()};UNTIL=${untilDateString}`;
+
+          if (
+            eventData.recurring.frequency === "weekly" &&
+            eventData.recurring.daysOfWeek.length > 0
+          ) {
+            const selectedDays = eventData.recurring.daysOfWeek.filter(
+              (day) => day
+            );
+            if (selectedDays.length > 0) {
+              recurrenceRule += `;BYDAY=${selectedDays.join(",")}`;
+            }
+          } else if (eventData.recurring.frequency === "monthly") {
+            const dayOfWeek = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"][
+              startDate.getDay()
+            ];
+            const weekOfMonth = Math.ceil(startDate.getDate() / 7);
+            recurrenceRule += `;BYDAY=${weekOfMonth}${dayOfWeek}`;
+          }
+
+          calendarEventData.recurrence = [`RRULE:${recurrenceRule}`];
+        }
+
+        console.log("Sending to Google Calendar:", calendarEventData);
+
+        const response = await fetch("/api/google-calendar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(calendarEventData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Google Calendar API Error:", errorData);
+          throw new Error(
+            errorData.details || "Failed to create Google Calendar event"
+          );
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error("Error creating Google Calendar event:", error);
+        throw error;
+      }
+    };
     // Attempt to create event via API and handle response
     try {
       const response = await fetch("/api/events", {
@@ -251,6 +396,22 @@ export default function Page() {
       }
 
       const event: IEvent = await response.json();
+
+      // Create Google Calendar event
+      try {
+        await createGoogleCalendarEvent(eventData);
+      } catch (calendarError) {
+        console.error("Failed to create Google Calendar event:", calendarError);
+        // Optionally show a warning toast but continue with the flow
+        toast({
+          title: "Warning",
+          description: "Event created but failed to sync with Google Calendar",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+
       // send confirmation email if button was checked
       if (sendEmailInvitees) {
         const res = await fetch(
@@ -532,7 +693,7 @@ export default function Page() {
             />
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
               Spanish Speaking Accommodation
             </FormLabel>
@@ -553,7 +714,7 @@ export default function Page() {
             ></Select>
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="accessibility" fontWeight="bold">
               Accessibility Accommodation
             </FormLabel>
@@ -576,7 +737,7 @@ export default function Page() {
             />
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="invitees" fontWeight="bold">
               Only Available to Selected Groups
             </FormLabel>
@@ -598,7 +759,9 @@ export default function Page() {
               }}
             />
           </FormControl>
-          {onlyGroups && groups && (
+          {/* {onlyGroups && groups && (  #remove the comments on this line and
+           the brackets below have the button be hidden again, just in case we
+            want it hidden in the guture*/}
             <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
               <CreateTemporaryGroup
                 groups={groupsSelected}
@@ -614,20 +777,34 @@ export default function Page() {
                 ></Checkbox>
               </div>
             </div>
-          )}
+          {/* )} */}
         </VStack>
         <Flex flex="1">
           <VStack alignItems="flex-start">
-            <Text fontWeight="bold"  mt={{ base: "-16", md: "0" }} mb="-4">
-              Date/Time
-            </Text>
             {/* MiniCalendar */}
-            <FormControl ml="-4" isRequired>
+            {/* <FormControl ml="-4" isRequired>
               <MiniCalendar
                 onTimeChange={(start, end) => handleTimeChange(start, end)}
                 onDateChange={(date) => handleDateChangeFromCalendar(date)}
               />
-            </FormControl>
+            </FormControl> */}
+
+            <Flex flex="1">
+              <VStack alignItems="flex-start" spacing={4}>
+                <Text fontWeight="bold">Date/Time</Text>
+                <FormControl isRequired>
+                  <GoogleCalendarPicker
+                    onDateTimeSelect={(start, end) => {
+                      setEventStart(start);
+                      setEventEnd(end);
+                    }}
+                    onRecurringOptionsChange={(options: RecurringOptions) => {
+                      setRecurringOptions(options);
+                    }}
+                  />
+                </FormControl>
+              </VStack>
+            </Flex>
           </VStack>
         </Flex>
       </Flex>
