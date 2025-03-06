@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export type IEvent = {
+export type IEventTemplate = {
     _id: string;
     eventName: string;
     eventImage: string | null;
@@ -15,7 +15,6 @@ export type IEvent = {
     endTime: Date;
     volunteerEvent: boolean;
     groupsAllowed: string[];
-    attendeeIds: string[];
     registeredIds: string[];
 };
 
@@ -40,11 +39,6 @@ const eventTemplateSchema = new Schema({
     endTime: { type: Date, required: false },
     volunteerEvent: { type: Boolean, required: false },
     groupsAllowed: {
-        type: [Schema.Types.ObjectId],
-        required: false,
-        default: [],
-    },
-    attendeeIds: {
         type: [Schema.Types.ObjectId],
         required: false,
         default: [],

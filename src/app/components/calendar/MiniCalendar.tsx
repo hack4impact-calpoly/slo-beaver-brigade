@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import styles from '@styles/userdashboard/MiniCalendar.module.css';
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { start } from "repl";
 
 // Define type for the onTimeChange function
 type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
@@ -23,10 +24,12 @@ type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
 type DashboardCalendarProps = {
   onTimeChange: OnTimeChangeFunction;
   onDateChange: (date: string) => void;
+  passedStartTime: string;
+  passedEndTime: string;
 };
 
 const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
-  onTimeChange, onDateChange
+  onTimeChange, onDateChange, passedStartTime, passedEndTime
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
@@ -80,6 +83,11 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onDateChange(format(newDate, "yyyy-MM-dd"));
   }
 };
+
+useEffect(() => {
+  setStartTime(passedStartTime);
+  setEndTime(passedEndTime);
+}, [passedEndTime, passedStartTime]);
 
 
   // Effect hook to call onTimeChange function when start/end time changes
@@ -163,7 +171,7 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
               <label>Start Time : </label>
               <input
                 type="time"
-                value={startTime}
+                value={startTime? startTime : passedStartTime}
                 onChange={(e) => handleTimeChange(e, "start")}
                 className={styles.timeInput}
               />
@@ -172,7 +180,7 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
               <label>End Time : </label>
               <input
                 type="time"
-                value={endTime}
+                value={endTime? endTime : passedEndTime}
                 onChange={(e) => handleTimeChange(e, "end")}
                 className={styles.timeInput}
               />
