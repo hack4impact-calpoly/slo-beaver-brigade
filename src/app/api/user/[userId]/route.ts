@@ -89,7 +89,54 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             );
         }
 
-        const { eventsAttended }: IUser = await req.json();
+        const { eventsAttended, role, targetUserId}: { eventsAttended?: string[], role?: string, targetUserId?: string } = await req.json();
+
+        // Handle permission updates (Only allow admins to change permissions)
+        const allowedRoles = ["user", "admin", "superAdmin"]; // list of allowed roles
+        if (role && targetUserId) {
+            if (!allowedRoles.includes(role)) {
+                return NextResponse.json({ error: `Invalid role: ${role}` }, { status: 400 });
+            }
+            if (!user.role.includes("admin")) {
+                return NextResponse.json({ error: "Must be admin to change permissions." }, { status: 403 });
+            }
+
+            // find target user
+            const targetUser = await User.findById(targetUserId).orFail();
+            if (!targetUser) {
+                return NextResponse.json(
+                    { error: "Target user not found" },
+                    { status: 404 }
+                );
+            }
+
+            if (targetUser.role === role) {
+                return NextResponse.json({ error: "User already has that role." }, { status: 400 });
+            }
+
+            // update role
+            targetUser.role = role;
+            await targetUser.save();
+            
+            // action for audit log
+            let action;
+            if (role === "admin") {
+                action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to admin`;
+            } else if (role === "user") {
+                action = `reverted ${targetUser.firstName} ${targetUser.lastName}'s role to user`;
+            } else {
+                action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to ${role}`;
+            }
+
+            await Log.create({
+                user: `${user.firstName} ${user.lastName}`,
+                action: action,
+                date: new Date(),
+            });
+
+            return NextResponse.json("User updated: " + targetUserId, { status: 200 });
+        }
+
         if (eventsAttended) {
             user.eventsAttended = eventsAttended;
         }
@@ -178,7 +225,4 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
             { status: 400 }
         );
     }
-
-
-
 }
