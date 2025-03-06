@@ -7,6 +7,7 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  MenuItem,
   FormControl,
   FormLabel,
   Input,
@@ -22,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
-import { formatISO, parse } from "date-fns";
+import { format, formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
 import { Select, CreatableSelect } from "chakra-react-select";
@@ -33,7 +34,10 @@ import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
 import { CreateTemporaryGroup } from "app/components/ViewGroups";
 import { IGroup } from "database/groupSchema";
 import { IEvent } from "database/eventSchema";
+import { IEventTemplate } from "database/eventTemplateSchema";
+// import { IEvent } from "database/eventTemplateSchema";
 import "../../../fonts/fonts.css";
+import { set } from "mongoose";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -47,33 +51,71 @@ export default function Page() {
   const toast = useToast();
   const router = useRouter();
   const [eventName, setEventName] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState<IEventTemplate | null>(null);
+  const [templates, setTemplates] = useState<IEventTemplate[]>([
+    {
+      _id: "1",
+      eventName: "Volunteer Meetup",
+      eventImage: null,
+      eventType: "Volunteer",
+      location: "Central Park",
+      description: "Community service event.",
+      checklist: "Bring gloves, trash bags",
+      groupsOnly: false,
+      wheelchairAccessible: true,
+      spanishSpeakingAccommodation: false,
+      startTime: new Date(),
+      endTime: new Date(),
+      volunteerEvent: true,
+      groupsAllowed: [],
+      registeredIds: [],
+    },
+    {
+      _id: "2",
+      eventName: "Charity Drive",
+      eventImage: null,
+      eventType: "Fundraiser",
+      location: "Community Hall",
+      description: "Fundraiser for local charities.",
+      checklist: "Bring donations",
+      groupsOnly: false,
+      wheelchairAccessible: true,
+      spanishSpeakingAccommodation: true,
+      startTime: new Date(),
+      endTime: new Date(),
+      volunteerEvent: false,
+      groupsAllowed: ["789"],
+      registeredIds: [],
+    },
+  ]);
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
+  const [eventTypes, setEventTypes] = useState<string[]>([]);
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
   const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([]);
-  // Specify type for group to avoid error
   const { groups, isLoading, isError, mutateGroups } = useGroups();
   const setGroups = useCallback((updateFunction: (groups: any[]) => any[]) => {
     mutateGroups((currentGroups) => {
       if (currentGroups) {
         return updateFunction(currentGroups);
       }
-      return currentGroups; // Return the same groups if currentGroups is undefined
+      return currentGroups;
     }, false);
   }, []);
   const [preselected, setPreselected] = useState<boolean>(false);
   const [location, setLocation] = useState("");
-  const [language, setLanguage] = useState("Yes");
-  const [description, setDescription] = useState("");
+  const [spanishSpeaking, setSpanishSpeaking] = useState("");
   const [accessibilityAccommodation, setAccessibilityAccommodation] =
-    useState("Yes");
+    useState("");
+  const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
+  const [description, setDescription] = useState("");
   const [checkList, setChecklist] = useState("N/A");
+  const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
-  const [activeDate, setActiveDate] = useState("");
-  const [eventTypes, setEventTypes] = useState<string[]>([]);
-  const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
+  const [passedEndTime, setPassedEndTime] = useState("");
+  const [passedStartTime, setPassedStartTime] = useState("");
   const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false);
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -98,6 +140,7 @@ export default function Page() {
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
     if (start && end) {
+
       const timeFormat =
         start.includes("AM") || start.includes("PM") ? "h:mm a" : "HH:mm";
 
@@ -105,12 +148,12 @@ export default function Page() {
       const parsedStartTime = parse(
         `${start}`,
         timeFormat,
-        new Date(`${activeDate}T00:00:00`)
+        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
       const parsedEndTime = parse(
         `${end}`,
         timeFormat,
-        new Date(`${activeDate}T00:00:00`)
+        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
 
       // Format the adjusted dates back into ISO strings
@@ -141,6 +184,78 @@ export default function Page() {
       fileInputRef.current.click();
     }
   };
+
+  const handleSelectTemplate = (template: IEventTemplate) => {
+    setSelectedTemplate(template);
+    setImagePreview(template.eventImage || null);
+    setEventName(template.eventName || "");
+    setEventType(template.eventType || "");
+    setLocation(template.location);
+    setDescription(template.description || "");
+    setChecklist(template.checklist || "");
+    setOnlyGroups(template.groupsOnly || false);
+    setAccessibilityAccommodation(template.wheelchairAccessible ? "Yes" : "No");
+    setSpanishSpeaking(template.spanishSpeakingAccommodation ? "Yes" : "No");
+    setEventStart(formatISO(template.startTime));
+    setEventEnd(formatISO(template.endTime));
+    setPassedStartTime(format(template.startTime, 'HH:mm'));
+    setPassedEndTime(format(template.endTime, 'HH:mm'));
+  
+    setEventTypes((prev) =>
+      template.eventType && !prev.includes(template.eventType)
+        ? [...prev, template.eventType]
+        : prev
+    );    
+  
+    setGroupsSelected(
+      template.groupsAllowed.map(id => ({
+        _id: id,
+        group_name: `Group ${id}`,
+        groupees: [],
+      }))
+    );
+  
+    setChecklist(template.checklist || "");
+  
+    setEventType(template.eventType || "");
+  
+    // setLocation(template.location);
+    setLocation((prev) => (template.location && prev !== template.location ? template.location : prev));
+  
+    if (template.eventImage) {
+      setImagePreview(template.eventImage);
+    }    
+  };  
+  
+  const handleSaveAsTemplate = async () => {
+    const newTemplate: IEventTemplate = {
+      _id: (templates.length + 1).toString(),
+      eventName,
+      eventImage: imagePreview,
+      eventType,
+      location,
+      description,
+      checklist: checkList,
+      groupsOnly: onlyGroups,
+      wheelchairAccessible: accessibilityAccommodation === "Yes",
+      spanishSpeakingAccommodation: spanishSpeaking === "Yes",
+      startTime: eventStart ? new Date(eventStart) : new Date(),
+      endTime: eventEnd ? new Date(eventEnd) : new Date(),
+      volunteerEvent: eventType === "Volunteer",
+      groupsAllowed: groupsSelected.map(group => group._id),
+      registeredIds: [],
+    };
+  
+    setTemplates([...templates, newTemplate]);
+  
+    toast({
+      title: "Template Saved",
+      description: "This event has been saved as a template.",
+      status: "success",
+      duration: 2500,
+      isClosable: true,
+    });
+  };  
 
   // Handle file selection for the event cover image and set preview
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,7 +343,7 @@ export default function Page() {
       location,
       description,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
-      spanishSpeakingAccommodation: language === "Yes",
+      spanishSpeakingAccommodation: spanishSpeaking === "Yes",
       startTime: eventStart,
       endTime: eventEnd,
       volunteerEvent: eventType === "Volunteer",
@@ -381,9 +496,23 @@ export default function Page() {
 
   return (
     <Box p={[0, 8, 8, 8]} mx="10">
-      <Text fontSize="2xl" fontWeight="bold" color="black" mt={0} mb={3}>
-        Create New Event
-      </Text>
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+    <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
+      Create New Event
+    </Text>
+    <Menu>
+      <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+        {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
+      </MenuButton>
+      <MenuList>
+        {templates.map((template) => (
+          <MenuItem key={template._id} onClick={() => handleSelectTemplate(template)}>
+            {template.eventName}
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  </Flex>
 
       {/* image uploading */}
       <Flex
@@ -396,6 +525,7 @@ export default function Page() {
             id="cover-image"
             type="file"
             accept="image/*"
+            // value={eventImage}
             onChange={handleImageChange}
             ref={fileInputRef}
             hidden // Hide the actual input
@@ -454,6 +584,7 @@ export default function Page() {
             </FormLabel>
             <Input
               id="event-name"
+              value={eventName}
               placeholder="Enter event name"
               onChange={handleEventNameChange}
             />
@@ -471,9 +602,8 @@ export default function Page() {
                   value: type,
                   label: type,
                 }))}
-                onChange={(option) => {
-                  setEventType(option ? option.value : "");
-                }}
+                value={eventType ? { value: eventType, label: eventType } : null}
+                onChange={(option) => setEventType(option ? option.value : "")}
                 chakraStyles={{
                   control: (provided) => ({
                     ...provided,
@@ -493,17 +623,17 @@ export default function Page() {
                 id="organization"
                 placeholder="Select or create organization"
                 options={groups?.map((group) => ({
-                  value: group,
+                  value: group._id,
                   label: group.group_name,
                 }))}
                 value={groupsSelected.map((group) => ({
-                  value: group,
+                  value: group._id,
                   label: group.group_name,
                 }))}
                 onChange={(selectedOptions) =>
                   setGroupsSelected(
                     selectedOptions
-                      ? selectedOptions.map((option) => option.value)
+                      ? selectedOptions.map((option) => ({ _id: option.value, group_name: option.label, groupees: [] }))
                       : []
                   )
                 }
@@ -528,6 +658,7 @@ export default function Page() {
             <Input
               id="location"
               placeholder="Enter event location"
+              value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
           </FormControl>
@@ -538,12 +669,18 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accommodation-type"
+              // value={}
               placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
-              onChange={(option) => setLanguage(option ? option.value : " ")}
+              value={
+                spanishSpeaking != ""
+                  ? { value: spanishSpeaking, label: spanishSpeaking }
+                  : null
+              }
+              onChange={(option) => setSpanishSpeaking(option ? option.value : "")}
               chakraStyles={{
                 control: (provided) => ({
                   ...provided,
@@ -564,8 +701,13 @@ export default function Page() {
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
+              value={
+                accessibilityAccommodation != ""
+                  ? { value: accessibilityAccommodation, label: accessibilityAccommodation }
+                  : null
+              }
               onChange={(option) =>
-                setAccessibilityAccommodation(option ? option.value : " ")
+                setAccessibilityAccommodation(option ? option.value : "")
               }
               chakraStyles={{
                 control: (provided) => ({
@@ -587,6 +729,10 @@ export default function Page() {
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
               ]}
+              value={
+                onlyGroups
+                  ? { value: "Yes", label: "Yes" }
+                  : { value: "No", label: "No" }}
               onChange={(option) =>
                 setOnlyGroups(option ? option.value == "Yes" : false)
               }
@@ -626,6 +772,8 @@ export default function Page() {
               <MiniCalendar
                 onTimeChange={(start, end) => handleTimeChange(start, end)}
                 onDateChange={(date) => handleDateChangeFromCalendar(date)}
+                passedStartTime={passedStartTime}
+                passedEndTime={passedEndTime}
               />
             </FormControl>
           </VStack>
@@ -663,7 +811,7 @@ export default function Page() {
         </FormControl>
       </Stack>
 
-      <Box display="flex" justifyContent="center" mt={4}>
+      <Box display="flex" justifyContent="center" mt={4} gap={4}>
         <Button
           loadingText="Creating"
           bg="#e0af48"
@@ -671,9 +819,17 @@ export default function Page() {
           _hover={{ bg: "#C19137" }}
           onClick={handleCreateEvent}
           minWidth="150px"
-          width="20%"
         >
           Create Event
+        </Button>
+        <Button
+          bg="#48a0e0"
+          color="white"
+          _hover={{ bg: "#377ab8" }}
+          onClick={handleSaveAsTemplate}
+          minWidth="150px"
+        >
+          Save as Template
         </Button>
       </Box>
     </Box>
