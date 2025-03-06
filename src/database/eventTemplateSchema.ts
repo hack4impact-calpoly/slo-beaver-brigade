@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export type ITemplateEvent = {
+export type IEvent = {
     _id: string;
     eventName: string;
     eventImage: string | null;

@@ -34,7 +34,7 @@ import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
 import { CreateTemporaryGroup } from "app/components/ViewGroups";
 import { IGroup } from "database/groupSchema";
 import { IEvent } from "database/eventSchema";
-import { ITemplateEvent } from "database/eventTemplateSchema";
+// import { IEvent } from "database/eventTemplateSchema";
 import "../../../fonts/fonts.css";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
@@ -50,7 +50,7 @@ export default function Page() {
   const router = useRouter();
   const [eventName, setEventName] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<IEvent | null>(null);
-  const [templates, setTemplates] = useState<ITemplateEvent[]>([
+  const [templates, setTemplates] = useState<IEvent[]>([
     {
       _id: "1",
       eventName: "Volunteer Meetup",
@@ -66,7 +66,7 @@ export default function Page() {
       endTime: new Date(),
       volunteerEvent: true,
       groupsAllowed: [],
-      attendeeIds: ["123", "456"], // Example registered users
+      attendeeIds: ["123", "456"],
       registeredIds: [],
     },
     {
@@ -83,8 +83,8 @@ export default function Page() {
       startTime: new Date(),
       endTime: new Date(),
       volunteerEvent: false,
-      groupsAllowed: ["789"], // Example allowed groups
-      attendeeIds: ["456", "789"], // Example registered users
+      groupsAllowed: ["789"],
+      attendeeIds: ["456", "789"],
       registeredIds: [],
     },
   ]);
@@ -93,14 +93,13 @@ export default function Page() {
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
   const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([]);
-  // Specify type for group to avoid error
   const { groups, isLoading, isError, mutateGroups } = useGroups();
   const setGroups = useCallback((updateFunction: (groups: any[]) => any[]) => {
     mutateGroups((currentGroups) => {
       if (currentGroups) {
         return updateFunction(currentGroups);
       }
-      return currentGroups; // Return the same groups if currentGroups is undefined
+      return currentGroups;
     }, false);
   }, []);
   const [preselected, setPreselected] = useState<boolean>(false);
@@ -183,31 +182,47 @@ export default function Page() {
     }
   };
 
-  const handleSelectTemplate = (template: ITemplateEvent) => {
+  const handleSelectTemplate = (template: IEvent) => {
     setSelectedTemplate(template);
     setEventName(template.eventName || "");
     setEventType(template.eventType || "");
-    setLocation(template.location || "");
+    setLocation(template.location);
     setDescription(template.description || "");
     setChecklist(template.checklist || "");
     setOnlyGroups(template.groupsOnly || false);
     setAccessibilityAccommodation(template.wheelchairAccessible ? "Yes" : "No");
     setLanguage(template.spanishSpeakingAccommodation ? "Yes" : "No");
-    setEventStart(template.startTime ? new Date(template.startTime).toISOString() : "");
-    setEventEnd(template.endTime ? new Date(template.endTime).toISOString() : "");
+    setEventStart(template.startTime ? formatISO(new Date(template.startTime)) : "");
+    setEventEnd(template.endTime ? formatISO(new Date(template.endTime)) : "");
   
-    // Fix: Ensure 'groupees' is included when setting groupsSelected
+    setEventTypes((prev) =>
+      template.eventType && !prev.includes(template.eventType)
+        ? [...prev, template.eventType]
+        : prev
+    );    
+  
     setGroupsSelected(
       template.groupsAllowed.map(id => ({
         _id: id,
         group_name: `Group ${id}`,
-        groupees: [], // 👈 Include an empty array for now (since we don't have group members)
+        groupees: [],
       }))
     );
-  };
+  
+    setChecklist(template.checklist || "");
+  
+    setEventType(template.eventType || "");
+  
+    // setLocation(template.location);
+    setLocation((prev) => (template.location && prev !== template.location ? template.location : prev));
+  
+    if (template.eventImage) {
+      setImagePreview(template.eventImage);
+    }    
+  };  
   
   const handleSaveAsTemplate = async () => {
-    const newTemplate: ITemplateEvent = {
+    const newTemplate: IEvent = {
       _id: (templates.length + 1).toString(),
       eventName,
       eventImage: null, // Modify if supporting images
@@ -221,8 +236,8 @@ export default function Page() {
       startTime: eventStart ? new Date(eventStart) : new Date(),
       endTime: eventEnd ? new Date(eventEnd) : new Date(),
       volunteerEvent: eventType === "Volunteer",
-      groupsAllowed: groupsSelected.map(group => group._id), // Save selected groups
-      attendeeIds: [], // Templates don't track attendees initially
+      groupsAllowed: groupsSelected.map(group => group._id),
+      attendeeIds: [],
       registeredIds: [],
     };
   
@@ -505,6 +520,7 @@ export default function Page() {
             id="cover-image"
             type="file"
             accept="image/*"
+            // value={eventImage}
             onChange={handleImageChange}
             ref={fileInputRef}
             hidden // Hide the actual input
@@ -563,6 +579,7 @@ export default function Page() {
             </FormLabel>
             <Input
               id="event-name"
+              value={eventName}
               placeholder="Enter event name"
               onChange={handleEventNameChange}
             />
@@ -580,9 +597,8 @@ export default function Page() {
                   value: type,
                   label: type,
                 }))}
-                onChange={(option) => {
-                  setEventType(option ? option.value : "");
-                }}
+                value={eventType ? { value: eventType, label: eventType } : null}
+                onChange={(option) => setEventType(option ? option.value : "")}
                 chakraStyles={{
                   control: (provided) => ({
                     ...provided,
@@ -602,17 +618,17 @@ export default function Page() {
                 id="organization"
                 placeholder="Select or create organization"
                 options={groups?.map((group) => ({
-                  value: group,
+                  value: group._id,
                   label: group.group_name,
                 }))}
                 value={groupsSelected.map((group) => ({
-                  value: group,
+                  value: group._id,
                   label: group.group_name,
                 }))}
                 onChange={(selectedOptions) =>
                   setGroupsSelected(
                     selectedOptions
-                      ? selectedOptions.map((option) => option.value)
+                      ? selectedOptions.map((option) => ({ _id: option.value, group_name: option.label, groupees: [] }))
                       : []
                   )
                 }
@@ -637,6 +653,7 @@ export default function Page() {
             <Input
               id="location"
               placeholder="Enter event location"
+              value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
           </FormControl>
@@ -647,6 +664,7 @@ export default function Page() {
             </FormLabel>
             <Select
               id="accommodation-type"
+              // value={}
               placeholder="Select an Option"
               options={[
                 { value: "Yes", label: "Yes" },
