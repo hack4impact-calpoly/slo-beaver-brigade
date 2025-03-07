@@ -1,19 +1,23 @@
+import { sign } from "crypto";
 import mongoose, { Schema } from "mongoose";
 
-export type IWaiver = {
+export type ISignedWaiver = {
     _id: string;
-    parentUserId: string;
-    eventId: Schema.Types.ObjectId;
+    signeeId: string;
+    signeeName: string;
     dependents: string[];
+    eventId: string;
+    dateSigned: Date;
+    waiverVersion: number;
 };
 
-const digitalWaiverSchema = new Schema({
-    parentUserId: {
+const signedWaiverSchema = new Schema({
+    signeeId: {
         type: Schema.Types.ObjectId,
         required: true,
     },
-    eventId: {
-        type: Schema.Types.ObjectId,
+    signeeName: {
+        type: String,
         required: true,
     },
     dependents: {
@@ -21,9 +25,21 @@ const digitalWaiverSchema = new Schema({
         default: [],
         required: false,
     },
+    eventId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
+    dateSigned: {
+        type: Date,
+        default: Date.now,
+    },
+    waiverVersion: {
+        type: Number,
+        required: true,
+    },
 });
 
-const Waiver =
-    mongoose.models["devWaivers"] || mongoose.model("devWaivers", digitalWaiverSchema);
+const SignedWaiver =
+    mongoose.models["devSignedWaivers"] || mongoose.model("devSignedWaivers", signedWaiverSchema);
 
-export default Waiver;
+export default SignedWaiver;
