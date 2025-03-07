@@ -3,10 +3,9 @@ import { IEvent } from "database/eventSchema";
 import { IGroup } from "database/groupSchema";
 import { IUser } from "database/userSchema";
 import { ILog } from "database/logSchema";
-import useSWR, { Fetcher, MutatorCallback } from "swr";
+import useSWR, { MutatorCallback } from "swr";
 
 
-const groupIdsFetcher = (urls: string[]) => Promise.all(urls.map(url => fetch(url).then(res => res.json())));
 export interface SWRResponse<Data, Error> {
     data?: Data;
     error?: Error;

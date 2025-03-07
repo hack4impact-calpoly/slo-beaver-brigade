@@ -27,7 +27,7 @@ const fetcher = (resource: string | URL | Request)=> fetch(resource, {cache: 'no
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <SWRConfig value={{provider: localStorageProvider, fetcher: fetcher, keepPreviousData: true }}>
+        <SWRConfig value={{fetcher: fetcher, keepPreviousData: true }}>
             <StyledComponentsRegistry>
                 <ChakraProvider theme={theme}>
                     {children}

@@ -7,9 +7,7 @@ export async function GET() {
   try {
     await connectDB();
     
-    const logs = await Log.find()
-      .sort({ date: -1 }) // Sort by newest first
-      .limit(50); // Limit to last 50 logs for performance
+    const logs = await Log.find().sort({ date: -1 }).limit(50); // Limit to last 50 logs for performance
     
     console.log("Fetched logs:", logs);
     return NextResponse.json(logs);

@@ -16,7 +16,7 @@ const AuditPage = () => {
   // Set mounted to true after the component mounts to prevent flickering
   useEffect(() => {
     setMounted(true); // Only on client side load
-    mutateLogs();
+    mutateLogs(); // Revalidate the logs data
     console.log(logs)
   }, [logs, mutateLogs]);
 
@@ -37,6 +37,7 @@ const AuditPage = () => {
    // Function to manually refresh logs
    const refreshLogs = () => {
     mutateLogs(); // Revalidate the logs data
+    console.log(logs)
   };
 
   return (
