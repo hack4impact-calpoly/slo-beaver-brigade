@@ -5,6 +5,7 @@ export const runtime = 'nodejs';
 
 // GET endpoint to fetch logs
 export async function GET() {
+  console.log('Fetching logs...');
   try {
     await connectDB();
 
