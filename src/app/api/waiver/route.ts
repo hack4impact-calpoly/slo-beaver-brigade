@@ -4,7 +4,6 @@ import { NextResponse, NextRequest } from "next/server";
 import Waiver, { IWaiver } from "@database/digitalWaiverSchema";
 
 export const revalidate = 0;
-
 //Get waivers
 export async function GET() {
     try {
