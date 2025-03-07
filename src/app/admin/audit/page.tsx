@@ -17,7 +17,8 @@ const AuditPage = () => {
   useEffect(() => {
     setMounted(true); // Only on client side load
     mutateLogs();
-  }, []);
+    console.log(logs)
+  }, [logs, mutateLogs]);
 
   if (!mounted) {
     return <Center p={8}><Spinner size="xl" /></Center>;
