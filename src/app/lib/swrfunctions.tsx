@@ -77,7 +77,7 @@ export function useEventId(id: string) {
 
 export function useLogs() {
   // revalidates every 10 minutes
-  const { data, error, isLoading, mutate } = useSWR<ILog[]>('/api/logs2');
+  const { data, error, isLoading, mutate } = useSWR<ILog[]>('/api/audit');
 
   return {
     logs: data,
