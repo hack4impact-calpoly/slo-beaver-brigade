@@ -15,7 +15,7 @@ const AuditPage = () => {
   const [mounted, setMounted] = useState(false); // Helps prevent flickering on initial load
   
   const fetchLogs = async () => {
-    const res = await fetch("/api/logs");
+    const res = await fetch("/api/logs", { cache: "no-store" });
     if (!res.ok) {
       console.error("Failed to fetch logs");
       setIsError(true);
