@@ -1,23 +1,23 @@
 'use client';
-import React, { use } from "react";
-import { useState, useEffect } from "react";
-import style from "@styles/admin/audit.module.css";
-import MessageLog from "../../components/MessageLog";
-import { Text, Input, Select, Spinner, Center , Button} from "@chakra-ui/react";
-import { ILog } from "@/database/logSchema";
+import React, { use } from 'react';
+import { useState, useEffect } from 'react';
+import style from '@styles/admin/audit.module.css';
+import MessageLog from '../../components/MessageLog';
+import { Text, Input, Select, Spinner, Center, Button } from '@chakra-ui/react';
+import { ILog } from '@/database/logSchema';
 
 const AuditPage = () => {
   const [logs, setLogs] = useState<ILog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [userFilter, setUserFilter] = useState("");
-  const [actionFilter, setActionFilter] = useState("");
+  const [userFilter, setUserFilter] = useState('');
+  const [actionFilter, setActionFilter] = useState('');
   const [mounted, setMounted] = useState(false); // Helps prevent flickering on initial load
-  
+
   const fetchLogs = async () => {
-    const res = await fetch("/api/logs", { cache: "no-store" });
+    const res = await fetch('/api/auditlogs', { cache: 'no-store' });
     if (!res.ok) {
-      console.error("Failed to fetch logs");
+      console.error('Failed to fetch logs');
       setIsError(true);
       setIsLoading(false);
       return;
@@ -25,7 +25,7 @@ const AuditPage = () => {
     const fetchedlogs = await res.json();
     setLogs(fetchedlogs);
     setIsLoading(false);
-  }
+  };
 
   // Set mounted to true after the component mounts to prevent flickering
   useEffect(() => {
@@ -34,16 +34,20 @@ const AuditPage = () => {
   }, []);
 
   if (!mounted) {
-    return <Center p={8}><Spinner size="xl" /></Center>;
+    return (
+      <Center p={8}>
+        <Spinner size="xl" />
+      </Center>
+    );
   }
 
-  const filteredLogs = logs?.filter(log => {
-    const matchesUser = userFilter ? 
-      log.user.toLowerCase().includes(userFilter.toLowerCase()) : 
-      true;
-    const matchesAction = actionFilter ? 
-      log.action.toLowerCase().includes(actionFilter.toLowerCase()) : 
-      true;
+  const filteredLogs = logs?.filter((log) => {
+    const matchesUser = userFilter
+      ? log.user.toLowerCase().includes(userFilter.toLowerCase())
+      : true;
+    const matchesAction = actionFilter
+      ? log.action.toLowerCase().includes(actionFilter.toLowerCase())
+      : true;
     return matchesUser && matchesAction;
   });
 
@@ -51,12 +55,12 @@ const AuditPage = () => {
     <div className={style.page}>
       <main>
         <div className={style.auditPage}>
-          <Text fontSize={["xl", "xl", "2xl"]} fontWeight="light" color="black">
+          <Text fontSize={['xl', 'xl', '2xl']} fontWeight="light" color="black">
             Audit Log
           </Text>
           <div className={style.filtering}>
             <Text
-              fontSize={["xl", "xl", "2xl"]}
+              fontSize={['xl', 'xl', '2xl']}
               fontWeight="light"
               color="black"
             >
@@ -92,15 +96,12 @@ const AuditPage = () => {
           ) : filteredLogs?.length === 0 ? (
             <Text>No logs found</Text>
           ) : (
-            filteredLogs?.map((log) => (
-              <MessageLog key={log._id} log={log} />
-            ))
+            filteredLogs?.map((log) => <MessageLog key={log._id} log={log} />)
           )}
         </div>
       </main>
     </div>
   );
-
 };
 
 export default AuditPage;
