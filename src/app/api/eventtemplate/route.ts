@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-import Event, { IEvent } from "@database/eventTemplateSchema";
+import Event, { IEventTemplate } from "@database/eventTemplateSchema";
 import { revalidateTag } from "next/cache";
 
 
@@ -10,7 +10,7 @@ import { revalidateTag } from "next/cache";
 
 export async function POST(req: NextRequest) {
     await connectDB();
-    const eventTemplate: IEvent = await req.json();
+    const eventTemplate: IEventTemplate = await req.json();
 
     try {
         const newEventTemplate = new Event(eventTemplate);
