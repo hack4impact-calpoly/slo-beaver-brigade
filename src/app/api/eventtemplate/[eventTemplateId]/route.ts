@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@database/db";
-import Event, { IEventTemplate } from "@database/eventTemplateSchema";
+import Event, { IEvent } from "@database/eventTemplateSchema";
 import { revalidateTag } from "next/cache";
 
 type IParams = {
@@ -71,8 +71,9 @@ export async function PUT(req: NextRequest, {params}: IParams) {
                 spanishSpeakingAccommodation,
                 volunteerEvent,
                 groupsAllowed,
+                attendeeIds,
                 groupsOnly,
-            }: IEventTemplate = await req.json();
+            }: IEvent = await req.json();
             if (location) {
                 eventTemplate.location = location;
             }
@@ -103,6 +104,9 @@ export async function PUT(req: NextRequest, {params}: IParams) {
             }
             if (eventType) {
                 eventTemplate.eventType = eventType;
+            }
+            if (attendeeIds){
+                eventTemplate.attendeeIds = attendeeIds;
             }
             eventTemplate.groupsOnly = groupsOnly;
         }
