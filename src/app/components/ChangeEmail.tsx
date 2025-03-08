@@ -19,7 +19,8 @@ import {
     Flex,
     FormControl,
     FormLabel,
-    Button
+    Button,
+    FormErrorMessage
 } from '@chakra-ui/react';
 import { IUser } from "database/userSchema";
 
@@ -33,10 +34,14 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
       const [user_firstName, setFirstName] = useState('');
       const [user_lastName, setLastName] = useState('');
       const [user_email, setEmail] = useState('');
+      const [updated_email, setUpdatedEmail] = useState('');
+      const [confirmed_updated_email, setConfirmedUpdatedEmail] = useState('');
       const [user_phoneNumber, setPhoneNumber] = useState('');
       const [user_zipcode, setZipcode] = useState('');
       const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
-    
+        const [emailError, setEmailError] = useState(false);
+        const [emailErrorMessage, setEmailErrorMessage] = useState('');
+      
       // Update state when userData changes
       useEffect(() => {
           if (userData) {
@@ -49,17 +54,12 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
           }
       }, [userData]);
     
-      const handleFirstNameChange = (e: any) => setFirstName(e.target.value);
-      const handleLastNameChange = (e: any) => setLastName(e.target.value);
-      const handlePhoneNumberChange = (e: any) => setPhoneNumber(e.target.value);
-      const handleZipcodeChange = (e: any) => setZipcode(e.target.value)
+      const handleUpdatedEmailChange = (e: any) => setUpdatedEmail(e.target.value);
+      const handleConfirmedUpdatedEmailChange = (e: any) => setConfirmedUpdatedEmail(e.target.value);
+
     
       
-      const handleReceiveNewsletter = (e: any) => {
-        const selectedOption = e.target.value;
-        const receiveNewsletter = selectedOption === 'yes';
-        setReceiveNewsletter(receiveNewsletter);
-      };      
+     
     
       const [isSubmitted, setIsSubmitted] = useState(false);
       
@@ -75,10 +75,36 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
       };
     
       async function HandleSubmit() {
+
+        // CHECK IF NEW EMAIL AND CONFIRMATION MATCH
+        if (updated_email != confirmed_updated_email) {
+            setEmailError(true);
+            setEmailErrorMessage("Emails must match");
+            return;
+        } 
+
+        // Check if Email is not the one currently in use
+
+        if (updated_email === user_email) {
+            setEmailError(true);
+            setEmailErrorMessage("New email must be entered");
+            return;
+        }
+
+        // Check if email is valid
+
+
+
+        setEmailError(false);
+
+        console.log("TEST");
+
+        return;
+
           const updatedUserData = {
             firstName: user_firstName,
             lastName: user_lastName,
-            email: user_email,
+            email: updated_email,
             phoneNumber: user_phoneNumber,
             receiveNewsletter: user_receiveNewsletter,
             zipcode: user_zipcode
@@ -86,13 +112,6 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
       
           
           try {
-            if (updatedUserData.receiveNewsletter) {
-                const res = await addToNewsletter(updatedUserData.email, updatedUserData.firstName, updatedUserData.lastName, updatedUserData.zipcode);
-                console.log(res)
-            } else {
-                const res = await removeFromNewsletter(updatedUserData.email);
-                console.log(res)
-            }
             const response = await fetch(`/api/profile/${userData?._id}/`, {
               method: "PATCH",
               headers: {
@@ -137,18 +156,19 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
 
                 <FormControl isInvalid={user_firstName === '' && isSubmitted} mt={2}>
                 <FormLabel color='grey' fontWeight='bold'>Old Email</FormLabel>
-                <Input placeholder='' fontWeight='bold' value={user_email} onChange={handleFirstNameChange}/>
+                <Input placeholder='' fontWeight='bold' value={user_email} readOnly />
                 </FormControl>
 
-                <FormControl isInvalid={user_lastName === '' && isSubmitted}> 
+                <FormControl isInvalid={emailError}> 
                 <FormLabel color='grey' fontWeight='bold'>New Email</FormLabel>             
-                <Input placeholder='' fontWeight='bold' onChange={handleLastNameChange}/>
+                <Input required={true} placeholder='' type="email" fontWeight='bold' onChange={handleUpdatedEmailChange}/>
+                <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
                 </FormControl>
 
                 <Stack spacing={0}>
-                <FormControl isInvalid={user_phoneNumber === '' && isSubmitted}>
+                <FormControl isInvalid={emailError}>
                     <FormLabel color='grey' fontWeight='bold'>Confirm New Email</FormLabel>
-                    <Input placeholder='' fontWeight='bold' onChange={handlePhoneNumberChange}/>
+                    <Input required={true} placeholder='' type="email" fontWeight='bold' onChange={handleConfirmedUpdatedEmailChange}/>
                 </FormControl>
                 </Stack>
 
