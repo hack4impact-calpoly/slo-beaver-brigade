@@ -5,6 +5,7 @@ export const runtime = "nodejs";
 
 // GET endpoint to fetch logs
 export async function GET(req: NextRequest) {
+    //do not remove this console.log it will break the route
     console.log(
         "Fetching logs on server, called by:",
         req.headers.get("referer")
