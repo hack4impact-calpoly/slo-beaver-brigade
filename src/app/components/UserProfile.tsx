@@ -8,6 +8,7 @@ import { getUserDbData } from "app/lib/authentication";
 import { IUser } from "database/userSchema";
 import "../fonts/fonts.css";
 import DeleteConfirmation from "./DeleteConfirmation";
+import ChangeEmail from "@components/ChangeEmail";
 import { StatUpArrow } from "@chakra-ui/react";
 
 export default function UserProfile() {
@@ -47,6 +48,8 @@ export default function UserProfile() {
            <h2 className={styles.containerTitle}>
              Account
            </h2>
+           <h2 className={styles.editButton}> <ChangeEmail userData={userData}/>           
+            </h2> 
          </div>
          <div className={styles.formFields}>
            <div>
