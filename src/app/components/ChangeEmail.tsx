@@ -25,6 +25,7 @@ import {
 import { IUser } from "database/userSchema";
 
 import { PencilIcon } from "@heroicons/react/16/solid";
+import { EmailAddress } from "@clerk/nextjs/server";
 
 
 function ChangeEmail({userData}: {userData: IUser | null}) {
@@ -99,33 +100,21 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
 
         console.log("TEST");
 
-        return;
+        // VERYIFY NEW EMAIL
 
-          const updatedUserData = {
-            firstName: user_firstName,
-            lastName: user_lastName,
-            email: updated_email,
-            phoneNumber: user_phoneNumber,
-            receiveNewsletter: user_receiveNewsletter,
-            zipcode: user_zipcode
-          };
-      
+        // send the email.
+
           
           try {
-            const response = await fetch(`/api/profile/${userData?._id}/`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(updatedUserData),
-            });
-            if (response.ok) {
-              setIsSubmitted(true);
-              handleClose();
-            //   window.location.reload();
-            } else {
-              console.error("Failed to update user data");
-            }
+            const response = await fetch(`/api/profile/email/${userData?._id}/`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updated_email),
+              });
+
+           
           } catch (error) {
             
           }
