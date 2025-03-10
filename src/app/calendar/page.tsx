@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import Calendar from "app/components/calendar/Calendar";
-import Event, { IEvent } from "@database/eventSchema";
+import { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
 import {
   Box,
@@ -13,17 +13,13 @@ import {
   useMediaQuery,
   Drawer,
   DrawerBody,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
   Button,
   useDisclosure,
-  Show
 } from "@chakra-ui/react";
-import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
-import { getSelectedEvents } from "app/actions/eventsactions";
 import { EmailRSSComponent } from "app/components/EmailComponent";
 import { useEventsAscending } from "app/lib/swrfunctions";
 import "../fonts/fonts.css"
