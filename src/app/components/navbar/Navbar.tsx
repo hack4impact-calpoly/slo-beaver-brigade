@@ -53,7 +53,7 @@ export default function Navbar(props: { name: string }) {
             </li>
            <li>
               <Link href="/calendar" onClick={handleHideNavbar}>
-                Calendar
+                Event Calendar
               </Link>
             </li>
             {(props.name != "Sign In / Log In") &&
