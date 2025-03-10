@@ -60,7 +60,7 @@ export default function Page() {
       eventType: "Volunteer",
       location: "Central Park",
       description: "Community service event.",
-      checklist: "Bring gloves, trash bags",
+      checklist: ["Bring gloves", "trash bags"],
       groupsOnly: false,
       wheelchairAccessible: true,
       spanishSpeakingAccommodation: false,
@@ -77,7 +77,7 @@ export default function Page() {
       eventType: "Fundraiser",
       location: "Community Hall",
       description: "Fundraiser for local charities.",
-      checklist: "Bring donations",
+      checklist: ["Bring donations"],
       groupsOnly: false,
       wheelchairAccessible: true,
       spanishSpeakingAccommodation: true,
@@ -110,7 +110,7 @@ export default function Page() {
     useState("");
   const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
   const [description, setDescription] = useState("");
-  const [checkList, setChecklist] = useState("N/A");
+  const [checkList, setChecklist] = useState<string[]>([]);
   const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
@@ -148,12 +148,12 @@ export default function Page() {
       const parsedStartTime = parse(
         `${start}`,
         timeFormat,
-        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
+        new Date(`${activeDate ? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
       const parsedEndTime = parse(
         `${end}`,
         timeFormat,
-        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
+        new Date(`${activeDate ? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
 
       // Format the adjusted dates back into ISO strings
@@ -192,7 +192,7 @@ export default function Page() {
     setEventType(template.eventType || "");
     setLocation(template.location);
     setDescription(template.description || "");
-    setChecklist(template.checklist || "");
+    setChecklist(template.checklist || []);
     setOnlyGroups(template.groupsOnly || false);
     setAccessibilityAccommodation(template.wheelchairAccessible ? "Yes" : "No");
     setSpanishSpeaking(template.spanishSpeakingAccommodation ? "Yes" : "No");
@@ -200,13 +200,13 @@ export default function Page() {
     setEventEnd(formatISO(template.endTime));
     setPassedStartTime(format(template.startTime, 'HH:mm'));
     setPassedEndTime(format(template.endTime, 'HH:mm'));
-  
+
     setEventTypes((prev) =>
       template.eventType && !prev.includes(template.eventType)
         ? [...prev, template.eventType]
         : prev
-    );    
-  
+    );
+
     setGroupsSelected(
       template.groupsAllowed.map(id => ({
         _id: id,
@@ -214,19 +214,19 @@ export default function Page() {
         groupees: [],
       }))
     );
-  
-    setChecklist(template.checklist || "");
-  
+
+    setChecklist(template.checklist || []);
+
     setEventType(template.eventType || "");
-  
+
     // setLocation(template.location);
     setLocation((prev) => (template.location && prev !== template.location ? template.location : prev));
-  
+
     if (template.eventImage) {
       setImagePreview(template.eventImage);
-    }    
-  };  
-  
+    }
+  };
+
   const handleSaveAsTemplate = async () => {
     const newTemplate: IEventTemplate = {
       _id: (templates.length + 1).toString(),
@@ -245,9 +245,9 @@ export default function Page() {
       groupsAllowed: groupsSelected.map(group => group._id),
       registeredIds: [],
     };
-  
+
     setTemplates([...templates, newTemplate]);
-  
+
     toast({
       title: "Template Saved",
       description: "This event has been saved as a template.",
@@ -255,7 +255,7 @@ export default function Page() {
       duration: 2500,
       isClosable: true,
     });
-  };  
+  };
 
   // Handle file selection for the event cover image and set preview
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -497,22 +497,22 @@ export default function Page() {
   return (
     <Box p={[0, 8, 8, 8]} mx="10">
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
-    <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
-      Create New Event
-    </Text>
-    <Menu>
-      <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-        {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
-      </MenuButton>
-      <MenuList>
-        {templates.map((template) => (
-          <MenuItem key={template._id} onClick={() => handleSelectTemplate(template)}>
-            {template.eventName}
-          </MenuItem>
-        ))}
-      </MenuList>
-    </Menu>
-  </Flex>
+        <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
+          Create New Event
+        </Text>
+        <Menu>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
+          </MenuButton>
+          <MenuList>
+            {templates.map((template) => (
+              <MenuItem key={template._id} onClick={() => handleSelectTemplate(template)}>
+                {template.eventName}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      </Flex>
 
       {/* image uploading */}
       <Flex
@@ -764,7 +764,7 @@ export default function Page() {
         </VStack>
         <Flex flex="1">
           <VStack alignItems="flex-start">
-            <Text fontWeight="bold"  mt={{ base: "-16", md: "0" }} mb="-4">
+            <Text fontWeight="bold" mt={{ base: "-16", md: "0" }} mb="-4">
               Date/Time
             </Text>
             {/* MiniCalendar */}
