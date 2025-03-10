@@ -18,7 +18,8 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Button,
-  useDisclosure
+  useDisclosure,
+  Show
 } from "@chakra-ui/react";
 import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
@@ -189,7 +190,7 @@ export default function Page() {
               variant="outline"
               mb="4"
             >
-              Filters
+              View Filters
             </Button>
             
             <Box
@@ -206,10 +207,12 @@ export default function Page() {
   
         <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
           <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton />
-            <DrawerHeader>Event Filters</DrawerHeader>
-            <DrawerBody>
+          <DrawerContent mt="60px">
+            <DrawerCloseButton/>
+            <DrawerBody 
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between">
               <Box>
                 <Heading
                   as="h1"
@@ -264,7 +267,13 @@ export default function Page() {
                   </Stack>
                 </CheckboxGroup>
               </Box>
-              <Box mt="4">
+              <Box 
+                padding="0"
+                mt="2%" 
+                mr="1%"
+                ml="1%"
+                p="5"
+              >
                 <EmailRSSComponent calendarURL="/api/events/calendar"/>
               </Box>
             </DrawerBody>
