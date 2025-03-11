@@ -25,7 +25,7 @@ import { IUser } from 'database/userSchema';
 import { revalidatePathServer } from 'app/actions/serveractions';
 import styles from './/page.module.css';
 import '../fonts/fonts.css';
-import beaverLogo from '/docs/images/beaver-logo.svg';
+import beaverLogo from '/docs/images/beaver-logo.png';
 import Image from 'next/image';
 
 export default function SignUp() {

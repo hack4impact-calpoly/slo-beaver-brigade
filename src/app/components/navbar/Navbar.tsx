@@ -26,7 +26,7 @@ export default function Navbar(props: { name: string }) {
           <Link href="/">
             <Image
               className={styles.logo}
-              src={"/beaver-logo.svg"}
+              src={"/beaver-logo.png"}
               alt="Beaver Logo"
               width={35}
               height={35}
