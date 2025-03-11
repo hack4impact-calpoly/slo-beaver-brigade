@@ -19,7 +19,7 @@ import { revalidatePathServer } from "app/actions/serveractions";
 import { getBareBoneUser } from "app/actions/cookieactions";
 import { getUserDataFromEmail } from "app/lib/authentication";
 import "../fonts/fonts.css";
-import beaverLogo from "/docs/images/beaver-logo.svg";
+import beaverLogo from "/docs/images/beaver-logo.png";
 import Image from "next/image";
 
 export default function Login() {
