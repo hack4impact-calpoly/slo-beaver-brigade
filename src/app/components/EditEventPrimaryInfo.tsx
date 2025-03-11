@@ -88,9 +88,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                                 return <Text key={group._id} className={styles.eventEntry}>{group.group_name}</Text>
                             }) : <Text className={styles.eventEntry}>None</Text>}
                             <Text className={styles.eventField}>Items to Bring</Text>
-                            <Text className={styles.eventEntry}>
-                                {eventData.checklist.join(', ')}
-                            </Text>
+                            <Text className={styles.eventEntry}>{eventData.checklist.join(', ')}</Text>
                             <Text className={styles.eventField}>Languages</Text>
                             <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation ? 'English, Spanish' : 'English'}</Text>
                             <Text className={styles.eventField}>Disability Accommodations</Text>
