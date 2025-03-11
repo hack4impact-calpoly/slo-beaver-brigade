@@ -52,7 +52,7 @@ export default function Waiver() {
       >
         <Image src={beaverLogo} alt="beaver" />
         <Box w="60%" h="70%" mt={20} mb={20}>
-          <h1 style={{ fontSize: "30px", fontWeight: "bold" }}>
+          <h1 style={{ fontSize: "30px", fontWeight: "bold", textAlign: "center" }}>
             Waiver of Liability and Hold Harmless Agreement
           </h1>
           <Textarea

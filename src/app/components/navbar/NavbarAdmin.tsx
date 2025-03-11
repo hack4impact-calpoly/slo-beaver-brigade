@@ -34,8 +34,8 @@ export default function Navbar(props: { name: string }) {
               className={styles.logo}
               src={"/beaver-logo.png"}
               alt="Beaver Logo"
-              width={35}
-              height={35}
+              width={45}
+              height={40}
             ></Image>
           </Link>
           {props.name === "Sign In / Log In" ? (
