@@ -494,6 +494,32 @@ export default function Page() {
     fetchEventTypes();
   }, []);
 
+  // adding items to bring
+  const [items, setItems] = useState<string[]>([]); // list of items
+  const [newItem, setNewItem] = useState(''); // item user is currently adding
+
+  // add item currently being written out
+  const handleAddItem = () => {
+    if (newItem.trim()) {
+      setItems([...items, newItem]);
+      setChecklist([...checkList, newItem]);
+      setNewItem('');
+    }
+  };
+
+  // remove item from list
+  const handleRemoveItem = (itemToRemove: string) => {
+    setItems(items.filter(item => item !== itemToRemove));
+    setChecklist(checkList.filter(item => item !== itemToRemove));
+  };
+
+  // hitting enter auto adds item
+  const handleKeyPress = (e: { key: string; }) => {
+    if (e.key === 'Enter') {
+      handleAddItem();
+    }
+  };
+
   return (
     <Box p={[0, 8, 8, 8]} mx="10">
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
@@ -664,6 +690,47 @@ export default function Page() {
           </FormControl>
 
           <FormControl>
+            <FormLabel htmlFor="required-items" fontWeight="bold">
+              Items to bring
+            </FormLabel>
+            <VStack spacing={4} align="flex-start">
+              <HStack spacing={4}>
+                <Input
+                  id="new-item"
+                  value={newItem}
+                  onChange={(e) => setNewItem(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Enter item"
+                />
+                <Button onClick={handleAddItem} colorScheme="teal">
+                  +
+                </Button>
+              </HStack>
+
+              {/* creates new field per item added */}
+              {items.length > 0 && (
+                <Box>
+                  <h3>Items List:</h3>
+                  <VStack spacing={2} align="flex-start">
+                    {items.map((item, index) => (
+                      <HStack key={index} spacing={2}>
+                        <Box>{item}</Box>
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => handleRemoveItem(item)}
+                        >
+                          x
+                        </Button>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </Box>
+              )}
+            </VStack>
+          </FormControl>
+
+          <FormControl>
             <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
               Spanish Speaking Accommodation
             </FormLabel>
@@ -794,18 +861,6 @@ export default function Page() {
             className={style.preview}
             value={description}
             onChange={(e) => setDescription(e || "")}
-            data-color-mode="light"
-          />
-        </FormControl>
-
-        <FormControl flex={1}>
-          <FormLabel htmlFor="required-items" fontWeight="bold">
-            Checklist
-          </FormLabel>
-          <MDEditor
-            className={style.preview}
-            value={checkList}
-            onChange={(e) => setChecklist(e || "")}
             data-color-mode="light"
           />
         </FormControl>
