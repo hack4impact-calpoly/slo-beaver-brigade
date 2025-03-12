@@ -295,7 +295,7 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
                 <FormControl w='150px' mt={2} mr={0} mb={2} ml={0}>
                     <Button
                     loadingText='Verifying'
-                    isLoading={pendingVerification}
+                    isLoading={!pendingVerification}
                     bg='#e0af48'
                     _hover={{ bg: '#C19137' }}
                     color='black'
