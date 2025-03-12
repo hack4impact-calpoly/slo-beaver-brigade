@@ -12,6 +12,7 @@ import {
     useDisclosure,
     Input,
     Textarea,
+    Text,
     Select,
     Switch,
     Stack,
@@ -20,17 +21,28 @@ import {
     FormControl,
     FormLabel,
     Button,
-    FormErrorMessage
+    FormErrorMessage,
+    Box,
+    
 } from '@chakra-ui/react';
 import { IUser } from "database/userSchema";
+import { useUser } from "@clerk/nextjs";
+import Image from 'next/image';
+
+import beaverLogo from '/docs/images/beaver-logo.svg';
+
+
 
 import { PencilIcon } from "@heroicons/react/16/solid";
 import { EmailAddress } from "@clerk/nextjs/server";
+import {EmailAddressResource} from "@clerk/types";
 
 
 function ChangeEmail({userData}: {userData: IUser | null}) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const {user} = useUser();
           
       const [user_firstName, setFirstName] = useState('');
       const [user_lastName, setLastName] = useState('');
@@ -42,6 +54,11 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
       const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
         const [emailError, setEmailError] = useState(false);
         const [emailErrorMessage, setEmailErrorMessage] = useState('');
+        const [pendingVerification, setPendingVerification] =  useState(false);
+        const [code, setCode] = useState('');
+        const [isVerifying, setIsVerifying] = useState(false);
+        const [userCreatedEmail, setUserCreatedEmail] = React.useState<EmailAddressResource | undefined>()
+        
       
       // Update state when userData changes
       useEffect(() => {
@@ -94,30 +111,80 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
 
         // Check if email is valid
 
-
-
         setEmailError(false);
 
-        console.log("TEST");
+        // VERIFY NEW EMAIL
 
-        // VERYIFY NEW EMAIL
+        if (user == null) {
+            return;
+        }
 
-        // send the email.
 
           
           try {
-            const response = await fetch(`/api/profile/email/${userData?._id}/`, {
-                method: "PATCH",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updated_email),
-              });
+            // PREPARE VERIFICATION
 
-           
-          } catch (error) {
+            const createdEmail = await user.createEmailAddress({
+                email: updated_email
+            });
+    
+            if (!createdEmail) {
+                return;
+            }
+
+            createdEmail.prepareVerification({ strategy: 'email_code'});
+
+            setPendingVerification(true);
+            setUserCreatedEmail(createdEmail);
+
             
-          }
+
+        
+           
+          } catch (err: any) {
+            console.error(JSON.stringify(err, null, 2));
+            let error = err.errors[0];
+            setEmailErrorMessage(error.message);
+            setEmailError(true);
+      }
+            
+          
+        }
+
+        const onVerifyCode = async (e: React.FormEvent) => {
+            e.preventDefault();
+            setIsVerifying(true);
+
+
+            try {
+                const finishedVerification = await userCreatedEmail?.attemptVerification({
+                    code,
+                  });
+
+                if (finishedVerification?.verification.status === "verified") {
+                    // UPDATE MONGO FOR NEW EMAIL
+                    const response = await fetch(`/api/profile/email/${userData?._id}/`, {
+                         method: "PATCH",
+                        headers: {
+                        "Content-Type": "application/json",
+                        },
+                         body: JSON.stringify(updated_email),
+                     });
+
+                     setIsVerifying(false);
+                     setPendingVerification(false);
+
+                } else {
+
+                }
+
+                  
+
+            } catch (err: any) {
+
+            }
+
+
         }
 
     return ( <>
@@ -132,7 +199,7 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
         Change Email
         </Button>
 
-        <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
+        {!pendingVerification && <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
         <ModalOverlay />
         <ModalContent fontFamily="Lato" borderRadius="10px">
             <ModalHeader bg='#337774' color='white' fontWeight='bold' position='relative' borderRadius="10px 10px 0px 0px">
@@ -178,7 +245,76 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
             </Button>
             </ModalFooter>
         </ModalContent>
-        </Modal>
+        </Modal>}
+        {pendingVerification && (
+        <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
+        <ModalOverlay>
+            <Box mt={8} mb={8}>
+                <Flex
+                textAlign='center'
+                justifyContent='flex-start'
+                flexDirection='column'
+                alignItems='center'
+                >
+                <Image src={beaverLogo} alt='beaver' />
+                <Text
+                    mt={12}
+                    fontFamily='Lato'
+                    fontWeight='600'
+                    fontSize={'24px'}
+                >
+                    Verification code sent to
+                    <br />
+                    {updated_email}
+                </Text>
+                </Flex>
+            </Box>
+            <Box mt={12} fontFamily='Lato'>
+                <FormControl mb={2} isRequired>
+                <FormLabel fontWeight='600'>Email Verification Code</FormLabel>
+                <Input
+                    type='text'
+                    placeholder='123456'
+                    variant='filled'
+                    onChange={(e) => setCode(e.target.value)}
+                />
+                </FormControl>
+                <Box display={'flex'} flexDirection={['column', 'row']} justifyContent={['center', 'space-between']} alignItems={['center', 'space-between']}>
+                <Button
+                    bg='#e0af48'
+                    _hover={{ bg: '#C19137' }}
+                    color='black'
+                    w='150px'
+                    mt={2} mr={0} mb={2} ml={0}
+                    onClick={() => {
+                    setPendingVerification(false);
+                    }}
+                >
+                    Back
+                </Button>
+                <FormControl w='150px' mt={2} mr={0} mb={2} ml={0}>
+                    <Button
+                    loadingText='Verifying'
+                    isLoading={pendingVerification}
+                    bg='#e0af48'
+                    _hover={{ bg: '#C19137' }}
+                    color='black'
+                    w='150px'
+                    onClick={onVerifyCode}
+                    >
+                    Verify Email
+                    </Button>
+                    <FormErrorMessage>
+                    Error has occured in server. Please contact email:
+                    hack4impact@calpoly.edu
+                    </FormErrorMessage>
+                </FormControl>
+                </Box>
+            </Box>
+          </ModalOverlay>
+          </Modal>
+        
+      )}
   </>);
 
 

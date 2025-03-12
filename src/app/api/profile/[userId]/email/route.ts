@@ -5,7 +5,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
 import { clerkClient } from '@clerk/nextjs/server';
 import { currentUser } from "@clerk/nextjs/server";
-
+import { EmailAddress } from "@clerk/nextjs/server";
 
 type IParams = {
     params: {
@@ -25,11 +25,6 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
 
     try {
 
-            // UPDATE MONGODB
-        await User.updateOne(
-            {user_id: userId},
-            {email: newEmail},
-        )
 
 
 
@@ -41,25 +36,20 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             });
         }
 
+        clerkClient.emailAddresses.updateEmailAddress(newEmail, {primary: true, verified: true});
 
 
-        const emailAddressId = clerkUser.emailAddresses[0].id;
 
-        // delete the old clerk email
 
-        await clerkClient.emailAddresses.deleteEmailAddress(emailAddressId);
+        // UPDATE MONGODB
+        return await User.updateOne(
+            {user_id: userId},
+            {email: newEmail},
+        )
 
-        // Create the new one
 
-        const response = await clerkClient.emailAddresses.createEmailAddress({
-            userId: userId,
-            emailAddress: newEmail,
-            primary: true,
-            verified: false,
-        });
 
-        return Response.json(response);
-
+        
 
     } catch (err: any) {
         return Response.json(
