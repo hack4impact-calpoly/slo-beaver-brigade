@@ -58,6 +58,7 @@ export default function SignUp() {
   const [emailError, setEmailError] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const zipcodeRegex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+  const phoneNumRegex = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
   
   useEffect(() => {
     let userData = sessionStorage.getItem('userData');
@@ -95,7 +96,7 @@ export default function SignUp() {
       return;
     }
 
-    if(!zipcodeRegex.test(zipcode)){
+    if(!zipcodeRegex.test(zipcode) || !phoneNumRegex.test(phone)){
       return;
     }
 
@@ -291,7 +292,7 @@ export default function SignUp() {
             <FormControl
               mb={4}
               isRequired
-              isInvalid={phone === '' && submitAttempted}
+              isInvalid={submitAttempted && (phone === "" || !phoneNumRegex.test(phone))}
             >
               <FormLabel fontWeight='600'>Phone Number</FormLabel>
               <Input
@@ -302,10 +303,15 @@ export default function SignUp() {
                 onChange={(e) => {
                   console.log('Input changed:', e.target.value);
                   setPhone(e.target.value);
+                  setSubmitAttempted(false);
                 }}
                 required={true}
               />
-              <FormErrorMessage>Phone number is required</FormErrorMessage>
+              <FormErrorMessage>
+                {phone === "" 
+                  ? "Phone number is required" 
+                  : "Invalid phone number format."}
+              </FormErrorMessage>
             </FormControl>
             <FormControl
               mb={4}
