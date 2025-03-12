@@ -57,7 +57,8 @@ export default function SignUp() {
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-
+  const zipcodeRegex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+  
   useEffect(() => {
     let userData = sessionStorage.getItem('userData');
 
@@ -83,6 +84,7 @@ export default function SignUp() {
     setPasswordError(false);
     setEmailErrorMessage('Email is required');
     setPasswordErrorMessage('Password is required');
+    setSubmitAttempted(true);
 
     if (!isLoaded) {
       return;
@@ -90,6 +92,10 @@ export default function SignUp() {
 
     //checks for empty fields
     if (!firstName || !lastName || !email || !password || !phone || !zipcode) {
+      return;
+    }
+
+    if(!zipcodeRegex.test(zipcode)){
       return;
     }
 
@@ -304,17 +310,24 @@ export default function SignUp() {
             <FormControl
               mb={4}
               isRequired
-              isInvalid={zipcode === '' && submitAttempted}
+              isInvalid={submitAttempted && (zipcode === "" || !zipcodeRegex.test(zipcode))}
             >
-              <FormLabel fontWeight='600'>Zipcode</FormLabel>
+              <FormLabel fontWeight="600">Zipcode</FormLabel>
               <Input
-                type='text'
-                placeholder='Zipcode'
-                variant='filled'
+                type="text"
+                placeholder="Zipcode"
+                variant="filled"
                 value={zipcode}
-                onChange={(e) => setZipcode(e.target.value)}
+                onChange={(e) => {
+                  setZipcode(e.target.value);
+                  setSubmitAttempted(false);
+                }}
               />
-              <FormErrorMessage>Zipcode is required</FormErrorMessage>
+              <FormErrorMessage>
+                {zipcode === "" 
+                  ? "Zipcode is required" 
+                  : "Invalid US ZIP code format (ex. 12345 or 12345-6789)"}
+              </FormErrorMessage>
             </FormControl>
             <FormControl
               mb={4}

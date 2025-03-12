@@ -16,7 +16,8 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Button
+  Button,
+  FormErrorMessage
 } from '@chakra-ui/react'
 import { IUser } from '@database/userSchema';
 import { PencilIcon } from "@heroicons/react/16/solid";
@@ -35,6 +36,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
   const [user_phoneNumber, setPhoneNumber] = useState('');
   const [user_zipcode, setZipcode] = useState('');
   const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
+  const zipcodeRegex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
   // Update state when userData changes
   useEffect(() => {
@@ -74,6 +76,17 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
   };
 
   async function HandleSubmit() {
+
+      if (!user_firstName || !user_lastName || !user_email || !user_phoneNumber || !user_zipcode) {
+        setIsSubmitted(true);
+        return;
+      }
+
+      if(!zipcodeRegex.test(user_zipcode)){
+        setIsSubmitted(true);
+        return;
+      }
+
       const updatedUserData = {
         firstName: user_firstName,
         lastName: user_lastName,
@@ -153,9 +166,18 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
                 </Stack>
 
                 <Stack spacing={0}>
-                  <FormControl isInvalid={user_zipcode === '' && isSubmitted}>
+                  <FormControl isInvalid={isSubmitted && (user_zipcode === "" || !zipcodeRegex.test(user_zipcode))}>
                     <FormLabel color='grey' fontWeight='bold'>Zipcode</FormLabel>
-                    <Input placeholder='' fontWeight='bold' value={user_zipcode} onChange={handleZipcodeChange}/>
+                    <Input placeholder='' fontWeight='bold' value={user_zipcode} 
+                    onChange={(e) => {
+                    handleZipcodeChange;
+                    setIsSubmitted(false);
+                    }}/>
+                    <FormErrorMessage>
+                      {user_zipcode === "" 
+                        ? "Zipcode is required" 
+                        : "Invalid US ZIP code format (ex. 12345 or 12345-6789)"}
+                    </FormErrorMessage>
                   </FormControl>
                 </Stack>
               
