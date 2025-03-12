@@ -27,8 +27,8 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
 
 
 
-
         const clerkUser = await currentUser();
+
 
         if (clerkUser == null) {
             return Response.json("Could not fetch user data. ", {
@@ -36,16 +36,33 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             });
         }
 
-        clerkClient.emailAddresses.updateEmailAddress(newEmail, {primary: true, verified: true});
+        // GET ID OF NEW EMAIL
 
+        let newId;
+        for (let i = 0; i<clerkUser.emailAddresses.length; i++) {
+            if (newEmail == clerkUser.emailAddresses[i].emailAddress) {
+                newId = clerkUser.emailAddresses[i].id;
+            }
+        }
 
+        if (newId == null) {
+            return Response.json("Could not fetch user data. ", {
+                status: 500,
+            });
+        }
+
+        const response = await clerkClient.emailAddresses.updateEmailAddress(newId, {primary: true, verified: true});
+
+        console.log("test3");
 
 
         // UPDATE MONGODB
-        return await User.updateOne(
-            {user_id: userId},
+        await User.updateOne(
+            {_id: userId},
             {email: newEmail},
         )
+
+        return Response.json(response);
 
 
 

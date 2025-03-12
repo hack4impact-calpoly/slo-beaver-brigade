@@ -163,7 +163,7 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
 
                 if (finishedVerification?.verification.status === "verified") {
                     // UPDATE MONGO FOR NEW EMAIL
-                    const response = await fetch(`/api/profile/email/${userData?._id}/`, {
+                    const response = await fetch(`/api/profile/${userData?._id}/email/`, {
                          method: "PATCH",
                         headers: {
                         "Content-Type": "application/json",
@@ -175,6 +175,7 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
                      setPendingVerification(false);
 
                 } else {
+                    console.error(JSON.stringify(finishedVerification, null, 2))
 
                 }
 
