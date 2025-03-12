@@ -464,10 +464,6 @@ export default function SignUp() {
                 >
                   Verify Email
                 </Button>
-                <FormErrorMessage>
-                  Error has occured in server. Please contact email:
-                  hack4impact@calpoly.edu
-                </FormErrorMessage>
               </FormControl>
             </Box>
           </Box>
