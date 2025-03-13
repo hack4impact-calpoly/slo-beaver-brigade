@@ -28,13 +28,8 @@ import {
 import { IUser } from "database/userSchema";
 import { useUser } from "@clerk/nextjs";
 import Image from 'next/image';
-
-import beaverLogo from '/docs/images/beaver-logo.svg';
-
-
-
+import beaverLogo from '/docs/images/beaver-logo.png';
 import { PencilIcon } from "@heroicons/react/16/solid";
-import { EmailAddress } from "@clerk/nextjs/server";
 import {EmailAddressResource} from "@clerk/types";
 
 interface ChangeEmailProps {
