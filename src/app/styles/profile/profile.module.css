@@ -6,8 +6,17 @@
   margin: 0 auto;
   padding: 20px;
   margin-top: 40px;
-
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
  }
+
+ @media (max-width: 720px){
+  .profileContainer {
+    flex-direction: column;
+  }
+}
  
  
  .formGroup {
