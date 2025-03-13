@@ -56,12 +56,17 @@ export default function UserProfile() {
            <h2 className={styles.editButton}> <ChangeEmail userData={userData} changeProfileEmail={displayNewInfo}/>           
             </h2> 
          </div>
-         <div className={styles.formFields}>
+         <div className={styles.accountFormFields}>
            <div>
               <div className={styles.fieldTitle}>Email Address</div>
                 {userData ? userData?.email : <div>Loading...</div>}
               </div>
+              <div className={styles.deleteButton} >
+               <DeleteConfirmation closeFromChild={closeFromChild} userData={userData} isSelf={true}></DeleteConfirmation>
+              </div>
+
             </div>
+            
           
          </div>  
          <div>

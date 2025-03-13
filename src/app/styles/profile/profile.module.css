@@ -125,6 +125,15 @@
   margin-left: 40px
   
  }
+
+ .accountFormFields {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 5px;
+  font-family: "Lato";
+  margin-top: 10px;
+  margin-left: 40px;
+ }
  
  .fieldTitle {
   font-weight: bold;
@@ -234,4 +243,12 @@
   flex-direction: column;
   width: 25%;
   align-items: center;
+}
+
+
+.deleteButton {
+  display: flex;
+  justify-content: center;
+  border: 2px solid red;
+
 }
