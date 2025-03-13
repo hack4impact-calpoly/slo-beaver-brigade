@@ -44,9 +44,9 @@ export default function UserProfile() {
 
   return (
     <div className={styles.profileContainer}>
-      <div className={styles.formGroup}>
-        <div className={styles.formHeader}>
-          <h2 className={styles.containerTitle}>Account</h2>
+      <div className={`${styles.infoGroup} ${styles.leftInfoGroup}`}>
+        <div className={styles.infoHeader}>
+          <h2 className={styles.infoTitle}>Account</h2>
           <h2 className={styles.editButton}>
             <ChangeEmail
               userData={userData}
@@ -54,32 +54,28 @@ export default function UserProfile() {
             />
           </h2>
         </div>
-        <div className={styles.formFields}>
+        <div className={styles.infoFields}>
           <div>
             <div className={styles.fieldTitle}>Email Address</div>
             {userData ? userData?.email : <div>Loading...</div>}
           </div>
-
-        </div> 
-        <h2 className={styles.deleteButton}>
+        </div>
+        <div className={styles.deleteButton}>
           <DeleteConfirmation
             closeFromChild={closeFromChild}
             userData={userData}
             isSelf={true}
           ></DeleteConfirmation>
-        </h2>
-
+        </div>
       </div>
-
-      <div className={styles.formGroup}>
-        <div className={styles.formHeader}>
-          <h2 className={styles.containerTitle}>Personal</h2>
+      <div className={`${styles.infoGroup} ${styles.rightInfoGroup}`}>
+        <div className={styles.infoHeader}>
+          <h2 className={styles.infoTitle}>Personal</h2>
           <h2 className={styles.editButton}>
-            {' '}
             <EditProfile userData={userData} displayNewInfo={displayNewInfo} />
           </h2>
         </div>
-        <div className={styles.formFields}>
+        <div className={styles.infoFields}>
           <div>
             <div className={styles.fieldTitle}>First Name</div>
             {userData ? userData.firstName : <div>Loading...</div>}

@@ -10,20 +10,10 @@
   width: 100%;
 }
 
-@media (max-width: 1000px) {
-  .profileContainer {
-    flex-direction: column;
-    align-items: center;
-  }
-  .formGroup {
-    max-width: 100% !important;
-  }
-}
-
-.formGroup {
+.infoGroup {
   margin-bottom: 20px;
   width: 100%;
-  height: 400px;
+  height: 50%;
   display: flex;
   flex-direction: column;
   background-color: #fbf9f9;
@@ -31,7 +21,7 @@
   max-width: 45%;
 }
 
-.formHeader{
+.infoHeader{
   padding: 10px 15px;
   display: flex;
   align-items: center;
@@ -41,45 +31,20 @@
   border-radius: 10px 10px 0 0;
 }
 
-.containerTitle {
+.infoTitle {
   color: #fff;
   font-size: 23px;
   font-family: 'Lato';
   font-weight: 600;
 }
 
-.formGroup label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.formGroup button {
-  clear: both;
-  margin-top: 20px;
-  padding: 1px 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.formFields {
+.infoFields {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 5px;
   font-family: 'Lato';
-  margin-top: 10px;
   margin-left: 40px;
-}
-
-@media (max-width: 500px) {
-  .formFields {
-    grid-template-columns: 1fr;
-  }
-  .formGroup {
-    height: 50%;
-  }
-  .formFields button {
-    width: 30%;
-  }
+  padding: 2%;
+  padding-bottom: 3vh;
 }
 
 .fieldTitle {
@@ -89,7 +54,6 @@
 }
 
 .editButton {
-  font-size: 22px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -106,5 +70,34 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding-bottom: 3vh;
+}
 
+@media (min-width: 1000px) {
+  .leftInfoGroup {
+    max-width: 30% !important;
+  }
+  
+  .rightInfoGroup {
+    max-width: 60% !important;
+  }
+
+}
+
+@media (max-width: 1000px) {
+
+  .infoFields {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .profileContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .infoGroup {
+    max-width: 100% !important;
+  }
 }
