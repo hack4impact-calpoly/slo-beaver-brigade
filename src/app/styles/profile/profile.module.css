@@ -1,9 +1,8 @@
 /* profile.module.css */
 
 .profileContainer {
-  margin: 0 auto;
+  margin-top: 14px;
   padding: 20px;
-  margin-top: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -11,7 +10,7 @@
 }
 
 .infoGroup {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   width: 100%;
   height: 50%;
   display: flex;
