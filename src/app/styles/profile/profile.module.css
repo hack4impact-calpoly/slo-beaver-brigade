@@ -30,21 +30,20 @@
   border-radius: 10px;
 }
 
-.highlight {
-  background-color: #337774;
-  color: #fff;
-  border-radius: 10px 10px 0 0;
-}
-
 .accountDetails .formFields > div > p {
   margin-top: 40px;
   margin-left: 15px;
   white-space: nowrap;
 }
 
-.accountHeader,
-.personalHeader {
+.formHeader{
   padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #337774;
+  color: #fff;
+  border-radius: 10px 10px 0 0;
 }
 
 .personalDetails {
@@ -62,15 +61,6 @@
 .formGroup label {
   display: block;
   margin-bottom: 5px;
-}
-
-.formGroup input[type='text'],
-.formGroup input[type='email'],
-.formGroup input[type='password'] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 .formGroup button {
@@ -111,14 +101,6 @@
 
 .editButton:hover {
   text-decoration: underline;
-}
-
-.accountHeader,
-.personalHeader {
-  padding: 10px 0 10px 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .formDelete {

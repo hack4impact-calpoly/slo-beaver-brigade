@@ -48,7 +48,7 @@ export default function UserProfile() {
    <div className={styles.profileContainer}>
       <div className={styles.formDelete}>
        <div className={`${styles.formGroup} ${styles.accountDetails}`}>
-         <div className={`${styles.highlight} ${styles.accountHeader}`}>
+         <div className={styles.formHeader}>
            <h2 className={styles.containerTitle}>
              Account
            </h2>
@@ -71,7 +71,7 @@ export default function UserProfile() {
 
        
        <div className={`${styles.formGroup} ${styles.personalDetails}`}>
-         <div className={`${styles.highlight} ${styles.personalHeader}`}>
+         <div className={styles.formHeader}>
            <h2 className={styles.containerTitle}>
              Personal
            </h2>
