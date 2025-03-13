@@ -14,6 +14,7 @@ import { StatUpArrow } from "@chakra-ui/react";
 export default function UserProfile() {
   const [userData, setUserData] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isEmailUpdated, setIsEmailUpdated] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -33,10 +34,14 @@ export default function UserProfile() {
 
     fetchData();
 
-  }, []);
+  }, [isEmailUpdated]);
 
   const closeFromChild = () => {
     return null;
+  }
+
+  const displayNewEmail = () => {
+    setIsEmailUpdated(true);
   }
 
  return(
@@ -48,7 +53,7 @@ export default function UserProfile() {
            <h2 className={styles.containerTitle}>
              Account
            </h2>
-           <h2 className={styles.editButton}> <ChangeEmail userData={userData}/>           
+           <h2 className={styles.editButton}> <ChangeEmail userData={userData} changeProfileEmail={displayNewEmail}/>           
             </h2> 
          </div>
          <div className={styles.formFields}>

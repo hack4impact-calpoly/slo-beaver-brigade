@@ -37,57 +37,51 @@ import { PencilIcon } from "@heroicons/react/16/solid";
 import { EmailAddress } from "@clerk/nextjs/server";
 import {EmailAddressResource} from "@clerk/types";
 
+interface ChangeEmailProps {
+    userData: IUser | null;
+    changeProfileEmail: () => void;
 
-function ChangeEmail({userData}: {userData: IUser | null}) {
+}
+
+
+function ChangeEmail({userData, changeProfileEmail}: ChangeEmailProps) {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const {user} = useUser();
           
-      const [user_firstName, setFirstName] = useState('');
-      const [user_lastName, setLastName] = useState('');
       const [user_email, setEmail] = useState('');
       const [updated_email, setUpdatedEmail] = useState('');
       const [confirmed_updated_email, setConfirmedUpdatedEmail] = useState('');
-      const [user_phoneNumber, setPhoneNumber] = useState('');
-      const [user_zipcode, setZipcode] = useState('');
-      const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
+
         const [emailError, setEmailError] = useState(false);
         const [emailErrorMessage, setEmailErrorMessage] = useState('');
         const [pendingVerification, setPendingVerification] =  useState(false);
         const [code, setCode] = useState('');
         const [isVerifying, setIsVerifying] = useState(false);
-        const [userCreatedEmail, setUserCreatedEmail] = React.useState<EmailAddressResource | undefined>()
-        
-      
-      // Update state when userData changes
+        const [userCreatedEmail, setUserCreatedEmail] = React.useState<EmailAddressResource | undefined>();
+        const [isSubmitted, setIsSubmitted] = useState(false);
+
+        // Update state when userData changes
       useEffect(() => {
-          if (userData) {
-              setFirstName(userData.firstName || '');
-              setLastName(userData.lastName || '');
-              setEmail(userData.email || '');
-              setPhoneNumber(userData.phoneNumber || '');
-              setZipcode(userData.zipcode || '');
-              setReceiveNewsletter(userData.receiveNewsletter || false);
-          }
-      }, [userData]);
+        if (userData) {
+            setEmail(userData.email || '');
+
+        }
+    }, [userData]);
+
+        
+
+
+      // Update 
     
       const handleUpdatedEmailChange = (e: any) => setUpdatedEmail(e.target.value);
       const handleConfirmedUpdatedEmailChange = (e: any) => setConfirmedUpdatedEmail(e.target.value);
 
     
-      
-     
-    
-      const [isSubmitted, setIsSubmitted] = useState(false);
-      
+          
       function handleClose() {
-          setFirstName(userData?.firstName || '');
-          setLastName(userData?.lastName || '');
           setEmail(userData?.email || '');
-          setPhoneNumber(userData?.phoneNumber || '');
-          setZipcode(userData?.phoneNumber || '');
-          setReceiveNewsletter(userData?.receiveNewsletter || false);
           setIsSubmitted(false);
           onClose();
       };
@@ -109,8 +103,6 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
             return;
         }
 
-        // Check if email is valid
-
         setEmailError(false);
 
         // VERIFY NEW EMAIL
@@ -120,7 +112,7 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
         }
 
 
-          
+    
           try {
             // PREPARE VERIFICATION
 
@@ -170,7 +162,8 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
 
                      setIsVerifying(false);
                      setPendingVerification(false);
-
+                     handleClose();
+                     changeProfileEmail();
                 } else {
                     console.error(JSON.stringify(finishedVerification, null, 2))
 
@@ -179,6 +172,9 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
                   
 
             } catch (err: any) {
+
+                console.error("An errror has occured", err);
+                return;
 
             }
 
@@ -208,7 +204,7 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
             <ModalBody>
             <Stack spacing={4}>
 
-                <FormControl isInvalid={user_firstName === '' && isSubmitted} mt={2}>
+                <FormControl isInvalid={isSubmitted} mt={2}>
                 <FormLabel color='grey' fontWeight='bold'>Old Email</FormLabel>
                 <Input placeholder='' fontWeight='bold' value={user_email} readOnly />
                 </FormControl>
