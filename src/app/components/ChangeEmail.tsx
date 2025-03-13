@@ -136,9 +136,6 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
 
             setPendingVerification(true);
             setUserCreatedEmail(createdEmail);
-
-            
-
         
            
           } catch (err: any) {
@@ -250,68 +247,70 @@ function ChangeEmail({userData}: {userData: IUser | null}) {
         {pendingVerification && (
         <Modal isOpen={isOpen} onClose={handleClose} size='xl'>
         <ModalOverlay>
-            <Box mt={8} mb={8}>
-                <Flex
-                textAlign='center'
-                justifyContent='flex-start'
-                flexDirection='column'
-                alignItems='center'
-                >
-                <Image src={beaverLogo} alt='beaver' />
-                <Text
-                    mt={12}
-                    fontFamily='Lato'
-                    fontWeight='600'
-                    fontSize={'24px'}
-                >
-                    Verification code sent to
-                    <br />
-                    {updated_email}
-                </Text>
-                </Flex>
-            </Box>
-            <Box mt={12} fontFamily='Lato'>
-                <FormControl mb={2} isRequired>
-                <FormLabel fontWeight='600'>Email Verification Code</FormLabel>
-                <Input
-                    type='text'
-                    placeholder='123456'
-                    variant='filled'
-                    onChange={(e) => setCode(e.target.value)}
-                />
-                </FormControl>
-                <Box display={'flex'} flexDirection={['column', 'row']} justifyContent={['center', 'space-between']} alignItems={['center', 'space-between']}>
-                <Button
-                    bg='#e0af48'
-                    _hover={{ bg: '#C19137' }}
-                    color='black'
-                    w='150px'
-                    mt={2} mr={0} mb={2} ml={0}
-                    onClick={() => {
-                    setPendingVerification(false);
-                    }}
-                >
-                    Back
-                </Button>
-                <FormControl w='150px' mt={2} mr={0} mb={2} ml={0}>
-                    <Button
-                    loadingText='Verifying'
-                    isLoading={!pendingVerification}
-                    bg='#e0af48'
-                    _hover={{ bg: '#C19137' }}
-                    color='black'
-                    w='150px'
-                    onClick={onVerifyCode}
+            <ModalContent fontFamily="Lato" borderRadius="10px" padding="20px 20px 20px 20px">
+                <Box mt={8} mb={8}>
+                    <Flex
+                    textAlign='center'
+                    justifyContent='flex-start'
+                    flexDirection='column'
+                    alignItems='center'
                     >
-                    Verify Email
-                    </Button>
-                    <FormErrorMessage>
-                    Error has occured in server. Please contact email:
-                    hack4impact@calpoly.edu
-                    </FormErrorMessage>
-                </FormControl>
+                    <Image src={beaverLogo} alt='beaver' />
+                    <Text
+                        mt={12}
+                        fontFamily='Lato'
+                        fontWeight='600'
+                        fontSize={'24px'}
+                    >
+                        Verification code sent to
+                        <br />
+                        {updated_email}
+                    </Text>
+                    </Flex>
                 </Box>
-            </Box>
+                <Box mt={12} fontFamily='Lato'>
+                    <FormControl mb={2} isRequired>
+                    <FormLabel fontWeight='600'>Email Verification Code</FormLabel>
+                    <Input
+                        type='text'
+                        placeholder='123456'
+                        variant='filled'
+                        onChange={(e) => setCode(e.target.value)}
+                    />
+                    </FormControl>
+                    <Box display={'flex'} flexDirection={['column', 'row']} justifyContent={['center', 'space-between']} alignItems={['center', 'space-between']}>
+                    <Button
+                        bg='#e0af48'
+                        _hover={{ bg: '#C19137' }}
+                        color='black'
+                        w='150px'
+                        mt={2} mr={0} mb={2} ml={0}
+                        onClick={() => {
+                        setPendingVerification(false);
+                        }}
+                    >
+                        Back
+                    </Button>
+                    <FormControl w='150px' mt={2} mr={0} mb={2} ml={0}>
+                        <Button
+                        loadingText='Verifying'
+                        isLoading={!pendingVerification}
+                        bg='#e0af48'
+                        _hover={{ bg: '#C19137' }}
+                        color='black'
+                        w='150px'
+                        onClick={onVerifyCode}
+                        >
+                        Verify Email
+                        </Button>
+                        <FormErrorMessage>
+                        Error has occured in server. Please contact email:
+                        hack4impact@calpoly.edu
+                        </FormErrorMessage>
+                    </FormControl>
+                    </Box>
+                </Box>
+            </ModalContent>
           </ModalOverlay>
           </Modal>
         
