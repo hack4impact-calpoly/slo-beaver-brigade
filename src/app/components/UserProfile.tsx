@@ -44,31 +44,27 @@ export default function UserProfile() {
 
   return (
     <div className={styles.profileContainer}>
-      <div className={styles.formDelete}>
-        <div className={`${styles.formGroup} ${styles.accountDetails}`}>
-          <div className={styles.formHeader}>
-            <h2 className={styles.containerTitle}>Account</h2>
-            <h2 className={styles.editButton}>
-              <ChangeEmail
-                userData={userData}
-                changeProfileEmail={displayNewInfo}
-              />
-            </h2>
-          </div>
-          <div className={styles.formFields}>
-            <div>
-              <div className={styles.fieldTitle}>Email Address</div>
-              {userData ? userData?.email : <div>Loading...</div>}
-            </div>
+      <div className={`${styles.formGroup} ${styles.accountDetails}`}>
+        <div className={styles.formHeader}>
+          <h2 className={styles.containerTitle}>Account</h2>
+          <h2 className={styles.editButton}>
+            <ChangeEmail
+              userData={userData}
+              changeProfileEmail={displayNewInfo}
+            />
+          </h2>
+        </div>
+        <div className={styles.formFields}>
+          <div>
+            <div className={styles.fieldTitle}>Email Address</div>
+            {userData ? userData?.email : <div>Loading...</div>}
           </div>
         </div>
-        <div>
-          <DeleteConfirmation
-            closeFromChild={closeFromChild}
-            userData={userData}
-            isSelf={true}
-          ></DeleteConfirmation>
-        </div>
+        <DeleteConfirmation
+          closeFromChild={closeFromChild}
+          userData={userData}
+          isSelf={true}
+        ></DeleteConfirmation>
       </div>
 
       <div className={`${styles.formGroup} ${styles.personalDetails}`}>

@@ -91,9 +91,3 @@
 .editButton:hover {
   text-decoration: underline;
 }
-
-.formDelete {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
