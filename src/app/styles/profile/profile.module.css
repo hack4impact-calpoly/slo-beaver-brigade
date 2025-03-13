@@ -1,33 +1,34 @@
 /* profile.module.css */
 
 .profileContainer {
-  max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
   margin-top: 40px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1000px) {
   .profileContainer {
     flex-direction: column;
     align-items: center;
+  }
+  .formGroup {
+    max-width: 100% !important;
   }
 }
 
 .formGroup {
   margin-bottom: 20px;
-  margin-left: auto;
   width: 100%;
   height: 400px;
-  padding-bottom: 4%;
   display: flex;
   flex-direction: column;
   background-color: #fbf9f9;
   border-radius: 10px;
+  max-width: 45%;
 }
 
 .formHeader{
