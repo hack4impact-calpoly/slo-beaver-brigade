@@ -26,7 +26,13 @@ import { addToNewsletter, removeFromNewsletter } from 'app/actions/mailingaction
 //import { Button } from '@styles/Button'
 import React, {useState, useEffect} from 'react';
 
-const EditProfile = ({userData}: {userData: IUser | null}) => {   
+interface EditProfileProps {
+  userData: IUser | null;
+  displayNewInfo: () => void;
+
+}
+
+const EditProfile = ({userData, displayNewInfo}: EditProfileProps) => {   
   
   const { isOpen, onOpen, onClose } = useDisclosure();
       
@@ -38,6 +44,8 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
   const [user_receiveNewsletter, setReceiveNewsletter] = useState(false);
   const zipcodeRegex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
   const phoneNumRegex = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
+
 
   // Update state when userData changes
   useEffect(() => {
@@ -115,6 +123,7 @@ const EditProfile = ({userData}: {userData: IUser | null}) => {
         });
         if (response.ok) {
           setIsSubmitted(true);
+          displayNewInfo();
           handleClose();
         //   window.location.reload();
         } else {
