@@ -59,12 +59,16 @@ export default function UserProfile() {
             <div className={styles.fieldTitle}>Email Address</div>
             {userData ? userData?.email : <div>Loading...</div>}
           </div>
-        </div>
-        <DeleteConfirmation
-          closeFromChild={closeFromChild}
-          userData={userData}
-          isSelf={true}
-        ></DeleteConfirmation>
+
+        </div> 
+        <h2 className={styles.deleteButton}>
+          <DeleteConfirmation
+            closeFromChild={closeFromChild}
+            userData={userData}
+            isSelf={true}
+          ></DeleteConfirmation>
+        </h2>
+
       </div>
 
       <div className={styles.formGroup}>

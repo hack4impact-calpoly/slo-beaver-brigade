@@ -57,9 +57,6 @@
   clear: both;
   margin-top: 20px;
   padding: 1px 20px;
-  color: #000;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
 }
@@ -79,6 +76,9 @@
   }
   .formGroup {
     height: 50%;
+  }
+  .formFields button {
+    width: 30%;
   }
 }
 
@@ -100,4 +100,11 @@
 
 .editButton:hover {
   text-decoration: underline;
+}
+
+.deleteButton {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
 }
