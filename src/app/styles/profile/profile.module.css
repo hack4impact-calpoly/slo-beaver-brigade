@@ -30,26 +30,14 @@
   border-radius: 10px;
 }
 
-.highlight {
+.formHeader{
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-color: #337774;
   color: #fff;
   border-radius: 10px 10px 0 0;
-}
-
-.accountDetails .formFields > div > p {
-  margin-top: 40px;
-  margin-left: 15px;
-  white-space: nowrap;
-}
-
-.accountHeader,
-.personalHeader {
-  padding: 10px 15px;
-}
-
-.personalDetails {
-  width: 70%;
-  margin-bottom: 80px;
 }
 
 .containerTitle {
@@ -64,20 +52,10 @@
   margin-bottom: 5px;
 }
 
-.formGroup input[type='text'],
-.formGroup input[type='email'],
-.formGroup input[type='password'] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
 .formGroup button {
   clear: both;
   margin-top: 20px;
   padding: 1px 20px;
-  border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
 }
@@ -88,11 +66,15 @@
   grid-gap: 5px;
   font-family: 'Lato';
   margin-top: 10px;
-  margin-left: 40px
-  
- }
- 
- .fieldTitle {
+  margin-left: 40px;
+}
+
+.formFields button {
+  width: 30%;
+
+}
+
+.fieldTitle {
   font-weight: bold;
   margin: 3vh 0vw 1.5vh 0vw;
   white-space: nowrap;
@@ -112,16 +94,9 @@
   text-decoration: underline;
 }
 
-.accountHeader,
-.personalHeader {
-  padding: 10px 0 10px 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .deleteButton {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
+
 }
