@@ -46,7 +46,6 @@ export default function UserProfile() {
 
  return(
    <div className={styles.profileContainer}>
-     <div className={styles.formContainer}>
       <div className={styles.formDelete}>
        <div className={`${styles.formGroup} ${styles.accountDetails}`}>
          <div className={`${styles.highlight} ${styles.accountHeader}`}>
@@ -56,16 +55,16 @@ export default function UserProfile() {
            <h2 className={styles.editButton}> <ChangeEmail userData={userData} changeProfileEmail={displayNewInfo}/>           
             </h2> 
          </div>
-         <div className={styles.accountFormFields}>
+         <div className={styles.formFields}>
            <div>
               <div className={styles.fieldTitle}>Email Address</div>
                 {userData ? userData?.email : <div>Loading...</div>}
               </div>
-              <div className={styles.deleteButton} >
-               <DeleteConfirmation closeFromChild={closeFromChild} userData={userData} isSelf={true}></DeleteConfirmation>
-              </div>
 
             </div>
+            <div className={styles.deleteButton} >
+               <DeleteConfirmation closeFromChild={closeFromChild} userData={userData} isSelf={true}></DeleteConfirmation>
+              </div>
             
           
          </div>  
@@ -105,8 +104,7 @@ export default function UserProfile() {
               </span>
           </div>
          </div>
-       </div>     
-      </div>
+       </div>    
     </div> 
   )
 };
