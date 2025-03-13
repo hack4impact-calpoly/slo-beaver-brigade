@@ -73,6 +73,15 @@
   margin-left: 40px;
 }
 
+@media (max-width: 500px) {
+  .formFields {
+    grid-template-columns: 1fr;
+  }
+  .formGroup {
+    height: 50%;
+  }
+}
+
 .fieldTitle {
   font-weight: bold;
   margin: 3vh 0vw 1.5vh 0vw;
