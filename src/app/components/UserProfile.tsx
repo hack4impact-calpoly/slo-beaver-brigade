@@ -14,7 +14,7 @@ import { StatUpArrow } from "@chakra-ui/react";
 export default function UserProfile() {
   const [userData, setUserData] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isEmailUpdated, setIsEmailUpdated] = useState(false);
+  const [isDataUpdated, setIsDataUpdated] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -34,14 +34,14 @@ export default function UserProfile() {
 
     fetchData();
 
-  }, [isEmailUpdated]);
+  }, [isDataUpdated]);
 
   const closeFromChild = () => {
     return null;
   }
 
-  const displayNewEmail = () => {
-    setIsEmailUpdated(true);
+  const displayNewInfo = () => {
+    setIsDataUpdated(true);
   }
 
  return(
@@ -53,7 +53,7 @@ export default function UserProfile() {
            <h2 className={styles.containerTitle}>
              Account
            </h2>
-           <h2 className={styles.editButton}> <ChangeEmail userData={userData} changeProfileEmail={displayNewEmail}/>           
+           <h2 className={styles.editButton}> <ChangeEmail userData={userData} changeProfileEmail={displayNewInfo}/>           
             </h2> 
          </div>
          <div className={styles.formFields}>
@@ -76,7 +76,7 @@ export default function UserProfile() {
            <h2 className={styles.containerTitle}>
              Personal
            </h2>
-            <h2 className={styles.editButton}> <EditProfile userData={userData}/>           
+            <h2 className={styles.editButton}> <EditProfile userData={userData} displayNewInfo={displayNewInfo}/>           
             </h2> 
          </div>
          <div className={styles.formFields}>
