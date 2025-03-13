@@ -30,12 +30,6 @@
   border-radius: 10px;
 }
 
-.accountDetails .formFields > div > p {
-  margin-top: 40px;
-  margin-left: 15px;
-  white-space: nowrap;
-}
-
 .formHeader{
   padding: 10px 15px;
   display: flex;
@@ -44,11 +38,6 @@
   background-color: #337774;
   color: #fff;
   border-radius: 10px 10px 0 0;
-}
-
-.personalDetails {
-  width: 70%;
-  margin-bottom: 80px;
 }
 
 .containerTitle {
@@ -106,6 +95,5 @@
 .formDelete {
   display: flex;
   flex-direction: column;
-  width: 25%;
   align-items: center;
 }
