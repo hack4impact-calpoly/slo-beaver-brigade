@@ -135,8 +135,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
     const dependentArray = dependents.filter((dependent) => dependent !== "");
 
     const data = {
-      eventId: eventId,
       dependents: dependentArray,
+      eventId: eventId,
+      dateSigned: new Date(),
+      waiverVersion: 1,
     };
 
     if (userData) {
@@ -145,7 +147,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
         const res = await fetch(`/api/waiver`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({parentUserId: userData._id, ...data}),
+          body: JSON.stringify({signeeId: userData._id, signeeName: userData.firstName+' '+userData.lastName, ...data}),
         });
         //if the waiver returns successfully
         if (res.ok) {
@@ -235,7 +237,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           const res = await fetch(`/api/waiver`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({parentUserId: user._id, ...data}),
+            body: JSON.stringify({signeeId: user._id, signeeName: user.firstName+' '+user.lastName, ...data}),
           });
           //if the waiver returns successfully
           if (res.ok) {
