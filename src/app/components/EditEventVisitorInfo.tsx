@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { Box, Spinner, Checkbox } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
-import styles from "../styles/admin/editEvent.module.css";
-import { IEvent } from "@database/eventSchema";
-import { IUser } from "@database/userSchema";
-import { IWaiver } from "database/digitalWaiverSchema";
-import { removeAttendee } from "app/actions/serveractions";
-import { addAttendee } from "app/actions/useractions";
-import SingleVisitorComponent from "./SingleVisitorComponent";
-import { useEventId } from "app/lib/swrfunctions";
+import { Box, Spinner, Checkbox } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import styles from '../styles/admin/editEvent.module.css';
+import { IEvent } from '@database/eventSchema';
+import { IUser } from '@database/userSchema';
+import { ISignedWaiver } from 'database/signedWaiverSchema';
+import { removeAttendee } from 'app/actions/serveractions';
+import { addAttendee } from 'app/actions/useractions';
+import SingleVisitorComponent from './SingleVisitorComponent';
+import { useEventId } from 'app/lib/swrfunctions';
 
 const placeholderUser: IUser = {
-  _id: "placeholder",
+  _id: 'placeholder',
   groupId: null,
-  email: "",
-  firstName: "",
-  lastName: "",
-  phoneNumber: "",
-  zipcode: "",
+  email: '',
+  firstName: '',
+  lastName: '',
+  phoneNumber: '',
+  zipcode: '',
   age: -1,
-  gender: "",
-  role: "guest",
+  gender: '',
+  role: 'guest',
   eventsAttended: [],
   eventsRegistered: [],
   receiveNewsletter: false,
@@ -32,7 +32,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [visitorData, setVisitorData] = useState<{
     [key: string]: { parent: IUser; dependents: IUser[] };
   }>({});
-  const {eventData, isLoading,isError} = useEventId(eventId)
+  const { eventData, isLoading, isError } = useEventId(eventId);
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -40,27 +40,25 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         [group.parent, ...group.dependents].map((visitor) => visitor.email)
       )
       .filter((email) => !!email);
-    const subject = encodeURIComponent(eventData?.eventName + " Update");
-    return `mailto:${emails.join(",")}?subject=${subject}`;
+    const subject = encodeURIComponent(eventData?.eventName + ' Update');
+    return `mailto:${emails.join(',')}?subject=${subject}`;
   };
 
   const handleEmailAllVisitors = () => {
     const mailtoLink = emailLink();
-    
+
     window.location.href = mailtoLink;
   };
 
-
-
   useEffect(() => {
-    if (isLoading){
-        return
+    if (isLoading) {
+      return;
     }
-    if (!eventData){
-        return
+    if (!eventData) {
+      return;
     }
     const fetchVisitorData = async () => {
-      if (eventData.eventName !== "") {
+      if (eventData.eventName !== '') {
         const visitors: {
           [key: string]: { parent: IUser; dependents: IUser[] };
         } = {};
@@ -70,47 +68,43 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
             const waivers = await waiverResponse.json();
-            
+
             debugger;
-            waivers.forEach((waiver: IWaiver) => {
-              if (!visitors[waiver.parentUserId]) {
-                visitors[waiver.parentUserId] = {
+            waivers.forEach((waiver: ISignedWaiver) => {
+              if (!visitors[waiver.signeeId]) {
+                visitors[waiver.signeeId] = {
                   parent: placeholderUser,
                   dependents: [],
                 };
               }
               waiver.dependents.forEach((dependent) => {
-                visitors[waiver.parentUserId].dependents.push({
+                visitors[waiver.signeeId].dependents.push({
                   _id: `${dependent} Dependent`,
                   groupId: null,
-                  email: "",
+                  email: '',
                   firstName: dependent,
-                  lastName: "",
-                  phoneNumber: "",
+                  lastName: '',
+                  phoneNumber: '',
                   age: -1,
-                  gender: "",
-                  role: "guest",
+                  gender: '',
+                  role: 'guest',
                   eventsAttended: [],
                   eventsRegistered: [],
                   receiveNewsletter: false,
-                  zipcode: ""
+                  zipcode: '',
                 });
               });
             });
-            
           } else {
-            console.error(
-              "Error fetching waivers:",
-            );
+            console.error('Error fetching waivers:');
             setLoading(false);
             return;
           }
         } catch (error) {
-          console.error("Error fetching waivers:", error);
+          console.error('Error fetching waivers:', error);
 
-            setLoading(false);
-            return
-
+          setLoading(false);
+          return;
         }
 
         // Fetch user data for registered IDs
@@ -122,19 +116,19 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 const response = await fetch(`/api/user/${userId}`);
                 if (response.ok) {
                   const user = await response.json();
-                  
+
                   if (!visitors[user._id]) {
                     visitors[user._id] = { parent: user, dependents: [] };
                   } else {
                     visitors[user._id].parent = user;
                   }
                 } else {
-                  console.error("Error fetching user:", await response.json());
+                  console.error('Error fetching user:', await response.json());
                 }
               })
           );
         } catch (error) {
-          console.error("Error fetching users:", error);
+          console.error('Error fetching users:', error);
         }
 
         const sortedVisitors = Object.fromEntries(
@@ -165,7 +159,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
 
   return (
     <Box className={styles.eventInformation}>
-      {isLoading || !eventData  || loading? (
+      {isLoading || !eventData || loading ? (
         <div className={styles.visitorHeadingLoading}>
           Visitors
           <Spinner className={styles.spinner} speed="0.8s" thickness="3px" />
@@ -176,14 +170,12 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             Visitors
             <div className={styles.visitorCount}>
               (
-                {
-                    sortedVisitorEntries.reduce((prev, cur) => {
-                        if (cur[1].parent._id !== "placeholder") {
-                            return prev + 1;
-                        }
-                        return prev;
-                    }, 0)
+              {sortedVisitorEntries.reduce((prev, cur) => {
+                if (cur[1].parent._id !== 'placeholder') {
+                  return prev + 1;
                 }
+                return prev;
+              }, 0)}
               )
             </div>
             <button
@@ -203,50 +195,51 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 <tbody>
                   {sortedVisitorEntries.map(
                     ([parentId, group], parentIndex) => (
-                      
                       <React.Fragment key={parentIndex}>
-                        {group.parent._id != "placeholder" && (
-                        <tr className={styles.visitorRow}>
-                          <td className={styles.checkBox}>
-                            {eventData.attendeeIds
-                              .map((oid) => oid.toString())
-                              .includes(group.parent._id) ? (
-                              <Checkbox
-                                colorScheme="green"
-                                defaultChecked
-                                onChange={async (e) =>
-                                  await handleCheck(
-                                    e.target.checked,
-                                    group.parent._id.toString()
-                                  )
-                                }
+                        {group.parent._id != 'placeholder' && (
+                          <tr className={styles.visitorRow}>
+                            <td className={styles.checkBox}>
+                              {eventData.attendeeIds
+                                .map((oid) => oid.toString())
+                                .includes(group.parent._id) ? (
+                                <Checkbox
+                                  colorScheme="green"
+                                  defaultChecked
+                                  onChange={async (e) =>
+                                    await handleCheck(
+                                      e.target.checked,
+                                      group.parent._id.toString()
+                                    )
+                                  }
+                                />
+                              ) : (
+                                <Checkbox
+                                  colorScheme="green"
+                                  onChange={async (e) =>
+                                    await handleCheck(
+                                      e.target.checked,
+                                      group.parent._id.toString()
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                            <td className={styles.nameColumn}>
+                              {group.parent.firstName
+                                ? group.parent.firstName +
+                                  ' ' +
+                                  group.parent.lastName
+                                : 'N/A'}
+                            </td>
+                            <td className={styles.emailColumn}>
+                              {group.parent.email ? group.parent.email : 'N/A'}
+                            </td>
+                            <td className={styles.detailsColumn}>
+                              <SingleVisitorComponent
+                                visitorData={group.parent}
                               />
-                            ) : (
-                              <Checkbox
-                                colorScheme="green"
-                                onChange={async (e) =>
-                                  await handleCheck(
-                                    e.target.checked,
-                                    group.parent._id.toString()
-                                  )
-                                }
-                              />
-                            )}
-                          </td>
-                          <td className={styles.nameColumn}>
-                            {group.parent.firstName ? (group.parent.firstName + ' ' + group.parent.lastName) : "N/A"}
-                            
-                          </td>
-                          <td className={styles.emailColumn}>
-                            {group.parent.email ? group.parent.email : "N/A"}
-                          </td>
-                          <td className={styles.detailsColumn}>
-             
-                            <SingleVisitorComponent visitorData={group.parent} />
-                            
-                            
-                          </td>
-                        </tr>
+                            </td>
+                          </tr>
                         )}
                         {group.dependents
                           .sort((a, b) =>
@@ -260,7 +253,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                               <td className={styles.checkBox}></td>
                               <td
                                 className={styles.nameColumn}
-                                style={{ paddingLeft: "25px" }}
+                                style={{ paddingLeft: '25px' }}
                               >
                                 {dependent.firstName} {dependent.lastName}
                               </td>
