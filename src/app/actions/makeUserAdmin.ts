@@ -1,5 +1,5 @@
 "use server"
-import User from "@database/userSchema";
+import User, {IUser} from "@database/userSchema";
 import connectDB from "database/db";
 import Log from "@database/logSchema";
 import { currentUser } from "@clerk/nextjs/server";
@@ -24,7 +24,7 @@ const makeUserAdmin = async (email: string) => {
     }
 
     // Find the admin user in the database
-    const adminUser = await User.findOne({ email: curUser.emailAddresses[0].emailAddress });
+    const adminUser: IUser= await User.findOne({ email: curUser.emailAddresses[0].emailAddress }).lean().orFail() as IUser;;
     if (!adminUser) {
       throw new Error(`Admin user with email ${curUser.emailAddresses[0].emailAddress } not found`);
     }

@@ -21,7 +21,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import styles from "./page.module.css";
-import beaverLogo from "/docs/images/beaver-logo.svg";
+import beaverLogo from "/docs/images/beaver-logo.png";
 import Image from "next/image";
 import NextLink from "next/link";
 import { IUser } from "@database/userSchema";

@@ -94,7 +94,7 @@ function DeleteConfirmation({closeFromChild, userData, isSelf, removeFunction}: 
                   <Icon color="36d936" fontSize="1.4rem" p={0.5}>
                     <FaRegTrashAlt />
                   </Icon>
-                    Delete User
+                    Delete Account
              </Button>
 
         <Modal isOpen={isOpen} onClose={onClose}>

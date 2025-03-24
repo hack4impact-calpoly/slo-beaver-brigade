@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import Calendar from "app/components/calendar/Calendar";
-import Event, { IEvent } from "@database/eventSchema";
+import { IEvent } from "@database/eventSchema";
 import style from "@styles/calendar/eventpage.module.css";
 import {
   Box,
@@ -10,11 +10,16 @@ import {
   Checkbox,
   CheckboxGroup,
   Stack,
-  useMediaQuery
+  useMediaQuery,
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Button,
+  useDisclosure,
 } from "@chakra-ui/react";
-import connectDB from "@database/db";
 import { Calendarify } from "app/lib/calendar";
-import { getSelectedEvents } from "app/actions/eventsactions";
 import { EmailRSSComponent } from "app/components/EmailComponent";
 import { useEventsAscending } from "app/lib/swrfunctions";
 import "../fonts/fonts.css"
@@ -24,6 +29,8 @@ export default function Page() {
   const {events, isLoading} = useEventsAscending()
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([])
   const [eventTypes, setEventTypes] = useState<string[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
 
   useEffect(() => {
     const fetchEventTypes = async () => {
@@ -42,7 +49,7 @@ export default function Page() {
     fetchEventTypes();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     if (isLoading) return;
     if (!events) return;
 
@@ -68,111 +75,206 @@ export default function Page() {
 
   const calEvent = filteredEvents.map(Calendarify);
 
-  const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
-
-
   return (
-    <Box bg="white" minH="100vh" p="4">
+    <Box bg="white" minH="100%" p="2">
       <Flex className={style.page} direction="column" align="flex-end">
-        <Flex width="full" justify="space-between" alignItems="flex-start">
-          {isLargerThan800 ? (
-          <Box
-            flex="1"
-            maxWidth="300px"
-            m="2%"
-            p={[5, 5, 5, 5]}
-            bg="#F5F5F5"
-            borderRadius="md"
-            boxShadow="sm"
-            height="775px"
-            className="filterContainer"
-            display="flex"
-            flexDirection="column"
-            justifyContent="space-between"
-          >
-            <Box>
-              <Heading
-                as="h1"
-                textTransform="none"
-                textAlign="left"
-                padding="10px"
-                fontSize="20"
-                mb="3"
-              >
-                Event Filters
-              </Heading>
-              <CheckboxGroup
-                colorScheme="green"
-                value={selectedFilters}
-                onChange={(values) =>
-                  setSelectedFilters(values.map((value) => String(value)))
-                }
-              >
-                <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
-                  {eventTypes.map((eventType) => (
-                    <Checkbox key={eventType} value={eventType} colorScheme="teal">
-                      {eventType}
-                    </Checkbox>
-                  ))}
-                </Stack>
-              </CheckboxGroup>
-              <Heading
-                as="h1"
-                textTransform="none"
-                textAlign="left"
-                padding="10px"
-                fontSize="20"
-                mt="10"
-                mb="3"
-              >
-                Accessibility Filters
-              </Heading>
-              <CheckboxGroup
-                colorScheme="yellow"
-                value={selectedFilters}
-                onChange={(values) =>
-                  setSelectedFilters(values.map((value) => String(value)))
-                }
-              >
-                <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
-                  <Checkbox
-                    value="spanishSpeakingAccommodation"
-                  >
-                    Spanish Speaking
-                  </Checkbox>
-                  <Checkbox
-                    value="wheelchairAccessible"
-                  >
-                    Wheelchair Accessible
-                  </Checkbox>
-                </Stack>
-              </CheckboxGroup>
-            </Box>
+        {isLargerThan800 ? (
+          <Flex width="full" justify="space-between" alignItems="flex-start">
             <Box
+              flex="1"
+              maxWidth="300px"
+              m="2%"
+              p={[5, 5, 5, 5]}
+              bg="#F5F5F5"
+              borderRadius="md"
+              boxShadow="sm"
+              height="775px"
+              className="filterContainer"
               display="flex"
-              justifyContent="center"
-              alignItems="center"
-              mb="5"
+              flexDirection="column"
+              justifyContent="space-between"
             >
-              <EmailRSSComponent calendarURL="/api/events/calendar"/>
+              <Box>
+                <Heading
+                  as="h1"
+                  textTransform="none"
+                  textAlign="left"
+                  padding="10px"
+                  fontSize="20"
+                  mb="3"
+                >
+                  Event Filters
+                </Heading>
+                <CheckboxGroup
+                  colorScheme="green"
+                  value={selectedFilters}
+                  onChange={(values) =>
+                    setSelectedFilters(values.map((value) => String(value)))
+                  }
+                >
+                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                    {eventTypes.map((eventType) => (
+                      <Checkbox key={eventType} value={eventType} colorScheme="teal">
+                        {eventType}
+                      </Checkbox>
+                    ))}
+                  </Stack>
+                </CheckboxGroup>
+                <Heading
+                  as="h1"
+                  textTransform="none"
+                  textAlign="left"
+                  padding="10px"
+                  fontSize="20"
+                  mt="10"
+                  mb="3"
+                >
+                  Accessibility Filters
+                </Heading>
+                <CheckboxGroup
+                  colorScheme="yellow"
+                  value={selectedFilters}
+                  onChange={(values) =>
+                    setSelectedFilters(values.map((value) => String(value)))
+                  }
+                >
+                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                    <Checkbox value="spanishSpeakingAccommodation">
+                      Spanish Speaking
+                    </Checkbox>
+                    <Checkbox value="wheelchairAccessible">
+                      Wheelchair Accessible
+                    </Checkbox>
+                  </Stack>
+                </CheckboxGroup>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                mb="5"
+              >
+                <EmailRSSComponent calendarURL="/api/events/calendar"/>
+              </Box>
             </Box>
-          </Box>
-          ) : null}
-          <Box
-            flex="2"
-            padding="0"
-            mt="2%" 
-            mr="1%"
-            ml="1%"
-            bg="#F5F5F5"
-            borderRadius="md"
-            p="5"
-            boxShadow="sm"
-            h="775px"
+  
+            <Box
+              flex="2"
+              padding="0"
+              mt="2%" 
+              mr="1%"
+              ml="1%"
+              bg="#F5F5F5"
+              borderRadius="md"
+              p="5"
+              boxShadow="sm"
+              h="775px"
+            >
+              <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
+            </Box>
+          </Flex>
+        ) : (
+          <Flex 
+            width="full" 
+            direction="column" 
+            mb="4" 
+            alignItems="stretch"
           >
-            <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
-          </Box>
-        </Flex>
+            <Button 
+              onClick={onOpen} 
+              colorScheme="teal" 
+              variant="outline"
+              mb="4"
+            >
+              View Filters
+            </Button>
+            
+            <Box
+              bg="#F5F5F5"
+              borderRadius="md"
+              p="5"
+              boxShadow="sm"
+              width="full"
+            >
+              <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
+            </Box>
+          </Flex>
+        )}
+  
+        <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent mt="60px">
+            <DrawerCloseButton/>
+            <DrawerBody 
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between">
+              <Box>
+                <Heading
+                  as="h1"
+                  textTransform="none"
+                  textAlign="left"
+                  padding="10px"
+                  fontSize="20"
+                  mb="3"
+                >
+                  Event Filters
+                </Heading>
+                <CheckboxGroup
+                  colorScheme="green"
+                  value={selectedFilters}
+                  onChange={(values) =>
+                    setSelectedFilters(values.map((value) => String(value)))
+                  }
+                >
+                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                    {eventTypes.map((eventType) => (
+                      <Checkbox key={eventType} value={eventType} colorScheme="teal">
+                        {eventType}
+                      </Checkbox>
+                    ))}
+                  </Stack>
+                </CheckboxGroup>
+                <Heading
+                  as="h1"
+                  textTransform="none"
+                  textAlign="left"
+                  padding="10px"
+                  fontSize="20"
+                  mt="10"
+                  mb="3"
+                >
+                  Accessibility Filters
+                </Heading>
+                <CheckboxGroup
+                  colorScheme="yellow"
+                  value={selectedFilters}
+                  onChange={(values) =>
+                    setSelectedFilters(values.map((value) => String(value)))
+                  }
+                >
+                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                    <Checkbox value="spanishSpeakingAccommodation">
+                      Spanish Speaking
+                    </Checkbox>
+                    <Checkbox value="wheelchairAccessible">
+                      Wheelchair Accessible
+                    </Checkbox>
+                  </Stack>
+                </CheckboxGroup>
+              </Box>
+              <Box 
+                padding="0"
+                mt="2%" 
+                mr="1%"
+                ml="1%"
+                p="5"
+              >
+                <EmailRSSComponent calendarURL="/api/events/calendar"/>
+              </Box>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
       </Flex>
     </Box>
   );

@@ -2,10 +2,10 @@
 import { IEvent } from "database/eventSchema";
 import { IGroup } from "database/groupSchema";
 import { IUser } from "database/userSchema";
-import useSWR, { Fetcher, MutatorCallback } from "swr";
+import { ILog } from "database/logSchema";
+import useSWR, { MutatorCallback } from "swr";
 
 
-const groupIdsFetcher = (urls: string[]) => Promise.all(urls.map(url => fetch(url).then(res => res.json())));
 export interface SWRResponse<Data, Error> {
     data?: Data;
     error?: Error;
@@ -37,6 +37,7 @@ export function useGroups() {
         mutateGroups: mutate
     }
 }
+
 export function useUsers() {
     // revalidates every 10 minutes
     const { data, error, isLoading, mutate } = useSWR< IUser[]>('/api/user');
@@ -48,7 +49,6 @@ export function useUsers() {
          mutate
     }
 }
-
 
 export function useEventId(id: string){
   // revalidates every 10 minutes
@@ -70,3 +70,14 @@ export function useEventId(id: string){
     }
 }
 
+export function useLogs() {
+    // revalidates every 10 minutes
+    const { data, error, isLoading, mutate } = useSWR<ILog[]>('/api/logs');
+
+    return {
+        logs: data,
+        isLoading: isLoading,
+        isError: error,
+        mutateLogs: mutate
+    }
+}

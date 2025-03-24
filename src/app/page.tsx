@@ -379,7 +379,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
              /*<a href=>Add to calendar!</a>*/}
 
      <div css={sliderStyles}>
-       <Box p="4">
+       <Box p="4" pt="7" bg="white">
          <Stack spacing={2} px="10" mb={6}>
            <Flex alignItems="center" justifyContent="space-between">
              <Text 
