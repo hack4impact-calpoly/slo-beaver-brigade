@@ -76,7 +76,7 @@ export default function Page() {
   const calEvent = filteredEvents.map(Calendarify);
 
   return (
-    <Box bg="white" minH="100vh" p="2">
+    <Box bg="white" minH="100%" p="2">
       <Flex className={style.page} direction="column" align="flex-end">
         {isLargerThan800 ? (
           <Flex width="full" justify="space-between" alignItems="flex-start">
