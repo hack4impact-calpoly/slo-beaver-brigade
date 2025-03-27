@@ -19,6 +19,7 @@ import {
   Flex,
   Stack,
   Textarea,
+  SimpleGrid,
   IconButton,
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
@@ -92,6 +93,7 @@ export default function Page() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
+  const [isVolunteerEvent, setIsVolunteerEvent] = useState(false);
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
   const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([]);
   const { groups, isLoading, isError, mutateGroups } = useGroups();
@@ -590,8 +592,25 @@ export default function Page() {
             />
           </FormControl>
 
-          <HStack justifyContent="space-between">
-            <FormControl width="48%">
+          <FormControl isRequired>
+            <FormLabel htmlFor="location" fontWeight="bold">
+              Location
+            </FormLabel>
+            <Input
+              id="location"
+              placeholder="Enter event location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </FormControl>
+
+          <SimpleGrid
+            columns={{ base: 1, lg: 2 }}
+            spacing={6}
+            w="100%"
+          >
+            {/* Row 1: Event Type and Volunteer Hours */}
+            <FormControl isRequired>
               <FormLabel htmlFor="event-type" fontWeight="bold">
                 Event Type
               </FormLabel>
@@ -615,7 +634,36 @@ export default function Page() {
               />
             </FormControl>
 
-            <FormControl width="48%">
+            <FormControl isRequired>
+              <FormLabel htmlFor="volunteer-hours" fontWeight="bold">
+                Counts for Volunteer Hours
+              </FormLabel>
+              <Select
+                id="volunteer-hours"
+                placeholder="Select an Option"
+                options={[
+                  { value: "Yes", label: "Yes" },
+                  { value: "No", label: "No" },
+                ]}
+                value={
+                  isVolunteerEvent
+                    ? { value: "Yes", label: "Yes" }
+                    : { value: "No", label: "No" }
+                }
+                onChange={(option) =>
+                  setIsVolunteerEvent(option ? option.value === "Yes" : false)
+                }
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
+              />
+            </FormControl>
+
+            {/* Row 2: Assign Groups and Only Available to Selected Groups */}
+            <FormControl isRequired>
               <FormLabel htmlFor="organization" fontWeight="bold">
                 Assign Groups
               </FormLabel>
@@ -633,7 +681,11 @@ export default function Page() {
                 onChange={(selectedOptions) =>
                   setGroupsSelected(
                     selectedOptions
-                      ? selectedOptions.map((option) => ({ _id: option.value, group_name: option.label, groupees: [] }))
+                      ? selectedOptions.map((option) => ({
+                          _id: option.value,
+                          group_name: option.label,
+                          groupees: [],
+                        }))
                       : []
                   )
                 }
@@ -649,48 +701,94 @@ export default function Page() {
                 isSearchable
               />
             </FormControl>
-          </HStack>
+
+            <FormControl isRequired>
+              <FormLabel htmlFor="invitees" fontWeight="bold">
+                Only Available to Selected Groups
+              </FormLabel>
+              <Select
+                id="invitees"
+                placeholder="Select an Option"
+                options={[
+                  { value: "Yes", label: "Yes" },
+                  { value: "No", label: "No" },
+                ]}
+                value={
+                  onlyGroups
+                    ? { value: "Yes", label: "Yes" }
+                    : { value: "No", label: "No" }
+                }
+                onChange={(option) =>
+                  setOnlyGroups(option ? option.value === "Yes" : false)
+                }
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
+              />
+            </FormControl>
+
+            {/* Row 3: Accommodations */}
+            <FormControl isRequired>
+              <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
+                Spanish Speaking Accommodation
+              </FormLabel>
+              <Select
+                id="accommodation-type"
+                placeholder="Select an Option"
+                options={[
+                  { value: "Yes", label: "Yes" },
+                  { value: "No", label: "No" },
+                ]}
+                value={
+                  spanishSpeaking !== ""
+                    ? { value: spanishSpeaking, label: spanishSpeaking }
+                    : null
+                }
+                onChange={(option) =>
+                  setSpanishSpeaking(option ? option.value : "")
+                }
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
+              />
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel htmlFor="accessibility" fontWeight="bold">
+                Accessibility Accommodation
+              </FormLabel>
+              <Select
+                id="accessibility"
+                placeholder="Select an Option"
+                options={[
+                  { value: "Yes", label: "Yes" },
+                  { value: "No", label: "No" },
+                ]}
+                value={
+                  accessibilityAccommodation !== ""
+                    ? { value: accessibilityAccommodation, label: accessibilityAccommodation }
+                    : null
+                }
+                onChange={(option) =>
+                  setAccessibilityAccommodation(option ? option.value : "")
+                }
+                chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                }}
+              />
+            </FormControl>
+          </SimpleGrid>
 
           <FormControl isRequired>
-            <FormLabel htmlFor="location" fontWeight="bold">
-              Location
-            </FormLabel>
-            <Input
-              id="location"
-              placeholder="Enter event location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
-              Spanish Speaking Accommodation
-            </FormLabel>
-            <Select
-              id="accommodation-type"
-              // value={}
-              placeholder="Select an Option"
-              options={[
-                { value: "Yes", label: "Yes" },
-                { value: "No", label: "No" },
-              ]}
-              value={
-                spanishSpeaking != ""
-                  ? { value: spanishSpeaking, label: spanishSpeaking }
-                  : null
-              }
-              onChange={(option) => setSpanishSpeaking(option ? option.value : "")}
-              chakraStyles={{
-                control: (provided) => ({
-                  ...provided,
-                  textAlign: "left",
-                }),
-              }}
-            ></Select>
-          </FormControl>
-
-          <FormControl>
             <FormLabel htmlFor="accessibility" fontWeight="bold">
               Accessibility Accommodation
             </FormLabel>
@@ -717,51 +815,8 @@ export default function Page() {
               }}
             />
           </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="invitees" fontWeight="bold">
-              Only Available to Selected Groups
-            </FormLabel>
-            <Select
-              id="invitees"
-              placeholder="Select an Option"
-              options={[
-                { value: "Yes", label: "Yes" },
-                { value: "No", label: "No" },
-              ]}
-              value={
-                onlyGroups
-                  ? { value: "Yes", label: "Yes" }
-                  : { value: "No", label: "No" }}
-              onChange={(option) =>
-                setOnlyGroups(option ? option.value == "Yes" : false)
-              }
-              chakraStyles={{
-                control: (provided) => ({
-                  ...provided,
-                  textAlign: "left",
-                }),
-              }}
-            />
-          </FormControl>
-          {onlyGroups && groups && (
-            <div className="flex sm:flex-row flex-col-reverse gap-5 sm:gap-10 sm:items-center ">
-              <CreateTemporaryGroup
-                groups={groupsSelected}
-                mutate={mutateGroups}
-                setGroups={setGroupsSelected}
-              />
-              <div className="flex flex-row gap-4 justify-center">
-                {" "}
-                Notify Group Individuals:{" "}
-                <Checkbox
-                  checked={sendEmailInvitees}
-                  onChange={() => setSendEmailInvitees((checked) => !checked)}
-                ></Checkbox>
-              </div>
-            </div>
-          )}
         </VStack>
+        
         <Flex flex="1">
           <VStack alignItems="flex-start">
             <Text fontWeight="bold"  mt={{ base: "-16", md: "0" }} mb="-4">
