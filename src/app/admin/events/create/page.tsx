@@ -512,7 +512,7 @@ export default function Page() {
           Create New Event
         </Text>
         <Menu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />} minWidth={'180px'} >
             {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
           </MenuButton>
           <MenuList>
