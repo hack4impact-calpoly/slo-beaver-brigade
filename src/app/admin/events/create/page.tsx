@@ -897,23 +897,23 @@ export default function Page() {
 
       <Box display="flex" justifyContent="center" mt={4} gap={4}>
         <Button
+          bg="#48a0e0"
+          color="white"
+          _hover={{ bg: "#377ab8" }}
+          onClick={handleSaveAsTemplate}
+          minWidth="170px"
+        >
+          Save as Template
+        </Button>
+        <Button
           loadingText="Creating"
           bg="#e0af48"
           color="black"
           _hover={{ bg: "#C19137" }}
           onClick={handleCreateEvent}
-          minWidth="150px"
+          minWidth="170px"
         >
           Create Event
-        </Button>
-        <Button
-          bg="#48a0e0"
-          color="white"
-          _hover={{ bg: "#377ab8" }}
-          onClick={handleSaveAsTemplate}
-          minWidth="150px"
-        >
-          Save as Template
         </Button>
       </Box>
     </Box>
