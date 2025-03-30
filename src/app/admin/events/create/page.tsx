@@ -650,7 +650,7 @@ export default function Page() {
             <div className={style.rightColumn}> 
               <FormControl isRequired className={style.rightColumn}>
                 <FormLabel htmlFor="volunteer-hours" fontWeight="bold">
-                  Volunteer Hours?
+                  Volunteer Hours
                 </FormLabel>
                 <Select
                   id="volunteer-hours"
