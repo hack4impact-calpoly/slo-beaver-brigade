@@ -34,7 +34,7 @@
 }
 
 .yellowButton {
-    background-color: #ecb94a;
+    background-color: #e0af48;    
     border: none;
     border-radius: 20px;
     cursor: pointer;
@@ -48,14 +48,15 @@
 }
 
 .yellowButton:hover {
-    background-color: #d6a33e;
+    background-color: #c19137;
     cursor: pointer;
 }
 
 .searchWrapper {
     position: relative;
     display: flex;
-    width: fit-content;
+    width: 200px;
+
 }
 
 .searchBar {
@@ -67,11 +68,16 @@
     align-items: center;
     padding-top: 5px;
     padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
     margin-top: 20px;
     margin-bottom: 0px;
 }
+
+.sortSelect {
+    margin-top: 20px;
+}
+
 .filterContainer {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -84,26 +90,6 @@
     text-align: left;
     margin-bottom: 20px;
     margin-top: 20px;
-}
-.sortSelect {
-    background-color: white;
-    color: #333;
-    padding-right: 10px;
-    padding-left: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    font-size: 15px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    border: 1px solid black;
-    border-radius: 10px;
-    box-sizing: border-box;
-    width: fit-content;
-}
-
-.sortSelect:focus {
-    outline: none;
-    border-color: #aaa;
 }
 
 .checkboxLabel {
@@ -171,8 +157,7 @@
         align-items: center;
     }
 
-    .searchBar,
-    .sortSelect {
+    .searchBar {
         padding: 5px;
         font-size: 12px;
     }
@@ -186,4 +171,22 @@
     .checkBoxes input[type="checkbox"] {
         margin-right: 5px;
     }
+}
+  
+@media (max-width: 570px) {
+   .filterContainerTypeAccessibility {
+        display: none;
+   }
+
+   .filterContainer{
+    margin-top: 0px;
+   }
+
+   .filterHeader{
+    margin-top: 0px;
+   }
+
+   .sortSelect {
+    margin-bottom: 20px;
+}
 }

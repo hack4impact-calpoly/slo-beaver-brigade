@@ -6,17 +6,15 @@ import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
 import { BoxProps } from "@chakra-ui/react";
 import { fallbackBackgroundImage } from "app/lib/random";
+import ChakraNextImage from "./ChakraNextImage";
 
 type Props = {
     setImageURL: Dispatch<SetStateAction<string | null>>, 
     setPreselected: Dispatch<SetStateAction<boolean>>, 
 } & BoxProps;
 
-
-
 const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
     const [isVisible, setIsVisible] = useState(true);
-    const backgroundImage = fallbackBackgroundImage(image, "/beaver-eventcard.jpeg");
 
     const handleDeleteClick = async (e: React.MouseEvent<SVGElement, MouseEvent>) => {
         e.stopPropagation()
@@ -33,14 +31,20 @@ const ImageCard = ({image, onClick}: {image: string, onClick : any}) => {
         <div
         role="group"
         className={style.imageCard}
-        style={{
-            background: backgroundImage,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backdropFilter: "brightness(50%)",
-        }}
         onClick={onClick}
         >
+        <ChakraNextImage
+            src={image || "/beaver-eventcard.jpeg"}
+            alt="Event Image"
+            objectFit="cover"
+            position="absolute"
+            zIndex="-1"
+            top="0"
+            left="0"
+            filter={"brightness(50%)"}
+            borderRadius={"8px"}
+            layout="fill"
+        />
         <div className={style.eventTitle} style={{ display: 'flex', flexDirection: "row" }}>
             <h2>Your Event Name</h2>
 
@@ -78,7 +82,7 @@ export default function ImageSelector({setImageURL, setPreselected, ...rest}: Pr
         const loadImages = async () => {
             const res = await getAllImagesS3()
             const imageRes = JSON.parse(res)
-            console.log(imageRes)
+            
             setImages(imageRes)
         } 
         loadImages()
@@ -125,7 +129,6 @@ export default function ImageSelector({setImageURL, setPreselected, ...rest}: Pr
             </ModalFooter>
         </ModalContent>
         </Modal>
-
 
       </>
     )

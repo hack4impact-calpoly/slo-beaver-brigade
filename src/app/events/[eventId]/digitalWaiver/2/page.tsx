@@ -21,7 +21,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import styles from "./page.module.css";
-import beaverLogo from "/docs/images/beaver-logo.svg";
+import beaverLogo from "/docs/images/beaver-logo.png";
 import Image from "next/image";
 import NextLink from "next/link";
 import { IUser } from "@database/userSchema";
@@ -66,7 +66,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
       if (res) {
         setUserData(JSON.parse(res));
         setValidEmail(true);
-        console.log("valid email");
+        
       }
       setLoadingUser(false);
     };
@@ -76,7 +76,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   useEffect(() => {
     // Check if all required fields are filled
     if (userData) {
-      console.log("form filled");
+      
       setFormFilled(true);
       return;
     }
@@ -135,8 +135,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
     const dependentArray = dependents.filter((dependent) => dependent !== "");
 
     const data = {
-      eventId: eventId,
       dependents: dependentArray,
+      eventId: eventId,
+      dateSigned: new Date(),
+      waiverVersion: 1,
     };
 
     if (userData) {
@@ -145,7 +147,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
         const res = await fetch(`/api/waiver`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({parentUserId: userData._id, ...data}),
+          body: JSON.stringify({signeeId: userData._id, signeeName: userData.firstName+' '+userData.lastName, ...data}),
         });
         //if the waiver returns successfully
         if (res.ok) {
@@ -165,7 +167,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               //call to update the user object
               const res = await addToRegistered(userData._id, eventId, waiverId)
               if (res) {
-                console.log('added')
+                
 
                 mutate(data => {
                     if (data){
@@ -185,7 +187,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(emailBody)
                 })
-                console.log(confirmRes.status)
+                
                 //on success, return to the home page
                 router.push("/")
                 
@@ -223,7 +225,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           lastName
         );
         if (!userRes) {
-          console.log("server error while creating guest user");
+          
           return;
         }
         user = JSON.parse(userRes);
@@ -235,7 +237,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           const res = await fetch(`/api/waiver`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({parentUserId: user._id, ...data}),
+            body: JSON.stringify({signeeId: user._id, signeeName: user.firstName+' '+user.lastName, ...data}),
           });
           //if the waiver returns successfully
           if (res.ok) {
@@ -267,7 +269,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                     }
                     return data
                 })
-                    console.log('added')
+                    
                     const emailBody = {"email": user.email}
                     await fetch("/api/confirmation/" + eventId, {
                         method: 'POST',
@@ -521,7 +523,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
             <Button fontSize={{base:"sm", md:"md"}} color= "#B5B5B5" borderColor="gray" w={"35%"} variant={"outline"} onClick={handleSkip}>
               Skip
             </Button>
-            <Button fontWeight={"bold"} fontSize={{base:"xs", sm:"sm", md:"md"}}  backgroundColor="#e0af48" w={"35%"} pl={"10px"} pr={"10px"} onClick={handleCreateAccount}>Create Account</Button>
+            <Button fontWeight={"bold"} fontSize={{base:"xs", sm:"sm", md:"md"}} bg="#337774" color="white" _hover={{ bg: "#4a9b99" }} w={"35%"} pl={"10px"} pr={"10px"} onClick={handleCreateAccount}>Create Account</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

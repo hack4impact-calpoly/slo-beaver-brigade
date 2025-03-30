@@ -34,7 +34,6 @@ export async function GET(
                     "description",
                     event.description
                 );
-                console.log(event);
 
                 comp.addSubcomponent(vevent);
             }

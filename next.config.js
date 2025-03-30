@@ -39,58 +39,61 @@ const nextConfig = {
         },
     },
     images: {
-        domains: ['beaverimages.s3.us-west-1.amazonaws.com'],
-      },
- };
- module.exports = nextConfig;
- 
- 
- // async rewrites() {
- //     return [
- //         // {
- //         //     source: "/",
- //         //     has: [
- //         //         {
- //         //             type: "cookie",
- //         //             key: "user_role",
- //         //             value: "admin",
- //         //         },
- //         //     ],
- //         //     // destination: "/admin/events",
- //         //     destination: "/dashboard",
- //         // },
- //         // {
- //         //     source: "/",
- //         //     has: [
- //         //         {
- //         //             type: "cookie",
- //         //             key: "user_role",
- //         //             value: "user",
- //         //         },
- //         //     ],
- //         //     destination: "/dashboard",
- //         // },
- //         // {
- //         //     source: "/",
- //         //     has: [
- //         //         {
- //         //             type: "cookie",
- //         //             key: "user_role",
- //         //             // value: "guest",
- //         //         },
- //         //     ],
- //         //     destination: "/dashboard",
- //         // // },
- //         // {
- //         //     source: "/",
- //         //     // missing: [
- //         //     //     {
- //         //     //         type: "cookie",
- //         //     //         key: "user_role",
- //         //     //     },
- //         //     // ],
- //         //     destination: "/dashboard",
- //         // },
- //     ];
- // },
- 
+        remotePatterns: [
+            {
+              protocol: "https",
+              hostname: "slobeaverpics.s3.us-west-1.amazonaws.com",
+            },
+        ]
+    }
+};
+module.exports = nextConfig;
+
+// async rewrites() {
+//     return [
+//         // {
+//         //     source: "/",
+//         //     has: [
+//         //         {
+//         //             type: "cookie",
+//         //             key: "user_role",
+//         //             value: "admin",
+//         //         },
+//         //     ],
+//         //     // destination: "/admin/events",
+//         //     destination: "/dashboard",
+//         // },
+//         // {
+//         //     source: "/",
+//         //     has: [
+//         //         {
+//         //             type: "cookie",
+//         //             key: "user_role",
+//         //             value: "user",
+//         //         },
+//         //     ],
+//         //     destination: "/dashboard",
+//         // },
+//         // {
+//         //     source: "/",
+//         //     has: [
+//         //         {
+//         //             type: "cookie",
+//         //             key: "user_role",
+//         //             // value: "guest",
+//         //         },
+//         //     ],
+//         //     destination: "/dashboard",
+//         // // },
+//         // {
+//         //     source: "/",
+//         //     // missing: [
+//         //     //     {
+//         //     //         type: "cookie",
+//         //     //         key: "user_role",
+//         //     //     },
+//         //     // ],
+//         //     destination: "/dashboard",
+//         // },
+//     ];
+// },

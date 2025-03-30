@@ -13,9 +13,10 @@ import {
   isSameMonth,
   eachDayOfInterval,
 } from "date-fns";
-import styles from "../styles/userdashboard/MiniCalendar.module.css";
+import styles from '@styles/userdashboard/MiniCalendar.module.css';
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import HStack from "@chakra-ui/react"
+import { start } from "repl";
 
 // Define type for the onTimeChange function
 type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
@@ -24,10 +25,12 @@ type OnTimeChangeFunction = (startTime: string, endTime: string) => void;
 type DashboardCalendarProps = {
   onTimeChange: OnTimeChangeFunction;
   onDateChange: (date: string) => void;
+  passedStartTime: string;
+  passedEndTime: string;
 };
 
 const DashboardCalendar: React.FC<DashboardCalendarProps> = ({
-  onTimeChange, onDateChange
+  onTimeChange, onDateChange, passedStartTime, passedEndTime
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
@@ -82,6 +85,11 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
+useEffect(() => {
+  setStartTime(passedStartTime);
+  setEndTime(passedEndTime);
+}, [passedEndTime, passedStartTime]);
+
 
   // Effect hook to call onTimeChange function when start/end time changes
   useEffect(() => {
@@ -125,55 +133,57 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.datepicker}>
-        <div className={styles.topMargin}>
-          <div className={styles.monthSelector}>
-            <button className={styles.arrowButton} onClick={handlePrevMonth}>
-              <ChevronLeftIcon />
-            </button>
-            <span className={styles.monthName}>
-              {format(selectedDate, "MMMM yyyy")}
-            </span>
-            <button className={styles.arrowButton} onClick={handleNextMonth}>
-              <ChevronRightIcon />
-            </button>
+      <div className={styles.dateTimeSection}>
+        <div className={styles.datepicker}>
+          <div className={styles.topMargin}>
+            <div className={styles.monthSelector}>
+              <button className={styles.arrowButton} onClick={handlePrevMonth}>
+                <ChevronLeftIcon />
+              </button>
+              <span className={styles.monthName}>
+                {format(selectedDate, "MMMM yyyy")}
+              </span>
+              <button className={styles.arrowButton} onClick={handleNextMonth}>
+                <ChevronRightIcon />
+              </button>
+            </div>
+          </div>
+          <div className={styles.calendarGrid}>
+            {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((dayName, index) => (
+              <div key={index} className={styles.dayText}>
+                {dayName}
+              </div>
+            ))}
+            {renderDays()}
           </div>
         </div>
-        <div className={styles.calendarGrid}>
-          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((dayName, index) => (
-            <div key={index} className={styles.dayText}>
-              {dayName}
-            </div>
-          ))}
-          {renderDays()}
-        </div>
         {selectedDay && (
-          <div className={styles.timeSelector}>
-            <div>
-            &nbsp;&nbsp;Date :{" "}
+          <div className={styles.dateTimeInputs}>
+            <div className={styles.inputGroup}>
+              <label>Date : </label>
               <input
-              type="date"
-              className={styles.timeInput}
-              value={activeDate}
-              onChange={handleDateChange}
+                type="date"
+                value={activeDate}
+                onChange={handleDateChange}
+                className={styles.timeInput}
               />
             </div>
-            <div>
-              Start Time :{" "}
+            <div className={styles.inputGroup}>
+              <label>Start Time : </label>
               <input
                 type="time"
-                className={styles.timeInput}
-                value={startTime}
+                value={startTime? startTime : passedStartTime}
                 onChange={(e) => handleTimeChange(e, "start")}
+                className={styles.timeInput}
               />
             </div>
-            <div>
-            &nbsp;End Time :{" "}
+            <div className={styles.inputGroup}>
+              <label>End Time : </label>
               <input
                 type="time"
-                className={styles.timeInput}
-                value={endTime}
+                value={endTime? endTime : passedEndTime}
                 onChange={(e) => handleTimeChange(e, "end")}
+                className={styles.timeInput}
               />
             </div>
           </div>

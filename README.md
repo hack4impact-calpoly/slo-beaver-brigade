@@ -13,11 +13,24 @@ Just a cool little beaver project.
 
 ### Purpose
 
-To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more. 
+To allow the SLO Beaver Brigade team to more efficiently keep track of their volunteers / events. Having an easily accessible website for visitors to view upcoming events, their previous events, and more.
 
 ### Team
 
-The SLO Beaver Brigade team consists of 16 Cal Poly students. Over the course of about 9 months, we worked as a team to deploy this web application. The team members are listed below:
+The SLO Beaver Brigade team consists of 18 Cal Poly students. Over the course of about two academic years, we worked as a team to deploy this web application. The team members are listed below:
+
+**Year 2 Team:**
+
+- [Sameer Paykel](https://www.linkedin.com/in/sameerpaykel/) - Project Manager
+- [Jason Jelincic](https://www.linkedin.com/in/jasonjelincic/) - Tech Lead
+- [Adarsh Murugesan](https://www.linkedin.com/in/adarsh-muru/) - Software Developer
+- [Brady Welsh](https://www.linkedin.com/in/brady-welsh7/) - Software Developer
+- [Emily Lai](https://www.linkedin.com/in/emily-y-lai/) - Software Developer
+- [Vinpatrik Magdangal](https://www.linkedin.com/in/vinpatrik-magdangal-23269b222/) - Software Developepr
+- [Anikait Vishwanathan](https://www.linkedin.com/in/anikait-vishwanathan-110a342b8/) - Software Developer
+- [Ethan Trantalis](https://www.linkedin.com/in/ethan-trantalis/) - Software Developer
+
+**Year 1 Team:**
 
 - [Tyler Kim](https://www.linkedin.com/) - Project Manager
 - [Jesus Avalos](https://www.linkedin.com/) - Tech Lead

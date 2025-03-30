@@ -111,7 +111,7 @@ export const CreateTemporaryGroup = ({ groups, setGroups,  mutate }: {groups: IG
             groupees: selectedUsers,
             temporary: true
         }
-        const res = await fetch("/api/group", {method: "POST", body: JSON.stringify(group)})
+        const res = await fetch("/api/groups", {method: "POST", body: JSON.stringify(group)})
         if (res.ok){
    
                 setSelectedUsers([])
@@ -122,7 +122,7 @@ export const CreateTemporaryGroup = ({ groups, setGroups,  mutate }: {groups: IG
                     }
                 }, {revalidate: false})
                 setGroups(groups => [...groups, data])
-                console.log('new group', data)
+                
                 onClose()
             }
         else{
@@ -188,7 +188,7 @@ const CreateGroup = ({ mutate }: { mutate: KeyedMutator<IGroup[]>}) => {
             group_name: groupName,
             groupees: selectedUsers
         }
-        const res = await fetch("/api/group", {method: "POST", body: JSON.stringify(group)})
+        const res = await fetch("/api/groups", {method: "POST", body: JSON.stringify(group)})
         if (res.ok){
             toast({
                     title: "Group Created",
@@ -355,7 +355,7 @@ const EditGroup = ({group, isOpen, setOpen, mutate} : {group: IGroup | null, isO
 
     const deleteGroup = async () => {
         
-        const res = await fetch("/api/group/" + group._id, {method: "DELETE"})
+        const res = await fetch("/api/groups/" + group._id, {method: "DELETE"})
         if (res.ok){
             toast({
                     title: "Group Removed",
@@ -421,11 +421,16 @@ export default function ViewGroups() {
     return (
       <>
       <EditGroup group={editGroup} setOpen={setOpenEditGroup} isOpen={openEditGroup} mutate={mutateGroups}/>
-    <Box
-          className={style.yellowButton}
-          onClick={onOpen}
-        >
+        <Box onClick={onOpen}>
+          <Button
+            bg="#337774"
+            color="white"
+            _hover={{ bg: "#4a9b99" }}
+            //padding={"0px 20px"}
+            borderRadius={"12px"}
+            fontWeight={"bold"}>
               <Text>View Groups</Text>
+          </Button>
         </Box>
 
   

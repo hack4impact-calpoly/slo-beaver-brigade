@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import Slider from "react-slick";
-import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { css } from "@emotion/react";
@@ -20,15 +19,11 @@ import "@emotion/react";
 import EventListRegister from "@components/EventList";
 import Link from "next/link";
 import style from '@styles/userdashboard/dashboard.module.css'
-import { getEvents } from "../actions/eventsactions";
-import { getUserDbData } from "@app/lib/authentication";
 import { IUser } from "@database/userSchema";
 import { fallbackBackgroundImage } from "@app/lib/random";
 import { IEvent } from "@database/eventSchema";
-import { EmailRSSComponent } from "./EmailComponent";
 import ExpandedViewComponent from "./StandaloneExpandedViewComponent";
 import "../fonts/fonts.css";
-import { px } from "framer-motion";
 
 // logic for letting ts know about css prop
 declare module "react" {
@@ -158,7 +153,7 @@ export const UserDashboard = ({eventsRes, userDataRes}: {eventsRes: string, user
  
   useEffect(() => {
     if (parsed && userData) {
-      console.log("useData:" + userData)
+      
       const currentDate = new Date();
       // Filter events based on user registration and selected event type
       

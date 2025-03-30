@@ -10,6 +10,11 @@ import {
   Td,
   useBreakpointValue,
   Text,
+  Spacer,
+  Button,
+  Wrap,
+  WrapItem,
+  Input
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
 import Select from "react-select";
@@ -19,6 +24,7 @@ import SingleVisitorComponent from "@components/SingleVisitorComponent";
 import { Schema } from "mongoose";
 import ViewGroups from "app/components/ViewGroups";
 import { useUsers } from "app/lib/swrfunctions";
+import "../../fonts/fonts.css";
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;
@@ -67,6 +73,7 @@ const capitalizeFirstLetter = (str: string): string => {
 const UserList = () => {
   // states
   const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
@@ -117,7 +124,6 @@ const UserList = () => {
           const eventsAttendedNames = await Promise.all(
             user.eventsAttended.map((event) => fetchEventName(event.eventId))
           );
-
           return {
             ...user,
             totalHoursFormatted: formatHours(
@@ -143,7 +149,8 @@ const UserList = () => {
     fetchUsers();
   }, [isError, isLoading]);
 
-  const filteredUsers = customUser
+  useEffect(() => {
+    setFilteredUsers(customUser
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -153,12 +160,20 @@ const UserList = () => {
       sortOrder.value === "firstName"
         ? a.firstName.localeCompare(b.firstName)
         : a.lastName.localeCompare(b.lastName)
-    );
+    ));
+  }, [customUser]);
+
+
 
   const sortOptions = [
     { value: "firstName", label: "First Name" },
     { value: "lastName", label: "Last Name" },
   ];
+
+  const removeUser = (userId: string) => {
+    const newUsers = customUser.filter((user) => user._id != userId);
+    setUsers(newUsers);
+  }
 
 
   const csvData = customUser.map((user) => ({
@@ -186,6 +201,22 @@ const UserList = () => {
     { label: "Total Hours", key: "totalHoursFormatted" },
   ];
 
+  if (isError) {
+    return (
+      <Text fontFamily="Lato" fontSize="2xl" mt="5%" textAlign="center">
+        Error Loading Data
+      </Text>
+    )
+  }
+
+  if ((isLoading || loading) && !isError){
+    return (
+      <Text fontFamily="Lato" fontSize="2xl" mt="5%" textAlign="center">
+        Loading Users...
+      </Text>
+    )
+  }
+  
   return (
     <div className={style.mainContainer}>
       <div className={style.buttonContainer}>
@@ -224,9 +255,12 @@ const UserList = () => {
             }}
           />
           <div className={style.searchWrapper}>
-            <input
+            <Input
               type="text"
               placeholder="Search Users"
+              border="1.5px solid #337774"
+              _hover={{ borderColor: '#337774' }}
+              focusBorderColor="#337774"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={style.searchBar}
@@ -245,6 +279,9 @@ const UserList = () => {
             />
           </div>
         </div>
+          <div className={style.viewGroupsContainer}>
+            <ViewGroups/>
+          </div>
           <CSVLink
             data={csvData}
             headers={headers}
@@ -252,37 +289,33 @@ const UserList = () => {
             className={style.yellowButton}
             target="_blank"
           >
-            Export User List
+            Export to CSV
           </CSVLink>
-          <ViewGroups/>
-        </div>
+        </div> 
       <div className={style.tableContainer}>
         {/* {isLoading && !users  && !isError && <div>Loading...</div>}
-        {isError && <div>Error occurred.</div>} */}
-
-        {(isLoading  || loading)&& !isError && 'Loading...'}
-        {isError && 'Error occurred.'}
-        {!isLoading && !loading &&
-            <Box>
+        {isError && <div>Error occurred.</div>}
+                 */}
+          <Box>
             <Table
-                variant="striped"
-                size={tableSize}
-                className={style.customTable}
+              variant="striped"
+              size={tableSize}
+              className={style.customTable}
             >
-                <Thead>
-                <Tr>
-                    <Th>Name</Th>
-                    <Th>Email</Th>
-                    <Th>Total Hours</Th>
-                    <Th>Role</Th>
-                    <Th></Th>
-                </Tr>
-                </Thead>
-                <Tbody>
+              <Thead>
+              <Tr>
+                  <Th>Name</Th>
+                  <Th>Email</Th>
+                  <Th>Total Hours</Th>
+                  <Th>Role</Th>
+                  <Th></Th>
+              </Tr>
+              </Thead>
+              <Tbody>
                 {filteredUsers.length === 0 ? (
                     <Tr>
                     <Td colSpan={5} textAlign="center">
-                        No users found.
+                        No Users Found
                     </Td>
                     </Tr>
                 ) : (
@@ -292,18 +325,17 @@ const UserList = () => {
                         <Td>{`${user.firstName} ${user.lastName}`}</Td>
                         <Td>{user.email}</Td>
                         <Td>{user.totalHoursFormatted}</Td>
-
+  
                         <Td>{capitalizeFirstLetter(user.role)}</Td>
                         <Td>
-                        <SingleVisitorComponent visitorData={user} />
+                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} />
                         </Td>
                     </Tr>
                     ))
                 )}
-                </Tbody>
-                </Table>
-            </Box>
-        }
+              </Tbody>
+            </Table>
+          </Box>
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 "use server"
 import User from "@database/userSchema";
 import connectDB from "database/db";
+import Log from "@database/logSchema";
+import { currentUser } from "@clerk/nextjs/server";
 
 const makeAdminUser = async (email: string) => {
   await connectDB();
@@ -14,6 +16,25 @@ const makeAdminUser = async (email: string) => {
     if (!user) {
       throw new Error(`User with email ${email} not found`);
     }
+
+    // Get the currently logged-in user (the admin making the change)
+    const curUser = await currentUser();
+    if (!curUser) {
+      throw new Error("No admin user found");
+    }
+
+    // Find the admin user in the database
+    const adminUser = await User.findOne({ email: curUser.emailAddresses[0].emailAddress });
+    if (!adminUser) {
+      throw new Error(`Admin user with email ${curUser.emailAddresses[0].emailAddress } not found`);
+    }
+
+    // add an audit log entry
+    await Log.create({
+      user: `${curUser.firstName} ${curUser.lastName}`,
+      action: `reverted ${user.firstName} ${user.lastName} to user`,
+      date: new Date(),
+    });
 
     return user.toObject();
   } catch (error) {

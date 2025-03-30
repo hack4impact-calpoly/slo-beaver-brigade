@@ -13,4 +13,4 @@ const Group = new Schema({
     temporary: { type: Boolean, required: false, default: false },
 });
 
-export default mongoose.models["groups"] || mongoose.model("groups", Group);
+export default mongoose.models["devGroups"] || mongoose.model("devGroups", Group);

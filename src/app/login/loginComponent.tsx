@@ -19,7 +19,7 @@ import { revalidatePathServer } from "app/actions/serveractions";
 import { getBareBoneUser } from "app/actions/cookieactions";
 import { getUserDataFromEmail } from "app/lib/authentication";
 import "../fonts/fonts.css";
-import beaverLogo from "/docs/images/beaver-logo.svg";
+import beaverLogo from "/docs/images/beaver-logo.png";
 import Image from "next/image";
 
 export default function Login() {
@@ -59,13 +59,13 @@ export default function Login() {
       if (completeSignIn.status !== 'complete') {
         // The status can also be `needs_factor_on', 'needs_factor_two', or 'needs_identifier'
         // Please see https://clerk.com/docs/references/react/use-sign-in#result-status for  more information
-        console.log(JSON.stringify(completeSignIn, null, 2));
+        
       }
 
       if (completeSignIn.status === 'complete') {
         // can be hacked....?
         const user = await getUserDataFromEmail(email)
-        console.log('email', email, 'user', user)
+        
         await fetch('/api/user/cookies', {method: "POST", body:user})
 
         // If complete, user exists and provided password match -- set session active
@@ -155,7 +155,7 @@ export default function Login() {
         <FormControl mb={4}>
 
         <Flex justifyContent="center" alignItems="center">
-          <Button bg="#e0af48" color="black" width="full" onClick={handleSubmit} isLoading={signInProgress} loadingText="Signing In">
+          <Button bg="#e0af48" _hover={{ bg: "#C19137" }} color="black" width="full" onClick={handleSubmit} isLoading={signInProgress} loadingText="Signing In">
             Sign In           
           </Button>
         </Flex>

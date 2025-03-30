@@ -26,10 +26,10 @@ export default function Navbar(props: { name: string }) {
           <Link href="/">
             <Image
               className={styles.logo}
-              src={"/beaver-logo.svg"}
+              src={"/beaver-logo.png"}
               alt="Beaver Logo"
-              width={35}
-              height={35}
+              width={45}
+              height={40}
             ></Image>
           </Link>
           {(props.name === "Sign In / Log In")? 
@@ -51,10 +51,10 @@ export default function Navbar(props: { name: string }) {
                 Discover Events
               </Link>
             </li>
-            <li>
-                <Link href="/calendar" onClick={handleHideNavbar}>
-                  Calendar
-                </Link>
+           <li>
+              <Link href="/calendar" onClick={handleHideNavbar}>
+                Event Calendar
+              </Link>
             </li>
             {(props.name != "Sign In / Log In") &&
               <>
@@ -62,26 +62,16 @@ export default function Navbar(props: { name: string }) {
                   <Link href="/profile" onClick={handleHideNavbar}>
                     My Account
                   </Link>
-                </li>
-                <li>
-                  <Link href="/admin/events" onClick={handleHideNavbar}>
-                    Manage Events
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin/users" onClick={handleHideNavbar}>
-                    User List
-                  </Link>
                 </li>  
                 <li>
-                  <Link href="/admin/hours" onClick={handleHideNavbar}>
+                  <Link href="/hours" onClick={handleHideNavbar}>
                     Volunteer Log
                   </Link>
                 </li>
               </>
             }
           </ul>
-        </div>
+        </div>  
         <div className={`${styles.nav_right} ${showNavbar && styles.active}`}>
           <ul>
             <li>
@@ -95,9 +85,7 @@ export default function Navbar(props: { name: string }) {
                   |
                 </li>
                 <li onClick={async() => {await removeUserCookie(); mutate("/api/events?sort=asc")}}>
-                  <SignOutButton>
-                    <button>Sign Out</button>
-                  </SignOutButton>
+                  <SignOutButton/>
                 </li>
               </>
             }
@@ -108,7 +96,7 @@ export default function Navbar(props: { name: string }) {
           </div> 
           <div className={`${styles.close_icon} ${showNavbar && styles.active}`} onClick={handleHideNavbar}>
             <CloseIcon/> 
-          </div>
+          </div>               
       </div>
     </nav>
   );

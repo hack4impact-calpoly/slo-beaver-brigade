@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import style from "@styles/admin/eventCard.module.css";
 import { IEvent } from "@database/eventSchema";
-
+import ChakraNextImage from "./ChakraNextImage";
 
 interface EventPreviewProps {
  event: IEvent;

@@ -23,7 +23,7 @@ const s3Client = new S3Client({
 export async function addAttendee(userid : string, eventid : string) {
     try{
     
-        console.log("here ", userid, typeof userid, eventid, typeof eventid )
+        
         await connectDB(); // connect to db
 
         const event: IEvent = await Event.findOneAndUpdate(
@@ -46,14 +46,14 @@ export async function addAttendee(userid : string, eventid : string) {
         return true 
     }
     catch(err){
-        console.log("Error bro", err)
+        
        return false
     }
 }
 export async function addToRegistered(userid : string, eventid : string, waiverId: string) {
     try{
     
-        console.log("here ", userid, typeof userid, eventid, typeof eventid )
+        
         await connectDB(); // connect to db
 
 
@@ -69,7 +69,7 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
         return true
     }
     catch(err){
-        console.log("Error bro", err)
+        
         return false
     }
 }
@@ -77,7 +77,7 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
 
 
 export  const createPresignedUrlWithClient = async ( key: string, type: string) => {
-    console.log(key)
+    
   const command = new PutObjectCommand({ Bucket: process.env.S3_BUCKET_NAME, Key: key, ContentType: type });
   return getSignedUrl(s3Client, command, { expiresIn: 3600 });
 };
@@ -116,10 +116,10 @@ export async function addToGroup(groupId: string, userId: string){
 
         await connectDB()
         await Group.findByIdAndUpdate(groupId, {$push: {groupees: userId}}).orFail()
-        console.log(userId, " added to group.")
+        
     }
     catch(err){
-        console.log("error adding to group: ", err)
+        
     }
 }
 export async function removeFromGroup(groupId: string, userId: string){
@@ -127,9 +127,9 @@ export async function removeFromGroup(groupId: string, userId: string){
 
         await connectDB()
         await Group.findByIdAndUpdate(groupId, {$pull: {groupees: userId}}).orFail()
-        console.log(userId, " removed from group.")
+        
     }
     catch(err){
-        console.log("error removing to group: ", err)
+        
     }
 }
