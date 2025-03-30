@@ -48,3 +48,27 @@
 .login_button{
    padding-right: 50px;
 }
+
+@media (max-width: 640px) {
+  .twoThirdsGrid {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .halfGrid {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .leftColumn {
+    width: 100%;
+  }
+
+  .rightColumn {
+    width: 100%;
+  }
+
+  .halfColumn {
+    width: 100%;
+  }
+}

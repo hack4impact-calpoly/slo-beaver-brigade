@@ -590,8 +590,8 @@ export default function Page() {
         ></ImageSelector>
       </Flex>
 
-      <Flex direction={{ base: "column", xl: "row" }} gap={{base: 10, xl: 16}} mb={6} mt={6}>
-        <VStack spacing={4} align="stretch" flex="1" maxWidth={{ base: "100%", xl: "55%" }}>
+      <Flex direction={{ base: "column", xl: "row" }} gap={{base: 10, 'xl': 12}} mb={6} mt={6}>
+        <VStack spacing={4} align="stretch" flex="1" maxWidth={{ base: "100%", 'xl': "45%" }}>
           <FormControl isRequired>
             <FormLabel htmlFor="event-name" fontWeight="bold">
               Event Name
@@ -678,9 +678,8 @@ export default function Page() {
             </div>
           </div>
 
-          <div className={style.twoThirdsGrid}>
             {/* Row 2: Assign Groups and Only Available to Selected Groups */}
-            <div className={style.leftColumn}>
+            <div>
               <FormControl isRequired>
               <FormLabel htmlFor="organization" fontWeight="bold">
                 Assign Groups
@@ -721,7 +720,8 @@ export default function Page() {
               </FormControl>
             </div>
 
-            <div className={style.rightColumn}>
+          <div className={style.halfGrid}>
+          <div className={style.halfColumn}>
               <FormControl isRequired>
                 <FormLabel htmlFor="invitees" fontWeight="bold">
                   Groups Only?
@@ -740,6 +740,36 @@ export default function Page() {
                   }
                   onChange={(option) =>
                     setOnlyGroups(option ? option.value === "Yes" : false)
+                  }
+                  chakraStyles={{
+                    control: (provided) => ({
+                      ...provided,
+                      textAlign: "left",
+                    }),
+                  }}
+                />
+              </FormControl>
+            </div>
+
+            <div className={style.halfColumn}>
+              <FormControl isRequired>
+                <FormLabel htmlFor="invitees" fontWeight="bold">
+                  Notify Group Members?
+                </FormLabel>
+                <Select
+                  id="invitees"
+                  placeholder="Select an Option"
+                  options={[
+                    { value: "Yes", label: "Yes" },
+                    { value: "No", label: "No" },
+                  ]}
+                  value={
+                    sendEmailInvitees
+                      ? { value: "Yes", label: "Yes" }
+                      : { value: "No", label: "No" }
+                  }
+                  onChange={(option) =>
+                    setSendEmailInvitees(option ? option.value === "Yes" : false)
                   }
                   chakraStyles={{
                     control: (provided) => ({
@@ -787,7 +817,7 @@ export default function Page() {
             <div className={style.halfColumn}>
               <FormControl isRequired>
               <FormLabel htmlFor="accessibility" fontWeight="bold">
-                Accessibile Access
+                Wheelchair Accessibile
               </FormLabel>
               <Select
                 id="accessibility"
