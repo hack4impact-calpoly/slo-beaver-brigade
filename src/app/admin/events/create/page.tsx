@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -23,6 +23,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import EventPreviewComponent from "@components/EventCard";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
 import { format, formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -125,20 +126,17 @@ export default function Page() {
 
   const handleOrganizationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const groupId = e.target.value;
-    const isChekced = e.target.checked;
+    const isChecked = e.target.checked;
 
     setOrganizationIds((prevIds: string[]) => {
-      if (isChekced) {
-        //add to list
+      if (isChecked) {
         return [...prevIds, groupId];
       } else {
-        //remove from list
-        return prevIds.filter((id) => id != groupId);
+        return prevIds.filter((id) => id !== groupId);
       }
     });
   };
 
-  //Parse and format start and end time from user input
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
     if (start && end) {
@@ -161,7 +159,7 @@ export default function Page() {
       // Format the adjusted dates back into ISO strings
       const formattedStartDateTime = formatISO(parsedStartTime);
       const formattedEndDateTime = formatISO(parsedEndTime);
-      // Update the state with the formatted date times
+
       setEventStart(formattedStartDateTime);
       setEventEnd(formattedEndDateTime);
     }
@@ -172,15 +170,13 @@ export default function Page() {
       setEventEnd("");
     }
   };
-  // Update active date upon change from MiniCalendar
+
   const handleDateChangeFromCalendar = (newDate: string) => {
     setActiveDate(newDate);
   };
 
-  // Create a ref for the file input
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Function to trigger file input click for image upload
   const promptFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -277,15 +273,7 @@ export default function Page() {
 
   // Throw a Toast when event details are not complete and makes a post request to create event if details are complete
   const handleCreateEvent = async () => {
-    debugger;
-    // Form validation before submission
-    if (
-      !eventName ||
-      !eventType ||
-      !accessibilityAccommodation ||
-      !location ||
-      !description
-    ) {
+    if (!eventName || !eventType || !accessibilityAccommodation || !location || !description) {
       toast({
         title: "Error",
         description: "Event details are not complete",
@@ -314,10 +302,9 @@ export default function Page() {
       return;
     }
 
-    // Try to upload image
     const file = fileInputRef?.current?.files?.[0] ?? null;
     let imageurl = null;
-
+    
     if (file || preselected) {
       if (!preselected) {
         imageurl = await uploadFileS3Bucket(file);
@@ -353,7 +340,6 @@ export default function Page() {
       groupsOnly: onlyGroups,
     };
 
-    // Attempt to create event via API and handle response
     try {
       const response = await fetch("/api/events", {
         method: "POST",
@@ -364,7 +350,7 @@ export default function Page() {
       });
 
       if (!response.ok) {
-        throw new Error("HTTP error! status: $(response.status)");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const event: IEvent = await response.json();
@@ -417,9 +403,8 @@ export default function Page() {
       groupees: [],
     };
 
-    // Optimistically update UI
     const optimisticNewGroup = {
-      _id: Date.now().toString(), // Temporary ID
+      _id: Date.now().toString(),
       group_name: groupName,
     };
 
@@ -432,19 +417,15 @@ export default function Page() {
         body: JSON.stringify(groupData),
       });
       if (!response.ok) {
-        // Rollback if the creation failed
         setGroups((currentGroups) =>
           currentGroups.filter((group) => group._id !== optimisticNewGroup._id)
         );
         throw new Error("Failed to create group");
       }
       const newGroup = await response.json();
-      // Update the temporary group with actual _id from the response
       setGroups((currentGroups) =>
         currentGroups.map((group) =>
-          group._id === optimisticNewGroup._id
-            ? { ...group, _id: newGroup._id }
-            : group
+          group._id === optimisticNewGroup._id ? { ...group, _id: newGroup._id } : group
         )
       );
       toast({
@@ -465,7 +446,6 @@ export default function Page() {
     }
   };
 
-  // Fetch groups data on component mount
   useEffect(() => {
     if (isError) {
       toast({
@@ -478,7 +458,6 @@ export default function Page() {
     }
   }, [isError]);
 
-  // Fetching different event types
   useEffect(() => {
     const fetchEventTypes = async () => {
       try {
@@ -495,6 +474,24 @@ export default function Page() {
 
     fetchEventTypes();
   }, []);
+
+  const mockEvent = {
+    _id: "mockId",
+    eventName,
+    eventImage: imagePreview,
+    eventType,
+    checklist: checkList,
+    location,
+    description,
+    wheelchairAccessible: accessibilityAccommodation === "Yes",
+    spanishSpeakingAccommodation: spanishSpeaking === "Yes",
+    startTime: eventStart ? new Date(eventStart) : new Date(),
+    endTime: eventEnd ? new Date(eventEnd) : new Date(),
+    volunteerEvent: eventType === "Volunteer",
+    groupsAllowed: organizationIds,
+    registeredIds: [],
+    attendeeIds: [],
+  };
 
   return (
     <Box px="1%" pb="8" mx="4%">
@@ -528,49 +525,65 @@ export default function Page() {
         </Menu>
       </Box>
 
-      {/* image uploading */}
-      <Flex
-        flexDir={{ base: "column", md: "row" }}
-        flex="1"
-        gap={{ base: "10px", md: "10px" }}
-      >
-        <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
-          <Input
-            id="cover-image"
-            type="file"
-            accept="image/*"
-            // value={eventImage}
-            onChange={handleImageChange}
-            ref={fileInputRef}
-            hidden // Hide the actual input
-          />
-          <Box
-            position="relative"
-            borderWidth="1px"
-            p="4"
-            mt="4"
-            textAlign="center"
-            h="64"
-            borderRadius="20px"
-            overflow="hidden"
-            width="100%"
-            bg="gray.200"
-            display="flex"
+      <HStack width="100%">
+        <Flex
+          flexDir={{ base: "column", lg: "row" }}
+          flex="1"
+          gap={{ base: "10px", lg: "30px" }}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Box mt="4">
+            <EventPreviewComponent
+              event={mockEvent}
+              groupName={
+              groups?.find((group) => group._id === organizationIds[0])?.group_name || ""
+              }
+              onClick={() => {}}
+            />
+          </Box>
+            <Flex 
+            flex="1"
+            gap={{ base: "10px", lg: "30px" }}
             justifyContent="center"
             alignItems="center"
-            flexDirection="column"
-          >
-            {!imagePreview ? (
-              <>
+            width="100%">
+            <FormControl onClick={promptFileInput} cursor="pointer" width="100%">
+              <Input
+              id="cover-image"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              ref={fileInputRef}
+              hidden // Hide the actual input
+              />
+              <Box
+              position="relative"
+              borderWidth="1px"
+              p="4"
+              mt="4"
+              textAlign="center"
+              h="64"
+              borderRadius="20px"
+              overflow="hidden"
+              width="100%"
+              bg="gray.200"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+              >
+              {!imagePreview ? (
+                <>
                 <Text>Upload Image</Text>
                 <IconButton
                   aria-label="Upload image"
                   icon={<AddIcon />}
                   mt="2"
                 />
-              </>
-            ) : (
-              <Image
+                </>
+              ) : (
+                <Image
                 src={imagePreview}
                 alt="Event cover preview"
                 position="absolute"
@@ -580,15 +593,17 @@ export default function Page() {
                 height="100%"
                 objectFit="cover"
                 zIndex={0}
-              />
-            )}
-          </Box>
-        </FormControl>
-        <ImageSelector
-          setPreselected={setPreselected}
-          setImageURL={setImagePreview}
-        ></ImageSelector>
-      </Flex>
+                />
+              )}
+              </Box>
+            </FormControl>
+            <ImageSelector
+              setPreselected={setPreselected}
+              setImageURL={setImagePreview}
+            ></ImageSelector>
+            </Flex>
+        </Flex>
+      </HStack>
 
       <Flex direction={{ base: "column", xl: "row" }} gap={{base: 10, 'xl': 12}} mb={6} mt={6}>
         <VStack spacing={4} align="stretch" flex="1" maxWidth={{ base: "100%", 'xl': "45%" }}>
@@ -918,4 +933,4 @@ export default function Page() {
       </Box>
     </Box>
   );
-}
+};

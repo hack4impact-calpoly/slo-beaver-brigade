@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import styles from '@styles/userdashboard/MiniCalendar.module.css';
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import HStack from "@chakra-ui/react"
 import { start } from "repl";
 
 // Define type for the onTimeChange function
