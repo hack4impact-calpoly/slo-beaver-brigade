@@ -1,0 +1,84 @@
+.twoThirdsGrid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.halfGrid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  width: 37%;
+}
+
+.halfLeftColumn {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+}
+
+.halfRightColumn {
+  display: flex;
+  flex-direction: column;
+  width: 49%;
+}
+
+.wrapper {
+  margin: 10px;
+ }
+.preview ul{
+  list-style-type: circle;
+  padding-left: 2rem;
+}
+
+.preview ol{
+  list-style-type: decimal;
+  padding-left: 2rem;
+}
+
+.signup_button{
+   padding-right: 50px;
+}
+
+.login_button{
+   padding-right: 50px;
+}
+
+@media (max-width: 640px) {
+  .twoThirdsGrid {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .halfGrid {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .leftColumn {
+    width: 100%;
+  }
+
+  .rightColumn {
+    width: 100%;
+  }
+
+  .halfLeftColumn {
+    width: 100%;
+  }
+
+  .halfRightColumn {
+    width: 100%;
+  }
+}
