@@ -721,7 +721,7 @@ export default function Page() {
             </div>
 
           <div className={style.halfGrid}>
-          <div className={style.halfColumn}>
+          <div className={style.halfLeftColumn}>
               <FormControl isRequired>
                 <FormLabel htmlFor="invitees" fontWeight="bold">
                   Groups Only
@@ -751,7 +751,7 @@ export default function Page() {
               </FormControl>
             </div>
 
-            <div className={style.halfColumn}>
+            <div className={style.halfRightColumn}>
               <FormControl isRequired>
                 <FormLabel htmlFor="invitees" fontWeight="bold">
                   Notify Group Members
@@ -784,7 +784,7 @@ export default function Page() {
             
           <div className={style.halfGrid}>
             {/* Row 3: Accommodations */}
-            <div className={style.halfColumn}>
+            <div className={style.halfLeftColumn}>
               <FormControl isRequired>
               <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
                 Spanish Speaking
@@ -814,7 +814,7 @@ export default function Page() {
               </FormControl>
             </div>
 
-            <div className={style.halfColumn}>
+            <div className={style.halfRightColumn}>
               <FormControl isRequired>
               <FormLabel htmlFor="accessibility" fontWeight="bold">
                 Wheelchair Accessibile
