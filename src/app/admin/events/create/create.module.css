@@ -1,0 +1,50 @@
+.twoThirdsGrid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.halfGrid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  width: 57%;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  width: 37%;
+}
+
+.halfColumn {
+  display: flex;
+  flex-direction: column;
+  width: 47%;
+}
+
+.wrapper {
+  margin: 10px;
+ }
+.preview ul{
+  list-style-type: circle;
+  padding-left: 2rem;
+}
+
+.preview ol{
+  list-style-type: decimal;
+  padding-left: 2rem;
+}
+
+.signup_button{
+   padding-right: 50px;
+}
+
+.login_button{
+   padding-right: 50px;
+}
