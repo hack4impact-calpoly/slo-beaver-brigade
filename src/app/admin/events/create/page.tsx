@@ -648,7 +648,7 @@ export default function Page() {
             </div>
 
             <div className={style.rightColumn}> 
-              <FormControl isRequired className={style.rightColumn}>
+              <FormControl>
                 <FormLabel htmlFor="volunteer-hours" fontWeight="bold">
                   Volunteer Hours
                 </FormLabel>
@@ -680,7 +680,7 @@ export default function Page() {
 
             {/* Row 2: Assign Groups and Only Available to Selected Groups */}
             <div>
-              <FormControl isRequired>
+              <FormControl>
               <FormLabel htmlFor="organization" fontWeight="bold">
                 Assign Groups
               </FormLabel>
@@ -722,7 +722,7 @@ export default function Page() {
 
           <div className={style.halfGrid}>
           <div className={style.halfLeftColumn}>
-              <FormControl isRequired>
+              <FormControl>
                 <FormLabel htmlFor="invitees" fontWeight="bold">
                   Groups Only
                 </FormLabel>
@@ -752,7 +752,7 @@ export default function Page() {
             </div>
 
             <div className={style.halfRightColumn}>
-              <FormControl isRequired>
+              <FormControl>
                 <FormLabel htmlFor="invitees" fontWeight="bold">
                   Notify Group Members
                 </FormLabel>
