@@ -724,7 +724,7 @@ export default function Page() {
           <div className={style.halfColumn}>
               <FormControl isRequired>
                 <FormLabel htmlFor="invitees" fontWeight="bold">
-                  Groups Only?
+                  Groups Only
                 </FormLabel>
                 <Select
                   id="invitees"
@@ -754,7 +754,7 @@ export default function Page() {
             <div className={style.halfColumn}>
               <FormControl isRequired>
                 <FormLabel htmlFor="invitees" fontWeight="bold">
-                  Notify Group Members?
+                  Notify Group Members
                 </FormLabel>
                 <Select
                   id="invitees"
