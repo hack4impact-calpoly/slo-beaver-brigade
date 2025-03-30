@@ -29,7 +29,6 @@ import { useRouter } from "next/navigation";
 import { uploadFileS3Bucket } from "app/lib/clientActions";
 import { Select, CreatableSelect } from "chakra-react-select";
 import MDEditor from "@uiw/react-md-editor";
-import style from "@styles/calendar/calendar.module.css";
 import ImageSelector from "app/components/ImageSelector";
 import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
 import { CreateTemporaryGroup } from "app/components/ViewGroups";
@@ -37,6 +36,7 @@ import { IGroup } from "database/groupSchema";
 import { IEvent } from "database/eventSchema";
 import { IEventTemplate } from "database/eventTemplateSchema";
 // import { IEvent } from "database/eventTemplateSchema";
+import style from "./create.module.css";
 import "../../../fonts/fonts.css";
 import { set } from "mongoose";
 
@@ -497,30 +497,42 @@ export default function Page() {
   }, []);
 
   return (
-    <Box p={[0, 8, 8, 8]} mx="10">
-      <Flex justifyContent="space-between" alignItems="center" mb={4}>
-    <Text fontSize="2xl" fontWeight="bold" color="black" mt={-12} mb={3}>
-      Create New Event
-    </Text>
-    <Menu>
-      <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-        {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
-      </MenuButton>
-      <MenuList>
-        {templates.map((template) => (
-          <MenuItem key={template._id} onClick={() => handleSelectTemplate(template)}>
-            {template.eventName}
-          </MenuItem>
-        ))}
-      </MenuList>
-    </Menu>
-  </Flex>
+    <Box px="1%" pb="8" mx="4%">
+      <Box
+        justifyContent="space-between"
+        alignItems="center"
+        display="flex"
+        flexDirection="row"
+      >
+        <Text
+          fontSize="2xl"
+          fontWeight="bold"
+          color="black"
+        >
+          Create New Event
+        </Text>
+        <Menu>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
+          </MenuButton>
+          <MenuList>
+            {templates.map((template) => (
+              <MenuItem
+                key={template._id}
+                onClick={() => handleSelectTemplate(template)}
+              >
+                {template.eventName}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      </Box>
 
       {/* image uploading */}
       <Flex
         flexDir={{ base: "column", md: "row" }}
         flex="1"
-        gap={{ base: "10px", md: "50px" }}
+        gap={{ base: "10px", md: "10px" }}
       >
         <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
           <Input
@@ -578,8 +590,8 @@ export default function Page() {
         ></ImageSelector>
       </Flex>
 
-      <Flex direction={{ base: "column", md: "row" }} gap={20} mb={6} mt={6}>
-        <VStack spacing={4} align="stretch" flex="1">
+      <Flex direction={{ base: "column", xl: "row" }} gap={{base: 10, xl: 16}} mb={6} mt={6}>
+        <VStack spacing={4} align="stretch" flex="1" maxWidth={{ base: "100%", xl: "55%" }}>
           <FormControl isRequired>
             <FormLabel htmlFor="event-name" fontWeight="bold">
               Event Name
@@ -604,66 +616,72 @@ export default function Page() {
             />
           </FormControl>
 
-          <SimpleGrid
-            columns={{ base: 1, lg: 2 }}
-            spacing={6}
-            w="100%"
-          >
+          <div className={style.twoThirdsGrid}>
             {/* Row 1: Event Type and Volunteer Hours */}
-            <FormControl isRequired>
-              <FormLabel htmlFor="event-type" fontWeight="bold">
-                Event Type
-              </FormLabel>
-              <CreatableSelect
-                id="event-type"
-                placeholder="Select or create event type"
-                options={eventTypes.map((type) => ({
-                  value: type,
-                  label: type,
-                }))}
-                value={eventType ? { value: eventType, label: eventType } : null}
-                onChange={(option) => setEventType(option ? option.value : "")}
-                chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
-                }}
-                isClearable
-                isSearchable
-              />
-            </FormControl>
+            <div className={style.leftColumn}>
+              <FormControl isRequired>
+                  <FormLabel
+                  htmlFor="event-type"
+                  fontWeight="bold"
+                  >
+                  Event Type
+                  </FormLabel>
+                <CreatableSelect
+                  id="event-type"
+                  placeholder="Select or create event type"
+                  options={eventTypes.map((type) => ({
+                    value: type,
+                    label: type,
+                  }))}
+                  value={eventType ? { value: eventType, label: eventType } : null}
+                  onChange={(option) => setEventType(option ? option.value : "")}
+                  chakraStyles={{
+                    control: (provided) => ({
+                      ...provided,
+                      textAlign: "left",
+                    }),
+                  }}
+                  isClearable
+                  isSearchable
+                />
+              </FormControl>
+            </div>
 
-            <FormControl isRequired>
-              <FormLabel htmlFor="volunteer-hours" fontWeight="bold">
-                Counts for Volunteer Hours
-              </FormLabel>
-              <Select
-                id="volunteer-hours"
-                placeholder="Select an Option"
-                options={[
-                  { value: "Yes", label: "Yes" },
-                  { value: "No", label: "No" },
-                ]}
-                value={
-                  isVolunteerEvent
-                    ? { value: "Yes", label: "Yes" }
-                    : { value: "No", label: "No" }
-                }
-                onChange={(option) =>
-                  setIsVolunteerEvent(option ? option.value === "Yes" : false)
-                }
-                chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
-                }}
-              />
-            </FormControl>
+            <div className={style.rightColumn}> 
+              <FormControl isRequired className={style.rightColumn}>
+                <FormLabel htmlFor="volunteer-hours" fontWeight="bold">
+                  Volunteer Hours?
+                </FormLabel>
+                <Select
+                  id="volunteer-hours"
+                  placeholder="Select an Option"
+                  options={[
+                    { value: "Yes", label: "Yes" },
+                    { value: "No", label: "No" },
+                  ]}
+                  value={
+                    isVolunteerEvent
+                      ? { value: "Yes", label: "Yes" }
+                      : { value: "No", label: "No" }
+                  }
+                  onChange={(option) =>
+                    setIsVolunteerEvent(option ? option.value === "Yes" : false)
+                  }
+                  chakraStyles={{
+                    control: (provided) => ({
+                      ...provided,
+                      textAlign: "left",
+                    }),
+                  }}
+                />
+              </FormControl>
+            </div>
+          </div>
 
+          <div className={style.twoThirdsGrid}>
             {/* Row 2: Assign Groups and Only Available to Selected Groups */}
-            <FormControl isRequired>
+            <div className={style.leftColumn}>
+              <FormControl isRequired>
               <FormLabel htmlFor="organization" fontWeight="bold">
                 Assign Groups
               </FormLabel>
@@ -671,155 +689,136 @@ export default function Page() {
                 id="organization"
                 placeholder="Select or create organization"
                 options={groups?.map((group) => ({
-                  value: group._id,
-                  label: group.group_name,
+                value: group._id,
+                label: group.group_name,
                 }))}
                 value={groupsSelected.map((group) => ({
-                  value: group._id,
-                  label: group.group_name,
+                value: group._id,
+                label: group.group_name,
                 }))}
                 onChange={(selectedOptions) =>
-                  setGroupsSelected(
-                    selectedOptions
-                      ? selectedOptions.map((option) => ({
-                          _id: option.value,
-                          group_name: option.label,
-                          groupees: [],
-                        }))
-                      : []
-                  )
+                setGroupsSelected(
+                  selectedOptions
+                  ? selectedOptions.map((option) => ({
+                    _id: option.value,
+                    group_name: option.label,
+                    groupees: [],
+                    }))
+                  : []
+                )
                 }
                 onCreateOption={handleCreateNewGroup}
                 chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
                 }}
                 isMulti
                 isClearable
                 isSearchable
               />
-            </FormControl>
+              </FormControl>
+            </div>
 
-            <FormControl isRequired>
-              <FormLabel htmlFor="invitees" fontWeight="bold">
-                Only Available to Selected Groups
-              </FormLabel>
-              <Select
-                id="invitees"
-                placeholder="Select an Option"
-                options={[
-                  { value: "Yes", label: "Yes" },
-                  { value: "No", label: "No" },
-                ]}
-                value={
-                  onlyGroups
-                    ? { value: "Yes", label: "Yes" }
-                    : { value: "No", label: "No" }
-                }
-                onChange={(option) =>
-                  setOnlyGroups(option ? option.value === "Yes" : false)
-                }
-                chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
-                }}
-              />
-            </FormControl>
-
+            <div className={style.rightColumn}>
+              <FormControl isRequired>
+                <FormLabel htmlFor="invitees" fontWeight="bold">
+                  Groups Only?
+                </FormLabel>
+                <Select
+                  id="invitees"
+                  placeholder="Select an Option"
+                  options={[
+                    { value: "Yes", label: "Yes" },
+                    { value: "No", label: "No" },
+                  ]}
+                  value={
+                    onlyGroups
+                      ? { value: "Yes", label: "Yes" }
+                      : { value: "No", label: "No" }
+                  }
+                  onChange={(option) =>
+                    setOnlyGroups(option ? option.value === "Yes" : false)
+                  }
+                  chakraStyles={{
+                    control: (provided) => ({
+                      ...provided,
+                      textAlign: "left",
+                    }),
+                  }}
+                />
+              </FormControl>
+            </div>
+          </div>
+            
+          <div className={style.halfGrid}>
             {/* Row 3: Accommodations */}
-            <FormControl isRequired>
+            <div className={style.halfColumn}>
+              <FormControl isRequired>
               <FormLabel htmlFor="spanishAccommodation" fontWeight="bold">
-                Spanish Speaking Accommodation
+                Spanish Speaking
               </FormLabel>
               <Select
                 id="accommodation-type"
                 placeholder="Select an Option"
                 options={[
-                  { value: "Yes", label: "Yes" },
-                  { value: "No", label: "No" },
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
                 ]}
                 value={
-                  spanishSpeaking !== ""
-                    ? { value: spanishSpeaking, label: spanishSpeaking }
-                    : null
+                spanishSpeaking !== ""
+                  ? { value: spanishSpeaking, label: spanishSpeaking }
+                  : null
                 }
                 onChange={(option) =>
-                  setSpanishSpeaking(option ? option.value : "")
+                setSpanishSpeaking(option ? option.value : "")
                 }
                 chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
+                control: (provided) => ({
+                  ...provided,
+                  textAlign: "left",
+                }),
                 }}
               />
-            </FormControl>
+              </FormControl>
+            </div>
 
-            <FormControl isRequired>
+            <div className={style.halfColumn}>
+              <FormControl isRequired>
               <FormLabel htmlFor="accessibility" fontWeight="bold">
-                Accessibility Accommodation
+                Accessibile Access
               </FormLabel>
               <Select
                 id="accessibility"
                 placeholder="Select an Option"
                 options={[
-                  { value: "Yes", label: "Yes" },
-                  { value: "No", label: "No" },
-                ]}
-                value={
-                  accessibilityAccommodation !== ""
-                    ? { value: accessibilityAccommodation, label: accessibilityAccommodation }
-                    : null
-                }
-                onChange={(option) =>
-                  setAccessibilityAccommodation(option ? option.value : "")
-                }
-                chakraStyles={{
-                  control: (provided) => ({
-                    ...provided,
-                    textAlign: "left",
-                  }),
-                }}
-              />
-            </FormControl>
-          </SimpleGrid>
-
-          <FormControl isRequired>
-            <FormLabel htmlFor="accessibility" fontWeight="bold">
-              Accessibility Accommodation
-            </FormLabel>
-            <Select
-              id="accessibility"
-              placeholder="Select an Option"
-              options={[
                 { value: "Yes", label: "Yes" },
                 { value: "No", label: "No" },
-              ]}
-              value={
-                accessibilityAccommodation != ""
+                ]}
+                value={
+                accessibilityAccommodation !== ""
                   ? { value: accessibilityAccommodation, label: accessibilityAccommodation }
                   : null
-              }
-              onChange={(option) =>
+                }
+                onChange={(option) =>
                 setAccessibilityAccommodation(option ? option.value : "")
-              }
-              chakraStyles={{
+                }
+                chakraStyles={{
                 control: (provided) => ({
                   ...provided,
                   textAlign: "left",
                 }),
-              }}
-            />
-          </FormControl>
+                }}
+              />
+              </FormControl>
+            </div>
+          </div>
         </VStack>
         
-        <Flex flex="1">
+        <Flex alignItems="center" justifyContent="center">
           <VStack alignItems="flex-start">
-            <Text fontWeight="bold"  mt={{ base: "-16", md: "0" }} mb="-4">
+            <Text fontWeight="bold" >
               Date/Time
             </Text>
             {/* MiniCalendar */}
