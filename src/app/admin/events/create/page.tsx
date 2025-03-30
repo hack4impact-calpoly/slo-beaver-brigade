@@ -525,133 +525,65 @@ export default function Page() {
         </Menu>
       </Box>
 
-      <Box flex={{ base: "1", md: "0 1 30%" }}>
-          <VStack alignItems="flex-start" mb={4} width="100%">
-            <Box width="100%">
-              <VStack alignContent="center">
-                <Text
-                  fontWeight="bold"
-                  position="absolute"
-                  top="0"
-                  left="0"
-                  zIndex="1"
-                  background="rgba(255, 255, 255, 0.8)" // Optional: Adds a background to make text more readable
-                  p={1}
-                >
-                  Event Preview
-                </Text>
-                <Box alignContent="center">
-                  <EventPreviewComponent
-                    event={mockEvent}
-                    groupName={
-                      groups?.find((group) => group._id === organizationIds[0])?.group_name || ""
-                    }
-                    onClick={() => {}}
-                  />
-                  <HStack width="100%">
-                    <FormControl onClick={promptFileInput} cursor="pointer" width="50%">
-                      <Input
-                        id="cover-image"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        ref={fileInputRef}
-                        hidden
-                      />
-                      <Box
-                        position="relative"
-                        borderWidth="1px"
-                        p="4"
-                        textAlign="center"
-                        h="32"
-                        mt="2"
-                        borderRadius="10px"
-                        overflow="hidden"
-                        width="100%"
-                        bg="gray.200"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        flexDirection="column"
-                      >
-                        {!imagePreview ? (
-                          <>
-                            <Text>Upload Image</Text>
-                            <IconButton aria-label="Upload image" icon={<AddIcon />} mt="2" />
-                          </>
-                        ) : (
-                          <Image
-                            src={imagePreview}
-                            alt="Event cover preview"
-                            position="absolute"
-                            top={0}
-                            left={0}
-                            width="100%"
-                            height="100%"
-                            objectFit="cover"
-                            zIndex={0}
-                          />
-                        )}
-                      </Box>
-                    </FormControl>
-                    <ImageSelector
-                      width="50%"
-                      h="32"
-                      mt="2"
-                      borderRadius="10px"
-                      setPreselected={setPreselected}
-                      setImageURL={setImagePreview}
-                    />
-                  </HStack>
-                </Box>
-              </VStack>
-            </Box>
-          </VStack>
-        </Box>
-
-      {/* image uploading */}
-      <Flex
-        flexDir={{ base: "column", md: "row" }}
-        flex="1"
-        gap={{ base: "10px", md: "10px" }}
-      >
-        <FormControl mb="4" onClick={promptFileInput} cursor="pointer">
-          <Input
-            id="cover-image"
-            type="file"
-            accept="image/*"
-            // value={eventImage}
-            onChange={handleImageChange}
-            ref={fileInputRef}
-            hidden // Hide the actual input
-          />
-          <Box
-            position="relative"
-            borderWidth="1px"
-            p="4"
-            mt="4"
-            textAlign="center"
-            h="64"
-            borderRadius="20px"
-            overflow="hidden"
-            width="100%"
-            bg="gray.200"
-            display="flex"
+      <HStack width="100%">
+        <Flex
+          flexDir={{ base: "column", lg: "row" }}
+          flex="1"
+          gap={{ base: "10px", lg: "30px" }}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Box mt="4">
+            <EventPreviewComponent
+              event={mockEvent}
+              groupName={
+              groups?.find((group) => group._id === organizationIds[0])?.group_name || ""
+              }
+              onClick={() => {}}
+            />
+          </Box>
+            <Flex 
+            flex="1"
+            gap={{ base: "10px", lg: "30px" }}
             justifyContent="center"
             alignItems="center"
-            flexDirection="column"
-          >
-            {!imagePreview ? (
-              <>
+            width="100%">
+            <FormControl onClick={promptFileInput} cursor="pointer" width="100%">
+              <Input
+              id="cover-image"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              ref={fileInputRef}
+              hidden // Hide the actual input
+              />
+              <Box
+              position="relative"
+              borderWidth="1px"
+              p="4"
+              mt="4"
+              textAlign="center"
+              h="64"
+              borderRadius="20px"
+              overflow="hidden"
+              width="100%"
+              bg="gray.200"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+              >
+              {!imagePreview ? (
+                <>
                 <Text>Upload Image</Text>
                 <IconButton
                   aria-label="Upload image"
                   icon={<AddIcon />}
                   mt="2"
                 />
-              </>
-            ) : (
-              <Image
+                </>
+              ) : (
+                <Image
                 src={imagePreview}
                 alt="Event cover preview"
                 position="absolute"
@@ -661,15 +593,17 @@ export default function Page() {
                 height="100%"
                 objectFit="cover"
                 zIndex={0}
-              />
-            )}
-          </Box>
-        </FormControl>
-        <ImageSelector
-          setPreselected={setPreselected}
-          setImageURL={setImagePreview}
-        ></ImageSelector>
-      </Flex>
+                />
+              )}
+              </Box>
+            </FormControl>
+            <ImageSelector
+              setPreselected={setPreselected}
+              setImageURL={setImagePreview}
+            ></ImageSelector>
+            </Flex>
+        </Flex>
+      </HStack>
 
       <Flex direction={{ base: "column", xl: "row" }} gap={{base: 10, 'xl': 12}} mb={6} mt={6}>
         <VStack spacing={4} align="stretch" flex="1" maxWidth={{ base: "100%", 'xl': "45%" }}>
