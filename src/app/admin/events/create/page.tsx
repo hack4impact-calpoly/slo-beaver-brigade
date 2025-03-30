@@ -603,6 +603,7 @@ export default function Page() {
                       setImageURL={setImagePreview}
                     />
                   </HStack>
+                </Box>
               </VStack>
             </Box>
           </VStack>
@@ -999,5 +1000,3 @@ export default function Page() {
     </Box>
   );
 };
-
-export default Page;
