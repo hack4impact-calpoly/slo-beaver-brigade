@@ -44,7 +44,7 @@ const Page: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [organizationIds, setOrganizationIds] = useState<string[]>([]);
-  const [groupsSelected, setGroupsSelected] = useState<Group[]>([]);
+  const [groupsSelected, setGroupsSelected] = useState<IGroup[]>([]);
   const { groups, isLoading, isError, mutateGroups } = useGroups();
   const setGroups = useCallback(
     (updateFunction: (groups: any[]) => any[]) => {
@@ -372,7 +372,7 @@ const Page: React.FC = () => {
                   <EventPreviewComponent
                     event={mockEvent}
                     groupName={
-                      groups.find((group) => group._id === organizationIds[0])?.group_name || ""
+                      groups?.find((group) => group._id === organizationIds[0])?.group_name || ""
                     }
                     onClick={() => {}}
                   />
