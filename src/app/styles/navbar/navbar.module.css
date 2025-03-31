@@ -52,10 +52,6 @@
 .nav_elements {
   text-align: right;
   letter-spacing: normal;
-  right: 0px;
-  position: absolute;
-  left: 47%;
-  transform: translateX(-50%);
 }
 
 .nav_elements ul {
