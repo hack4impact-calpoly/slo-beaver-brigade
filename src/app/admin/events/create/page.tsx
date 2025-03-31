@@ -335,7 +335,7 @@ export default function Page() {
       spanishSpeakingAccommodation: spanishSpeaking === "Yes",
       startTime: eventStart,
       endTime: eventEnd,
-      volunteerEvent: eventType === "Volunteer",
+      volunteerEvent: isVolunteerEvent,
       groupsAllowed: groupsSelected.map((group) => group._id as string),
       groupsOnly: onlyGroups,
     };
