@@ -351,14 +351,15 @@ export default function SignUp() {
                 required={true}
               />
               <Button
-                position='absolute'
-                bg='transparent'
-                right='0'
-                top='65%'
-                transform='translateY(-38%)'
-                variant='Link'
+                position="absolute"
+                bg="transparent"
+                right="0"
+                top="52.5"
+                transform="translateY(-50%)"
+                variant="link"
                 onClick={handleTogglePassword}
               >
+                {/* {showPassword ? "Hide" : "Show"} */}
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
               </Button>
               <FormErrorMessage>{passwordErrorMessage}</FormErrorMessage>
