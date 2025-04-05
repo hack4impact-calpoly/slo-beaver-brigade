@@ -54,6 +54,8 @@ export default function Page() {
   const router = useRouter();
   const [eventName, setEventName] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<IEventTemplate | null>(null);
+  const [templates, setTemplates] = useState<IEventTemplate[]>([]);
+  /*
   const [templates, setTemplates] = useState<IEventTemplate[]>([
     {
       _id: "1",
@@ -90,6 +92,7 @@ export default function Page() {
       registeredIds: [],
     },
   ]);
+  */
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
@@ -136,6 +139,8 @@ export default function Page() {
       }
     });
   };
+
+
 
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
@@ -470,9 +475,30 @@ export default function Page() {
       } catch (error) {
         console.error("Error fetching event types:", error);
       }
+
+    };
+
+    const fetchEventTemplates = async ()  => {
+
+      const response = await fetch("/api/eventtemplate/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const templates = await response.json();
+  
+      setTemplates(templates);
+  
     };
 
     fetchEventTypes();
+    fetchEventTemplates();
   }, []);
 
   const mockEvent = {

@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     try {
-        const eventTemplates = await Event.findById({}).orFail();
+        const eventTemplates = await Event.find({}).orFail();
         return NextResponse.json(eventTemplates);
     } catch (err: any) {
         return NextResponse.json(
@@ -57,6 +57,5 @@ export async function GET(req: NextRequest) {
             {status: 404}
         )
     }
-
 
 }
