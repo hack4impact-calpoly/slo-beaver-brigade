@@ -231,8 +231,7 @@ export default function Page() {
   };  
   
   const handleSaveAsTemplate = async () => {
-    const newTemplate: IEventTemplate = {
-      _id: (templates.length + 1).toString(),
+    const newTemplateData = {
       eventName,
       eventImage: imagePreview,
       eventType,
@@ -248,8 +247,23 @@ export default function Page() {
       groupsAllowed: groupsSelected.map(group => group._id),
       registeredIds: [],
     };
-  
+
+    const response = await fetch("/api/eventtemplate/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newTemplateData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const newTemplate: IEventTemplate = await response.json();
+
     setTemplates([...templates, newTemplate]);
+
   
     toast({
       title: "Template Saved",

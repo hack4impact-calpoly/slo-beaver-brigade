@@ -15,14 +15,12 @@ export async function POST(req: NextRequest) {
     try {
         const newEventTemplate = new Event(eventTemplate);
 
-
         const createdEventTemplate = await newEventTemplate.save();
         revalidateTag("eventTemplates");
 
-        return NextResponse.json(newEventTemplate, {
+        return NextResponse.json(createdEventTemplate, {
             status: 200,
         });
-
 
 
     } catch (err: any) {
