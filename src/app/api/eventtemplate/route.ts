@@ -43,3 +43,20 @@ export async function POST(req: NextRequest) {
     }
 
 }
+
+// GET ALL EVENT TEMPLATES
+export async function GET(req: NextRequest) {
+    await connectDB();
+
+    try {
+        const eventTemplates = await Event.findById({}).orFail();
+        return NextResponse.json(eventTemplates);
+    } catch (err: any) {
+        return NextResponse.json(
+            "No event templates found " + err, 
+            {status: 404}
+        )
+    }
+
+
+}
