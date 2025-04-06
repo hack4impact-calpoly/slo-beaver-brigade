@@ -55,44 +55,6 @@ export default function Page() {
   const [eventName, setEventName] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<IEventTemplate | null>(null);
   const [templates, setTemplates] = useState<IEventTemplate[]>([]);
-  /*
-  const [templates, setTemplates] = useState<IEventTemplate[]>([
-    {
-      _id: "1",
-      eventName: "Volunteer Meetup",
-      eventImage: null,
-      eventType: "Volunteer",
-      location: "Central Park",
-      description: "Community service event.",
-      checklist: "Bring gloves, trash bags",
-      groupsOnly: false,
-      wheelchairAccessible: true,
-      spanishSpeakingAccommodation: false,
-      startTime: new Date(),
-      endTime: new Date(),
-      volunteerEvent: true,
-      groupsAllowed: [],
-      registeredIds: [],
-    },
-    {
-      _id: "2",
-      eventName: "Charity Drive",
-      eventImage: null,
-      eventType: "Fundraiser",
-      location: "Community Hall",
-      description: "Fundraiser for local charities.",
-      checklist: "Bring donations",
-      groupsOnly: false,
-      wheelchairAccessible: true,
-      spanishSpeakingAccommodation: true,
-      startTime: new Date(),
-      endTime: new Date(),
-      volunteerEvent: false,
-      groupsAllowed: ["789"],
-      registeredIds: [],
-    },
-  ]);
-  */
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
