@@ -144,11 +144,11 @@
   font-weight: bold;
   padding: 0%;
   width: 100%;
-  text-align: center;
+  text-align: right;
   color: #327774;
   background-color: #edf2f6;
   font-family: "Lato";
-  font-size: 20px;
+  font-size: 17px;
   margin-top: 3px;
   overflow: hidden;
   text-overflow: ellipsis;

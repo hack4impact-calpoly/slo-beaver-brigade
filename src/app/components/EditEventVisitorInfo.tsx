@@ -52,6 +52,23 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     setShowAdminActions(false);
   };
 
+  const handleEmailSelectVisitors = () => {
+    //currently does same thing as email all
+    const mailtoLink = emailLink();
+
+    window.location.href = mailtoLink;
+    setShowAdminActions(false);
+  };
+
+  const handleMarkAllVisitors = () => {
+    //no functionality yet
+    setShowAdminActions(false);
+  };
+
+  const handleMarkSelectVisitors = () => {
+    //no functionality yet
+    setShowAdminActions(false);
+  };
   useEffect(() => {
     if (isLoading) {
       return;
@@ -201,6 +218,27 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 className={styles.manageVisitorButton}
               >
                 Email All Visitors
+              </button>
+
+              <button
+                onClick={handleEmailSelectVisitors}
+                className={styles.manageVisitorButton}
+              >
+                Email Selected Visitors
+              </button>
+
+              <button
+                onClick={handleMarkAllVisitors}
+                className={styles.manageVisitorButton}
+              >
+                Mark All Visitors as Attended
+              </button>
+
+              <button
+                onClick={handleMarkSelectVisitors}
+                className={styles.manageVisitorButton}
+              >
+                Mark Selected Visitors as Attended
               </button>
             </div>
           }
