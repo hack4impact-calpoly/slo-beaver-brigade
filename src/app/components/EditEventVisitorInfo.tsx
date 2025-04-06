@@ -33,6 +33,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     [key: string]: { parent: IUser; dependents: IUser[] };
   }>({});
   const { eventData, isLoading, isError } = useEventId(eventId);
+  const [showAdminActions, setShowAdminActions] = useState(false);
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -48,6 +49,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const mailtoLink = emailLink();
 
     window.location.href = mailtoLink;
+    setShowAdminActions(false);
   };
 
   useEffect(() => {
@@ -178,13 +180,30 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               }, 0)}
               )
             </div>
+            <button 
+              onClick={() => setShowAdminActions(!showAdminActions)}
+              className={styles.manageVisitorText}>
+              {(showAdminActions) ? "Hide Visitor Actions" : "Show Visitor Actions"}
+            </button>
+            {/* email all visitors button
             <button
               onClick={handleEmailAllVisitors}
               className={styles.emailAllVisitors}
             >
               Email All Visitors
             </button>
+            */}
           </div>
+          {showAdminActions && 
+            <div>
+              <button
+                onClick={handleEmailAllVisitors}
+                className={styles.manageVisitorButton}
+              >
+                Email All Visitors
+              </button>
+            </div>
+          }
           {Object.keys(visitorData).length === 0 ? (
             <div className={styles.noVisitorsMessage}>
               No visitors registered for this event.

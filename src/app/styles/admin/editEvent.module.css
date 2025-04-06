@@ -123,7 +123,7 @@
   text-overflow: ellipsis;
 }
 
-.emailAllVisitors {
+.manageVisitorText {
   border: none;
   font-weight: bold;
   padding: 0%;
@@ -139,7 +139,24 @@
   padding-right: 15px;
 }
 
-.emailAllVisitors:hover {
+.manageVisitorButton {
+  border: none;
+  font-weight: bold;
+  padding: 0%;
+  width: 100%;
+  text-align: center;
+  color: #327774;
+  background-color: #edf2f6;
+  font-family: "Lato";
+  font-size: 20px;
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 15px;
+}
+
+.manageVisitorText:hover, .manageVisitorButton:hover {
   text-decoration-line: underline;
   cursor: pointer;
 }
