@@ -14,7 +14,7 @@ import {
   Stack,
   Text,
   Box,
-  Input
+  Input,
 } from "@chakra-ui/react";
 import Select from "react-select";
 import { useEventsAscending } from "app/lib/swrfunctions";
@@ -22,12 +22,12 @@ import "../../fonts/fonts.css";
 
 const EventPreview = () => {
   //states
-  const {events, isLoading} = useEventsAscending()
+  const { events, isLoading } = useEventsAscending();
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState<{ value: string; label: string}>({
+  const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
     value: "earliest",
-    label: "From Earliest"
+    label: "From Earliest",
   });
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [wheelchairAccessible, setWheelchairAccessible] = useState(false);
@@ -37,9 +37,9 @@ const EventPreview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
   const [volunteerEvents, setVolunteerEvents] = useState(false);
-  const [wateryWalk, setWateryWalk] = useState(false);
-  const [specialEvents, setSpecialEvents] = useState(false);
-
+  const [beaverWalk, setBeaverWalk] = useState(false);
+  const [festivals, setFestivals] = useState(false);
+  const [pondCleanup, setPondCleanup] = useState(false);
 
   // get string for some group based on id
   const fetchGroupName = async (groupId: string): Promise<string> => {
@@ -62,8 +62,8 @@ const EventPreview = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        if (!events){
-            return
+        if (!events) {
+          return;
         }
         const names: { [key: string]: string } = {};
         setLoading(true);
@@ -94,54 +94,61 @@ const EventPreview = () => {
   };
 
   // filtering events logic
-  const filteredEvents = events
-    ?.filter((event) =>
-      spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
-    )
-    .filter((event) =>
-      wheelchairAccessible ? event.wheelchairAccessible : true
-    )
-    .filter((event) => {
-      // display event if the checkbox is toggled and event type is toggled
-      // if multiple checkboxes are toggled, display events for any of the types that are toggled
-      if ((volunteerEvents && event.eventType === "Volunteer") ||
-         (wateryWalk && event.eventType === "Watery Walk") ||
-         (specialEvents && event.eventType === "Special Events")) 
-        {
-         return true;
+  const filteredEvents =
+    events
+      ?.filter((event) =>
+        spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
+      )
+      .filter((event) =>
+        wheelchairAccessible ? event.wheelchairAccessible : true
+      )
+      .filter((event) => {
+        // display event if the checkbox is toggled and event type is toggled
+        // if multiple checkboxes are toggled, display events for any of the types that are toggled
+        if (
+          (volunteerEvents && event.eventType === "Volunteer") ||
+          (beaverWalk && event.eventType === "Beaver Walk") ||
+          (festivals && event.eventType === "Festival") ||
+          (pondCleanup && event.eventType === "Pond Clean Up")
+        ) {
+          return true;
         }
-      // if none of the checkboxes are toggled, display all events
-      else if (!volunteerEvents && !wateryWalk && !specialEvents )
-        {
-         return true;
+        // if none of the checkboxes are toggled, display all events
+        else if (
+          !volunteerEvents &&
+          !beaverWalk &&
+          !festivals &&
+          !pondCleanup
+        ) {
+          return true;
         }
       })
-        
-    .filter((event) => {
-      const eventDate = new Date(event.startTime);
-      const now = new Date();
-      if (showFutureEvents && showPastEvents) {
+
+      .filter((event) => {
+        const eventDate = new Date(event.startTime);
+        const now = new Date();
+        if (showFutureEvents && showPastEvents) {
+          return true;
+        } else if (showFutureEvents) {
+          return eventDate >= now;
+        } else if (showPastEvents) {
+          return eventDate <= now;
+        }
         return true;
-      } else if (showFutureEvents) {
-        return eventDate >= now;
-      } else if (showPastEvents) {
-        return eventDate <= now;
-      }
-      return true;
-    })
-    .filter((event) =>
-      event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) =>
-      sortOrder.value === "earliest"  // Check This!
-        ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-        : new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
-    ) || [];
+      })
+      .filter((event) =>
+        event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .sort((a, b) =>
+        sortOrder.value === "earliest" // Check This!
+          ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+          : new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+      ) || [];
   const sortOptions = [
     { value: "earliest", label: "From Earliest" },
-    { value: "latest", label: "From Latest" }
+    { value: "latest", label: "From Latest" },
   ];
-  
+
   return (
     <div className={style.mainContainer}>
       <aside className={style.sidebar}>
@@ -159,7 +166,7 @@ const EventPreview = () => {
               focusBorderColor="#337774"
               borderColor="#337774"
               borderWidth="1.5px"
-              _hover={{ borderColor: '#337774' }}
+              _hover={{ borderColor: "#337774" }}
             />
             <MagnifyingGlassIcon
               style={{
@@ -169,7 +176,7 @@ const EventPreview = () => {
                 margin: "auto",
                 bottom: "10px",
                 right: "10px",
-                color: "#337774"
+                color: "#337774",
               }}
             />
           </div>
@@ -179,10 +186,13 @@ const EventPreview = () => {
               value={sortOrder}
               options={sortOptions}
               onChange={(selectedOption) =>
-              setSortOrder(
-              selectedOption || { value: "earliest", label: "From Earliest" }
-                      )
-                    }     
+                setSortOrder(
+                  selectedOption || {
+                    value: "earliest",
+                    label: "From Earliest",
+                  }
+                )
+              }
               className={style.sortSelect}
               isClearable={false}
               isSearchable={false}
@@ -191,45 +201,48 @@ const EventPreview = () => {
                   ...provided,
                   borderRadius: "12px",
                   height: "40px",
-                  width: "200px"
-                }),      
+                  width: "200px",
+                }),
                 singleValue: (provided) => ({
                   ...provided,
-                  color: "black"
+                  color: "black",
                 }),
                 option: (provided, state) => ({
                   ...provided,
-                  color: state.isSelected ? "white" : "black"
+                  color: state.isSelected ? "white" : "black",
                 }),
                 placeholder: (provided) => ({
                   ...provided,
-                  color: "black"
+                  color: "black",
                 }),
                 menu: (provided) => ({
                   ...provided,
-                  width: "150px"
-                })
-              }}    
-            >
-            </Select>      
+                  width: "150px",
+                }),
+              }}
+            ></Select>
           </div>
-          
         </div>
         <div className={style.filterGroupContainer}>
           <div className={style.filterContainer}>
             <div className={style.filterHeader}>Event Timeframe</div>
             <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
               <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
-                  {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
-                <Checkbox value="true" colorScheme="blue"
-                  onChange={() => setShowFutureEvents(!showFutureEvents)}>
-                    <div className={style.checkboxLabel}>Future Events</div>
+                {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
+                <Checkbox
+                  value="true"
+                  colorScheme="blue"
+                  onChange={() => setShowFutureEvents(!showFutureEvents)}
+                >
+                  <div className={style.checkboxLabel}>Future Events</div>
                 </Checkbox>
-                <Checkbox value="false" colorScheme="blue"
-                  onChange={() => setShowPastEvents(!showPastEvents)}>
-                    <div className={style.checkboxLabel}>Past Events</div>
+                <Checkbox
+                  value="false"
+                  colorScheme="blue"
+                  onChange={() => setShowPastEvents(!showPastEvents)}
+                >
+                  <div className={style.checkboxLabel}>Past Events</div>
                 </Checkbox>
-               
               </Stack>
             </CheckboxGroup>
           </div>
@@ -237,17 +250,33 @@ const EventPreview = () => {
             <div className={style.filterHeader}>Event Type</div>
             <CheckboxGroup colorScheme="green" defaultValue={[]}>
               <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
-                <Checkbox value="watery walk" colorScheme="teal"
-                  onChange={() => setWateryWalk(!wateryWalk)}>
-                    <div className={style.checkboxLabel}>Watery Walk</div>
+                <Checkbox
+                  value="beaver walk"
+                  colorScheme="teal"
+                  onChange={() => setBeaverWalk(!beaverWalk)}
+                >
+                  <div className={style.checkboxLabel}>Beaver Walk</div>
                 </Checkbox>
-                <Checkbox value="volunteer" colorScheme="yellow"
-                  onChange={() => setVolunteerEvents(!volunteerEvents)}>
-                    <div className={style.checkboxLabel}>Volunteer</div>
+                <Checkbox
+                  value="volunteer"
+                  colorScheme="yellow"
+                  onChange={() => setVolunteerEvents(!volunteerEvents)}
+                >
+                  <div className={style.checkboxLabel}>Volunteer</div>
                 </Checkbox>
-                <Checkbox value="special events" colorScheme="green"
-                  onChange={() => setSpecialEvents(!specialEvents)}>
-                    <div className={style.checkboxLabel}>Special Events</div>
+                <Checkbox
+                  value="festivals"
+                  colorScheme="green"
+                  onChange={() => setFestivals(!festivals)}
+                >
+                  <div className={style.checkboxLabel}>Festivals</div>
+                </Checkbox>
+                <Checkbox
+                  value="pond clean up"
+                  colorScheme="red"
+                  onChange={() => setPondCleanup(!pondCleanup)}
+                >
+                  <div className={style.checkboxLabel}>Pond Clean Up</div>
                 </Checkbox>
               </Stack>
             </CheckboxGroup>
@@ -256,25 +285,33 @@ const EventPreview = () => {
             <div className={style.filterHeader}>Accessibility</div>
             <CheckboxGroup colorScheme="green" defaultValue={[]}>
               <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
-
-                <Checkbox value="spanish" colorScheme="blue"
-                  onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}>
-                    <div className={style.checkboxLabel}>Spanish Speaking</div>
+                <Checkbox
+                  value="spanish"
+                  colorScheme="blue"
+                  onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}
+                >
+                  <div className={style.checkboxLabel}>Spanish Speaking</div>
                 </Checkbox>
-                <Checkbox value="wheelchair accessible" colorScheme="blue"
-                  onChange={() => setWheelchairAccessible(!wheelchairAccessible)}>
-                    <div className={style.checkboxLabel}>Wheelchair Accessible</div>
+                <Checkbox
+                  value="wheelchair accessible"
+                  colorScheme="blue"
+                  onChange={() =>
+                    setWheelchairAccessible(!wheelchairAccessible)
+                  }
+                >
+                  <div className={style.checkboxLabel}>
+                    Wheelchair Accessible
+                  </div>
                 </Checkbox>
               </Stack>
             </CheckboxGroup>
           </div>
-        </div> 
-        
+        </div>
       </aside>
       {loading ? (
         <div className={style.cardContainer}>
           <Text fontFamily="Lato" fontSize="2xl" mt="5%" textAlign="center">
-          Loading Events...
+            Loading Events...
           </Text>
         </div>
       ) : filteredEvents.length > 0 ? (
@@ -283,11 +320,12 @@ const EventPreview = () => {
             {filteredEvents.map((event) => (
               <li key={event._id} className={style.eventItem}>
                 <Link href={"/admin/events/edit/" + event._id}>
-                    <EventPreviewComponent
+                  <EventPreviewComponent
                     event={event}
                     groupName={groupNames[event._id]}
                     onClick={() => handleEventClick(event)}
-                /></Link>
+                  />
+                </Link>
               </li>
             ))}
           </ul>
@@ -296,7 +334,7 @@ const EventPreview = () => {
         <div className={style.cardContainer}>
           <Text fontFamily="Lato" fontSize="2xl" mt="10%" textAlign="center">
             No Events Found
-          </Text>        
+          </Text>
         </div>
       )}
       {selectedEvent && (
