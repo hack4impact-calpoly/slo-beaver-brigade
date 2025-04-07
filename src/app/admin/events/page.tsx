@@ -282,12 +282,11 @@ const EventPreview = () => {
           <ul className={style.eventsList}>
             {filteredEvents.map((event) => (
               <li key={event._id} className={style.eventItem}>
-                <Link href={"/admin/events/edit/" + event._id}>
-                    <EventPreviewComponent
-                    event={event}
-                    groupName={groupNames[event._id]}
-                    onClick={() => handleEventClick(event)}
-                /></Link>
+                <EventPreviewComponent
+                  event={event}
+                  groupName={groupNames[event._id]}
+                  onClick={() => handleEventClick(event)}
+                />
               </li>
             ))}
           </ul>
