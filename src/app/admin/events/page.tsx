@@ -303,6 +303,7 @@ const EventPreview = () => {
           eventDetails={selectedEvent}
           showModal={isModalOpen}
           setShowModal={setIsModalOpen}
+          editUrl={selectedEvent._id}
         />
       )}
     </div>

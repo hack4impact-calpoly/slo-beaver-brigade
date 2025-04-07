@@ -31,11 +31,12 @@ import ChakraNextImage from "./ChakraNextImage";
 interface Props {
   eventDetails: IEvent | null;
   showModal: boolean;
+  editUrl?: string;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   mutate?: KeyedMutator<IEvent[]> | undefined
 }
 
-function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate }: Props)  {
+function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate, editUrl}: Props)  {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const [signedIn, setSignedIn] = useState(false);
@@ -255,6 +256,19 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
               }      
           </Stack>
         <Flex mt={["5%","5%","2%"]} display={"flex"} justifyContent={"end"} alignItems={"center"} alignContent={"center"}>
+          {/* MAKE THIS ADMIN ONLY*/}
+          <Link href={`/admin/events/edit/${editUrl}`}>
+                      <Button
+                        bg="#1f780d"
+                        color="black"
+                        _hover={{ bg: "#124707" }}
+                        fontWeight={"600"}
+                        width={"250px"}
+                        marginRight={"50px"}
+                      >
+                        Edit Event
+                      </Button>
+            </Link>     
             {signedIn ? (
               <>
                 {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ? (
@@ -295,7 +309,8 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate 
                 </Button>
               </Link>
             )
-          }               
+            
+          }          
           </Flex>
         </ModalBody>
       </ModalContent>
