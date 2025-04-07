@@ -41,6 +41,8 @@ const EventPreview = () => {
   const [beaverWalk, setBeaverWalk] = useState(false);
   const [festivals, setFestivals] = useState(false);
   const [pondCleanup, setPondCleanup] = useState(false);
+  const [minHeadcount, setMinHeadcount] = useState<number | null>(null);
+  const [maxHeadcount, setMaxHeadcount] = useState<number | null>(null);
 
   // get string for some group based on id
   const fetchGroupName = async (groupId: string): Promise<string> => {
@@ -104,6 +106,12 @@ const EventPreview = () => {
         wheelchairAccessible ? event.wheelchairAccessible : true
       )
       .filter((event) => (groupOnly ? event.groupsOnly : true))
+      .filter((event) => {
+        const headcount = event.registeredIds?.length || 0;
+        if (minHeadcount !== null && headcount < minHeadcount) return false;
+        if (maxHeadcount !== null && headcount > maxHeadcount) return false;
+        return true;
+      })
       .filter((event) => {
         // display event if the checkbox is toggled and event type is toggled
         // if multiple checkboxes are toggled, display events for any of the types that are toggled
@@ -227,95 +235,119 @@ const EventPreview = () => {
         </div>
         <div className={style.filterGroupContainer}>
           <div className={style.filterContainer}>
-            <div className={style.filterHeader}>Event Timeframe</div>
-            <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
-              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
-                {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
-                <Checkbox
-                  value="true"
-                  colorScheme="blue"
-                  onChange={() => setShowFutureEvents(!showFutureEvents)}
-                >
-                  <div className={style.checkboxLabel}>Future Events</div>
-                </Checkbox>
-                <Checkbox
-                  value="false"
-                  colorScheme="blue"
-                  onChange={() => setShowPastEvents(!showPastEvents)}
-                >
-                  <div className={style.checkboxLabel}>Past Events</div>
-                </Checkbox>
-              </Stack>
-            </CheckboxGroup>
+            <div className={style.filterHeader}>Headcount Range</div>
+            <Stack spacing={2} ml="1">
+              <Input
+                type="number"
+                placeholder="Minimum Headcount"
+                value={minHeadcount ?? ""}
+                onChange={(e) =>
+                  setMinHeadcount(
+                    e.target.value ? parseInt(e.target.value) : null
+                  )
+                }
+                size="sm"
+                borderColor="black"
+              />
+              <Input
+                type="number"
+                placeholder="Maximum Headcount"
+                value={maxHeadcount ?? ""}
+                onChange={(e) =>
+                  setMaxHeadcount(
+                    e.target.value ? parseInt(e.target.value) : null
+                  )
+                }
+                size="sm"
+                borderColor="black"
+              />
+            </Stack>
           </div>
-          <div className={style.filterContainerTypeAccessibility}>
-            <div className={style.filterHeader}>Event Type</div>
-            <CheckboxGroup colorScheme="green" defaultValue={[]}>
-              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
-                <Checkbox
-                  value="beaver walk"
-                  colorScheme="teal"
-                  onChange={() => setBeaverWalk(!beaverWalk)}
-                >
-                  <div className={style.checkboxLabel}>Beaver Walk</div>
-                </Checkbox>
-                <Checkbox
-                  value="volunteer"
-                  colorScheme="yellow"
-                  onChange={() => setVolunteerEvents(!volunteerEvents)}
-                >
-                  <div className={style.checkboxLabel}>Volunteer</div>
-                </Checkbox>
-                <Checkbox
-                  value="festivals"
-                  colorScheme="green"
-                  onChange={() => setFestivals(!festivals)}
-                >
-                  <div className={style.checkboxLabel}>Festivals</div>
-                </Checkbox>
-                <Checkbox
-                  value="pond clean up"
-                  colorScheme="red"
-                  onChange={() => setPondCleanup(!pondCleanup)}
-                >
-                  <div className={style.checkboxLabel}>Pond Clean Up</div>
-                </Checkbox>
-              </Stack>
-            </CheckboxGroup>
-          </div>
-          <div className={style.filterContainerTypeAccessibility}>
-            <div className={style.filterHeader}>Accessibility</div>
-            <CheckboxGroup colorScheme="green" defaultValue={[]}>
-              <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
-                <Checkbox
-                  value="spanish"
-                  colorScheme="blue"
-                  onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}
-                >
-                  <div className={style.checkboxLabel}>Spanish Speaking</div>
-                </Checkbox>
-                <Checkbox
-                  value="wheelchair accessible"
-                  colorScheme="blue"
-                  onChange={() =>
-                    setWheelchairAccessible(!wheelchairAccessible)
-                  }
-                >
-                  <div className={style.checkboxLabel}>
-                    Wheelchair Accessible
-                  </div>
-                </Checkbox>
-                <Checkbox
-                  value="group only"
-                  colorScheme="blue"
-                  onChange={() => setGroupOnly(!groupOnly)}
-                >
-                  <div className={style.checkboxLabel}>Group Only</div>
-                </Checkbox>
-              </Stack>
-            </CheckboxGroup>
-          </div>
+          <div className={style.filterHeader}>Event Timeframe</div>
+          <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+              {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
+              <Checkbox
+                value="true"
+                colorScheme="blue"
+                onChange={() => setShowFutureEvents(!showFutureEvents)}
+              >
+                <div className={style.checkboxLabel}>Future Events</div>
+              </Checkbox>
+              <Checkbox
+                value="false"
+                colorScheme="blue"
+                onChange={() => setShowPastEvents(!showPastEvents)}
+              >
+                <div className={style.checkboxLabel}>Past Events</div>
+              </Checkbox>
+            </Stack>
+          </CheckboxGroup>
         </div>
+        <div className={style.filterContainerTypeAccessibility}>
+          <div className={style.filterHeader}>Event Type</div>
+          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+              <Checkbox
+                value="beaver walk"
+                colorScheme="teal"
+                onChange={() => setBeaverWalk(!beaverWalk)}
+              >
+                <div className={style.checkboxLabel}>Beaver Walk</div>
+              </Checkbox>
+              <Checkbox
+                value="volunteer"
+                colorScheme="yellow"
+                onChange={() => setVolunteerEvents(!volunteerEvents)}
+              >
+                <div className={style.checkboxLabel}>Volunteer</div>
+              </Checkbox>
+              <Checkbox
+                value="festivals"
+                colorScheme="green"
+                onChange={() => setFestivals(!festivals)}
+              >
+                <div className={style.checkboxLabel}>Festivals</div>
+              </Checkbox>
+              <Checkbox
+                value="pond clean up"
+                colorScheme="red"
+                onChange={() => setPondCleanup(!pondCleanup)}
+              >
+                <div className={style.checkboxLabel}>Pond Clean Up</div>
+              </Checkbox>
+            </Stack>
+          </CheckboxGroup>
+        </div>
+        <div className={style.filterContainerTypeAccessibility}>
+          <div className={style.filterHeader}>Accessibility</div>
+          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+              <Checkbox
+                value="spanish"
+                colorScheme="blue"
+                onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}
+              >
+                <div className={style.checkboxLabel}>Spanish Speaking</div>
+              </Checkbox>
+              <Checkbox
+                value="wheelchair accessible"
+                colorScheme="blue"
+                onChange={() => setWheelchairAccessible(!wheelchairAccessible)}
+              >
+                <div className={style.checkboxLabel}>Wheelchair Accessible</div>
+              </Checkbox>
+              <Checkbox
+                value="group only"
+                colorScheme="blue"
+                onChange={() => setGroupOnly(!groupOnly)}
+              >
+                <div className={style.checkboxLabel}>Group Only</div>
+              </Checkbox>
+            </Stack>
+          </CheckboxGroup>
+        </div>
+        <div className={style.filterContainerTypeAccessibility}></div>
       </aside>
       {loading ? (
         <div className={style.cardContainer}>
