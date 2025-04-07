@@ -86,6 +86,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
     }
   };
 
+  const handleDeleteDependent = (indexToDelete: number) => {
+    setDependents(dependents.filter((_, index) => index !== indexToDelete));
+  };
+
   const handleDependentChange = (index: number, value: string) => {
     const newDependents = [...dependents];
     newDependents[index] = value;
@@ -316,16 +320,23 @@ export default function Waiver({ params: { eventId } }: IParams) {
         justifyContent="flex-start"
         alignItems="center"
         height="100vh"
-        marginTop="5vh"
+        marginTop={{ base: "2vh", md: "5vh" }}
       >
-        <Image src={beaverLogo} alt="beaver" />
+        <Image
+          src={beaverLogo}
+          alt="beaver"
+        />
 
-        <Box w="60%" h="70%" mt={20} mb={0}>
+        <Box
+          w={["90%", "80%"]}
+          h="70%"
+          mt={{ base: 10, md: 20 }}
+          mb={0}
+        >
           <h1
             style={{
-              fontSize: "30px",
               fontWeight: "bold",
-              textAlign: "center",
+              textAlign: "center"
             }}
           >
             Waiver of Liability and Hold Harmless Agreement
@@ -343,176 +354,195 @@ export default function Waiver({ params: { eventId } }: IParams) {
         </Box>
 
         {isScrolledToBottom && (
-          <form onSubmit={handleSubmit} style={{ width: "60%" }}>
-            {/* User Information Section */}
-            {!userData && !loadingUser && (
-              <div className="flex flex-col">
-                <h2 className={styles.formHeading}>Contact Information</h2>
-                <div className="flex flex-row">
-                  <input
-                    className={styles.inputForm}
-                    type="text"
-                    placeholder="First Name"
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                  />
-                  <input
-                    className={styles.inputForm}
-                    type="text"
-                    placeholder="Last Name"
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                  />
+          <Box w={["90%", "80%"]}>
+            <form onSubmit={handleSubmit}>
+              {/* User Information Section */}
+              {!userData && !loadingUser && (
+                <div className="flex flex-col">
+                  <h2 className={styles.formHeading}>Contact Information</h2>
+                  <div className="flex flex-col md:flex-row">
+                    <input
+                      className={styles.inputForm}
+                      type="text"
+                      placeholder="First Name"
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                    />
+                    <input
+                      className={styles.inputForm}
+                      type="text"
+                      placeholder="Last Name"
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col md:flex-row">
+                    <input
+                      className={styles.inputForm}
+                      type="email"
+                      placeholder="Email"
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <input
+                      className={styles.inputForm}
+                      type="text"
+                      placeholder="Zipcode"
+                      onChange={(e) => setZipcode(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-row">
-                  <input
-                    className={styles.inputForm}
-                    type="email"
-                    placeholder="Email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                  <input
-                    className={styles.inputForm}
-                    type="text"
-                    placeholder="Zipcode"
-                    onChange={(e) => setZipcode(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            )}
-            <Box p={4} border="1px" borderColor="gray.200" borderRadius="md" mt={5}>
-              {signatureText}
-            </Box>
+              )}
 
-            {/* Dependents Section */}
-            <table width="100%">
-              <tbody>
-                {dependents.map((name, index) => (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        className={styles.dependentTable}
-                        type="text"
-                        value={name}
-                        onChange={(event) =>
-                          handleDependentChange(index, event.target.value)
-                        }
-                        style={{ display: index === 0 ? "none" : "block" }}
-                        placeholder="Dependent Full Name"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <button
-              type="button"
-              onClick={addDependent}
-              className={styles.addDependent}
-              style={{ color: "#ECB94A" }}
-            >
-              Add Dependent +
-            </button>
-
-            {/* Signature Section */}
-            <h2 className={styles.formHeading}>Sign Here</h2>
-            <input
-              className={styles.inputSignature}
-              type="text"
-              placeholder="Signature"
-              onChange={(e) => setSignature(e.target.value)}
-              required
-            />
-            
-
-            {/* Submit Button */}
-            <Flex justifyContent="center" mt={5}>
-              <Button
-                type="submit"
-                sx={{
-                  width: "225px",
-                  height: "40px",
-                  backgroundColor: "#337774",
-                  color: "white",
-                  borderRadius: "10px",
-                  "&:hover": {
-                    backgroundColor: "#296361",
-                  },
-                }}
+              <Box
+                p={4}
+                border="1px"
+                borderColor="gray.200"
+                borderRadius="md"
+                mt={5}
               >
-                Submit
-              </Button>
-            </Flex>
-          </form>
+                {signatureText}
+              </Box>
+
+              <button
+                type="button"
+                onClick={addDependent}
+                className={styles.addDependent}
+                style={{ color: "#ECB94A" }}
+              >
+                Add Dependent +
+              </button>
+
+              {/* Dependents Section */}
+              <table width="100%">
+                <tbody>
+                  {dependents.map((name, index) => (
+                    <tr key={index}>
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "center",
+                        }}
+                      >
+                        <input
+                          className={styles.dependentTable}
+                          type="text"
+                          value={name}
+                          onChange={(event) =>
+                            handleDependentChange(index, event.target.value)
+                          }
+                          style={{
+                            display: index === 0 ? "none" : "block",
+                            flex: 1,
+                          }}
+                          placeholder="Dependent Full Name"
+                        />
+                        {index !== 0 && (
+                          <Button
+                            onClick={() => handleDeleteDependent(index)}
+                            size={{ base: "xs", md: "sm" }}
+                            colorScheme="red"
+                            variant="outline"
+                            style={{
+                              marginTop: "15px"
+                            }}
+                          >
+                            ×
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Signature Section */}
+              <h2 className={styles.formHeading}>Sign Here</h2>
+              <input
+                className={styles.inputSignature}
+                type="text"
+                placeholder="Signature"
+                onChange={(e) => setSignature(e.target.value)}
+                required
+              />
+
+              {/* Submit Button */}
+              <Flex justifyContent="center" mt={5} mb={5}>
+                <Button
+                  type="submit"
+                  sx={{
+                    width: { base: "100%", md: "225px" },
+                    height: "40px",
+                    backgroundColor: "#337774",
+                    color: "white",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "#296361",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
+              </Flex>
+            </form>
+          </Box>
         )}
       </Flex>
-
-      <AlertDialog
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
-
-        <AlertDialogContent>
-          <AlertDialogHeader>Email already exists</AlertDialogHeader>
-          <AlertDialogCloseButton />
-          <AlertDialogBody>Sign in or try again</AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              Close
-            </Button>
-            <Button sx={{ marginLeft: "5%" }}>
-              <a href="/login">Sign in</a>
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <Modal
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);
         }}
-        size={"lg"}
+        size={{ base: "sm", md: "lg" }}
       >
         <ModalOverlay />
-        <ModalContent mt={"70px"}>
+        <ModalContent mt={{ base: "40px", md: "70px" }}>
           <ModalHeader>
-            <Flex justifyContent={"center"} w={"100%"} mt={"10%"} mb={"5%"}>
+            <Flex
+              justifyContent={"center"}
+              w={"100%"}
+              mt={{ base: "5%", md: "10%" }}
+              mb={"5%"}
+            >
               <Image
                 src={beaverLogo}
                 alt="beaver"
-                style={{ marginTop: "10px", width: "70px" }}
+                style={{
+                  marginTop: "10px"
+                }}
               />
             </Flex>
           </ModalHeader>
-          <ModalBody textAlign={"center"} mb={"50px"}>
-            <Text fontSize={{ base: "lg", md: "xl" }}>
+          <ModalBody textAlign={"center"} mb={{ base: "30px", md: "50px" }}>
+            <Text fontSize={{ base: "md", md: "xl" }}>
               Thank you for signing up for
             </Text>
             <Text
-              fontSize={{ base: "2xl", md: "3xl" }}
+              fontSize={{ base: "xl", md: "3xl" }}
               fontWeight={"bold"}
-              mt={"25px"}
-              mb={"50px"}
+              mt={{ base: "15px", md: "25px" }}
+              mb={{ base: "30px", md: "50px" }}
             >
               {eventData?.eventName}
             </Text>
-            <Text fontSize={{ base: "md", md: "lg" }} pl={10} pr={10}>
+            <Text fontSize={{ base: "sm", md: "lg" }} px={{ base: 5, md: 10 }}>
               You can create an account to view your upcoming event!
             </Text>
           </ModalBody>
-          <ModalFooter justifyContent={"space-around"} mb={"65px"}>
+          <ModalFooter
+            justifyContent={"space-around"}
+            mb={{ base: "40px", md: "65px" }}
+            flexDirection={{ base: "column", md: "row" }}
+            gap={{ base: 3, md: 0 }}
+          >
             <Button
               fontSize={{ base: "sm", md: "md" }}
               color="#B5B5B5"
               borderColor="gray"
-              w={"35%"}
+              w={{ base: "100%", md: "35%" }}
               variant={"outline"}
               onClick={handleSkip}
             >
@@ -520,13 +550,11 @@ export default function Waiver({ params: { eventId } }: IParams) {
             </Button>
             <Button
               fontWeight={"bold"}
-              fontSize={{ base: "xs", sm: "sm", md: "md" }}
+              fontSize={{ base: "sm", md: "md" }}
               bg="#337774"
               color="white"
               _hover={{ bg: "#4a9b99" }}
-              w={"35%"}
-              pl={"10px"}
-              pr={"10px"}
+              w={{ base: "100%", md: "35%" }}
               onClick={handleCreateAccount}
             >
               Create Account
@@ -537,157 +565,3 @@ export default function Waiver({ params: { eventId } }: IParams) {
     </div>
   );
 }
-
-// "use client";
-// import React, { useState } from "react";
-// import {
-//   Box,
-//   Flex,
-//   Button,
-//   Textarea,
-//   Link as ChakraLink,
-// } from "@chakra-ui/react";
-// import styles from "./page.module.css";
-// import beaverLogo from "/docs/images/beaver-logo.png";
-// import Image from "next/image";
-// import NextLink from "next/link";
-// import "../../../../fonts/fonts.css";
-
-// export default function Waiver() {
-//   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
-//   const [incompleteClick, setIncompleteClick] = useState(false);
-
-//   const onIncompleteClick = () => {
-//     //this will just add a message telling them to
-//     setIncompleteClick(true); //read the entire waiver if they try to click continue
-//   };
-
-//   //This makes sure they've scrolled through the entire waiver
-//   const handleTextareaScroll = (event: React.UIEvent<HTMLElement>) => {
-//     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-//     if (isScrolledToBottom == false) {
-//       setIsScrolledToBottom(scrollTop + clientHeight + 50 >= scrollHeight);
-//       setIncompleteClick(false);
-//     }
-//   };
-
-//   const waiverText = `1. I am voluntarily joining an activity sponsored by the SLO Beaver Brigade, which may include tours to and from and in and around beaver ponds, as well as litter and brush removal or planting in riverbeds and creekbeds, and related activities.
-
-//   2. I understand that the SLO Beaver Brigade has no duty or responsibility for me or my dependents’ safety or property. I am participating in this activity entirely at my own risk and assume full responsibility for any and all bodily injury, disability, death, or property damage as a result of my participation in a SLO Beaver Brigade event. I recognize that these risks may include hiking, crossing streams or wading through water, falling trees and limbs, poison oak, stinging nettles, thistles and other barbed plants, poisonous insects, snakes including rattlesnakes, ticks, wild animals, inclement weather, wildfires or floods, homeless encampments, sharp objects in and around the riverbed such as barbed wire, unsupervised dogs or horses, ATV riders, dirt bikers or other vehicles, hunters, target shooters, poachers, and any other risks on or around the premises of the activity, known or unknown to me or event organizers and leaders.
-
-//   3. I hereby RELEASE, WAIVE, and DISCHARGE the SLO Beaver Brigade, Dr. Emily Fairfax, Audrey Taub, Cooper Lienhart, Kate Montgomery, Fred Frank, Hannah Strauss, landowners, and Beaver Brigade interns/fellows, volunteers, members, sponsors, affiliates and other agents from any and all liability, claims, demands and actions whatsoever, regardless of whether such loss is caused by the acts or failures to act of any party organizing or leading a specific event or activity on behalf of the SLO Beaver Brigade, and I surrender any and all rights to seek compensation for any injury whatsoever sustained during my participation in a SLO Beaver Brigade activity. I agree to INDEMNIFY and HOLD HARMLESS releases against any and all claims, suits, or actions brought by me, my spouse, family, heirs, or anyone else on behalf of me or my dependents, and agree to reimburse all attorney’s fees and related costs that may be incurred by releases due to my participation in SLO Beaver Brigade events or activities.
-
-//   4. I hereby grant the SLO Beaver Brigade permission to use my likeness in a photograph, video, or other digital media (“photo”) in any and all of its publications, including web-based publications, without payment or other consideration. I hereby irrevocably authorize the SLO Beaver Brigade to edit, alter, copy, exhibit, publish, or distribute these photos for any lawful purpose. In addition, I waive any right to inspect or approve the finished product wherein my likeness appears. Additionally, I waive any right to royalties or other compensation arising from or related to the use of the photo.
-
-//   BY SIGNING THIS AGREEMENT, I ACKNOWLEDGE AND REPRESENT THAT I HAVE READ THIS WAIVER OF LIABILITY AND HOLD HARMLESS AGREEMENT, that I fully understand and consent to the terms of this agreement, and that I am signing it of my own free will. I agree that no oral representations, statements, or inducements apart from this written agreement have been made or implied. I am at least 18 years of age, fully competent, responsible, and legally able to sign this agreement for myself or my dependents.`;
-//   return (
-//     <div>
-//       <Flex
-//         flexDirection="column"
-//         justifyContent="flex-start"
-//         alignItems="center"
-//         height="80vh"
-//         marginTop="5vh"
-//       >
-//         <Image src={beaverLogo} alt="beaver" />
-//         <Box w="60%" h="70%" mt={20} mb={20}>
-//           <h1 style={{ fontSize: "30px", fontWeight: "bold", textAlign: "center" }}>
-//             Waiver of Liability and Hold Harmless Agreement
-//           </h1>
-//           <Textarea
-//             className={styles.scroller}
-//             resize="none"
-//             readOnly
-//             height="300px"
-//             whiteSpace="pre-line"
-//             mt={5}
-//             value={waiverText}
-//             onScroll={handleTextareaScroll}
-//           ></Textarea>
-//         </Box>
-
-//         <Flex
-//           style={{
-//             flexWrap: "wrap",
-//             alignItems: "center",
-//             justifyContent: "center",
-//           }}
-//         >
-//           <NextLink href="/">
-//             <Button
-//               sx={{
-//                 width: "225px",
-//                 height: "40px",
-//                 marginLeft: "75px",
-//                 marginRight: "75px",
-//                 marginBottom: "20px",
-//                 backgroundColor: "white",
-//                 border: "2px solid #B5B5B5",
-//                 color: "#B5B5B5",
-//                 borderRadius: "10px",
-//                 "&:hover": {
-//                   backgroundColor: "gray.200",
-//                   border: "2px solid gray.200",
-//                 },
-//               }}
-//             >
-//               Return
-//             </Button>
-//           </NextLink>
-//           {!isScrolledToBottom && (
-//             <Button
-//               onClick={onIncompleteClick}
-//               sx={{
-//                 width: "225px",
-//                 height: "40px",
-//                 marginLeft: "75px",
-//                 marginRight: "75px",
-//                 marginBottom: "20px",
-//                 backgroundColor: "white",
-//                 border: "2px solid #B5B5B5",
-//                 color: "#B5B5B5",
-//                 borderRadius: "10px",
-//                 "&:hover": {
-//                   backgroundColor: "white",
-//                   border: "2px solid gray.200",
-//                 },
-//               }}
-//             >
-//               Continue
-//             </Button>
-//           )}
-//           {isScrolledToBottom && (
-//             <NextLink href="./2">
-//               <Button
-//                 sx={{
-//                   width: "225px",
-//                   height: "40px",
-//                   marginLeft: "75px",
-//                   marginRight: "75px",
-//                   marginBottom: "20px",
-//                   backgroundColor: "#337774",
-//                   border: "2px solid #337774",
-//                   color: "white",
-//                   borderRadius: "10px",
-//                   "&:hover": {
-//                     backgroundColor: "#296361",
-//                     border: "2px solid #296361",
-//                   },
-//                 }}
-//               >
-//                 Continue
-//               </Button>
-//             </NextLink>
-//           )}
-//         </Flex>
-//         {incompleteClick && (
-//           <div
-//             style={{ color: "#c45e76", marginLeft: "25%", marginTop: "10px" }}
-//           >
-//             Finish reading the liability waiver to continue
-//           </div>
-//         )}
-//       </Flex>
-//     </div>
-//   );
-// }

@@ -1,27 +1,76 @@
-.inputForm{
+.inputForm {
     background-color: #F4F4F4;
-    padding: 20px 25px 20px 30px;
-    margin-top: 1%;
-    margin-right: 3%;
-    width: 48.5%;
+    padding: 15px 20px;
+    margin-top: 10px;
     border-radius: 10px;
-}
-.inputZipcode{
-    background-color: #F4F4F4;
-    padding: 20px 25px 20px 30px;
-    margin-top: 1%;
-    width: 48.5%;
-    border-radius: 10px;
+    width: 100%;
 }
 
-.inputSignature{
+@media (min-width: 768px) {
+    .inputForm {
+        padding: 20px 25px 20px 30px;
+        margin-top: 1%;
+        margin-right: 3%;
+        width: 48.5%;
+    }
+}
+
+.inputSignature {
     background-color: #F4F4F4;
-    padding: 20px 25px 20px 30px;
+    padding: 15px 20px;
     width: 100%;
     border-radius: 10px;
 }
 
-.dependentTable{
+@media (min-width: 768px) {
+    .inputSignature {
+        padding: 20px 25px 20px 30px;
+    }
+}
+
+.dependentTable {
+    background-color: #F4F4F4;
+    padding: 15px 20px;
+    border-radius: 10px;
+    width: 100%;
+    margin-top: 15px;
+}
+
+@media (min-width: 768px) {
+    .dependentTable {
+        padding: 20px 25px 20px 30px;
+    }
+}
+
+.formHeading {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: black;
+}
+
+@media (min-width: 768px) {
+    .formHeading {
+        font-size: 20px;
+        margin-top: 1.5%;
+        margin-bottom: 1%;
+    }
+}
+
+.addDependent {
+    font-size: 15px;
+    margin-top: 12px;
+    color: #FFFFFF;
+}
+
+@media (min-width: 768px) {
+    .addDependent {
+        font-size: 17px;
+        margin-top: 15px;
+    }
+}
+
+.dependentTable {
     background-color: #F4F4F4;
     padding: 20px 25px 20px 30px;
     border-radius: 10px;
@@ -29,14 +78,9 @@
     margin-top: 15px;
 }
 
-.formHeading{
-    font-size: 20px;
-    margin-top: 1.5%;
-    margin-bottom: 1%;
-    color: #9C9C9C;
-}
-
-.addDependent{
-    font-size: 13px;
-    margin-top: 15px;
+.dependentRow {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
 }
