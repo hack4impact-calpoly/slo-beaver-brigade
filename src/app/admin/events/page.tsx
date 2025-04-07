@@ -31,6 +31,7 @@ const EventPreview = () => {
   });
   const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
   const [wheelchairAccessible, setWheelchairAccessible] = useState(false);
+  const [groupOnly, setGroupOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
   const [showFutureEvents, setShowFutureEvents] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -102,6 +103,7 @@ const EventPreview = () => {
       .filter((event) =>
         wheelchairAccessible ? event.wheelchairAccessible : true
       )
+      .filter((event) => (groupOnly ? event.groupsOnly : true))
       .filter((event) => {
         // display event if the checkbox is toggled and event type is toggled
         // if multiple checkboxes are toggled, display events for any of the types that are toggled
@@ -302,6 +304,13 @@ const EventPreview = () => {
                   <div className={style.checkboxLabel}>
                     Wheelchair Accessible
                   </div>
+                </Checkbox>
+                <Checkbox
+                  value="group only"
+                  colorScheme="blue"
+                  onChange={() => setGroupOnly(!groupOnly)}
+                >
+                  <div className={style.checkboxLabel}>Group Only</div>
                 </Checkbox>
               </Stack>
             </CheckboxGroup>
