@@ -263,9 +263,9 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate,
               {visitorData.role === "admin" && 
                 <Link href={`/admin/events/edit/${editUrl}`}>
                   <Button
-                    bg="#1f780d"
-                    color="black"
-                    _hover={{ bg: "#124707" }}
+                    bg="#337774"
+                    color="white"
+                    _hover={{ bg: "#4a9b99"}}
                     fontWeight={"600"}
                     width={"250px"}
                     marginRight={"50px"}
