@@ -257,20 +257,24 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate,
           </Stack>
         <Flex mt={["5%","5%","2%"]} display={"flex"} justifyContent={"end"} alignItems={"center"} alignContent={"center"}>
           {/* MAKE THIS ADMIN ONLY*/}
-          <Link href={`/admin/events/edit/${editUrl}`}>
-                      <Button
-                        bg="#1f780d"
-                        color="black"
-                        _hover={{ bg: "#124707" }}
-                        fontWeight={"600"}
-                        width={"250px"}
-                        marginRight={"50px"}
-                      >
-                        Edit Event
-                      </Button>
-            </Link>     
+               
             {signedIn ? (
               <>
+              {visitorData.role === "admin" && 
+                <Link href={`/admin/events/edit/${editUrl}`}>
+                  <Button
+                    bg="#1f780d"
+                    color="black"
+                    _hover={{ bg: "#124707" }}
+                    fontWeight={"600"}
+                    width={"250px"}
+                    marginRight={"50px"}
+                  >
+                    Edit Event
+                  </Button>
+              </Link> 
+              }
+              
                 {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ? (
                   <Button
                     onClick={onOpen}
