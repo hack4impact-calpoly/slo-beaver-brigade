@@ -382,9 +382,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 </div>
               </div>
             )}
-            <Box p={4} border="1px" borderColor="gray.200" borderRadius="md">
+            <Box p={4} border="1px" borderColor="gray.200" borderRadius="md" mt={5}>
               {signatureText}
             </Box>
+
             {/* Dependents Section */}
             <table width="100%">
               <tbody>
@@ -424,6 +425,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               onChange={(e) => setSignature(e.target.value)}
               required
             />
+            
 
             {/* Submit Button */}
             <Flex justifyContent="center" mt={5}>
