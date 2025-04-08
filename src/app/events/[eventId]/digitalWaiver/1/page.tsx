@@ -112,12 +112,14 @@ export default function Waiver({ params: { eventId } }: IParams) {
     event.preventDefault();
 
     if (!isScrolledToBottom) {
+      //prevent submission if not scrolled to bottom
       toast({
         title: "Please scroll to the bottom of the waiver before submitting.",
         status: "error",
         duration: 3000,
         isClosable: true,
       });
+      return;
     }
       
     setEmailChecked(true);
