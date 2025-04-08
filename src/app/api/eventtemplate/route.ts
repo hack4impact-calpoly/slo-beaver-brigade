@@ -15,14 +15,12 @@ export async function POST(req: NextRequest) {
     try {
         const newEventTemplate = new Event(eventTemplate);
 
-
         const createdEventTemplate = await newEventTemplate.save();
         revalidateTag("eventTemplates");
 
-        return NextResponse.json(newEventTemplate, {
+        return NextResponse.json(createdEventTemplate, {
             status: 200,
         });
-
 
 
     } catch (err: any) {
@@ -40,6 +38,22 @@ export async function POST(req: NextRequest) {
             });
         }
 
+    }
+
+}
+
+// GET ALL EVENT TEMPLATES
+export async function GET(req: NextRequest) {
+    await connectDB();
+
+    try {
+        const eventTemplates = await Event.find({}).orFail();
+        return NextResponse.json(eventTemplates);
+    } catch (err: any) {
+        return NextResponse.json(
+            "No event templates found " + err, 
+            {status: 404}
+        )
     }
 
 }
