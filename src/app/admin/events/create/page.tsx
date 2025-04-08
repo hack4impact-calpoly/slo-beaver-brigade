@@ -210,30 +210,59 @@ export default function Page() {
       registeredIds: [],
     };
 
-    const response = await fetch("/api/eventtemplate/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newTemplateData),
-    });
+    let response;
+    console.log("Selected Template ID:", selectedTemplate?._id);
+    console.log("Templates Array:", templates);
+    if (templates.some(template => template.eventName === eventName)) {
+      response = await fetch(`/api/eventtemplate/${selectedTemplate?._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTemplateData),
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const updatedTemplate: IEventTemplate = await response.json();
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template._id === updatedTemplate._id ? updatedTemplate : template
+        )
+      );
+      
+      toast({
+        title: "Template Updated",
+        description: "This event template has been updated.",
+        status: "success",
+        duration: 2500,
+        isClosable: true,
+      });
+    } else {
+      response = await fetch("/api/eventtemplate/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTemplateData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const newTemplate: IEventTemplate = await response.json();
+      setTemplates([...templates, newTemplate]);
+  
+      toast({
+        title: "Template Saved",
+        description: "This event has been saved as a template.",
+        status: "success",
+        duration: 2500,
+        isClosable: true,
+      });
     }
 
-    const newTemplate: IEventTemplate = await response.json();
-
-    setTemplates([...templates, newTemplate]);
-
-  
-    toast({
-      title: "Template Saved",
-      description: "This event has been saved as a template.",
-      status: "success",
-      duration: 2500,
-      isClosable: true,
-    });
   };  
 
   // Handle file selection for the event cover image and set preview
@@ -512,7 +541,7 @@ export default function Page() {
         </Text>
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />} minWidth={'180px'} >
-            {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
+            Select Template
           </MenuButton>
           <MenuList>
             {templates.map((template) => (
