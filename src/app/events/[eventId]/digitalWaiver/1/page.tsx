@@ -8,7 +8,7 @@ import {
   Link as ChakraLink,
 } from "@chakra-ui/react";
 import styles from "./page.module.css";
-import beaverLogo from "/docs/images/beaver-logo.svg";
+import beaverLogo from "/docs/images/beaver-logo.png";
 import Image from "next/image";
 import NextLink from "next/link";
 import "../../../../fonts/fonts.css";
@@ -52,7 +52,7 @@ export default function Waiver() {
       >
         <Image src={beaverLogo} alt="beaver" />
         <Box w="60%" h="70%" mt={20} mb={20}>
-          <h1 style={{ fontSize: "30px", fontWeight: "bold" }}>
+          <h1 style={{ fontSize: "30px", fontWeight: "bold", textAlign: "center" }}>
             Waiver of Liability and Hold Harmless Agreement
           </h1>
           <Textarea

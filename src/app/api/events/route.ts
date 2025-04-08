@@ -100,7 +100,6 @@ export async function POST(req: NextRequest) {
   // create new event or return error
   try {
     const newEvent = new Event(event);
-    newEvent.volunteerEvent = newEvent.eventType === 'Volunteer';
 
     const createdEvent = await newEvent.save();
     revalidateTag('events');

@@ -52,10 +52,6 @@
 .nav_elements {
   text-align: right;
   letter-spacing: normal;
-  right: 0px;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .nav_elements ul {
@@ -103,7 +99,7 @@
   margin-right: 10px;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1300px) {
   .nav_elements ul a {
     font-size: 14px;
   }
@@ -144,7 +140,7 @@
   }
 }
 
-@media (max-width: 1010px) {
+@media (max-width: 1050px) {
   .menu_icon {
     display: block;
     cursor: pointer;
