@@ -54,42 +54,7 @@ export default function Page() {
   const router = useRouter();
   const [eventName, setEventName] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<IEventTemplate | null>(null);
-  const [templates, setTemplates] = useState<IEventTemplate[]>([
-    {
-      _id: "1",
-      eventName: "Volunteer Meetup",
-      eventImage: null,
-      eventType: "Volunteer",
-      location: "Central Park",
-      description: "Community service event.",
-      checklist: "Bring gloves, trash bags",
-      groupsOnly: false,
-      wheelchairAccessible: true,
-      spanishSpeakingAccommodation: false,
-      startTime: new Date(),
-      endTime: new Date(),
-      volunteerEvent: true,
-      groupsAllowed: [],
-      registeredIds: [],
-    },
-    {
-      _id: "2",
-      eventName: "Charity Drive",
-      eventImage: null,
-      eventType: "Fundraiser",
-      location: "Community Hall",
-      description: "Fundraiser for local charities.",
-      checklist: "Bring donations",
-      groupsOnly: false,
-      wheelchairAccessible: true,
-      spanishSpeakingAccommodation: true,
-      startTime: new Date(),
-      endTime: new Date(),
-      volunteerEvent: false,
-      groupsAllowed: ["789"],
-      registeredIds: [],
-    },
-  ]);
+  const [templates, setTemplates] = useState<IEventTemplate[]>([]);
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
@@ -136,6 +101,8 @@ export default function Page() {
       }
     });
   };
+
+
 
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
@@ -226,8 +193,7 @@ export default function Page() {
   };  
   
   const handleSaveAsTemplate = async () => {
-    const newTemplate: IEventTemplate = {
-      _id: (templates.length + 1).toString(),
+    const newTemplateData = {
       eventName,
       eventImage: imagePreview,
       eventType,
@@ -243,16 +209,60 @@ export default function Page() {
       groupsAllowed: groupsSelected.map(group => group._id),
       registeredIds: [],
     };
+
+    let response;
+    console.log("Selected Template ID:", selectedTemplate?._id);
+    console.log("Templates Array:", templates);
+    if (templates.some(template => template.eventName === eventName)) {
+      response = await fetch(`/api/eventtemplate/${selectedTemplate?._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTemplateData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const updatedTemplate: IEventTemplate = await response.json();
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template._id === updatedTemplate._id ? updatedTemplate : template
+        )
+      );
+      
+      toast({
+        title: "Template Updated",
+        description: "This event template has been updated.",
+        status: "success",
+        duration: 2500,
+        isClosable: true,
+      });
+    } else {
+      response = await fetch("/api/eventtemplate/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTemplateData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const newTemplate: IEventTemplate = await response.json();
+      setTemplates([...templates, newTemplate]);
   
-    setTemplates([...templates, newTemplate]);
-  
-    toast({
-      title: "Template Saved",
-      description: "This event has been saved as a template.",
-      status: "success",
-      duration: 2500,
-      isClosable: true,
-    });
+      toast({
+        title: "Template Saved",
+        description: "This event has been saved as a template.",
+        status: "success",
+        duration: 2500,
+        isClosable: true,
+      });
+    }
+
   };  
 
   // Handle file selection for the event cover image and set preview
@@ -470,9 +480,30 @@ export default function Page() {
       } catch (error) {
         console.error("Error fetching event types:", error);
       }
+
+    };
+
+    const fetchEventTemplates = async ()  => {
+
+      const response = await fetch("/api/eventtemplate/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const templates = await response.json();
+  
+      setTemplates(templates);
+  
     };
 
     fetchEventTypes();
+    fetchEventTemplates();
   }, []);
 
   const mockEvent = {
@@ -510,7 +541,7 @@ export default function Page() {
         </Text>
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />} minWidth={'180px'} >
-            {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
+            Select Template
           </MenuButton>
           <MenuList>
             {templates.map((template) => (
