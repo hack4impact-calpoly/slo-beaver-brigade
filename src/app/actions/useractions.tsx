@@ -63,7 +63,19 @@ export async function addToRegistered(userid : string, eventid : string, waiverI
         }
 
         await Event.updateOne({_id: eventid},{$addToSet: {registeredIds : userid} }).orFail();
-        await User.updateOne({_id:userid},{$addToSet: {eventsRegistered : {eventId: eventid, digitalWaiver: waiverId }}}).orFail();
+        await User.updateOne(
+            { _id: userid, "eventsRegistered.eventId": eventid },
+            { $set: { "eventsRegistered.$.digitalWaiver": waiverId } }
+        ).orFail().catch(async (err) => {
+            if (err.name === "DocumentNotFoundError") {
+          await User.updateOne(
+              { _id: userid },
+              { $addToSet: { eventsRegistered: { eventId: eventid, digitalWaiver: waiverId } } }
+          ).orFail();
+            } else {
+          throw err;
+            }
+        });
 
         revalidateTag("events")
         return true
