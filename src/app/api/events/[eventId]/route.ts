@@ -117,7 +117,11 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 registeredIds,
                 attendeeIds,
                 groupsOnly,
+                checklist,
             }: IEvent = await req.json();
+            if (checklist !== undefined) {
+                event.checklist = checklist;
+            }
             if (location) {
                 event.location = location;
             }

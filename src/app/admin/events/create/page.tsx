@@ -19,9 +19,9 @@ import {
   Flex,
   Stack,
   Textarea,
-  IconButton,
+  IconButton
 } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { AddIcon, CheckIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
 import { format, formatISO, parse } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -497,6 +497,8 @@ export default function Page() {
   // adding items to bring
   const [items, setItems] = useState<string[]>([]); // list of items
   const [newItem, setNewItem] = useState(''); // item user is currently adding
+  const [editingIndex, setEditingIndex] = useState(null); // track which item is being edited
+  const [editValue, setEditValue] = useState(''); // store the new value during editing
 
   // add item currently being written out
   const handleAddItem = () => {
@@ -511,6 +513,21 @@ export default function Page() {
   const handleRemoveItem = (itemToRemove: string) => {
     setItems(items.filter(item => item !== itemToRemove));
     setChecklist(checkList.filter(item => item !== itemToRemove));
+  };
+
+  // edit item
+  const handleEditItem = (index: any, value: string) => {
+    setEditingIndex(index);
+    setEditValue(value);
+  };
+
+  const handleSaveEdit = (index: any) => {
+    if (editValue.trim()) {
+      const updatedItems = [...items];
+      updatedItems[index] = editValue;
+      setItems(updatedItems);
+    }
+    setEditingIndex(null);
   };
 
   // hitting enter auto adds item
@@ -714,7 +731,26 @@ export default function Page() {
                   <VStack spacing={2} align="flex-start">
                     {items.map((item, index) => (
                       <HStack key={index} spacing={2}>
-                        <Box>{item}</Box>
+                        {editingIndex === index ? (
+                          <Input
+                            size="sm"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit(index)}
+                            autoFocus
+                          />
+                        ) : (
+                          <Box>{item}</Box>
+                        )}
+
+                        <IconButton
+                          icon={editingIndex === index ? <CheckIcon /> : <EditIcon />}
+                          size="sm"
+                          colorScheme="yellow"
+                          onClick={() => editingIndex === index ? handleSaveEdit(index) : handleEditItem(index, item)}
+                          aria-label="Edit item"
+                        />
+
                         <Button
                           size="sm"
                           colorScheme="red"
