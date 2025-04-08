@@ -139,12 +139,21 @@
   padding-right: 15px;
 }
 
+.manageVisitorContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.manageVisitorRow {
+  display: flex;
+  justify-content: space-around;
+}
+
 .manageVisitorButton {
   border: none;
   font-weight: bold;
   padding: 0%;
-  width: 100%;
-  text-align: right;
+  text-align: center;
   color: #327774;
   background-color: #edf2f6;
   font-family: "Lato";
@@ -154,6 +163,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 15px;
+  padding-left: 15px;
 }
 
 .manageVisitorText:hover, .manageVisitorButton:hover {

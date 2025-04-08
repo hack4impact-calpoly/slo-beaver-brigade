@@ -202,44 +202,38 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               className={styles.manageVisitorText}>
               {(showAdminActions) ? "Hide Visitor Actions" : "Show Visitor Actions"}
             </button>
-            {/* email all visitors button
-            <button
-              onClick={handleEmailAllVisitors}
-              className={styles.emailAllVisitors}
-            >
-              Email All Visitors
-            </button>
-            */}
           </div>
           {showAdminActions && 
-            <div>
-              <button
-                onClick={handleEmailAllVisitors}
-                className={styles.manageVisitorButton}
-              >
-                Email All Visitors
-              </button>
+            <div className={styles.manageVisitorContainer}>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleEmailAllVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Email All
+                </button>
+                <button
+                  onClick={handleMarkAllVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark All as Attended
+                </button>
+              </div>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleEmailSelectVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Email Selected
+                </button>
 
-              <button
-                onClick={handleEmailSelectVisitors}
-                className={styles.manageVisitorButton}
-              >
-                Email Selected Visitors
-              </button>
-
-              <button
-                onClick={handleMarkAllVisitors}
-                className={styles.manageVisitorButton}
-              >
-                Mark All Visitors as Attended
-              </button>
-
-              <button
-                onClick={handleMarkSelectVisitors}
-                className={styles.manageVisitorButton}
-              >
-                Mark Selected Visitors as Attended
-              </button>
+                <button
+                  onClick={handleMarkSelectVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark Selected as Attended
+                </button>
+              </div>
             </div>
           }
           {Object.keys(visitorData).length === 0 ? (
