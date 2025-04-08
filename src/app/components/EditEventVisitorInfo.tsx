@@ -33,6 +33,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     [key: string]: { parent: IUser; dependents: IUser[] };
   }>({});
   const { eventData, isLoading, isError } = useEventId(eventId);
+  const [showAdminActions, setShowAdminActions] = useState(false);
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -48,8 +49,26 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const mailtoLink = emailLink();
 
     window.location.href = mailtoLink;
+    setShowAdminActions(false);
   };
 
+  const handleEmailSelectVisitors = () => {
+    //currently does same thing as email all
+    const mailtoLink = emailLink();
+
+    window.location.href = mailtoLink;
+    setShowAdminActions(false);
+  };
+
+  const handleMarkAllVisitors = () => {
+    //no functionality yet
+    setShowAdminActions(false);
+  };
+
+  const handleMarkSelectVisitors = () => {
+    //no functionality yet
+    setShowAdminActions(false);
+  };
   useEffect(() => {
     if (isLoading) {
       return;
@@ -178,13 +197,45 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               }, 0)}
               )
             </div>
-            <button
-              onClick={handleEmailAllVisitors}
-              className={styles.emailAllVisitors}
-            >
-              Email All Visitors
+            <button 
+              onClick={() => setShowAdminActions(!showAdminActions)}
+              className={styles.manageVisitorText}>
+              {(showAdminActions) ? "Hide Admin Actions" : "Show Admin Actions"}
             </button>
           </div>
+          {showAdminActions && 
+            <div className={styles.manageVisitorContainer}>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleEmailAllVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Email All
+                </button>
+                <button
+                  onClick={handleMarkAllVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark All as Attended
+                </button>
+              </div>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleEmailSelectVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Email Selected
+                </button>
+
+                <button
+                  onClick={handleMarkSelectVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark Selected as Attended
+                </button>
+              </div>
+            </div>
+          }
           {Object.keys(visitorData).length === 0 ? (
             <div className={styles.noVisitorsMessage}>
               No visitors registered for this event.
