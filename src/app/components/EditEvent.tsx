@@ -137,8 +137,6 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
       checklist: items 
     };
 
-    console.log("data:", eventData);
-
     fetch(`/api/events/${event._id}/`, {
       method: "PATCH",
       headers: {
@@ -151,7 +149,6 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
         if (!response.ok) {
           throw new Error(data.message || "Failed to update event");
         }
-        console.log("Updated event?:", data);
         setIsSubmitted(true);
         HandleClose();
         mutate((event) => {
