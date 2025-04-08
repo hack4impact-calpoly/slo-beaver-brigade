@@ -200,7 +200,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             <button 
               onClick={() => setShowAdminActions(!showAdminActions)}
               className={styles.manageVisitorText}>
-              {(showAdminActions) ? "Hide Visitor Actions" : "Show Visitor Actions"}
+              {(showAdminActions) ? "Hide Admin Actions" : "Show Admin Actions"}
             </button>
           </div>
           {showAdminActions && 

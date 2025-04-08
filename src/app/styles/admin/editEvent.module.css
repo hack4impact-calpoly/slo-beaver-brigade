@@ -158,12 +158,11 @@
   background-color: #edf2f6;
   font-family: "Lato";
   font-size: 17px;
-  margin-top: 3px;
+  margin-top: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding: 5px 15px;
 }
 
 .manageVisitorText:hover, .manageVisitorButton:hover {
