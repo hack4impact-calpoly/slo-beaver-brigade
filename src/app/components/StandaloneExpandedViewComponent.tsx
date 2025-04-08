@@ -14,6 +14,8 @@ import {
   Box,
   Checkbox,
   useMediaQuery,
+  UnorderedList,
+  ListItem,
 } from "@chakra-ui/react";
 import React, { useRef, useState, useEffect } from 'react';
 import { IEvent } from "@database/eventSchema";
@@ -194,18 +196,16 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                     </FormLabel>
                     {eventDetails.checklist.length != 0 ? (    // If checklist is empty, return null
                       <Flex direction={"column"} width={"50%"}>
-                        <Stack spacing={2} ml={"6.5%"}>
+                        <UnorderedList spacing={2} ml={"6.5%"}>
                           {eventDetails.checklist.map((item, i) => (
-                            <Checkbox key={i}>
-                              <MarkdownPreview
-                                className={style.preview}
-                                source={item}
+                            <ListItem key={i}
+                              className={style.preview}
                                 style={{ padding: 3 }}
-                                wrapperElement={{ "data-color-mode": "light" }}
-                              />
-                            </Checkbox>
+                              >
+                              {item}
+                            </ListItem>
                           ))}
-                        </Stack>
+                        </UnorderedList>
                       </Flex>
                     ) :
                       <Text ml={"6.5%"} fontWeight={"light"}>

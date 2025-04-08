@@ -1,5 +1,5 @@
 'use client'
-import { Box, Text, Image, Spinner } from '@chakra-ui/react';
+import { Box, Text, Image, Spinner, UnorderedList, ListItem } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react'
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
@@ -88,7 +88,11 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                                 return <Text key={group._id} className={styles.eventEntry}>{group.group_name}</Text>
                             }) : <Text className={styles.eventEntry}>None</Text>}
                             <Text className={styles.eventField}>Items to Bring</Text>
-                            <Text className={styles.eventEntry}>{eventData.checklist.join(', ')}</Text>
+                            <UnorderedList className={styles.eventEntry}>
+                                {eventData.checklist.map((item, index) => (
+                                    <ListItem key={index}>{item}</ListItem>
+                            ))}
+                            </UnorderedList>
                             <Text className={styles.eventField}>Languages</Text>
                             <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation ? 'English, Spanish' : 'English'}</Text>
                             <Text className={styles.eventField}>Disability Accommodations</Text>
