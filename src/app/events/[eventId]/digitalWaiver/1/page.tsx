@@ -324,14 +324,15 @@ export default function Waiver({ params: { eventId } }: IParams) {
           mt={{ base: 10, md: 15 }}
           mb={0}
         >
-          <h1
+            <h1
             style={{
               fontWeight: "bold",
-              textAlign: "center"
+              textAlign: "center",
+              fontSize: "2rem",
             }}
-          >
+            >
             Waiver of Liability and Hold Harmless Agreement
-          </h1>
+            </h1>
           <Textarea
             className={styles.scroller}
             resize="none"
