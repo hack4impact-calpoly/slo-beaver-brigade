@@ -137,6 +137,8 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
       checklist: items 
     };
 
+    console.log("Event Data:", eventData);
+
     fetch(`/api/events/${event._id}/`, {
       method: "PATCH",
       headers: {

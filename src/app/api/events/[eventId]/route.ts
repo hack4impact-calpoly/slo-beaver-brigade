@@ -137,10 +137,10 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (endTime) {
                 event.endTime = endTime;
             }
-            if (wheelchairAccessible) {
+            if (wheelchairAccessible !== undefined) {
                 event.wheelchairAccessible = wheelchairAccessible;
             }
-            if (spanishSpeakingAccommodation) {
+            if (spanishSpeakingAccommodation !== undefined) {
                 event.spanishSpeakingAccommodation =
                     spanishSpeakingAccommodation;
             }
