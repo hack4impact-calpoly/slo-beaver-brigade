@@ -194,24 +194,19 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                     <FormLabel color="black" fontWeight="bold" fontSize={"xl"}>
                       Items to Bring
                     </FormLabel>
-                    {eventDetails.checklist.length != 0 ? (    // If checklist is empty, return null
-                      <Flex direction={"column"} width={"50%"}>
-                        <UnorderedList spacing={2} ml={"6.5%"}>
-                          {eventDetails.checklist.map((item, i) => (
-                            <ListItem key={i}
-                              className={style.preview}
-                                style={{ padding: 3 }}
-                              >
-                              {item}
-                            </ListItem>
-                          ))}
-                        </UnorderedList>
-                      </Flex>
-                    ) :
+                    {Array.isArray(eventDetails.checklist) && eventDetails.checklist.length > 0 ? (
+                      <UnorderedList spacing={2} ml={"6.5%"}>
+                        {eventDetails.checklist.map((item, i) => (
+                          <ListItem key={i} className={style.preview} style={{ padding: 3 }}>
+                            {item}
+                          </ListItem>
+                        ))}
+                      </UnorderedList>
+                        ) : (
                       <Text ml={"6.5%"} fontWeight={"light"}>
                         Just bring yourself and a smile c:
                       </Text>
-                    }
+                    )}
                   </Flex>
                   {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible ? (   // If neither spanish speaking nor wheelchair accessible, return null
                     null) : (
@@ -240,16 +235,22 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                   {eventDetails.checklist.length != 0 ? (    // If checklist is empty, return null
                     <Flex direction={"column"} width={"50%"}>
                       <Stack spacing={2} ml={"6.5%"}>
-                        {eventDetails.checklist.map((item, i) => (
-                          <Checkbox key={i}>
-                            <MarkdownPreview
-                              className={style.preview}
-                              source={item}
-                              style={{ padding: 3 }}
-                              wrapperElement={{ "data-color-mode": "light" }}
-                            />
-                          </Checkbox>
-                        ))}
+                        {Array.isArray(eventDetails.checklist) && eventDetails.checklist.length > 0 ? (
+                          eventDetails.checklist.map((item, i) => (
+                            <Checkbox key={i}>
+                              <MarkdownPreview
+                                className={style.preview}
+                                source={item}
+                                style={{ padding: 3 }}
+                                wrapperElement={{ "data-color-mode": "light" }}
+                              />
+                            </Checkbox>
+                          ))
+                        ) : (
+                          <Text ml={"6.5%"} fontWeight={"light"}>
+                            Just bring yourself and a smile c:
+                          </Text>
+                        )}
                       </Stack>
                     </Flex>
                   ) :
