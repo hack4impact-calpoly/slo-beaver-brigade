@@ -17,6 +17,7 @@ import {
   HStack,
   Box,
   IconButton,
+  Button as ChakraButton,
 } from "@chakra-ui/react";
 import { IEvent } from "@database/eventSchema";
 import { Button } from "@styles/Button";
@@ -386,9 +387,9 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
                         onKeyDown={(e) => e.key === "Enter" && handleAddItem()}
                         placeholder="Enter item"
                       />
-                      <Button onClick={handleAddItem}>
+                      <ChakraButton size={"sm"} colorScheme="teal" onClick={handleAddItem}>
                         +
-                      </Button>
+                      </ChakraButton>
                     </HStack>
 
                     {items.length > 0 && (
@@ -417,11 +418,13 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
                               aria-label="Edit item"
                             />
     
-                            <Button
+                            <ChakraButton
+                              size="sm"
+                              colorScheme="red"
                               onClick={() => handleRemoveItem(item)}
                             >
                               x
-                            </Button>
+                            </ChakraButton>
                           </HStack>
                           ))}
                         </VStack>
