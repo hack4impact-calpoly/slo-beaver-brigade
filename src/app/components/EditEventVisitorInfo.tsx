@@ -34,6 +34,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   }>({});
   const { eventData, isLoading, isError } = useEventId(eventId);
   const [showAdminActions, setShowAdminActions] = useState(false);
+  const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -54,7 +55,11 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
 
   const handleEmailSelectVisitors = () => {
     //currently does same thing as email all
-    const mailtoLink = emailLink();
+    const emails = selectedVisitors
+      .map((visitor) => visitor.email)
+      .filter((email) => !!email);
+    const subject = encodeURIComponent(eventData?.eventName + ' Update');
+    const mailtoLink = `mailto:${emails.join(',')}?subject=${subject}`;
 
     window.location.href = mailtoLink;
     setShowAdminActions(false);
@@ -62,13 +67,22 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
 
   const handleMarkAllVisitors = () => {
     //no functionality yet
+    for (const visitor of Object.values(visitorData)) {
+      if (visitor.parent._id !== 'placeholder') {
+        addAttendee(visitor.parent._id.toString(), eventId.toString());
+      }
+    }
     setShowAdminActions(false);
   };
 
-  const handleMarkSelectVisitors = () => {
+  async function handleMarkSelectVisitors(){
     //no functionality yet
+    for (const visitor of selectedVisitors) {
+      await addAttendee(visitor._id.toString(), eventId.toString());
+    }
     setShowAdminActions(false);
   };
+  
   useEffect(() => {
     if (isLoading) {
       return;
@@ -162,11 +176,13 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     fetchVisitorData();
   }, [isLoading]);
 
-  async function handleCheck(checked: boolean, userid: string) {
+  async function handleCheck(checked: boolean, visitor: IUser) {
     if (checked) {
-      await addAttendee(userid.toString(), eventId.toString());
+      setSelectedVisitors((prev) => [...prev, visitor]);
     } else {
-      await removeAttendee(userid.toString(), eventId.toString());
+      setSelectedVisitors((prev) =>
+        prev.filter((user) => user._id.toString() !== visitor._id.toString())
+      );
     }
   }
 
@@ -250,30 +266,21 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                         {group.parent._id != 'placeholder' && (
                           <tr className={styles.visitorRow}>
                             <td className={styles.checkBox}>
-                              {eventData.attendeeIds
-                                .map((oid) => oid.toString())
-                                .includes(group.parent._id) ? (
-                                <Checkbox
-                                  colorScheme="green"
-                                  defaultChecked
-                                  onChange={async (e) =>
-                                    await handleCheck(
-                                      e.target.checked,
-                                      group.parent._id.toString()
-                                    )
-                                  }
-                                />
-                              ) : (
-                                <Checkbox
-                                  colorScheme="green"
-                                  onChange={async (e) =>
-                                    await handleCheck(
-                                      e.target.checked,
-                                      group.parent._id.toString()
-                                    )
-                                  }
-                                />
-                              )}
+                              <Checkbox
+                                colorScheme="green"
+                                onChange={async (e) =>
+                                  await handleCheck(
+                                    e.target.checked,
+                                    group.parent
+                                  )
+                                }
+                                isChecked={selectedVisitors.some(
+                                  (visitor) =>
+                                    visitor._id.toString() ===
+                                    group.parent._id.toString()
+                                )}
+                                defaultChecked={false}
+                              />
                             </td>
                             <td className={styles.nameColumn}>
                               {group.parent.firstName
