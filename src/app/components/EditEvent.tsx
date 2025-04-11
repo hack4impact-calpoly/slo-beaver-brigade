@@ -395,47 +395,34 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
                       <Box>
                         <h3>Items List:</h3>
                         <VStack spacing={2} align="flex-start">
-                          {items.map((item, index) => (
-                            <HStack key={index} spacing={2}>
-                              {editingIndex === index ? (
-                                <Input
+                        {Array.isArray(items) && items.map((item, index) => (
+                          <HStack key={index} spacing={2} display={"flex"} justifyContent={"space-around"} w={"100%"}>
+                            {editingIndex === index ? (
+                              <Input
                                 size="sm"
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleSaveEdit(index);
-                                  }
-                                }}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit(index)}
                                 autoFocus
                               />
-                              ) : (
-                                <Box>{item}</Box>
-                              )}
-
-                              <IconButton
-                                icon={editingIndex === index ? <CheckIcon /> : <EditIcon />}
-                                size="sm"
-                                colorScheme="yellow"
-                                onClick={() => {
-                                  if (editingIndex === index) {
-                                    handleSaveEdit(index);
-                                  } else {
-                                    setEditValue(item);
-                                    setEditingIndex(index);
-                                  }
-                                }}
-                                aria-label="Edit item"
-                              />
-
-                              <IconButton
-                                icon={<span>x</span>}
-                                size="sm"
-                                colorScheme="red"
-                                onClick={() => handleRemoveItem(item)}
-                                aria-label="Remove item"
-                              />
-                            </HStack>
+                            ) : (
+                              <Box w={"100%"} textAlign="left">{item}</Box>
+                            )}
+    
+                            <IconButton
+                              icon={editingIndex === index ? <CheckIcon /> : <EditIcon />}
+                              size="sm"
+                              colorScheme="yellow"
+                              onClick={() => editingIndex === index ? handleSaveEdit(index) : handleEditItem(index, item)}
+                              aria-label="Edit item"
+                            />
+    
+                            <Button
+                              onClick={() => handleRemoveItem(item)}
+                            >
+                              x
+                            </Button>
+                          </HStack>
                           ))}
                         </VStack>
                       </Box>
