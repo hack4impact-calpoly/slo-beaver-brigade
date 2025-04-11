@@ -206,11 +206,11 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                           />
                         ))
                       ) : (
-                        <MarkdownPreview
-                          className={style.preview}
-                          source={"- Just bring yourself and a smile c:"}
-                          wrapperElement={{ "data-color-mode": "light" }}
-                        />
+                          <MarkdownPreview
+                            className={style.preview}
+                            source={"- Just bring yourself and a smile c:"}
+                            wrapperElement={{ "data-color-mode": "light" }}
+                          />
                       )}
                     </Stack>
                   </Flex>
