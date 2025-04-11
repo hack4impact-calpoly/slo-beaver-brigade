@@ -107,6 +107,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 eventName,
                 location,
                 eventType,
+                eventImage,
                 description,
                 startTime,
                 endTime,
@@ -127,6 +128,9 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             }
             if (eventName) {
                 event.eventName = eventName;
+            }
+            if (eventImage) {
+                event.eventImage = eventImage;
             }
             if (description) {
                 event.description = description;

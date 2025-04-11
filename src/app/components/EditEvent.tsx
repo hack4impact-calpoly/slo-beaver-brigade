@@ -18,6 +18,9 @@ import {
   Box,
   IconButton,
   Button as ChakraButton,
+  Flex,
+  Text,
+  Image,
 } from "@chakra-ui/react";
 import { IEvent } from "@database/eventSchema";
 import { Button } from "@styles/Button";
@@ -25,11 +28,14 @@ import styles from "@styles/admin/editEvent.module.css";
 import React, { useState, useEffect } from "react";
 import { CreatableSelect, Select } from "chakra-react-select";
 import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
+import ImageSelector from "./ImageSelector";
+import EventPreviewComponent from "@components/EventCard";
 import { KeyedMutator } from "swr";
 import { IGroup } from "database/groupSchema";
 import { CreateTemporaryGroup } from "./ViewGroups";
 import "../fonts/fonts.css";
-import { CheckIcon, EditIcon } from "@chakra-ui/icons";
+import { useRef } from "react";
+import { CheckIcon, EditIcon, AddIcon } from "@chakra-ui/icons";
 
 const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGroups: IGroup[], mutate: KeyedMutator<IEvent> }) => {
   const { isOpen, onOpen, onClose } = useDisclosure(); // button open/close
@@ -52,6 +58,9 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
   const [newItem, setNewItem] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [preselected, setPreselected] = useState<boolean>(true);
+  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(event.eventImage);
 
   useEffect(() => {
     const fetchEventTypes = async () => {
@@ -125,6 +134,7 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
     const eventData = {
       eventName: name,
       eventType: type,
+      eventImage: imagePreview,
       location: loc,
       description: desc,
       startTime: new Date(`${date}T${start}`),
@@ -202,6 +212,30 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
       action();
     }
   };
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const promptFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // Handle file selection for the event cover image and set preview
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPreselected(false);
+      const file = e.target.files ? e.target.files[0] : null;
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") {
+            setImagePreview(reader.result);
+          }
+        };
+        reader.readAsDataURL(file);
+        setCoverImage(file);
+      }
+    };
 
   return (
     <>
@@ -239,6 +273,78 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
                   onChange={handleNameChange}
                 />
               </FormControl>
+
+              <HStack width="100%" spacing={3}>
+                <Flex
+                  flexDir={{ base: "column", lg: "row" }}
+                  flex="1"
+                  gap={{ base: "10px", lg: "30px" }}
+                  justifyContent="center"
+                  mt={-4}
+                  alignItems="center"
+                >
+                    <Flex 
+                    flex="1"
+                    gap={{ base: "10px", lg: "30px" }}
+                    justifyContent="center"
+                    alignItems="center"
+                    width="100%">
+                    <FormControl onClick={promptFileInput} cursor="pointer" width="100%">
+                      <Input
+                      id="cover-image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      ref={fileInputRef}
+                      hidden // Hide the actual input
+                      />
+                      <Box
+                      position="relative"
+                      borderWidth="1px"
+                      p="4"
+                      mt="4"
+                      textAlign="center"
+                      h="64"
+                      borderRadius="20px"
+                      overflow="hidden"
+                      width="100%"
+                      bg="gray.200"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      flexDirection="column"
+                      >
+                      {!imagePreview ? (
+                        <>
+                        <Text>Upload Image</Text>
+                        <IconButton
+                          aria-label="Upload image"
+                          icon={<AddIcon />}
+                          mt="2"
+                        />
+                        </>
+                      ) : (
+                        <Image
+                        src={imagePreview}
+                        alt="Event cover preview"
+                        position="absolute"
+                        top={0}
+                        left={0}
+                        width="100%"
+                        height="100%"
+                        objectFit="cover"
+                        zIndex={0}
+                        />
+                      )}
+                      </Box>
+                    </FormControl>
+                    <ImageSelector
+                      setPreselected={setPreselected}
+                      setImageURL={setImagePreview}
+                    ></ImageSelector>
+                    </Flex>
+                </Flex>
+              </HStack>
 
               <FormControl isInvalid={loc === "" && isSubmitted}>
                 <FormLabel color="grey" fontWeight="bold">Event Location</FormLabel>
