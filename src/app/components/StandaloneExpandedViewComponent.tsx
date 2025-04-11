@@ -206,11 +206,11 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                           />
                         ))
                       ) : (
-                        <MarkdownPreview
-                          className={style.preview}
-                          source={"- Just bring yourself and a smile c:"}
-                          wrapperElement={{ "data-color-mode": "light" }}
-                        />
+                          <MarkdownPreview
+                            className={style.preview}
+                            source={"- Just bring yourself and a smile c:"}
+                            wrapperElement={{ "data-color-mode": "light" }}
+                          />
                       )}
                     </Stack>
                   </Flex>
@@ -246,26 +246,34 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                           </FormLabel>
                         {Array.isArray(eventDetails.checklist) && eventDetails.checklist.length > 0 ? (
                           eventDetails.checklist.map((item, i) => (
-                            <Checkbox key={i}>
-                              <MarkdownPreview
-                                className={style.preview}
-                                source={item}
-                                style={{ padding: 3 }}
-                                wrapperElement={{ "data-color-mode": "light" }}
-                              />
-                            </Checkbox>
+                            <MarkdownPreview
+                              key={i}
+                              className={style.preview}
+                              source={`- ${item}`}
+                              style={{ padding: 3 }}
+                              wrapperElement={{ "data-color-mode": "light" }}
+                            />
                           ))
                         ) : (
-                          <Text ml={"6.5%"} fontWeight={"light"}>
-                            Just bring yourself and a smile c:
-                          </Text>
+                          <MarkdownPreview
+                            className={style.preview}
+                            source={"- Just bring yourself and a smile c:"}
+                            wrapperElement={{ "data-color-mode": "light" }}
+                          />
                         )}
                       </Stack>
                     </Flex>
                   ) :
-                    <Text ml={"6.5%"} fontWeight={"light"}>
-                      Just bring yourself and a smile c:
-                    </Text>
+                  <>
+                    <FormLabel color="black" fontWeight="bold" fontSize={"xl"} ml={"5%"} mt={["10%", "10%", "2%"]}>
+                      Items to Bring
+                    </FormLabel>
+                      <MarkdownPreview
+                        className={style.preview}
+                        source={"- Just bring yourself and a smile c:"}
+                        wrapperElement={{ "data-color-mode": "light" }}
+                      />
+                    </>
                   }
                   {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible ? (
                     null) : (
