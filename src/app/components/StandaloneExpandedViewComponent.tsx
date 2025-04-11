@@ -241,6 +241,9 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                   {eventDetails.checklist.length != 0 ? (    // If checklist is empty, return null
                     <Flex direction={"column"} width={"50%"}>
                       <Stack spacing={2} ml={"0"}>
+                        <FormLabel color="black" fontWeight="bold" fontSize={"xl"}>
+                          Items to Bring
+                          </FormLabel>
                         {Array.isArray(eventDetails.checklist) && eventDetails.checklist.length > 0 ? (
                           eventDetails.checklist.map((item, i) => (
                             <Checkbox key={i}>
