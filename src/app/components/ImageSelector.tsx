@@ -122,7 +122,10 @@ export default function ImageSelector({setImageURL, setPreselected, ...rest}: Pr
                 <ImageCard onClick={() => {setImageURL(image); setPreselected(true)}} key={idx} image={image} />
             ))}
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter justifyContent={"space-between"}>
+            <Button mr={3} onClick={() => {setImageURL(null); setPreselected(false)}} colorScheme='red'>
+                Remove Selected Image
+            </Button>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
                 Close
             </Button>
