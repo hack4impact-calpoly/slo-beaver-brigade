@@ -975,11 +975,11 @@ export default function Page() {
             <FormLabel htmlFor="required-items" fontWeight="bold">
               Checklist
             </FormLabel>
-            <VStack spacing={4}>
+            <VStack spacing={2} align="stretch" ml={0}>
               {/* creates new field per item added */}
               {items.length > 0 && (
                 <Box>
-                  <VStack spacing={2}>
+                  <VStack spacing={2} align="stretch">
                     {items.map((item, index) => (
                       <HStack key={index} spacing={2} display={"flex"} justifyContent={"space-around"} w={"100%"}>
                         {editingIndex === index ? (
@@ -991,7 +991,7 @@ export default function Page() {
                             autoFocus
                           />
                         ) : (
-                          <Box w={"100%"}>{item}</Box>
+                          <Box w={"100%"} textAlign="left">{item}</Box>
                         )}
 
                         <IconButton
@@ -1014,7 +1014,7 @@ export default function Page() {
                   </VStack>
                 </Box>
               )}
-              <HStack spacing={4}>
+              <HStack spacing={4} w="100%">
                 <Input
                   id="new-item"
                   value={newItem}
