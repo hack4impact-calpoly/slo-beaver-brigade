@@ -189,8 +189,8 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                 </Text>
               </Flex>
               {isLargerThan550 ? (
-                <Flex ml={"5%"} mb={"5%"}>
-                  <Flex direction={"column"} width={"50%"}>
+                <Flex mb={"5%"} justifyContent={'space-around'}>
+                  <Flex direction={"column"} >
                     <FormLabel color="black" fontWeight="bold" fontSize={"xl"}>
                       Items to Bring
                     </FormLabel>
@@ -237,36 +237,31 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
                 </Flex>
               )
                 :
-                <Flex direction={"column"} ml={"5%"} mb={"10%"}>
-                  {eventDetails.checklist.length != 0 ? (    // If checklist is empty, return null
-                    <Flex direction={"column"} width={"50%"}>
-                      <Stack spacing={2} ml={"0"}>
-                        <FormLabel color="black" fontWeight="bold" fontSize={"xl"}>
-                          Items to Bring
-                          </FormLabel>
-                        {Array.isArray(eventDetails.checklist) && eventDetails.checklist.length > 0 ? (
-                          eventDetails.checklist.map((item, i) => (
-                            <Checkbox key={i}>
-                              <MarkdownPreview
-                                className={style.preview}
-                                source={item}
-                                style={{ padding: 3 }}
-                                wrapperElement={{ "data-color-mode": "light" }}
-                              />
-                            </Checkbox>
-                          ))
-                        ) : (
-                          <Text ml={"6.5%"} fontWeight={"light"}>
-                            Just bring yourself and a smile c:
-                          </Text>
-                        )}
-                      </Stack>
-                    </Flex>
-                  ) :
-                    <Text ml={"6.5%"} fontWeight={"light"}>
-                      Just bring yourself and a smile c:
-                    </Text>
-                  }
+                <Flex direction={"column"} ml={"5%"} mb={"10%"} gap={4}>
+                  <Flex direction={"column"}>
+                    <Stack spacing={2} ml={"0"}>
+                      <FormLabel color="black" fontWeight="bold" fontSize={"xl"}>
+                        Items to Bring
+                      </FormLabel>
+                      {Array.isArray(eventDetails.checklist) && eventDetails.checklist.length > 0 ? (
+                        eventDetails.checklist.map((item, i) => (
+                          <MarkdownPreview
+                            key={i}
+                            className={style.preview}
+                            source={`- ${item}`}
+                            style={{ padding: 3 }}
+                            wrapperElement={{ "data-color-mode": "light" }}
+                          />
+                        ))
+                      ) : (
+                        <MarkdownPreview
+                          className={style.preview}
+                          source={"- Just bring yourself and a smile c:"}
+                          wrapperElement={{ "data-color-mode": "light" }}
+                        />
+                      )}
+                    </Stack>
+                  </Flex>
                   {!eventDetails.spanishSpeakingAccommodation && !eventDetails.wheelchairAccessible ? (
                     null) : (
                     <Stack spacing={2}>
