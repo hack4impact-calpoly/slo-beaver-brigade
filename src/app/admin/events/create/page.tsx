@@ -22,7 +22,7 @@ import {
   SimpleGrid,
   IconButton,
 } from "@chakra-ui/react";
-import { AddIcon, CheckIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
+import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import EventPreviewComponent from "@components/EventCard";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
 import { format, formatISO, parse } from "date-fns";
@@ -78,17 +78,13 @@ export default function Page() {
     useState("");
   const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
   const [description, setDescription] = useState("");
-  const [checkList, setChecklist] = useState<string[]>([]);
+  const [checkList, setChecklist] = useState("N/A");
   const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
   const [passedEndTime, setPassedEndTime] = useState("");
   const [passedStartTime, setPassedStartTime] = useState("");
   const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false);
-  const [items, setItems] = useState<string[]>([]); // list of items
-  const [newItem, setNewItem] = useState(''); // item user is currently adding
-  const [editingIndex, setEditingIndex] = useState(null); // track which item is being edited
-  const [editValue, setEditValue] = useState(''); // store the new value during editing
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEventName(e.target.value);
@@ -119,12 +115,12 @@ export default function Page() {
       const parsedStartTime = parse(
         `${start}`,
         timeFormat,
-        new Date(`${activeDate ? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
+        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
       const parsedEndTime = parse(
         `${end}`,
         timeFormat,
-        new Date(`${activeDate ? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
+        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
 
       // Format the adjusted dates back into ISO strings
@@ -161,7 +157,7 @@ export default function Page() {
     setEventType(template.eventType || "");
     setLocation(template.location);
     setDescription(template.description || "");
-    setChecklist(template.checklist || []);
+    setChecklist(template.checklist || "");
     setOnlyGroups(template.groupsOnly || false);
     setAccessibilityAccommodation(template.wheelchairAccessible ? "Yes" : "No");
     setSpanishSpeaking(template.spanishSpeakingAccommodation ? "Yes" : "No");
@@ -169,13 +165,13 @@ export default function Page() {
     setEventEnd(formatISO(template.endTime));
     setPassedStartTime(format(template.startTime, 'HH:mm'));
     setPassedEndTime(format(template.endTime, 'HH:mm'));
-
+  
     setEventTypes((prev) =>
       template.eventType && !prev.includes(template.eventType)
         ? [...prev, template.eventType]
         : prev
-    );
-
+    );    
+  
     setGroupsSelected(
       template.groupsAllowed.map(id => ({
         _id: id,
@@ -183,19 +179,19 @@ export default function Page() {
         groupees: [],
       }))
     );
-
-    setChecklist(template.checklist || []);
-
+  
+    setChecklist(template.checklist || "");
+  
     setEventType(template.eventType || "");
-
+  
     // setLocation(template.location);
     setLocation((prev) => (template.location && prev !== template.location ? template.location : prev));
-
+  
     if (template.eventImage) {
       setImagePreview(template.eventImage);
-    }
-  };
-
+    }    
+  };  
+  
   const handleSaveAsTemplate = async () => {
     const newTemplateData = {
       eventName,
@@ -509,43 +505,6 @@ export default function Page() {
     fetchEventTypes();
     fetchEventTemplates();
   }, []);
-
-  // add item currently being written out
-  const handleAddItem = () => {
-    if (newItem.trim()) {
-      setItems([...items, newItem]);
-      setChecklist([...checkList, newItem]);
-      setNewItem('');
-    }
-  };
-
-  // remove item from list
-  const handleRemoveItem = (itemToRemove: string) => {
-    setItems(items.filter(item => item !== itemToRemove));
-    setChecklist(checkList.filter(item => item !== itemToRemove));
-  };
-
-  // edit item
-  const handleEditItem = (index: any, value: string) => {
-    setEditingIndex(index);
-    setEditValue(value);
-  };
-
-  const handleSaveEdit = (index: any) => {
-    if (editValue.trim()) {
-      const updatedItems = [...items];
-      updatedItems[index] = editValue;
-      setItems(updatedItems);
-    }
-    setEditingIndex(null);
-  };
-
-  // hitting enter auto adds item
-  const handleKeyPress = (e: { key: string; }) => {
-    if (e.key === 'Enter') {
-      handleAddItem();
-    }
-  };
 
   const mockEvent = {
     _id: "mockId",
@@ -953,13 +912,11 @@ export default function Page() {
 
       <Stack
         direction={{ base: "column", lg: "row" }}
-        spacing={6}
-        display={"flex"}
-        justifyContent="space-between"
-        align-items="center"
+        spacing={4}
+        align="start"
         w="100%"
       >
-        <FormControl isRequired flex={2}>
+        <FormControl isRequired flex={1}>
           <FormLabel htmlFor="description" fontWeight="bold">
             Description
           </FormLabel>
@@ -972,62 +929,16 @@ export default function Page() {
         </FormControl>
 
         <FormControl flex={1}>
-            <FormLabel htmlFor="required-items" fontWeight="bold">
-              Checklist
-            </FormLabel>
-            <VStack spacing={2} align="stretch" ml={0}>
-              {/* creates new field per item added */}
-              {items.length > 0 && (
-                <Box>
-                  <VStack spacing={2} align="stretch">
-                    {items.map((item, index) => (
-                      <HStack key={index} spacing={2} display={"flex"} justifyContent={"space-around"} w={"100%"}>
-                        {editingIndex === index ? (
-                          <Input
-                            size="sm"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit(index)}
-                            autoFocus
-                          />
-                        ) : (
-                          <Box w={"100%"} textAlign="left">{item}</Box>
-                        )}
-
-                        <IconButton
-                          icon={editingIndex === index ? <CheckIcon /> : <EditIcon />}
-                          size="sm"
-                          colorScheme="yellow"
-                          onClick={() => editingIndex === index ? handleSaveEdit(index) : handleEditItem(index, item)}
-                          aria-label="Edit item"
-                        />
-
-                        <Button
-                          size="sm"
-                          colorScheme="red"
-                          onClick={() => handleRemoveItem(item)}
-                        >
-                          x
-                        </Button>
-                      </HStack>
-                    ))}
-                  </VStack>
-                </Box>
-              )}
-              <HStack spacing={4} w="100%">
-                <Input
-                  id="new-item"
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Enter item"
-                />
-                <Button onClick={handleAddItem} colorScheme="teal">
-                  +
-                </Button>
-              </HStack>
-            </VStack>
-          </FormControl>
+          <FormLabel htmlFor="required-items" fontWeight="bold">
+            Checklist
+          </FormLabel>
+          <MDEditor
+            className={style.preview}
+            value={checkList}
+            onChange={(e) => setChecklist(e || "")}
+            data-color-mode="light"
+          />
+        </FormControl>
       </Stack>
 
       <Box display="flex" justifyContent="center" mt={4} gap={4}>

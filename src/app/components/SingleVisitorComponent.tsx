@@ -38,7 +38,7 @@ interface Event {
   eventType: string;
   location: string;
   description: string;
-  checklist: string[];
+  checklist: string;
   wheelchairAccessible: boolean;
   spanishSpeakingAccommodation: boolean;
   startTime: Date;
@@ -96,14 +96,14 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
     }
   }, [visitorData]);
 
-
+  
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
   };
 
   const handleRoleChange = async () => {
-
+    
     try {
       const result =
         userRole === "admin"
@@ -146,7 +146,7 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
               <Text>
                 {visitorData.firstName} {visitorData.lastName}
               </Text>
-
+              
             </Flex>
           </ModalHeader>
           <ModalCloseButton />
@@ -157,23 +157,23 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
           >
             <Box className={styles.infoBox} >
               <Text className={styles.visitorInfoSmallHeader}>
-                Account Info
+                  Account Info
               </Text>
-              <div style={{ display: "flex" }} className={styles.accountInfo}>
+              <div style={{ display: "flex"}} className={styles.accountInfo}>
                 <div style={{ width: "45%" }}>
                   <Text className={styles.fieldInfo}>
-                    <Text as="span" className={styles.boldText}>Email</Text> <br></br> {visitorData.email ? visitorData.email : "N/A"}
+                  <Text as="span" className={styles.boldText}>Email</Text> <br></br> {visitorData.email ? visitorData.email : "N/A"}
                   </Text>
                   <Text className={styles.fieldInfo}>
-                    <Text as="span" className={styles.boldText}>Zipcode</Text><br></br> {visitorData.zipcode ? visitorData.zipcode : "N/A"}
+                     <Text as="span" className={styles.boldText}>Zipcode</Text><br></br> {visitorData.zipcode ? visitorData.zipcode : "N/A"}
                   </Text>
                 </div>
                 <div style={{ width: "45%" }}>
                   <Text className={styles.fieldInfo}>
-                    <Text as="span" className={styles.boldText}>Phone</Text> <br></br> {visitorData.phoneNumber ? visitorData.phoneNumber : "N/A"}
+                  <Text as="span" className={styles.boldText}>Phone</Text> <br></br> {visitorData.phoneNumber ? visitorData.phoneNumber : "N/A"}
                   </Text>
                   <Text className={styles.fieldInfo}>
-                    <Text as="span" className={styles.boldText}>Receive Newsletter</Text> <br></br> {visitorData.receiveNewsletter ? "Yes" : "No"}
+                  <Text as="span" className={styles.boldText}>Receive Newsletter</Text> <br></br> {visitorData.receiveNewsletter ? "Yes" : "No"}
                   </Text>
                 </div>
               </div>
@@ -183,7 +183,7 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
               <Text className={styles.visitorInfoSmallHeader}>
                 Events Attendeded
               </Text>
-              {events.length > 0 ? (
+                {events.length > 0 ? (
                 <div className={styles.tableContainer}>
                   <Table variant="striped">
                     <Thead>
@@ -213,7 +213,7 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
               )}
             </Box>
             <Flex direction="row" align="center" justify="center" gap={8} p={4}>
-              {userRole === "user" ? (
+            {userRole === "user" ? (
                 <Button
                   mt={2}
                   color="#337774"
@@ -236,7 +236,7 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
                 </Button>
               )}
               <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false} removeFunction={removeFunction}> </DeleteConfirmation>
-            </Flex>
+              </Flex>
           </ModalBody>
         </ModalContent>
       </Modal>
