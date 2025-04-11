@@ -2,7 +2,6 @@
 import { Box, Text, Image, Spinner, UnorderedList, ListItem } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react'
 import styles from "../styles/admin/editEvent.module.css";
-import { IEvent } from '@database/eventSchema';
 import EditEvent from '@components/EditEvent';
 import editButton from '/docs/images/edit_details.svg'
 import { useEventId } from 'app/lib/swrfunctions';
@@ -88,11 +87,17 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                                 return <Text key={group._id} className={styles.eventEntry}>{group.group_name}</Text>
                             }) : <Text className={styles.eventEntry}>None</Text>}
                             <Text className={styles.eventField}>Items to Bring</Text>
+                            {Array.isArray(eventData.checklist) && eventData.checklist.length > 0 ? (
                             <UnorderedList className={styles.eventEntry}>
-                                {eventData.checklist.map((item, index) => (
-                                    <ListItem key={index}>{item}</ListItem>
-                            ))}
+                            {
+                            eventData.checklist.map((item, index) => (
+                                <ListItem key={index}>{item}</ListItem>
+                            ))
+                            }
                             </UnorderedList>
+                            ) : (
+                            <Text className={styles.eventEntry}>No items to bring</Text>
+                            )}
                             <Text className={styles.eventField}>Languages</Text>
                             <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation ? 'English, Spanish' : 'English'}</Text>
                             <Text className={styles.eventField}>Disability Accommodations</Text>
