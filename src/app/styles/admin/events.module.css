@@ -1,192 +1,209 @@
 .mainContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 .sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    width: 15vw;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 15vw;
 }
 
 .cardContainer {
-    width: 80%;
+  width: 80%;
 }
 
 .loadingText {
-    position: absolute;
-    left: 50%;
+  position: absolute;
+  left: 50%;
 }
 
 .eventsList {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 35px;
-    padding: 0;
-    list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 35px;
+  padding: 0;
+  list-style: none;
 }
 .createAndSearchContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .yellowButton {
-    background-color: #e0af48;    
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    white-space: nowrap;
+  background-color: #e0af48;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  white-space: nowrap;
 }
 
 .yellowButton:hover {
-    background-color: #c19137;
-    cursor: pointer;
+  background-color: #c19137;
+  cursor: pointer;
 }
 
 .searchWrapper {
-    position: relative;
-    display: flex;
-    width: 200px;
-
+  position: relative;
+  display: flex;
+  width: 200px;
 }
 
 .searchBar {
-    font-weight: bold;
-    font-size: 16px;
-    color: #337774;
-    border: 2px solid #337774;
-    border-radius: 10px;
-    align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 8px;
-    padding-right: 8px;
-    margin-top: 20px;
-    margin-bottom: 0px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #337774;
+  border: 2px solid #337774;
+  border-radius: 10px;
+  align-items: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-top: 20px;
+  margin-bottom: 0px;
 }
 
 .sortSelect {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .filterContainer {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 0px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 0px;
 }
 .filterHeader {
-    margin-left: 0px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: left;
-    margin-bottom: 20px;
-    margin-top: 20px;
+  margin-left: 0px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .checkboxLabel {
-    font-size: 15px;
-    white-space: nowrap;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 @media (max-width: 1400px) {
-    .cardContainer {
-        width: 61%;
-    }
+  .cardContainer {
+    width: 61%;
+  }
 
-    .eventsList {
-        display: grid;
-        grid-template-columns: repeat(2, 0fr);
-        gap: 35px;
-        padding: 0;
-        list-style: none;
-    }
+  .eventsList {
+    display: grid;
+    grid-template-columns: repeat(2, 0fr);
+    gap: 35px;
+    padding: 0;
+    list-style: none;
+  }
 }
 
 @media (max-width: 1200px) {
-    .mainContainer {
-        flex-direction: column;
-        gap: 20px;
-        align-items: center;
-    }
+  .mainContainer {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
 
-    .eventsList {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 35px;
-        padding: 0;
-        list-style: none;
-    }
+  .eventsList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 35px;
+    padding: 0;
+    list-style: none;
+  }
 
-    .cardContainer {
-        width: auto;
-    }
+  .cardContainer {
+    width: auto;
+  }
 
-    .sidebar {
-        width: 100%;
-        margin-left: 0;
-        align-items: center;
-        gap: 10px;
-    }
+  .sidebar {
+    width: 100%;
+    margin-left: 0;
+    align-items: center;
+    gap: 10px;
+  }
 
-    .filterGroupContainer {
-        display: flex;
-        justify-content: space-between;
-        align-items: stretch;
-        gap: 50px;
-    }
+  .filterGroupContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 50px;
+  }
 }
 
 @media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        margin-left: 0;
-        align-items: center;
-    }
+  .sidebar {
+    width: 100%;
+    margin-left: 0;
+    align-items: center;
+  }
 
-    .eventsList {
-        grid-template-columns: 1fr;
-        align-items: center;
-    }
+  .eventsList {
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
 
-    .searchBar {
-        padding: 5px;
-        font-size: 12px;
-    }
-    .filterHeader {
-        font-size: 12px;
-    }
-    .checkboxLabel {
-        font-size: 12px;
-    }
+  .searchBar {
+    padding: 5px;
+    font-size: 12px;
+  }
+  .filterHeader {
+    font-size: 12px;
+  }
+  .checkboxLabel {
+    font-size: 12px;
+  }
 
-    .checkBoxes input[type="checkbox"] {
-        margin-right: 5px;
-    }
+  .checkBoxes input[type="checkbox"] {
+    margin-right: 5px;
+  }
 }
-  
+
 @media (max-width: 570px) {
-   .filterContainerTypeAccessibility {
-        display: none;
-   }
+  .mainContainer {
+    padding-bottom: 40px;
+  }
 
-   .filterContainer{
+  .filterContainerTypeAccessibility {
+    flex-direction: column;
+    display: flex;
+    gap: 20px;
+  }
+
+  .filterContainer,
+  .filterContainerTypeAccessibility {
     margin-top: 0px;
-   }
+    width: 100%;
+    align-items: flex-start;
+  }
 
-   .filterHeader{
+  .filterHeader {
     margin-top: 0px;
-   }
+  }
 
-   .sortSelect {
+  .searchWrapper {
+    width: 100%;
+  }
+
+  .sortSelect {
     margin-bottom: 20px;
-}
+    width: 100%;
+  }
+
+  .headcount {
+    width: 50%;
+  }
 }
