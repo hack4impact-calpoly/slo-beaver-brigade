@@ -23,6 +23,9 @@ import "../../fonts/fonts.css";
 const EventPreview = () => {
   //states
   const { events, isLoading } = useEventsAscending();
+  const uniqueEventTypes = Array.from(
+    new Set(events?.map((e) => e.eventType?.trim()).filter(Boolean))
+  );
   const [groupNames, setGroupNames] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
@@ -37,12 +40,27 @@ const EventPreview = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
-  const [volunteerEvents, setVolunteerEvents] = useState(false);
-  const [beaverWalk, setBeaverWalk] = useState(false);
-  const [festivals, setFestivals] = useState(false);
-  const [pondCleanup, setPondCleanup] = useState(false);
   const [minHeadcount, setMinHeadcount] = useState<number | null>(null);
   const [maxHeadcount, setMaxHeadcount] = useState<number | null>(null);
+  const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>([]);
+  const [eventTypes, setEventTypes] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchEventTypes = async () => {
+      try {
+        const response = await fetch("/api/events/bytype/eventType");
+        const data: string[] = await response.json();
+        const uniqueEventTypes = Array.from(
+          new Set([...data, "Volunteer", "Beaver Walk", "Pond Clean Up"])
+        );
+        setEventTypes(uniqueEventTypes);
+      } catch (error) {
+        console.error("Error fetching event types:", error);
+      }
+    };
+
+    fetchEventTypes();
+  }, []);
 
   // get string for some group based on id
   const fetchGroupName = async (groupId: string): Promise<string> => {
@@ -113,27 +131,9 @@ const EventPreview = () => {
         return true;
       })
       .filter((event) => {
-        // display event if the checkbox is toggled and event type is toggled
-        // if multiple checkboxes are toggled, display events for any of the types that are toggled
-        if (
-          (volunteerEvents && event.eventType === "Volunteer") ||
-          (beaverWalk && event.eventType === "Beaver Walk") ||
-          (festivals && event.eventType === "Festival") ||
-          (pondCleanup && event.eventType === "Pond Clean Up")
-        ) {
-          return true;
-        }
-        // if none of the checkboxes are toggled, display all events
-        else if (
-          !volunteerEvents &&
-          !beaverWalk &&
-          !festivals &&
-          !pondCleanup
-        ) {
-          return true;
-        }
+        if (selectedEventTypes.length === 0) return true;
+        return selectedEventTypes.includes(event.eventType?.trim() || "");
       })
-
       .filter((event) => {
         const eventDate = new Date(event.startTime);
         const now = new Date();
@@ -234,35 +234,6 @@ const EventPreview = () => {
           </div>
         </div>
         <div className={style.filterGroupContainer}>
-          <div className={style.filterContainer}>
-            <div className={style.filterHeader}>Headcount Range</div>
-            <Stack spacing={2} ml="1">
-              <Input
-                type="number"
-                placeholder="Minimum Headcount"
-                value={minHeadcount ?? ""}
-                onChange={(e) =>
-                  setMinHeadcount(
-                    e.target.value ? parseInt(e.target.value) : null
-                  )
-                }
-                size="sm"
-                borderColor="black"
-              />
-              <Input
-                type="number"
-                placeholder="Maximum Headcount"
-                value={maxHeadcount ?? ""}
-                onChange={(e) =>
-                  setMaxHeadcount(
-                    e.target.value ? parseInt(e.target.value) : null
-                  )
-                }
-                size="sm"
-                borderColor="black"
-              />
-            </Stack>
-          </div>
           <div className={style.filterHeader}>Event Timeframe</div>
           <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
@@ -286,36 +257,17 @@ const EventPreview = () => {
         </div>
         <div className={style.filterContainerTypeAccessibility}>
           <div className={style.filterHeader}>Event Type</div>
-          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+          <CheckboxGroup
+            colorScheme="green"
+            value={selectedEventTypes}
+            onChange={(values) => setSelectedEventTypes(values as string[])}
+          >
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
-              <Checkbox
-                value="beaver walk"
-                colorScheme="teal"
-                onChange={() => setBeaverWalk(!beaverWalk)}
-              >
-                <div className={style.checkboxLabel}>Beaver Walk</div>
-              </Checkbox>
-              <Checkbox
-                value="volunteer"
-                colorScheme="yellow"
-                onChange={() => setVolunteerEvents(!volunteerEvents)}
-              >
-                <div className={style.checkboxLabel}>Volunteer</div>
-              </Checkbox>
-              <Checkbox
-                value="festivals"
-                colorScheme="green"
-                onChange={() => setFestivals(!festivals)}
-              >
-                <div className={style.checkboxLabel}>Festivals</div>
-              </Checkbox>
-              <Checkbox
-                value="pond clean up"
-                colorScheme="red"
-                onChange={() => setPondCleanup(!pondCleanup)}
-              >
-                <div className={style.checkboxLabel}>Pond Clean Up</div>
-              </Checkbox>
+              {eventTypes.map((type) => (
+                <Checkbox key={type} value={type}>
+                  <div className={style.checkboxLabel}>{type}</div>
+                </Checkbox>
+              ))}
             </Stack>
           </CheckboxGroup>
         </div>
@@ -346,6 +298,39 @@ const EventPreview = () => {
               </Checkbox>
             </Stack>
           </CheckboxGroup>
+        </div>
+        <div className={style.filterContainer}>
+          <div className={style.filterHeader}>Headcount Range</div>
+          <Stack spacing={2} ml="1">
+            <Input
+              type="number"
+              placeholder="Minimum Headcount"
+              value={minHeadcount ?? ""}
+              onChange={(e) =>
+                setMinHeadcount(
+                  e.target.value ? parseInt(e.target.value) : null
+                )
+              }
+              focusBorderColor="#337774"
+              borderColor="#337774"
+              borderWidth="1.5px"
+              _hover={{ borderColor: "#337774" }}
+            />
+            <Input
+              type="number"
+              placeholder="Maximum Headcount"
+              value={maxHeadcount ?? ""}
+              onChange={(e) =>
+                setMaxHeadcount(
+                  e.target.value ? parseInt(e.target.value) : null
+                )
+              }
+              focusBorderColor="#337774"
+              borderColor="#337774"
+              borderWidth="1.5px"
+              _hover={{ borderColor: "#337774" }}
+            />
+          </Stack>
         </div>
         <div className={style.filterContainerTypeAccessibility}></div>
       </aside>
