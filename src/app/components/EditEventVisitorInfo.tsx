@@ -6,7 +6,7 @@ import styles from '../styles/admin/editEvent.module.css';
 import { IEvent } from '@database/eventSchema';
 import { IUser } from '@database/userSchema';
 import { ISignedWaiver } from 'database/signedWaiverSchema';
-import { removeAttendee } from 'app/actions/serveractions';
+import { removeAttendee, removeRegistered } from 'app/actions/serveractions';
 import { addAttendee } from 'app/actions/useractions';
 import SingleVisitorComponent from './SingleVisitorComponent';
 import { useEventId } from 'app/lib/swrfunctions';
@@ -82,6 +82,42 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     }
     setShowAdminActions(false);
   };
+
+  async function handleRemoveSelectedAttendees() {
+    for (const visitor of selectedVisitors) {
+      if (visitor._id !== 'placeholder') {
+        const success = await removeRegistered(
+          visitor._id.toString(),
+          eventId.toString()
+        );
+        if (success) {
+          setVisitorData((prev) => {
+            const updatedVisitors = { ...prev };
+            delete updatedVisitors[visitor._id];
+            return updatedVisitors;
+          });
+        } else {
+          console.error('Error removing attendee');
+        }
+        setSelectedVisitors((prev) =>
+          prev.filter((user) => user._id.toString() !== visitor._id.toString())
+        );
+        setShowAdminActions(false);
+      }
+    }
+  }
+
+  async function handleAbsentVistor() {
+    for (const visitor of selectedVisitors) {
+      if (visitor._id !== 'placeholder') {
+        const success = await removeAttendee(
+          visitor._id.toString(),
+          eventId.toString()
+        );
+        setShowAdminActions(false);
+      }
+    }
+  }
   
   useEffect(() => {
     if (isLoading) {
@@ -248,6 +284,20 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                   className={styles.manageVisitorButton}
                 >
                   Mark Selected as Attended
+                </button>
+              </div>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleRemoveSelectedAttendees}
+                  className={styles.manageVisitorButton}
+                >
+                  Remove Selected
+                </button>
+                <button
+                  onClick={handleAbsentVistor}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark as Absent
                 </button>
               </div>
             </div>
