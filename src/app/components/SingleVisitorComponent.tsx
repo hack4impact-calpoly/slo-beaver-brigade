@@ -115,6 +115,15 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
     }
   };
 
+  const handleSuperAdminButton = async () => {
+    try {
+      const result = await makeSuperAdminUser(visitorData.email);
+      setUserRole(result.role);
+    } catch (error) {
+      console.error("Error making super admin: ", error);
+    }
+  }
+
   const closeFromChild = () => {
     onClose();
   };
@@ -213,6 +222,18 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
               )}
             </Box>
             <Flex direction="row" align="center" justify="center" gap={8} p={4}>
+              {(visitorData.role === "super-admin" && userRole != "super-admin")? (
+                <Button
+                mt={2}
+                color="#337774"
+                bg="white"
+                border="2px"
+                _hover={{ bg: "#337774", color: "white" }}
+                onClick={handleSuperAdminButton}
+              >
+                Make Super-Admin
+              </Button>
+              ) : <></>}
               {userRole === "user" ? (
                 <Button
                   mt={2}
