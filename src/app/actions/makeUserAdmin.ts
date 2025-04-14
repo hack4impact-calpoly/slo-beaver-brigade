@@ -4,7 +4,7 @@ import connectDB from "database/db";
 import Log from "@database/logSchema";
 import { currentUser } from "@clerk/nextjs/server";
 
-const makeUserAdmin = async (email: string) => {
+export const makeUserAdmin = async (email: string) => {
   await connectDB();
   try {
     const user = await User.findOneAndUpdate(
@@ -46,4 +46,35 @@ const makeUserAdmin = async (email: string) => {
   }
 };
 
-export default makeUserAdmin;
+export const makeSuperAdminUser = async (email: string) => {
+  await connectDB();
+  const user = await User.findOneAndUpdate({email: email}, {role: "super-admin"}, {new: true});
+
+  if (!user) {
+    throw new Error(`User with email ${email} not found`);
+  }
+
+      // Get the currently logged-in user (the admin making the change)
+      const curUser = await currentUser();
+      if (!curUser) {
+        throw new Error("No admin user found");
+      }
+  
+      // Find the admin user in the database
+      const adminUser: IUser= await User.findOne({ email: curUser.emailAddresses[0].emailAddress }).lean().orFail() as IUser;;
+      if (!adminUser) {
+        throw new Error(`Admin user with email ${curUser.emailAddresses[0].emailAddress } not found`);
+      }
+  
+      // add an audit log entry
+      await Log.create({
+        user: `${curUser.firstName} ${curUser.lastName}`,
+        action: `changed ${user.firstName} ${user.lastName} to super-admin`,
+        date: new Date(),
+      });
+  
+      return user.toObject();
+
+
+}
+

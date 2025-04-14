@@ -26,7 +26,7 @@ import { IUser } from "@database/userSchema";
 import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
-import makeUserAdmin from "../actions/makeUserAdmin";
+import {makeUserAdmin, makeSuperAdminUser} from "../actions/makeUserAdmin";
 import makeAdminUser from "../actions/makeAdminUser";
 import { FaRegTrashAlt } from "react-icons/fa";
 import DeleteConfirmation from "./DeleteConfirmation";
