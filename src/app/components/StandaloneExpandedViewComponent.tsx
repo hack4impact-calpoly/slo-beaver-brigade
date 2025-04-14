@@ -255,8 +255,7 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate,
               </Flex>       
               }      
           </Stack>
-        <Flex mt={["5%","5%","2%"]} display={"flex"} justifyContent={"end"} alignItems={"center"} alignContent={"center"}>
-          {/* MAKE THIS ADMIN ONLY*/}
+        <Flex mt={["5%","5%","2%"]} display={"flex"} justifyContent={visitorData.role==="admin"? "center" : "end"} alignItems={"center"} alignContent={"center"}>
                
             {signedIn ? (
               <>
