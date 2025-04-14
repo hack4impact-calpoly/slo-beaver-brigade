@@ -609,8 +609,6 @@ const EditEvent = ({
                   </div>
                 )}
               </Stack>
-
-              {/* Commenting out because redundant; using eventType prop instead
               <Switch
                 fontWeight="bold"
                 color="grey"
@@ -619,7 +617,6 @@ const EditEvent = ({
               >
                 Volunteer Event
               </Switch>
-              */}
               <Switch
                 fontWeight="bold"
                 color="grey"
