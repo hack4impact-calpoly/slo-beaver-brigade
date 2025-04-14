@@ -68,7 +68,7 @@ export default async function NavbarParent() {
     if (user){
 
         const name = `Hi ${user?.firstName}!`;
-        if (user?.role == "admin"){
+        if (user?.role == "admin" || user?.role == "super-admin"){
         return <NavbarAdmin name={name}></NavbarAdmin>
         }
         else{

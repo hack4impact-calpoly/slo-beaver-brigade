@@ -24,6 +24,7 @@ enum Role {
     "supervisor",
     "admin",
     "guest",
+    "super-admin"
 }
 
 export type EventInfo = {

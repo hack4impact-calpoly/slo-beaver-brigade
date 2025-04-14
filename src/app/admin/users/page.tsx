@@ -25,6 +25,7 @@ import { Schema } from "mongoose";
 import ViewGroups from "app/components/ViewGroups";
 import { useUsers } from "app/lib/swrfunctions";
 import "../../fonts/fonts.css";
+import { getUserDbData } from "app/lib/authentication";
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;
@@ -45,7 +46,7 @@ export interface IUser {
   lastName: string;
   age: number;
   gender: string;
-  role: "user" | "supervisor" | "admin" | "guest";
+  role: "user" | "supervisor" | "admin" | "guest" | "super-admin";
   eventsRegistered: EventInfo[];
   eventsAttended: AttendedEventInfo[];
   groupId: Schema.Types.ObjectId | null;
@@ -76,6 +77,7 @@ const UserList = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
+  const [adminData, setAdminData] = useState<IUser>();
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
     value: "firstName",
     label: "First Name",
@@ -141,6 +143,23 @@ const UserList = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getAdminData();
+
+  }, []);
+
+  const getAdminData = async () => {
+    try {
+      const userRes = await getUserDbData();
+      if (userRes) {
+        const userData = JSON.parse(userRes);
+        setAdminData(userData);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  }
 
   useEffect(() => {
     if (isLoading || isError){
@@ -328,7 +347,7 @@ const UserList = () => {
   
                         <Td>{capitalizeFirstLetter(user.role)}</Td>
                         <Td>
-                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} />
+                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} adminData={adminData}/>
                         </Td>
                     </Tr>
                     ))

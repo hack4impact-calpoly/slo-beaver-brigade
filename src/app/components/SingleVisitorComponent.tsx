@@ -51,10 +51,11 @@ interface Event {
 
 interface SingleVisitorComponentProps {
   visitorData: IUser;
+  adminData?: IUser;
   removeFunction?: (userId: string) => void;
 }
 
-function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorComponentProps) {
+function SingleVisitorComponent({ visitorData, removeFunction, adminData }: SingleVisitorComponentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -222,7 +223,7 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
               )}
             </Box>
             <Flex direction="row" align="center" justify="center" gap={8} p={4}>
-              {(visitorData.role === "super-admin" && userRole != "super-admin")? (
+              {(adminData?.role == "super-admin" && userRole != "super-admin") && (
                 <Button
                 mt={2}
                 color="#337774"
@@ -231,9 +232,9 @@ function SingleVisitorComponent({ visitorData, removeFunction }: SingleVisitorCo
                 _hover={{ bg: "#337774", color: "white" }}
                 onClick={handleSuperAdminButton}
               >
-                Make Super-Admin
+                Make Super Admin
               </Button>
-              ) : <></>}
+              )}
               {userRole === "user" ? (
                 <Button
                   mt={2}
