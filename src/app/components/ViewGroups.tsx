@@ -436,27 +436,57 @@ export default function ViewGroups() {
   
         <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW="80vw">
             <ModalHeader>Groups</ModalHeader>
-
             <Divider className="mb-5" />
             <ModalCloseButton />
-            <ModalBody >
-
-                <div className="flex flex-col justify-start">
-
-                {isLoading && !groups && <div>Loading...</div> }
-                {isError && <div>Error occurred getting groups.</div>}
-                {!isError && groups && groups.map((group) => {
-                    return <h2 className="cursor-pointer hover:underline" onClick={() => {onGroupClick(group)}} key={group._id}>{group.group_name}</h2>
-                })}
-                </div>
+            <ModalBody>
+                <TableContainer>
+                    <Table variant='simple'>
+                        <Thead>
+                            <Tr>
+                                <Th>NAME</Th>
+                                <Th>MEMBERS</Th>
+                                <Th>CREATED</Th>
+                                <Th></Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {isLoading && !groups && (
+                                <Tr>
+                                    <Td colSpan={4}>Loading...</Td>
+                                </Tr>
+                            )}
+                            {isError && (
+                                <Tr>
+                                    <Td colSpan={4}>Error occurred getting groups.</Td>
+                                </Tr>
+                            )}
+                            {!isError && groups && groups.map((group) => (
+                                <Tr 
+                                    key={group._id} 
+                                    _hover={{ bg: "gray.50" }}
+                                    cursor="pointer"
+                                    onClick={() => onGroupClick(group)}
+                                >
+                                    <Td fontWeight="medium">{group.group_name}</Td>
+                                    <Td>{group.groupees?.length || 0} members</Td>
+                                    <Td>
+                                        <Button variant="link" color="gray.500">
+                                            Details →
+                                        </Button>
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
             </ModalBody>
             <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-                Close
-            </Button>
-            <CreateGroup mutate={mutateGroups}/>
+                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                    Close
+                </Button>
+                <CreateGroup mutate={mutateGroups}/>
             </ModalFooter>
         </ModalContent>
         </Modal>
