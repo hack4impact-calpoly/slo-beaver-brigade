@@ -705,6 +705,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             color="white"
                             className="bold-text"
                             zIndex={2}
+                            textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
                           >
                             {event.eventName}
                           </Text>
@@ -720,6 +721,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             color="white"
                             className="bold-text"
                             zIndex={2}
+                            textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
                           >
                             {formatDate(event.startTime)}
                           </Text>
@@ -729,6 +731,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             color="white"
                             className="bold-text"
                             zIndex={2}
+                            textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
                           >
                             {formatDateTimeRange(event.startTime, event.endTime)}
                           </Text>
@@ -738,6 +741,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             color="white"
                             className="bold-text"
                             zIndex={2}
+                            textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
                           >
                             {event.location}
                           </Text>

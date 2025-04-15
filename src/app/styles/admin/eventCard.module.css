@@ -11,6 +11,7 @@
     color: #fbf9f9;
     position: relative;
     overflow: hidden; /* Ensure the image fits within the card */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
   }
    .imageWrapper {
     position: absolute;
@@ -53,6 +54,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: last baseline;
+    backdrop-filter: blur(2px) brightness(0.8);
+    padding: 10px;
   }
    .visitorCount {
     text-align: center;
