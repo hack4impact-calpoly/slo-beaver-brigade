@@ -130,7 +130,13 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
       <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl" >
         <ModalOverlay />
         <ModalContent mt={"5rem"} mb={"1rem"} borderRadius={"20px"}>
-          <ModalHeader fontWeight="bold" fontFamily={'Lato'} position="relative" color={"white"}>
+          <ModalHeader 
+              fontWeight="bold" 
+              fontFamily={'Lato'} 
+              position="relative" 
+              color={"white"}
+              textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
+            >
             <ChakraNextImage
               src={eventDetails.eventImage || "/beaver-eventcard.jpeg"}
               alt="Event Image"
@@ -141,6 +147,7 @@ function ExpandedViewComponent({ eventDetails, showModal, setShowModal, mutate }
               left="0"
               layout="fill"
               borderRadius={"20px 20px 0px 0px"}
+              filter="blur(2px) brightness(0.8)" 
             />
             <Flex justify={"left"} ml={"5%"}>
               <Text fontSize={["2xl", "2xl", "5xl"]} opacity={"85%"}>{eventDetails.eventName}</Text>
