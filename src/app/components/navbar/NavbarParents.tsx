@@ -85,7 +85,7 @@ export default async function NavbarParent() {
                 await fetch(getBaseUrl() + "/api/user/cookies", {method: "POST", body: userRes})
                 const tempUser = JSON.parse(userRes) as IUser
                 if (tempUser){
-                    if (tempUser?.role == "admin"){
+                    if (tempUser?.role == "admin" || tempUser?.role == "super-admin"){
                         return <NavbarAdmin name={`Hi ${tempUser.firstName}!`}></NavbarAdmin>
                         }
                     else{
