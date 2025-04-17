@@ -26,7 +26,7 @@ import { IUser } from "@database/userSchema";
 import { eventIndividualHours } from ".././lib/hours";
 import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
-import {makeUserAdmin, makeSuperAdminUser} from "../actions/makeUserAdmin";
+import {makeUserAdmin} from "../actions/makeUserAdmin";
 import makeAdminUser from "../actions/makeAdminUser";
 import { FaRegTrashAlt } from "react-icons/fa";
 import DeleteConfirmation from "./DeleteConfirmation";
@@ -109,7 +109,7 @@ function SingleVisitorComponent({ visitorData, removeFunction, adminData }: Sing
       const result =
         userRole === "admin"
           ? await makeAdminUser(visitorData.email)
-          : await makeUserAdmin(visitorData.email);
+          : await makeUserAdmin(visitorData.email, "admin");
       setUserRole(result.role);
     } catch (error) {
       console.error("Error updating role:", error);
@@ -118,7 +118,7 @@ function SingleVisitorComponent({ visitorData, removeFunction, adminData }: Sing
 
   const handleSuperAdminButton = async () => {
     try {
-      const result = await makeSuperAdminUser(visitorData.email);
+      const result = await makeUserAdmin(visitorData.email, "super-admin");
       setUserRole(result.role);
     } catch (error) {
       console.error("Error making super admin: ", error);

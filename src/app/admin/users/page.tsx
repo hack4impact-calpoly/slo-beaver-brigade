@@ -67,8 +67,8 @@ const formatHours = (hours: number): string => {
   return `${displayHours}h ${displayMinutes}min`;
 };
 
-const capitalizeFirstLetter = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+const editRoleName = (str: string): string => {
+  return str === "super-admin" ? "Super Admin" : str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 const UserList = () => {
@@ -200,7 +200,7 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    role: capitalizeFirstLetter(user.role),
+    role: editRoleName(user.role),
     eventsAttended:
       user.eventsAttendedNames.length > 0
         ? user.eventsAttendedNames.join(", ")
@@ -345,7 +345,7 @@ const UserList = () => {
                         <Td>{user.email}</Td>
                         <Td>{user.totalHoursFormatted}</Td>
   
-                        <Td>{capitalizeFirstLetter(user.role)}</Td>
+                        <Td>{editRoleName(user.role)}</Td>
                         <Td>
                         <SingleVisitorComponent visitorData={user} removeFunction={removeUser} adminData={adminData}/>
                         </Td>
