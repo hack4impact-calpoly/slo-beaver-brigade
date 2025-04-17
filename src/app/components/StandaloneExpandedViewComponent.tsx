@@ -255,66 +255,72 @@ function ExpandedViewComponent ({ eventDetails, showModal, setShowModal, mutate,
               </Flex>       
               }      
           </Stack>
-        <Flex mt={["5%","5%","2%"]} display={"flex"} justifyContent={visitorData.role==="admin"? "center" : "end"} alignItems={"center"} alignContent={"center"}>
-               
-            {signedIn ? (
-              <>
-              {visitorData.role === "admin" && 
-                <Link href={`/admin/events/edit/${editUrl}`}>
-                  <Button
-                    bg="#337774"
-                    color="white"
-                    _hover={{ bg: "#4a9b99"}}
-                    fontWeight={"600"}
-                    width={"250px"}
-                    marginRight={"50px"}
-                  >
-                    Edit Event
-                  </Button>
-              </Link> 
-              }
-              
-                {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ? (
-                  <Button
-                    onClick={onOpen}
-                    bg="#337774"
-                    color="white"
-                    _hover={{ bg: "#4a9b99" }}
-                    fontWeight={"600"}
-                    width={"250px"}
-                  >
-                    Cancel Reservation
-                  </Button>
-                ) : (
-                  <Link href={url}>
-                    <Button
-                      bg="#e0af48"
-                      color="black"
-                      _hover={{ bg: "#C19137" }}
-                      fontWeight={"600"}
-                      width={"250px"}
+        <Flex
+          mt={["5%", "5%", "2%"]}
+          display={"flex"}
+          flexDirection={["column", "column", "row"]}
+          justifyContent={visitorData.role === "admin" ? "space-around" : ["center", "center", "end"]}
+          alignItems={["center", "center", "flex-start"]}
+        >
+          {signedIn ? (
+            <>
+              {visitorData.role === "admin" && (
+          <Link href={`/admin/events/edit/${editUrl}`}>
+            <Button
+              bg="#337774"
+              color="white"
+              _hover={{ bg: "#4a9b99" }}
+              fontWeight={"600"}
+              width={"250px"}
+              marginBottom={2}
+            >
+              Edit Event
+            </Button>
+          </Link>
+              )}
+
+              {eventDetails.registeredIds.map((oid) => oid.toString()).includes(visitorData._id) ? (
+          <Button
+            onClick={onOpen}
+            bg="#337774"
+            color="white"
+            _hover={{ bg: "#4a9b99" }}
+            fontWeight={"600"}
+            width={"250px"}
+            marginBottom={2}
+          >
+            Cancel Reservation
+          </Button>
+              ) : (
+          <Link href={url}>
+            <Button
+              bg="#e0af48"
+              color="black"
+              _hover={{ bg: "#C19137" }}
+              fontWeight={"600"}
+              width={"250px"}
+              marginBottom={2}
+            >
+              Register
+            </Button>
+          </Link>
+              )}
+            </>
+          ) : (
+            <Link href={url}>
+              <Button
+                bg="#e0af48"
+                color="black"
+                _hover={{ bg: "#C19137" }}
+                fontWeight={"600"}
+                width={"250px"}
+                marginBottom={2}
                     >
-                      Register
-                    </Button>
-                  </Link>
-                )}
-              </>
-            ) : (
-              <Link href={url}>
-                <Button
-                  bg="#e0af48"
-                  color="black"
-                  _hover={{ bg: "#C19137" }}
-                  fontWeight={"600"}
-                  width={"250px"}
-                >
-                  Register
-                </Button>
-              </Link>
-            )
-            
-          }          
-          </Flex>
+                Register
+              </Button>
+            </Link>
+          )}
+        </Flex>
         </ModalBody>
       </ModalContent>
     </Modal>
