@@ -206,7 +206,13 @@ function ExpandedViewComponent({
             </Flex>
           </ModalHeader>
           <ModalBody fontFamily={'Lato'}>
-            <Stack overflow="scroll" height="300px" spacing={4} width={'100%'}>
+            <Stack
+              overflow="scroll"
+              height="300px"
+              spacing={4}
+              mb={4}
+              width={'100%'}
+            >
               <Flex direction={'column'}>
                 <Flex justifyContent={'space-between'}>
                   <FormLabel
@@ -291,7 +297,7 @@ function ExpandedViewComponent({
                   )}
                 </Flex>
               ) : (
-                <Flex direction={'column'} ml={'5%'} mb={'10%'} gap={4}>
+                <Flex direction={'column'} ml={'5%'} gap={4}>
                   <Flex direction={'column'}>
                     <Stack spacing={2} ml={'0'}>
                       <FormLabel
