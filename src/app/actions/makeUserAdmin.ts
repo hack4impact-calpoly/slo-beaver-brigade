@@ -4,12 +4,12 @@ import connectDB from "database/db";
 import Log from "@database/logSchema";
 import { currentUser } from "@clerk/nextjs/server";
 
-const makeUserAdmin = async (email: string) => {
+export const makeUserAdmin = async (email: string, adminType: string) => {
   await connectDB();
   try {
     const user = await User.findOneAndUpdate(
       { email: email },
-      { role: "admin" },
+      { role: adminType },
       { new: true }
     );
 
@@ -32,7 +32,7 @@ const makeUserAdmin = async (email: string) => {
     // add an audit log entry
     await Log.create({
       user: `${curUser.firstName} ${curUser.lastName}`,
-      action: `changed ${user.firstName} ${user.lastName} to admin`,
+      action: `changed ${user.firstName} ${user.lastName} to ${adminType}`,
       date: new Date(),
     });
 
@@ -45,5 +45,3 @@ const makeUserAdmin = async (email: string) => {
       }
   }
 };
-
-export default makeUserAdmin;

@@ -39,7 +39,7 @@ const Layout = async (props: Props) => {
             
             const user = await getUserRoleFromId(cookieUser?._id)
             
-            if (user != "admin"){
+            if (user != "admin" && user != "super-admin"){
                 redirect("/")
             }
         }

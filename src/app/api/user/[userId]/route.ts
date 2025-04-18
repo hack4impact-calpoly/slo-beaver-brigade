@@ -92,7 +92,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
         const { eventsAttended, role, targetUserId}: { eventsAttended?: string[], role?: string, targetUserId?: string } = await req.json();
 
         // Handle permission updates (Only allow admins to change permissions)
-        const allowedRoles = ["user", "admin", "superAdmin"]; // list of allowed roles
+        const allowedRoles = ["user", "admin", "super-admin"]; // list of allowed roles
         if (role && targetUserId) {
             if (!allowedRoles.includes(role)) {
                 return NextResponse.json({ error: `Invalid role: ${role}` }, { status: 400 });
@@ -122,6 +122,8 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             let action;
             if (role === "admin") {
                 action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to admin`;
+            } else if (role === "super-admin") {
+                action = `changed ${targetUser.firstName} ${targetUser.lastName}'s role to super-admin`
             } else if (role === "user") {
                 action = `reverted ${targetUser.firstName} ${targetUser.lastName}'s role to user`;
             } else {
