@@ -6,7 +6,7 @@ import styles from '../styles/admin/editEvent.module.css';
 import { IEvent } from '@database/eventSchema';
 import { IUser } from '@database/userSchema';
 import { ISignedWaiver } from 'database/signedWaiverSchema';
-import { removeAttendee } from 'app/actions/serveractions';
+import { removeAttendee, removeRegistered } from 'app/actions/serveractions';
 import { addAttendee } from 'app/actions/useractions';
 import SingleVisitorComponent from './SingleVisitorComponent';
 import { useEventId } from 'app/lib/swrfunctions';
@@ -33,6 +33,8 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     [key: string]: { parent: IUser; dependents: IUser[] };
   }>({});
   const { eventData, isLoading, isError } = useEventId(eventId);
+  const [showAdminActions, setShowAdminActions] = useState(false);
+  const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -48,8 +50,75 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const mailtoLink = emailLink();
 
     window.location.href = mailtoLink;
+    setShowAdminActions(false);
   };
 
+  const handleEmailSelectVisitors = () => {
+    //currently does same thing as email all
+    const emails = selectedVisitors
+      .map((visitor) => visitor.email)
+      .filter((email) => !!email);
+    const subject = encodeURIComponent(eventData?.eventName + ' Update');
+    const mailtoLink = `mailto:${emails.join(',')}?subject=${subject}`;
+
+    window.location.href = mailtoLink;
+    setShowAdminActions(false);
+  };
+
+  const handleMarkAllVisitors = () => {
+    //no functionality yet
+    for (const visitor of Object.values(visitorData)) {
+      if (visitor.parent._id !== 'placeholder') {
+        addAttendee(visitor.parent._id.toString(), eventId.toString());
+      }
+    }
+    setShowAdminActions(false);
+  };
+
+  async function handleMarkSelectVisitors(){
+    //no functionality yet
+    for (const visitor of selectedVisitors) {
+      await addAttendee(visitor._id.toString(), eventId.toString());
+    }
+    setShowAdminActions(false);
+  };
+
+  async function handleRemoveSelectedAttendees() {
+    for (const visitor of selectedVisitors) {
+      if (visitor._id !== 'placeholder') {
+        const success = await removeRegistered(
+          visitor._id.toString(),
+          eventId.toString()
+        );
+        if (success) {
+          setVisitorData((prev) => {
+            const updatedVisitors = { ...prev };
+            delete updatedVisitors[visitor._id];
+            return updatedVisitors;
+          });
+        } else {
+          console.error('Error removing attendee');
+        }
+        setSelectedVisitors((prev) =>
+          prev.filter((user) => user._id.toString() !== visitor._id.toString())
+        );
+        setShowAdminActions(false);
+      }
+    }
+  }
+
+  async function handleAbsentVistor() {
+    for (const visitor of selectedVisitors) {
+      if (visitor._id !== 'placeholder') {
+        const success = await removeAttendee(
+          visitor._id.toString(),
+          eventId.toString()
+        );
+        setShowAdminActions(false);
+      }
+    }
+  }
+  
   useEffect(() => {
     if (isLoading) {
       return;
@@ -143,11 +212,13 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     fetchVisitorData();
   }, [isLoading]);
 
-  async function handleCheck(checked: boolean, userid: string) {
+  async function handleCheck(checked: boolean, visitor: IUser) {
     if (checked) {
-      await addAttendee(userid.toString(), eventId.toString());
+      setSelectedVisitors((prev) => [...prev, visitor]);
     } else {
-      await removeAttendee(userid.toString(), eventId.toString());
+      setSelectedVisitors((prev) =>
+        prev.filter((user) => user._id.toString() !== visitor._id.toString())
+      );
     }
   }
 
@@ -178,13 +249,59 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               }, 0)}
               )
             </div>
-            <button
-              onClick={handleEmailAllVisitors}
-              className={styles.emailAllVisitors}
-            >
-              Email All Visitors
+            <button 
+              onClick={() => setShowAdminActions(!showAdminActions)}
+              className={styles.manageVisitorText}>
+              {(showAdminActions) ? "Hide Admin Actions" : "Show Admin Actions"}
             </button>
           </div>
+          {showAdminActions && 
+            <div className={styles.manageVisitorContainer}>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleEmailAllVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Email All
+                </button>
+                <button
+                  onClick={handleMarkAllVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark All as Attended
+                </button>
+              </div>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleEmailSelectVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Email Selected
+                </button>
+
+                <button
+                  onClick={handleMarkSelectVisitors}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark Selected as Attended
+                </button>
+              </div>
+              <div className={styles.manageVisitorRow}>
+                <button
+                  onClick={handleRemoveSelectedAttendees}
+                  className={styles.manageVisitorButton}
+                >
+                  Remove Selected
+                </button>
+                <button
+                  onClick={handleAbsentVistor}
+                  className={styles.manageVisitorButton}
+                >
+                  Mark as Absent
+                </button>
+              </div>
+            </div>
+          }
           {Object.keys(visitorData).length === 0 ? (
             <div className={styles.noVisitorsMessage}>
               No visitors registered for this event.
@@ -199,30 +316,21 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                         {group.parent._id != 'placeholder' && (
                           <tr className={styles.visitorRow}>
                             <td className={styles.checkBox}>
-                              {eventData.attendeeIds
-                                .map((oid) => oid.toString())
-                                .includes(group.parent._id) ? (
-                                <Checkbox
-                                  colorScheme="green"
-                                  defaultChecked
-                                  onChange={async (e) =>
-                                    await handleCheck(
-                                      e.target.checked,
-                                      group.parent._id.toString()
-                                    )
-                                  }
-                                />
-                              ) : (
-                                <Checkbox
-                                  colorScheme="green"
-                                  onChange={async (e) =>
-                                    await handleCheck(
-                                      e.target.checked,
-                                      group.parent._id.toString()
-                                    )
-                                  }
-                                />
-                              )}
+                              <Checkbox
+                                colorScheme="green"
+                                onChange={async (e) =>
+                                  await handleCheck(
+                                    e.target.checked,
+                                    group.parent
+                                  )
+                                }
+                                isChecked={selectedVisitors.some(
+                                  (visitor) =>
+                                    visitor._id.toString() ===
+                                    group.parent._id.toString()
+                                )}
+                                defaultChecked={false}
+                              />
                             </td>
                             <td className={styles.nameColumn}>
                               {group.parent.firstName

@@ -22,7 +22,7 @@ import {
   SimpleGrid,
   IconButton,
 } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { AddIcon, CheckIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import EventPreviewComponent from "@components/EventCard";
 import MiniCalendar from "../../../components/calendar/MiniCalendar";
 import { format, formatISO, parse } from "date-fns";
@@ -54,42 +54,7 @@ export default function Page() {
   const router = useRouter();
   const [eventName, setEventName] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<IEventTemplate | null>(null);
-  const [templates, setTemplates] = useState<IEventTemplate[]>([
-    {
-      _id: "1",
-      eventName: "Volunteer Meetup",
-      eventImage: null,
-      eventType: "Volunteer",
-      location: "Central Park",
-      description: "Community service event.",
-      checklist: "Bring gloves, trash bags",
-      groupsOnly: false,
-      wheelchairAccessible: true,
-      spanishSpeakingAccommodation: false,
-      startTime: new Date(),
-      endTime: new Date(),
-      volunteerEvent: true,
-      groupsAllowed: [],
-      registeredIds: [],
-    },
-    {
-      _id: "2",
-      eventName: "Charity Drive",
-      eventImage: null,
-      eventType: "Fundraiser",
-      location: "Community Hall",
-      description: "Fundraiser for local charities.",
-      checklist: "Bring donations",
-      groupsOnly: false,
-      wheelchairAccessible: true,
-      spanishSpeakingAccommodation: true,
-      startTime: new Date(),
-      endTime: new Date(),
-      volunteerEvent: false,
-      groupsAllowed: ["789"],
-      registeredIds: [],
-    },
-  ]);
+  const [templates, setTemplates] = useState<IEventTemplate[]>([]);
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
@@ -113,13 +78,17 @@ export default function Page() {
     useState("");
   const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
   const [description, setDescription] = useState("");
-  const [checkList, setChecklist] = useState("N/A");
+  const [checkList, setChecklist] = useState<string[]>([]);
   const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
   const [passedEndTime, setPassedEndTime] = useState("");
   const [passedStartTime, setPassedStartTime] = useState("");
   const [sendEmailInvitees, setSendEmailInvitees] = useState<boolean>(false);
+  const [items, setItems] = useState<string[]>([]); // list of items
+  const [newItem, setNewItem] = useState(''); // item user is currently adding
+  const [editingIndex, setEditingIndex] = useState(null); // track which item is being edited
+  const [editValue, setEditValue] = useState(''); // store the new value during editing
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEventName(e.target.value);
@@ -137,6 +106,8 @@ export default function Page() {
     });
   };
 
+
+
   const handleTimeChange = (start: string, end: string) => {
     // Format for parsing input times (handle both 12-hour and 24-hour formats)
     if (start && end) {
@@ -148,12 +119,12 @@ export default function Page() {
       const parsedStartTime = parse(
         `${start}`,
         timeFormat,
-        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
+        new Date(`${activeDate ? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
       const parsedEndTime = parse(
         `${end}`,
         timeFormat,
-        new Date(`${activeDate? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
+        new Date(`${activeDate ? activeDate : format(new Date(), "yyyy-MM-dd")}T00:00:00`)
       );
 
       // Format the adjusted dates back into ISO strings
@@ -190,7 +161,7 @@ export default function Page() {
     setEventType(template.eventType || "");
     setLocation(template.location);
     setDescription(template.description || "");
-    setChecklist(template.checklist || "");
+    setChecklist(template.checklist || []);
     setOnlyGroups(template.groupsOnly || false);
     setAccessibilityAccommodation(template.wheelchairAccessible ? "Yes" : "No");
     setSpanishSpeaking(template.spanishSpeakingAccommodation ? "Yes" : "No");
@@ -198,13 +169,13 @@ export default function Page() {
     setEventEnd(formatISO(template.endTime));
     setPassedStartTime(format(template.startTime, 'HH:mm'));
     setPassedEndTime(format(template.endTime, 'HH:mm'));
-  
+
     setEventTypes((prev) =>
       template.eventType && !prev.includes(template.eventType)
         ? [...prev, template.eventType]
         : prev
-    );    
-  
+    );
+
     setGroupsSelected(
       template.groupsAllowed.map(id => ({
         _id: id,
@@ -212,22 +183,21 @@ export default function Page() {
         groupees: [],
       }))
     );
-  
-    setChecklist(template.checklist || "");
-  
+
+    setChecklist(template.checklist || []);
+
     setEventType(template.eventType || "");
-  
+
     // setLocation(template.location);
     setLocation((prev) => (template.location && prev !== template.location ? template.location : prev));
-  
+
     if (template.eventImage) {
       setImagePreview(template.eventImage);
-    }    
-  };  
-  
+    }
+  };
+
   const handleSaveAsTemplate = async () => {
-    const newTemplate: IEventTemplate = {
-      _id: (templates.length + 1).toString(),
+    const newTemplateData = {
       eventName,
       eventImage: imagePreview,
       eventType,
@@ -243,16 +213,60 @@ export default function Page() {
       groupsAllowed: groupsSelected.map(group => group._id),
       registeredIds: [],
     };
+
+    let response;
+    console.log("Selected Template ID:", selectedTemplate?._id);
+    console.log("Templates Array:", templates);
+    if (templates.some(template => template.eventName === eventName)) {
+      response = await fetch(`/api/eventtemplate/${selectedTemplate?._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTemplateData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const updatedTemplate: IEventTemplate = await response.json();
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template._id === updatedTemplate._id ? updatedTemplate : template
+        )
+      );
+      
+      toast({
+        title: "Template Updated",
+        description: "This event template has been updated.",
+        status: "success",
+        duration: 2500,
+        isClosable: true,
+      });
+    } else {
+      response = await fetch("/api/eventtemplate/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTemplateData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const newTemplate: IEventTemplate = await response.json();
+      setTemplates([...templates, newTemplate]);
   
-    setTemplates([...templates, newTemplate]);
-  
-    toast({
-      title: "Template Saved",
-      description: "This event has been saved as a template.",
-      status: "success",
-      duration: 2500,
-      isClosable: true,
-    });
+      toast({
+        title: "Template Saved",
+        description: "This event has been saved as a template.",
+        status: "success",
+        duration: 2500,
+        isClosable: true,
+      });
+    }
+
   };  
 
   // Handle file selection for the event cover image and set preview
@@ -470,10 +484,68 @@ export default function Page() {
       } catch (error) {
         console.error("Error fetching event types:", error);
       }
+
+    };
+
+    const fetchEventTemplates = async ()  => {
+
+      const response = await fetch("/api/eventtemplate/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const templates = await response.json();
+  
+      setTemplates(templates);
+  
     };
 
     fetchEventTypes();
+    fetchEventTemplates();
   }, []);
+
+  // add item currently being written out
+  const handleAddItem = () => {
+    if (newItem.trim()) {
+      setItems([...items, newItem]);
+      setChecklist([...checkList, newItem]);
+      setNewItem('');
+    }
+  };
+
+  // remove item from list
+  const handleRemoveItem = (itemToRemove: string) => {
+    setItems(items.filter(item => item !== itemToRemove));
+    setChecklist(checkList.filter(item => item !== itemToRemove));
+  };
+
+  // edit item
+  const handleEditItem = (index: any, value: string) => {
+    setEditingIndex(index);
+    setEditValue(value);
+  };
+
+  const handleSaveEdit = (index: any) => {
+    if (editValue.trim()) {
+      const updatedItems = [...items];
+      updatedItems[index] = editValue;
+      setItems(updatedItems);
+    }
+    setEditingIndex(null);
+  };
+
+  // hitting enter auto adds item
+  const handleKeyPress = (e: { key: string; }) => {
+    if (e.key === 'Enter') {
+      handleAddItem();
+    }
+  };
 
   const mockEvent = {
     _id: "mockId",
@@ -510,7 +582,7 @@ export default function Page() {
         </Text>
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />} minWidth={'180px'} >
-            {selectedTemplate ? selectedTemplate.eventName : "Select Template"}
+            Select Template
           </MenuButton>
           <MenuList>
             {templates.map((template) => (
@@ -881,11 +953,13 @@ export default function Page() {
 
       <Stack
         direction={{ base: "column", lg: "row" }}
-        spacing={4}
-        align="start"
+        spacing={6}
+        display={"flex"}
+        justifyContent="space-between"
+        align-items="center"
         w="100%"
       >
-        <FormControl isRequired flex={1}>
+        <FormControl isRequired flex={2}>
           <FormLabel htmlFor="description" fontWeight="bold">
             Description
           </FormLabel>
@@ -898,16 +972,62 @@ export default function Page() {
         </FormControl>
 
         <FormControl flex={1}>
-          <FormLabel htmlFor="required-items" fontWeight="bold">
-            Checklist
-          </FormLabel>
-          <MDEditor
-            className={style.preview}
-            value={checkList}
-            onChange={(e) => setChecklist(e || "")}
-            data-color-mode="light"
-          />
-        </FormControl>
+            <FormLabel htmlFor="required-items" fontWeight="bold">
+              Checklist
+            </FormLabel>
+            <VStack spacing={2} align="stretch" ml={0}>
+              {/* creates new field per item added */}
+              {items.length > 0 && (
+                <Box>
+                  <VStack spacing={2} align="stretch">
+                    {items.map((item, index) => (
+                      <HStack key={index} spacing={2} display={"flex"} justifyContent={"space-around"} w={"100%"}>
+                        {editingIndex === index ? (
+                          <Input
+                            size="sm"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit(index)}
+                            autoFocus
+                          />
+                        ) : (
+                          <Box w={"100%"} textAlign="left">{item}</Box>
+                        )}
+
+                        <IconButton
+                          icon={editingIndex === index ? <CheckIcon /> : <EditIcon />}
+                          size="sm"
+                          colorScheme="yellow"
+                          onClick={() => editingIndex === index ? handleSaveEdit(index) : handleEditItem(index, item)}
+                          aria-label="Edit item"
+                        />
+
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => handleRemoveItem(item)}
+                        >
+                          x
+                        </Button>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </Box>
+              )}
+              <HStack spacing={4} w="100%">
+                <Input
+                  id="new-item"
+                  value={newItem}
+                  onChange={(e) => setNewItem(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Enter item"
+                />
+                <Button onClick={handleAddItem} colorScheme="teal">
+                  +
+                </Button>
+              </HStack>
+            </VStack>
+          </FormControl>
       </Stack>
 
       <Box display="flex" justifyContent="center" mt={4} gap={4}>

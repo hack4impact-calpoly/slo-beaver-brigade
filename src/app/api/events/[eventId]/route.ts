@@ -107,6 +107,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 eventName,
                 location,
                 eventType,
+                eventImage,
                 description,
                 startTime,
                 endTime,
@@ -117,12 +118,19 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 registeredIds,
                 attendeeIds,
                 groupsOnly,
+                checklist,
             }: IEvent = await req.json();
+            if (checklist !== undefined) {
+                event.checklist = checklist;
+            }
             if (location) {
                 event.location = location;
             }
             if (eventName) {
                 event.eventName = eventName;
+            }
+            if (eventImage) {
+                event.eventImage = eventImage;
             }
             if (description) {
                 event.description = description;
@@ -133,10 +141,10 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (endTime) {
                 event.endTime = endTime;
             }
-            if (wheelchairAccessible) {
+            if (wheelchairAccessible !== undefined) {
                 event.wheelchairAccessible = wheelchairAccessible;
             }
-            if (spanishSpeakingAccommodation) {
+            if (spanishSpeakingAccommodation !== undefined) {
                 event.spanishSpeakingAccommodation =
                     spanishSpeakingAccommodation;
             }
