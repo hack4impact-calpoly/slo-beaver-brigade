@@ -717,7 +717,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                         >                         
                           <Text
                             fontFamily="Lato"
-                            fontWeight="500"
+                            fontWeight="600"
                             color="white"
                             className="bold-text"
                             zIndex={2}
@@ -727,7 +727,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           </Text>
                           <Text
                             fontFamily="Lato"
-                            fontWeight="500"
+                            fontWeight="600"
                             color="white"
                             className="bold-text"
                             zIndex={2}
@@ -737,7 +737,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           </Text>
                           <Text
                             fontFamily="Lato"
-                            fontWeight="500"
+                            fontWeight="600"
                             color="white"
                             className="bold-text"
                             zIndex={2}
