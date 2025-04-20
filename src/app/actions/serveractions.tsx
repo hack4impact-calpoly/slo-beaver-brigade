@@ -24,7 +24,7 @@ export async function removeAttendee(userid: string, eventid: string) {
     ).orFail();
     await User.updateOne(
       { _id: userid },
-      { $pull: { eventsAttended: eventid } }
+      { $pull: { eventsAttended: {eventId: new mongoose.Types.ObjectId(eventid)} } }
     ).orFail();
 
     revalidateTag('events');
