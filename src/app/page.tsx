@@ -12,6 +12,8 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
+import { CalendarIcon, TimeIcon } from '@chakra-ui/icons';
+import { PiMapPinFill } from 'react-icons/pi';
 import Slider from "react-slick";
 import { useUser } from "@clerk/nextjs";
 import "slick-carousel/slick/slick.css";
@@ -510,74 +512,47 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           layout="fill"
                           borderRadius={"20px"}
                         />   
-                       <Heading
-                         as="h1"
-                         size="2xl"
-                         zIndex={2}
-                         position={"relative"}
-                       >
-                         <Text
-                           fontSize={eventNameSize}
-                           fontWeight="800"
-                           color="white"
-                           className="bold-text"
-                           mx={2}
-                           zIndex={2}
-                         >
-                           {event.eventName}
-                         </Text>
-                       </Heading>
                        <Box
-                         position="absolute"
-                         bottom="0"
-                         left="0"
-                         right="0"
-                         p={2}
-                         mx="2"
-                         my="2"
-                         backdropBlur={2}
-                         backdropFilter={"blur(2px)"}
-                         zIndex={2}
-                       >
-                         <Text
-                           fontSize={eventDetailSize}
-                           fontFamily="Lato"
-                           fontWeight="500"
-                           color="white"
-                           className="bold-text"
-                           mx={2}
-                           zIndex={2}
-                           alignContent="left-bottom"
-                         >
-                           {formatDate(event.startTime)}
-                         </Text>
-                         <Text
-                           fontSize={eventTimeSize}
-                           fontFamily="Lato"
-                           fontWeight="500"
-                           color="white"
-                           className="bold-text"
-                           mx={2}
-                           alignContent="left-bottom"
-                           zIndex={2}
-                         >
-                           {formatDateTimeRange(
-                             event.startTime,
-                             event.endTime
-                           )}
-                         </Text>
-                         <Text
-                           fontSize={eventTimeSize}
-                           fontFamily="Lato"
-                           fontWeight="500"
-                           color="white"
-                           className="bold-text"
-                           mx={2}
-                           zIndex={2}
-                           alignContent="left-bottom"
-                         >
-                           {event.location}
-                         </Text>
+                          className={style.eventDetailsContainer}
+                          display="flex"
+                          flexDirection="column"
+                          justifyContent="space-between"
+                        >
+                        <Heading
+                          as="h1"
+                          size="2xl"
+                          zIndex={2}
+                          position={"relative"}
+                        >
+                          <Text
+                            fontSize={eventNameSize}
+                            fontWeight="800"
+                            color="white"
+                            className="bold-text"
+                            mx={2}
+                            zIndex={2}
+                          >
+                            {event.eventName}
+                          </Text>
+                        </Heading>
+                        <Box>
+                          <Flex className={style.eventDetails}>
+                            <CalendarIcon mt={'5px'} />
+                            <Text ml={'5px'}>{formatDate(event.startTime)}</Text>
+                          </Flex>
+                          <Flex className={style.eventDetails}>
+                            <TimeIcon mt={'5px'} />
+                            <Text ml={'5px'}>
+                              {formatDateTimeRange(event.startTime, event.endTime)}
+                            </Text>
+                          </Flex>
+                          <Flex className={style.eventDetails}>
+                            <Box mt={'5px'}>
+                              <PiMapPinFill />
+                            </Box>
+                            <Text ml={'5px'}>{event.location}</Text>
+                          </Flex>
+                        </Box>
                        </Box>
                      </Box>
                    </Box>
@@ -692,66 +667,56 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           layout="fill"
                           borderRadius={"20px"}
                         />                                              
-                        <Heading
-                          as="h1"
-                          size="3xl"
-                          mb="1"
-                          position={"relative"}
+                        <Box
+                          className={style.eventDetailsContainer}
+                        >
+                          <Heading
+                            as="h1"
+                            size="2xl"
+                            zIndex={2}
+                            position={"relative"}
+                            mb={1}
+                          >
+                            <Text
+                              fontSize={eventNameSize}
+                              fontWeight="800"
+                              color="white"
+                              className="bold-text"
+                              mx={2}
+                              zIndex={2}
+                            >
+                              {event.eventName}
+                            </Text>
+                          </Heading>
+                          <Box>
+                            <Flex className={style.eventDetails}>
+                              <CalendarIcon mt={'5px'} />
+                              <Text ml={'5px'}>{formatDate(event.startTime)}</Text>
+                            </Flex>
+                            <Flex className={style.eventDetails}>
+                              <TimeIcon mt={'5px'} />
+                              <Text ml={'5px'}>
+                                {formatDateTimeRange(event.startTime, event.endTime)}
+                              </Text>
+                            </Flex>
+                            <Flex className={style.eventDetails}>
+                              <Box mt={'5px'}>
+                                <PiMapPinFill />
+                              </Box>
+                              <Text ml={'5px'}>{event.location}</Text>
+                            </Flex>
+                          </Box>
+                        </Box>
+                        <Box
+                          position="absolute"
+                          bottom="0"
+                          left="0"
+                          right="0"
+                          p={2}
+                          mx="16px"
+                          my="2"
                           zIndex={2}
                         >
-                          <Text
-                            fontSize={eventNameSize}
-                            fontWeight="custom"
-                            color="white"
-                            className="bold-text"
-                            zIndex={2}
-                          >
-                            {event.eventName}
-                          </Text>
-                        </Heading>
-                        <Box
-                          position={"relative"}
-                          zIndex={2}
-                          fontSize={eventDetailSize}
-                        >                         
-                          <Text
-                            fontFamily="Lato"
-                            fontWeight="500"
-                            color="white"
-                            className="bold-text"
-                            zIndex={2}
-                          >
-                            {formatDate(event.startTime)}
-                          </Text>
-                          <Text
-                            fontFamily="Lato"
-                            fontWeight="500"
-                            color="white"
-                            className="bold-text"
-                            zIndex={2}
-                          >
-                            {formatDateTimeRange(event.startTime, event.endTime)}
-                          </Text>
-                          <Text
-                            fontFamily="Lato"
-                            fontWeight="500"
-                            color="white"
-                            className="bold-text"
-                            zIndex={2}
-                          >
-                            {event.location}
-                          </Text>
-                        </Box>
-                          <Box
-                            position="absolute"
-                            bottom="0"
-                            left="0"
-                            right="0"
-                            p={2}
-                            mx="2"
-                            my="2"
-                            zIndex={2}
-                          >
                           <Heading className="flex flex-row justify-start" as="h2" fontSize="xl">
                             <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
                               <Button
