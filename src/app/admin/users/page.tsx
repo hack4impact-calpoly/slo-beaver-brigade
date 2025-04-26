@@ -347,7 +347,7 @@ const UserList = () => {
   
                         <Td>{editRoleName(user.role)}</Td>
                         <Td>
-                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} adminData={adminData} filteredUsers={filteredUsers}/>
+                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} adminData={adminData}/>
                         </Td>
                     </Tr>
                     ))
