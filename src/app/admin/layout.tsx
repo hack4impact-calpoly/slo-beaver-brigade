@@ -33,16 +33,23 @@ const Layout = async (props: Props) => {
 
     const res = cookies().get("user")?.value;
 
-    if (res) {
-      const cookieUser = JSON.parse(res) as BareBoneIUser;
-
-      const user = await getUserRoleFromId(cookieUser?._id);
-
-      if (user != "admin") {
-        redirect("/");
-      }
-    } else {
-      redirect("/");
+    if (process.env.DEV_MODE != "true"){
+        // get user role
+        
+        const res = cookies().get('user')?.value
+        
+        if (res){
+            const cookieUser = JSON.parse(res) as BareBoneIUser
+            
+            const user = await getUserRoleFromId(cookieUser?._id)
+            
+            if (user != "admin" && user != "super-admin"){
+                redirect("/")
+            }
+        }
+        else{
+            redirect('/')
+        }
     }
   }
 
