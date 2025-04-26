@@ -39,9 +39,22 @@ export async function PATCH(
     const id = params.id;
     const body = await request.json();
 
+    // Validate required fields
+    if (!body.body || !body.acknowledgement) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    const updateData = {
+      body: body.body,
+      acknowledgement: body.acknowledgement,
+    };
+
     const updatedWaiverVersion = await WaiverVersion.findByIdAndUpdate(
       id,
-      body,
+      updateData,
       { new: true }
     );
 

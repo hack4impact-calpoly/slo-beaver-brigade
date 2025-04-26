@@ -13,21 +13,25 @@ type Props = {
   children: ReactNode;
 };
 
-const getUserRoleFromId = async(id: string) => {
-    await connectDB()
-    try {
-        const user: IUser= await User.findOne({ _id: id}, 'role').lean().orFail() as IUser;
-        return user.role
-    }
-    catch (err) {
-        
-        return 'guest'
-    }
-}
+const getUserRoleFromId = async (id: string) => {
+  await connectDB();
+  try {
+    const user: IUser = (await User.findOne({ _id: id }, "role")
+      .lean()
+      .orFail()) as IUser;
+    return user.role;
+  } catch (err) {
+    return "guest";
+  }
+};
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300"] });
 const Layout = async (props: Props) => {
- 
-    // get user if possible
+  // get user if possible
+
+  if (process.env.DEV_MODE != "true") {
+    // get user role
+
+    const res = cookies().get("user")?.value;
 
     if (process.env.DEV_MODE != "true"){
         // get user role
@@ -47,17 +51,12 @@ const Layout = async (props: Props) => {
             redirect('/')
         }
     }
+  }
 
   return (
     <>
-
       <div className={montserrat.className}>
-        <div className={style.adminDash}>
-          <main className={style.mainContainer}>
-
-            {props.children}
-        </main>
-        </div>
+        <main className={style.mainContainer}>{props.children}</main>
       </div>
     </>
   );

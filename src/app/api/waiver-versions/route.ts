@@ -23,20 +23,35 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
+    console.log("Received POST request with body:", body);
 
     //field validation
     if (!body.version || !body.body || !body.acknowledgement) {
+      console.log("Missing required fields:", {
+        version: !body.version,
+        body: !body.body,
+        acknowledgement: !body.acknowledgement,
+      });
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    const newWaiverVersion = new WaiverVersion(body);
+    const newWaiverVersion = new WaiverVersion({
+      version: body.version,
+      body: body.body,
+      acknowledgement: body.acknowledgement,
+      dateCreated: new Date(),
+    });
+
+    console.log("Creating new waiver version:", newWaiverVersion);
     const savedWaiverVersion = await newWaiverVersion.save();
+    console.log("Saved waiver version:", savedWaiverVersion);
 
     return NextResponse.json({ _id: savedWaiverVersion._id }, { status: 201 });
   } catch (error) {
+    console.error("Error saving waiver version:", error);
     return NextResponse.json(
       { error: (error as Error).message },
       { status: 500 }

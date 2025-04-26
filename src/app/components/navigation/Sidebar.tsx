@@ -39,14 +39,14 @@ const Sidebar = () => {
       name: "Calendar",
       href: "/admin/calendar",
       icon: <CalendarDaysIcon style={{ width: "35px", height: "35px" }} />,
-      current: `/${segement}` === "/events" ? true : false,
+      current: `/${segement}` === "/calendar" ? true : false,
     },
     {
       name: "Users",
       href: "/admin/users",
       icon: <CalendarDaysIcon style={{ width: "35px", height: "35px" }} />,
-      current: `/${segement}` === "/events" ? true : false,
-    }
+      current: `/${segement}` === "/users" ? true : false,
+    },
   ];
 
   return (
