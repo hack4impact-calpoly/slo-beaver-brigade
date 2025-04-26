@@ -1,0 +1,38 @@
+.container {
+  padding: 0 2rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar {
+  height: fit-content;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.addButton {
+  margin-top: 1rem;
+  width: 100%;
+  background-color: #337774 !important;
+  color: white !important;
+  transition: background-color 0.2s ease;
+}
+
+.addButton:hover {
+  background-color: #296361 !important;
+}
+
+.sidebar button[variant="ghost"] {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar button[variant="ghost"]:hover {
+  background-color: #f0f0f0;
+}

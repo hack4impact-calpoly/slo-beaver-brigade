@@ -24,6 +24,7 @@ enum Role {
     "supervisor",
     "admin",
     "guest",
+    "super-admin"
 }
 
 export type EventInfo = {
@@ -45,7 +46,7 @@ export type IUser = {
     lastName: string;
     age: number;
     gender: string;
-    role: "user" | "supervisor" | "admin" | "guest";
+    role: "user" | "supervisor" | "admin" | "guest" | "super-admin";
     eventsRegistered: EventInfo[];
     eventsAttended: AttendedEventInfo[];
     groupId: Schema.Types.ObjectId | null;
