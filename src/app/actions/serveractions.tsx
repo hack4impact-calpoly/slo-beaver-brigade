@@ -4,6 +4,7 @@ import connectDB from '@database/db';
 import Event from '@database/eventSchema';
 import User from '@database/userSchema';
 import SignedWaiver from 'database/signedWaiverSchema';
+import mongoose from 'mongoose';
 import { revalidateTag, revalidatePath } from 'next/cache';
 
 export async function removeAttendee(userid: string, eventid: string) {
@@ -23,7 +24,7 @@ export async function removeAttendee(userid: string, eventid: string) {
     ).orFail();
     await User.updateOne(
       { _id: userid },
-      { $pull: { eventsAttended: eventid } }
+      { $pull: { eventsAttended: {eventId: new mongoose.Types.ObjectId(eventid)} } }
     ).orFail();
 
     revalidateTag('events');
@@ -53,7 +54,7 @@ export async function removeRegistered(userid: string, eventid: string) {
     // Remove event from user
     await User.updateOne(
       { _id: userid },
-      { $pull: { eventsRegistered: eventid } }
+      { $pull: { eventsRegistered: {eventId: new mongoose.Types.ObjectId(eventid)} } }
     ).orFail();
     //Remove waiver from user
     await SignedWaiver.deleteOne({ signeeId: userid, eventId: eventid }).orFail();
