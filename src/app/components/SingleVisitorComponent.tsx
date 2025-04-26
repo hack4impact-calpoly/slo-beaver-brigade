@@ -23,31 +23,12 @@ import {
 } from "@chakra-ui/react";
 import styles from "../styles/admin/editEvent.module.css";
 import { IUser } from "@database/userSchema";
-import { eventIndividualHours } from ".././lib/hours";
-import { Schema } from "mongoose";
 import { IEvent } from "database/eventSchema";
+import { eventIndividualHours } from ".././lib/hours";
 import {makeUserAdmin} from "../actions/makeUserAdmin";
 import makeAdminUser from "../actions/makeAdminUser";
-import { FaRegTrashAlt } from "react-icons/fa";
 import DeleteConfirmation from "./DeleteConfirmation";
 
-interface Event {
-  _id: string;
-  eventName: string;
-  eventImage: string | null;
-  eventType: string;
-  location: string;
-  description: string;
-  checklist: string[];
-  wheelchairAccessible: boolean;
-  spanishSpeakingAccommodation: boolean;
-  startTime: Date;
-  endTime: Date;
-  volunteerEvent: boolean;
-  groupsAllowed: Schema.Types.ObjectId[] | null;
-  attendeeIds: Schema.Types.ObjectId[];
-  registeredIds: Schema.Types.ObjectId[];
-}
 
 interface SingleVisitorComponentProps {
   visitorData: IUser;
@@ -55,7 +36,7 @@ interface SingleVisitorComponentProps {
   removeFunction?: (userId: string) => void;
 }
 
-function SingleVisitorComponent({ visitorData, removeFunction, adminData }: SingleVisitorComponentProps) {
+function SingleVisitorComponent({ visitorData, removeFunction, adminData}: SingleVisitorComponentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -223,40 +204,45 @@ function SingleVisitorComponent({ visitorData, removeFunction, adminData }: Sing
               )}
             </Box>
             <Flex direction="row" align="center" justify="center" gap={8} p={4}>
-              {(adminData?.role == "super-admin" && userRole != "super-admin") && (
-                <Button
-                mt={2}
-                color="#337774"
-                bg="white"
-                border="2px"
-                _hover={{ bg: "#337774", color: "white" }}
-                onClick={handleSuperAdminButton}
-              >
-                Make Super Admin
-              </Button>
-              )}
-              {userRole === "user" ? (
-                <Button
-                  mt={2}
-                  color="#337774"
-                  bg="white"
-                  border="2px"
-                  _hover={{ bg: "#337774", color: "white" }}
-                  onClick={handleRoleChange}
-                >
-                  Make Admin
-                </Button>
-              ) : (
-                <Button
-                  mt={2}
-                  bg="#E0AF48"
-                  color="black"
-                  _hover={{ bg: "#C19137", color: "black" }}
-                  onClick={handleRoleChange}
-                >
-                  Revert to User
-                </Button>
-              )}
+                {userRole !== "guest" && (
+                  <>
+                    {adminData?.role === "super-admin" && userRole !== "super-admin" && (
+                      <Button
+                        mt={2}
+                        color="#337774"
+                        bg="white"
+                        border="2px"
+                        _hover={{ bg: "#337774", color: "white" }}
+                        onClick={handleSuperAdminButton}
+                      >
+                        Make Super Admin
+                      </Button>
+                    )}
+                    {userRole !== "admin" && (
+                      <Button
+                        mt={2}
+                        color="#337774"
+                        bg="white"
+                        border="2px"
+                        _hover={{ bg: "#337774", color: "white" }}
+                        onClick={handleRoleChange}
+                      >
+                        Make Admin
+                      </Button>
+                    )}
+                    {userRole !== "user" && (
+                      <Button
+                        mt={2}
+                        bg="#E0AF48"
+                        color="black"
+                        _hover={{ bg: "#C19137", color: "black" }}
+                        onClick={handleRoleChange}
+                      >
+                        Revert to User
+                      </Button>
+                    )}
+                  </>
+                )}
               <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false} removeFunction={removeFunction}> </DeleteConfirmation>
             </Flex>
           </ModalBody>
