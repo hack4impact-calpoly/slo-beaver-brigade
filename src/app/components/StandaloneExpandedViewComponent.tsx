@@ -190,12 +190,6 @@ function ExpandedViewComponent({
               ml={'5%'}
             >
               <Flex>
-                <Box mt={'5px'}>
-                  <PiMapPinFill />
-                </Box>
-                <Text ml={'5px'}>{eventDetails.location}</Text>
-              </Flex>
-              <Flex>
                 <CalendarIcon mt={'5px'} />
                 <Text ml={'5px'}>{formattedDate}</Text>
               </Flex>
@@ -204,6 +198,12 @@ function ExpandedViewComponent({
                 <Text ml={'5px'}>
                   {formattedStartTime} - {formattedEndTime}
                 </Text>
+              </Flex>
+              <Flex>
+                <Box mt={'5px'}>
+                  <PiMapPinFill />
+                </Box>
+                <Text ml={'5px'}>{eventDetails.location}</Text>
               </Flex>
             </Flex>
           </ModalHeader>
