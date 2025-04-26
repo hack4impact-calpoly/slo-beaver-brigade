@@ -79,6 +79,7 @@ export default function Page() {
   const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
   const [description, setDescription] = useState("");
   const [checkList, setChecklist] = useState<string[]>([]);
+  const [maxHeadcount, setMaxHeadCount] = useState<number>();
   const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
@@ -204,6 +205,7 @@ export default function Page() {
       location,
       description,
       checklist: checkList,
+      maxHeadcount,
       groupsOnly: onlyGroups,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: spanishSpeaking === "Yes",
@@ -345,6 +347,7 @@ export default function Page() {
       checklist: checkList,
       location,
       description,
+      maxHeadcount,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: spanishSpeaking === "Yes",
       startTime: eventStart,
@@ -554,6 +557,7 @@ export default function Page() {
     eventType,
     checklist: checkList,
     location,
+    maxHeadcount,
     description,
     wheelchairAccessible: accessibilityAccommodation === "Yes",
     spanishSpeakingAccommodation: spanishSpeaking === "Yes",
@@ -691,17 +695,36 @@ export default function Page() {
             />
           </FormControl>
 
-          <FormControl isRequired>
-            <FormLabel htmlFor="location" fontWeight="bold">
-              Location
-            </FormLabel>
-            <Input
-              id="location"
-              placeholder="Enter event location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </FormControl>
+          <div className={style.twoThirdsGrid}>
+            <div className={style.leftColumn}>
+              <FormControl isRequired>
+                <FormLabel htmlFor="location" fontWeight="bold">
+                  Location
+                </FormLabel>
+                <Input
+                  id="location"
+                  placeholder="Enter event location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </FormControl>
+            </div>
+
+            <div className={style.rightColumn}> 
+            <FormControl isRequired>
+                <FormLabel htmlFor="headcount" fontWeight="bold">
+                  Headcount
+                </FormLabel>
+                <Input
+                  id="headcount"
+                  type="number"
+                  placeholder="Enter max volunteers"
+                  value={maxHeadcount}
+                  onChange={(e) => setMaxHeadCount(e.target.value === '' ? 0 : Number(e.target.value))}
+                />
+              </FormControl>
+            </div>
+          </div>
 
           <div className={style.twoThirdsGrid}>
             {/* Row 1: Event Type and Volunteer Hours */}
