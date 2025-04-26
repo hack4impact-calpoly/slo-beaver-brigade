@@ -1,6 +1,6 @@
 .container {
-  min-height: 100vh;
-  padding: 2rem;
+  padding: 0 2rem;
+  margin-bottom: 1rem;
 }
 
 .sidebar {
@@ -35,15 +35,4 @@
 
 .sidebar button[variant="ghost"]:hover {
   background-color: #f0f0f0;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-
-  .sidebar {
-    min-height: auto;
-    margin-bottom: 1rem;
-  }
 }

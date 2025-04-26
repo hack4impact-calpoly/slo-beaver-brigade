@@ -56,9 +56,7 @@ const Layout = async (props: Props) => {
   return (
     <>
       <div className={montserrat.className}>
-        <div className={style.adminDash}>
-          <main className={style.mainContainer}>{props.children}</main>
-        </div>
+        <main className={style.mainContainer}>{props.children}</main>
       </div>
     </>
   );

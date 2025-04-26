@@ -1,19 +1,6 @@
-.adminDash {
-  display: flex;
-  min-height: 100vh;
-}
-
 .mainContainer {
   padding-top: 40px;
   width: 100%;
   text-align: center;
   height: 100%;
-}
-
-@media (max-width: 768px) {
-  .mainContainer {
-    margin-left: 55px; /* Match collapsed sidebar width */
-    width: calc(100% - 55px);
-    padding: 20px;
-  }
 }
