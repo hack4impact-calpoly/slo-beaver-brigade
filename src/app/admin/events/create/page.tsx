@@ -79,7 +79,7 @@ export default function Page() {
   const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
   const [description, setDescription] = useState("");
   const [checkList, setChecklist] = useState<string[]>([]);
-  const [maxHeadcount, setMaxHeadCount] = useState<number>();
+  const [maxHeadcount, setMaxHeadCount] = useState<number>(0);
   const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
@@ -316,6 +316,15 @@ export default function Page() {
         isClosable: true,
       });
       return;
+    } else if (maxHeadcount <= 0) {
+      toast({
+        title: "Error",
+        description: "Headcount must be greater than 0",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      })
+
     }
 
     const file = fileInputRef?.current?.files?.[0] ?? null;
