@@ -365,7 +365,7 @@ function ExpandedViewComponent({
               display={'flex'}
               flexDirection={['column', 'column', 'row']}
               justifyContent={
-                visitorData.role === 'admin'
+                visitorData.role === 'admin' || visitorData.role === 'super-admin'
                   ? 'space-around'
                   : ['center', 'center', 'end']
               }
@@ -373,7 +373,7 @@ function ExpandedViewComponent({
             >
               {signedIn ? (
                 <>
-                  {visitorData.role === 'admin' && (
+                  {(visitorData.role === 'admin' || visitorData.role === 'super-admin')&& (
                     <Link href={`/admin/events/edit/${editUrl}`}>
                       <Button
                         bg="#337774"
