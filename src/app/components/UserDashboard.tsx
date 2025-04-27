@@ -745,6 +745,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
      </div>
      <ExpandedViewComponent
         eventDetails={eventForExpandedViewComponent}
+        editUrl={eventForExpandedViewComponent?._id}
         showModal={isExpandedViewComponentOpen}
         setShowModal={toggleExpandedViewComponentOpen}
       />
