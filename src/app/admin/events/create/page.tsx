@@ -323,8 +323,8 @@ export default function Page() {
         status: "error",
         duration: 2500,
         isClosable: true,
-      })
-
+      });
+      return;
     }
 
     const file = fileInputRef?.current?.files?.[0] ?? null;
