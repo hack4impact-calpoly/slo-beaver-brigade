@@ -688,6 +688,15 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                           >
                             {event.location}
                           </Text>
+                          <Text
+                            fontFamily="Lato"
+                            fontWeight="500"
+                            color="white"
+                            className="bold-text"
+                            zIndex={2}
+                          >
+                            {`${event.maxHeadcount - event.registeredIds.length} Spots Left`}
+                          </Text>
                         </Box>
                           <Box
                             position="absolute"

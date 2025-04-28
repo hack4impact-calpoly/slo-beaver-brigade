@@ -764,18 +764,28 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                                 Register
                               </Button>
                             </Link>
-                            {event.groupsOnly && 
-                            <div className="w-full flex flex-row justify-end items-center">
+                            <div className="w-full flex flex-column justify-end items-center">
+                                <Text
+                                fontSize={eventTimeSize}
+                                fontFamily="Lato"
+                                fontWeight="500"
+                                color="white"
+                                className="bold-text"
+                                zIndex={2}
+                              >
+                                {`${event.maxHeadcount - event.registeredIds.length} Spots Left`}
+                              </Text>
+                              {event.groupsOnly && <>
                                 <Text fontFamily="Lato"
-                            fontWeight="500"
-                            fontSize='18px'
-                            color="white"
-                            marginRight='1rem'
-                            className="bold-text"
-                            >Invite Only</Text>
-                                <LockIcon color='wheat'/>
+                                fontWeight="500"
+                                fontSize='18px'
+                                color="white"
+                                marginRight='1rem'
+                                className="bold-text"
+                                >Invite Only</Text>
+                                <LockIcon color='wheat'/></>}
                             </div>
-                            }
+                            
                           </Heading>
                         </Box> 
                       </Box>
