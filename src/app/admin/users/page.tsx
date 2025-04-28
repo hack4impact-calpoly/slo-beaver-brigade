@@ -202,6 +202,10 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
+    zipcode: user.zipcode,
+    receivesNewsletter: user.receiveNewsletter ? "Yes" : "No",
+    age: user.age,
+    gender: user.gender,
     role: editRoleName(user.role),
     eventsAttended:
       user.eventsAttendedNames.length > 0
@@ -216,6 +220,10 @@ const UserList = () => {
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
+    { label: "Zipcode", key: "zipcode"},
+    { label: "Receives Newsletter", key: "receivesNewsletter"},
+    { label: "Age", key: "age"},
+    { label: "Gender", key: "gender"},
     { label: "Role", key: "role" },
     { label: "Events Attended", key: "eventsAttended" },
     { label: "Number of Events Attended", key: "eventsAttendedCount" },
