@@ -78,6 +78,19 @@
     padding: 25px;
 }
 
+.pageCountContainer {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    padding: 32px;
+}
+
+.pageButton {
+    width: 100px;
+}
+
 @media (max-width: 1000px) {
     .buttonContainer {
         align-items: center;
