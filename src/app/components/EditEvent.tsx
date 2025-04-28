@@ -417,7 +417,7 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
 
               <Stack spacing={0}>
                 <FormControl isInvalid={type === "" && isSubmitted}>
-                  <FormLabel color="grey" fontWeight="bold">
+                  <FormLabel color="black" fontWeight="bold">
                     Event Type
                   </FormLabel>
                   <CreatableSelect
@@ -498,7 +498,7 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
 
                     {items.length > 0 && (
                       <Box>
-                        <h3>Items List:</h3>
+                        <Text fontWeight="bold">Items List:</Text>
                         <VStack spacing={2} align="flex-start">
                         {Array.isArray(items) && items.map((item, index) => (
                           <HStack key={index} spacing={2} display={"flex"} justifyContent={"space-around"} w={"100%"}>
@@ -541,8 +541,6 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
                   <CreateTemporaryGroup groups={selectedGroups} mutate={mutateGroups} setGroups={setSelectedGroups} />
                 </div>}
               </Stack>
-
-              {/* Commenting out because redundant; using eventType prop instead
               <Switch
                 fontWeight="bold"
                 color="grey"
@@ -551,7 +549,6 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
               >
                 Volunteer Event
               </Switch>
-              */}
               <Switch
                 fontWeight="bold"
                 color="grey"
