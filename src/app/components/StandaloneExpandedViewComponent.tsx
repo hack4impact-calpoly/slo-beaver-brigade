@@ -400,23 +400,24 @@ function ExpandedViewComponent({
                     >
                       Cancel Reservation
                     </Button>
-                  ) : (
+                  ) : (eventDetails.registeredIds.length < eventDetails.maxHeadcount ? ( 
                     <Link href={url}>
-                      <Button
-                        bg="#e0af48"
-                        color="black"
-                        _hover={{ bg: '#C19137' }}
-                        fontWeight={'600'}
-                        width={'250px'}
-                        marginBottom={2}
-                      >
-                        Register
-                      </Button>
-                    </Link>
-                  )}
+                    <Button
+                      bg="#e0af48"
+                      color="black"
+                      _hover={{ bg: '#C19137' }}
+                      fontWeight={'600'}
+                      width={'250px'}
+                      marginBottom={2}
+                    >
+                      Register
+                    </Button>
+                  </Link>
+                  ) : (<></>))}
                 </>
               ) : (
-                <Link href={url}>
+                (eventDetails.registeredIds.length < eventDetails.maxHeadcount ? ( 
+                  <Link href={url}>
                   <Button
                     bg="#e0af48"
                     color="black"
@@ -428,6 +429,7 @@ function ExpandedViewComponent({
                     Register
                   </Button>
                 </Link>
+                ) : (<></>))
               )}
             </Flex>
           </ModalBody>
