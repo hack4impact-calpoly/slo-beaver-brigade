@@ -84,6 +84,8 @@ const UserList = () => {
   });
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
+  const [page, setPage] = useState(0);
+  const userLimit = 15;
 
   // calculate hours for each event in user schema
   const calculateTotalHours = (events: AttendedEventInfo[]): number => {
@@ -338,7 +340,7 @@ const UserList = () => {
                     </Td>
                     </Tr>
                 ) : (
-                    filteredUsers.map((user) => (
+                    filteredUsers.slice(page * userLimit, (page+1) * userLimit).map((user) => (
                     
                     <Tr key={user._id}>
                         <Td>{`${user.firstName} ${user.lastName}`}</Td>
@@ -355,6 +357,27 @@ const UserList = () => {
               </Tbody>
             </Table>
           </Box>
+          <div className={style.pageCountContainer}>
+            <Button 
+              className={style.pageButton}
+              isDisabled={page === 0}
+              onClick={() => setPage(page-1)}>
+                Previous
+            </Button>
+            <Text
+              fontSize={['xl', 'xl', '2xl']}
+              fontWeight="light"
+              color="black"
+            >
+              Page {page+1}
+            </Text>
+            <Button
+              className={style.pageButton}
+              isDisabled={(page+1) * userLimit >= filteredUsers.length} 
+              onClick={() => setPage(page+1)}>
+                Next
+            </Button>
+          </div>
       </div>
     </div>
   );
