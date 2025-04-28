@@ -13,6 +13,8 @@ const AuditPage = () => {
   const [userFilter, setUserFilter] = useState('');
   const [actionFilter, setActionFilter] = useState('');
   const [mounted, setMounted] = useState(false); // Helps prevent flickering on initial load
+  const [page, setPage] = useState(0);
+  const logLimit = 25;
 
   const fetchLogs = async () => {
     const res = await fetch('/api/logs', { cache: 'no-store' });
@@ -25,6 +27,7 @@ const AuditPage = () => {
     const fetchedlogs = await res.json();
     console.log("Fetching logs on client.")
     setLogs(fetchedlogs);
+    setPage(0);
     setIsLoading(false);
   };
 
@@ -97,7 +100,32 @@ const AuditPage = () => {
           ) : filteredLogs?.length === 0 ? (
             <Text>No logs found</Text>
           ) : (
-            filteredLogs?.map((log) => <MessageLog key={log._id} log={log} />)
+            <>
+              {filteredLogs?.slice(page * logLimit, (page+1) * logLimit).map(
+                (log) => <MessageLog key={log._id} log={log} />)}
+              {<div className={style.pageCountContainer}>
+                <Button 
+                  className={style.pageButton}
+                  isDisabled={page === 0}
+                  onClick={() => setPage(page-1)}>
+                    Previous
+                </Button>
+                <Text
+                  fontSize={['xl', 'xl', '2xl']}
+                  fontWeight="light"
+                  color="black"
+                >
+                  Page {page+1}
+                </Text>
+                <Button
+                  className={style.pageButton}
+                  isDisabled={(page+1) * logLimit >= filteredLogs.length} 
+                  onClick={() => setPage(page+1)}>
+                    Next
+                </Button>
+              </div>
+              }
+            </>
           )}
         </div>
       </main>
