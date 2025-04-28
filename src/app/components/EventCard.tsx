@@ -87,8 +87,8 @@ const EventCard: React.FC<EventPreviewProps> = ({
          <h3>{formatTimeRange(event.startTime, event.endTime)}</h3>
        </div>
        <div className={style.visitorCount}>
-         <h2>{event.registeredIds.length}</h2>
-         <h3>{event.registeredIds.length === 1 ? " Visitor" : " Visitors"}</h3>
+         <h2>{`${event.registeredIds.length} / ${event.maxHeadcount}`}</h2>
+         <h3>Visitors</h3>
        </div>
      </div>
    </div>
