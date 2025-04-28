@@ -204,8 +204,8 @@ const UserList = () => {
     phoneNumber: user.phoneNumber,
     zipcode: user.zipcode,
     receivesNewsletter: user.receiveNewsletter ? "Yes" : "No",
-    age: user.age,
-    gender: user.gender,
+    age: user.age !== undefined ? user.age : "Unknown",
+    gender: user.gender || "Unknown",
     role: editRoleName(user.role),
     eventsAttended:
       user.eventsAttendedNames.length > 0
