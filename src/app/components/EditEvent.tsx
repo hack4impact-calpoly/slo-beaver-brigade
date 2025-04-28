@@ -265,10 +265,9 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
           <ModalBody fontFamily="Lato" p={[5, 5, 5, 5]}>
             <Stack spacing={3}>
               <FormControl isInvalid={name === "" && isSubmitted}>
-                <FormLabel color="grey" fontWeight="bold">Event Name</FormLabel>
+                <FormLabel color="black" fontWeight="bold">Event Name</FormLabel>
                 <Input
                   placeholder=""
-                  fontWeight="bold"
                   value={name}
                   onChange={handleNameChange}
                 />
@@ -347,10 +346,9 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
               </HStack>
 
               <FormControl isInvalid={loc === "" && isSubmitted}>
-                <FormLabel color="grey" fontWeight="bold">Event Location</FormLabel>
+                <FormLabel color="black" fontWeight="bold">Event Location</FormLabel>
                 <Input
                   placeholder=""
-                  fontWeight="bold"
                   value={loc}
                   onChange={handleLocationChange}
                 />
@@ -358,7 +356,7 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
 
               <Stack spacing={0}>
                 <FormControl isInvalid={date === "" && isSubmitted}>
-                  <FormLabel color="grey" fontFamily="Lato" fontWeight="bold">
+                  <FormLabel color="black" fontFamily="Lato" fontWeight="bold">
                     Event Date
                   </FormLabel>
                   <Input
@@ -374,7 +372,7 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
 
               <Stack spacing={0}>
                 <FormControl isInvalid={start === "" && isSubmitted}>
-                  <FormLabel color="grey" fontWeight="bold">
+                  <FormLabel color="black" fontWeight="bold">
                     Start Time
                   </FormLabel>
                   <Input
@@ -390,7 +388,7 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
 
               <Stack spacing={0}>
                 <FormControl isInvalid={end === "" && isSubmitted}>
-                  <FormLabel color="grey" fontWeight="bold">
+                  <FormLabel color="black" fontWeight="bold">
                     End Time
                   </FormLabel>
                   <Input
@@ -406,7 +404,7 @@ const EditEvent = ({ event, initialGroups, mutate }: { event: IEvent, initialGro
 
               <Stack spacing={0}>
                 <FormControl isInvalid={desc === "" && isSubmitted}>
-                  <FormLabel color="grey" fontWeight="bold">
+                  <FormLabel color="black" fontWeight="bold">
                     Event Description
                   </FormLabel>
                   <Textarea
