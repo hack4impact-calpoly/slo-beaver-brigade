@@ -16,20 +16,20 @@ import {
   useMediaQuery,
   UnorderedList,
   ListItem,
-} from "@chakra-ui/react";
-import React, { useRef, useState, useEffect } from "react";
-import { IEvent } from "@database/eventSchema";
-import { CalendarIcon, TimeIcon } from "@chakra-ui/icons";
-import { PiMapPinFill } from "react-icons/pi";
-import { MdCloseFullscreen } from "react-icons/md";
-import Link from "next/link";
-import { removeRegistered } from "app/actions/serveractions";
-import { IUser } from "@database/userSchema";
-import { getUserDbData } from "app/lib/authentication";
-import MarkdownPreview from "@uiw/react-markdown-preview";
-import style from "@styles/calendar/calendar.module.css";
-import { KeyedMutator } from "swr";
-import ChakraNextImage from "./ChakraNextImage";
+} from '@chakra-ui/react';
+import React, { useRef, useState, useEffect } from 'react';
+import { IEvent } from '@database/eventSchema';
+import { CalendarIcon, TimeIcon } from '@chakra-ui/icons';
+import { PiMapPinFill } from 'react-icons/pi';
+import { MdCloseFullscreen } from 'react-icons/md';
+import Link from 'next/link';
+import { removeRegistered } from 'app/actions/serveractions';
+import { IUser } from '@database/userSchema';
+import { getUserDbData } from 'app/lib/authentication';
+import MarkdownPreview from '@uiw/react-markdown-preview';
+import style from '@styles/calendar/calendar.module.css';
+import { KeyedMutator } from 'swr';
+import ChakraNextImage from './ChakraNextImage';
 
 interface Props {
   eventDetails: IEvent | null;
@@ -49,18 +49,18 @@ function ExpandedViewComponent({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const [signedIn, setSignedIn] = useState(false);
-  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
+  const [isLargerThan550] = useMediaQuery('(min-width: 550px)');
   const [visitorData, setVisitorData] = useState<IUser>({
-    _id: "",
+    _id: '',
     groupId: null,
-    email: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    zipcode: "",
+    email: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    zipcode: '',
     age: -1,
-    gender: "",
-    role: "user",
+    gender: '',
+    role: 'user',
     eventsAttended: [],
     eventsRegistered: [],
     receiveNewsletter: false,
@@ -114,27 +114,27 @@ function ExpandedViewComponent({
   }
 
   const formattedDate = new Date(eventDetails.startTime).toLocaleDateString(
-    "en-US",
+    'en-US',
     {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
     }
   );
 
   const formattedStartTime = new Date(
     eventDetails.startTime
-  ).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
+  ).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
     hour12: true,
   });
 
   const formattedEndTime = new Date(eventDetails.endTime).toLocaleTimeString(
-    "en-US",
+    'en-US',
     {
-      hour: "numeric",
-      minute: "numeric",
+      hour: 'numeric',
+      minute: 'numeric',
       hour12: true,
     }
   );
@@ -144,16 +144,16 @@ function ExpandedViewComponent({
     <>
       <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl">
         <ModalOverlay />
-        <ModalContent mt={"5rem"} mb={"1rem"} borderRadius={"20px"}>
+        <ModalContent mt={'5rem'} mb={'1rem'} borderRadius={'20px'}>
           <ModalHeader
             fontWeight="bold"
-            fontFamily={"Lato"}
+            fontFamily={'Lato'}
             position="relative"
-            color={"white"}
+            color={'white'}
             textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
           >
             <ChakraNextImage
-              src={eventDetails.eventImage || "/beaver-eventcard.jpeg"}
+              src={eventDetails.eventImage || '/beaver-eventcard.jpeg'}
               alt="Event Image"
               objectFit="cover"
               position="absolute"
@@ -161,11 +161,11 @@ function ExpandedViewComponent({
               top="0"
               left="0"
               layout="fill"
-              borderRadius={"20px 20px 0px 0px"}
+              borderRadius={'20px 20px 0px 0px'}
               filter="blur(2px) brightness(0.8)"
             />
-            <Flex justify={"left"} ml={"5%"}>
-              <Text fontSize={["2xl", "2xl", "5xl"]} opacity={"85%"}>
+            <Flex justify={'left'} ml={'5%'}>
+              <Text fontSize={['2xl', '2xl', '5xl']} opacity={'85%'}>
                 {eventDetails.eventName}
               </Text>
             </Flex>
@@ -173,70 +173,70 @@ function ExpandedViewComponent({
               onClick={closeExpandedView}
               variant="link"
               position="absolute"
-              top={"20px"}
-              right={"20px"}
+              top={'20px'}
+              right={'20px'}
               //right={"4%"}
               //mt={["-50px","0px","0px"]} // Breakpoints for widths 0-480px, 480-768px, and greater than 768px
               //mr={["-15px", "0px", "0px"]} // Breakpoints for widths 0-480px, 480-768px, and greater than 768px
-              color={"white"}
-              size={"xl"}
+              color={'white'}
+              size={'xl'}
               leftIcon={<MdCloseFullscreen />}
             ></Button>
             <Flex
-              flexDirection={"column"}
-              fontSize={"sm"}
-              opacity={"85%"}
-              mb={"7%"}
-              ml={"5%"}
+              flexDirection={'column'}
+              fontSize={'sm'}
+              opacity={'85%'}
+              mb={'7%'}
+              ml={'5%'}
             >
               <Flex>
-                <CalendarIcon mt={"5px"} />
-                <Text ml={"5px"}>{formattedDate}</Text>
+                <CalendarIcon mt={'5px'} />
+                <Text ml={'5px'}>{formattedDate}</Text>
               </Flex>
               <Flex>
-                <TimeIcon mt={"5px"} />
-                <Text ml={"5px"}>
+                <TimeIcon mt={'5px'} />
+                <Text ml={'5px'}>
                   {formattedStartTime} - {formattedEndTime}
                 </Text>
               </Flex>
               <Flex>
-                <Box mt={"5px"}>
+                <Box mt={'5px'}>
                   <PiMapPinFill />
                 </Box>
-                <Text ml={"5px"}>{eventDetails.location}</Text>
+                <Text ml={'5px'}>{eventDetails.location}</Text>
               </Flex>
             </Flex>
           </ModalHeader>
-          <ModalBody fontFamily={"Lato"}>
-            <Stack overflow="scroll" height="300px" spacing={4} width={"100%"}>
-              <Flex direction={"column"}>
-                <Flex justifyContent={"space-between"}>
+          <ModalBody fontFamily={'Lato'}>
+            <Stack overflow="scroll" height="300px" spacing={4} width={'100%'}>
+              <Flex direction={'column'}>
+                <Flex justifyContent={'space-between'}>
                   <FormLabel
                     color="black"
                     fontWeight="bold"
-                    fontSize={"2xl"}
-                    ml={"5%"}
-                    mt={["10%", "10%", "2%"]}
+                    fontSize={'2xl'}
+                    ml={'5%'}
+                    mt={['10%', '10%', '2%']}
                   >
                     Description
                   </FormLabel>
                 </Flex>
-                <Text ml={"3.5%"}>
+                <Text ml={'3.5%'}>
                   <MarkdownPreview
                     className={style.preview}
                     source={eventDetails.description}
                     style={{ padding: 16 }}
-                    wrapperElement={{ "data-color-mode": "light" }}
+                    wrapperElement={{ 'data-color-mode': 'light' }}
                   />
                 </Text>
               </Flex>
               {isLargerThan550 ? (
-                <Flex mb={"5%"} justifyContent={"space-around"}>
-                  <Flex direction={"column"}>
-                    <FormLabel color="black" fontWeight="bold" fontSize={"xl"}>
+                <Flex mb={'5%'} justifyContent={'space-around'}>
+                  <Flex direction={'column'}>
+                    <FormLabel color="black" fontWeight="bold" fontSize={'xl'}>
                       Items to Bring
                     </FormLabel>
-                    <Stack spacing={2} ml={"0"}>
+                    <Stack spacing={2} ml={'0'}>
                       {Array.isArray(eventDetails.checklist) &&
                       eventDetails.checklist.length > 0 ? (
                         eventDetails.checklist.map((item, i) => (
@@ -245,45 +245,45 @@ function ExpandedViewComponent({
                             className={style.preview}
                             source={`- ${item}`}
                             style={{ padding: 3 }}
-                            wrapperElement={{ "data-color-mode": "light" }}
+                            wrapperElement={{ 'data-color-mode': 'light' }}
                           />
                         ))
                       ) : (
                         <MarkdownPreview
                           className={style.preview}
-                          source={"- Just bring yourself and a smile c:"}
-                          wrapperElement={{ "data-color-mode": "light" }}
+                          source={'- Just bring yourself and a smile c:'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
                         />
                       )}
                     </Stack>
                   </Flex>
                   {!eventDetails.spanishSpeakingAccommodation &&
-                  !eventDetails.wheelchairAccessible ? null : ( // If neither spanish speaking nor wheelchair accessible, return null
+                  !eventDetails.wheelchairAccessible ? null : (
                     <Stack spacing={2}>
                       <FormLabel
                         color="black"
                         fontWeight="bold"
-                        fontSize={"xl"}
+                        fontSize={'xl'}
                       >
                         Accommodations
                       </FormLabel>
                       {eventDetails.wheelchairAccessible ? (
-                        <Text fontWeight={"light"}>
+                        <Text fontWeight={'light'}>
                           <MarkdownPreview
                             className={style.preview}
-                            source={"- Wheelchair Accessible"}
-                            wrapperElement={{ "data-color-mode": "light" }}
+                            source={'- Wheelchair Accessible'}
+                            wrapperElement={{ 'data-color-mode': 'light' }}
                           />
                         </Text>
                       ) : (
                         <></>
                       )}
                       {eventDetails.spanishSpeakingAccommodation ? (
-                        <Text fontWeight={"light"}>
+                        <Text fontWeight={'light'}>
                           <MarkdownPreview
                             className={style.preview}
-                            source={"- Spanish-Speaking"}
-                            wrapperElement={{ "data-color-mode": "light" }}
+                            source={'- Spanish-Speaking'}
+                            wrapperElement={{ 'data-color-mode': 'light' }}
                           />
                         </Text>
                       ) : (
@@ -293,13 +293,13 @@ function ExpandedViewComponent({
                   )}
                 </Flex>
               ) : (
-                <Flex direction={"column"} ml={"5%"} mb={"10%"} gap={4}>
-                  <Flex direction={"column"}>
-                    <Stack spacing={2} ml={"0"}>
+                <Flex direction={'column'} ml={'5%'} mb={'10%'} gap={4}>
+                  <Flex direction={'column'}>
+                    <Stack spacing={2} ml={'0'}>
                       <FormLabel
                         color="black"
                         fontWeight="bold"
-                        fontSize={"xl"}
+                        fontSize={'xl'}
                       >
                         Items to Bring
                       </FormLabel>
@@ -311,14 +311,14 @@ function ExpandedViewComponent({
                             className={style.preview}
                             source={`- ${item}`}
                             style={{ padding: 3 }}
-                            wrapperElement={{ "data-color-mode": "light" }}
+                            wrapperElement={{ 'data-color-mode': 'light' }}
                           />
                         ))
                       ) : (
                         <MarkdownPreview
                           className={style.preview}
-                          source={"- Just bring yourself and a smile c:"}
-                          wrapperElement={{ "data-color-mode": "light" }}
+                          source={'- Just bring yourself and a smile c:'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
                         />
                       )}
                     </Stack>
@@ -329,27 +329,27 @@ function ExpandedViewComponent({
                       <FormLabel
                         color="black"
                         fontWeight="bold"
-                        fontSize={"xl"}
+                        fontSize={'xl'}
                       >
                         Accommodations
                       </FormLabel>
                       {eventDetails.wheelchairAccessible ? (
-                        <Text fontWeight={"light"}>
+                        <Text fontWeight={'light'}>
                           <MarkdownPreview
                             className={style.preview}
-                            source={"- Wheelchair Accessible"}
-                            wrapperElement={{ "data-color-mode": "light" }}
+                            source={'- Wheelchair Accessible'}
+                            wrapperElement={{ 'data-color-mode': 'light' }}
                           />
                         </Text>
                       ) : (
                         <></>
                       )}
                       {eventDetails.spanishSpeakingAccommodation ? (
-                        <Text fontWeight={"light"}>
+                        <Text fontWeight={'light'}>
                           <MarkdownPreview
                             className={style.preview}
-                            source={"- Spanish-Speaking"}
-                            wrapperElement={{ "data-color-mode": "light" }}
+                            source={'- Spanish-Speaking'}
+                            wrapperElement={{ 'data-color-mode': 'light' }}
                           />
                         </Text>
                       ) : (
@@ -361,28 +361,28 @@ function ExpandedViewComponent({
               )}
             </Stack>
             <Flex
-              mt={["5%", "5%", "2%"]}
-              display={"flex"}
-              flexDirection={["column", "column", "row"]}
+              mt={['5%', '5%', '2%']}
+              display={'flex'}
+              flexDirection={['column', 'column', 'row']}
               justifyContent={
-                visitorData.role === "admin" ||
-                visitorData.role === "super-admin"
-                  ? "space-around"
-                  : ["center", "center", "end"]
+                visitorData.role === 'admin' ||
+                visitorData.role === 'super-admin'
+                  ? 'space-around'
+                  : ['center', 'center', 'end']
               }
-              alignItems={["center", "center", "flex-start"]}
+              alignItems={['center', 'center', 'flex-start']}
             >
               {signedIn ? (
                 <>
-                  {(visitorData.role === "admin" ||
-                    visitorData.role === "super-admin") && (
+                  {(visitorData.role === 'admin' ||
+                    visitorData.role === 'super-admin') && (
                     <Link href={`/admin/events/edit/${editUrl}`}>
                       <Button
                         bg="#337774"
                         color="white"
-                        _hover={{ bg: "#4a9b99" }}
-                        fontWeight={"600"}
-                        width={"250px"}
+                        _hover={{ bg: '#4a9b99' }}
+                        fontWeight={'600'}
+                        width={'250px'}
                         marginBottom={2}
                       >
                         Edit Event
@@ -398,9 +398,9 @@ function ExpandedViewComponent({
                         onClick={onOpen}
                         bg="#337774"
                         color="white"
-                        _hover={{ bg: "#4a9b99" }}
-                        fontWeight={"600"}
-                        width={"250px"}
+                        _hover={{ bg: '#4a9b99' }}
+                        fontWeight={'600'}
+                        width={'250px'}
                         marginBottom={2}
                       >
                         Cancel Reservation
@@ -411,9 +411,9 @@ function ExpandedViewComponent({
                         target="_blank"
                         bg="#337774"
                         color="white"
-                        _hover={{ bg: "#4a9b99" }}
-                        fontWeight={"600"}
-                        width={"250px"}
+                        _hover={{ bg: '#4a9b99' }}
+                        fontWeight={'600'}
+                        width={'250px'}
                         marginBottom={2}
                       >
                         View Waiver
@@ -424,9 +424,9 @@ function ExpandedViewComponent({
                       <Button
                         bg="#e0af48"
                         color="black"
-                        _hover={{ bg: "#C19137" }}
-                        fontWeight={"600"}
-                        width={"250px"}
+                        _hover={{ bg: '#C19137' }}
+                        fontWeight={'600'}
+                        width={'250px'}
                         marginBottom={2}
                       >
                         Register
@@ -439,9 +439,9 @@ function ExpandedViewComponent({
                   <Button
                     bg="#e0af48"
                     color="black"
-                    _hover={{ bg: "#C19137" }}
-                    fontWeight={"600"}
-                    width={"250px"}
+                    _hover={{ bg: '#C19137' }}
+                    fontWeight={'600'}
+                    width={'250px'}
                     marginBottom={2}
                   >
                     Register
@@ -461,36 +461,36 @@ function ExpandedViewComponent({
         size="md"
       >
         <ModalOverlay />
-        <ModalContent mt={"12.5rem"} borderRadius={"10px"}>
+        <ModalContent mt={'12.5rem'} borderRadius={'10px'}>
           <ModalHeader
-            bg={"#337774"}
-            padding={"25px 0px 25px 0px"}
-            borderRadius={"10px 10px 0px 0px"}
+            bg={'#337774'}
+            padding={'25px 0px 25px 0px'}
+            borderRadius={'10px 10px 0px 0px'}
           ></ModalHeader>
-          <ModalBody textAlign={"center"} mt={"10%"}>
-            <Text fontWeight={"bold"} fontSize={"xl"} fontFamily={"Lato"}>
+          <ModalBody textAlign={'center'} mt={'10%'}>
+            <Text fontWeight={'bold'} fontSize={'xl'} fontFamily={'Lato'}>
               Cancel your reservation for <br />
               {eventDetails.eventName}?
             </Text>
           </ModalBody>
           <ModalFooter
-            justifyContent={"center"}
-            mt={"5%"}
-            mb={"5%"}
-            fontFamily={"Lato"}
+            justifyContent={'center'}
+            mt={'5%'}
+            mb={'5%'}
+            fontFamily={'Lato'}
           >
-            <Flex flexDir={"row"}>
-              <Button onClick={onClose} mr={"2.5%"}>
+            <Flex flexDir={'row'}>
+              <Button onClick={onClose} mr={'2.5%'}>
                 No, take me back
               </Button>
               <Button
                 bg="#337774"
                 color="white"
-                _hover={{ bg: "#4a9b99" }}
+                _hover={{ bg: '#4a9b99' }}
                 onClick={async () =>
                   await handleCancel(eventDetails._id, visitorData._id)
                 }
-                ml={"5%"}
+                ml={'5%'}
               >
                 Yes, cancel
               </Button>
