@@ -30,11 +30,11 @@ export async function GET(
 //update waiver by event ID
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { eventId: string } }
+  { params }: { params: { waiverId: string } }
 ) {
   try {
     await connectDB();
-    const id = params.eventId;
+    const id = params.waiverId;
 
     const waivers = await SignedWaiver.find({ _id: id });
 
