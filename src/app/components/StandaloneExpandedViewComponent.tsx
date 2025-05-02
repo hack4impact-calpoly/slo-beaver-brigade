@@ -16,10 +16,11 @@ import {
   useMediaQuery,
   UnorderedList,
   ListItem,
+  Toast,
 } from '@chakra-ui/react';
 import React, { useRef, useState, useEffect } from 'react';
 import { IEvent } from '@database/eventSchema';
-import { CalendarIcon, TimeIcon } from '@chakra-ui/icons';
+import { CalendarIcon, CopyIcon, TimeIcon } from '@chakra-ui/icons';
 import { PiMapPinFill } from 'react-icons/pi';
 import { MdCloseFullscreen } from 'react-icons/md';
 import Link from 'next/link';
@@ -30,6 +31,7 @@ import MarkdownPreview from '@uiw/react-markdown-preview';
 import style from '@styles/calendar/calendar.module.css';
 import { KeyedMutator } from 'swr';
 import ChakraNextImage from './ChakraNextImage';
+import { useToast } from '@chakra-ui/react';
 
 interface Props {
   eventDetails: IEvent | null;
@@ -47,6 +49,7 @@ function ExpandedViewComponent({
   editUrl,
 }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const [signedIn, setSignedIn] = useState(false);
   const [isLargerThan550] = useMediaQuery('(min-width: 550px)');
@@ -140,6 +143,35 @@ function ExpandedViewComponent({
   );
 
   const url = `/events/${eventDetails._id}/digitalWaiver`;
+
+  function handleCopyToClipboard(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    if (eventDetails){
+      event.preventDefault();
+      const eventUrl = `${window.location.origin}/?id=${eventDetails._id}`;
+      navigator.clipboard.writeText(eventUrl).then(
+        () => {
+          toast({
+            title: 'Event URL copied to clipboard!',
+            status: 'success',
+            duration: 2000,
+            position: 'top',
+          });
+        },
+        (err) => {
+          console.error('Failed to copy text: ', err);
+        }
+      );
+    } else {
+      toast({
+        title: 'Error copying URL',
+        description: 'Event details not available.',
+        status: 'error',
+        duration: 2000,
+        position: 'top',
+      });
+    }
+  }
+
   return (
     <>
       <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl">
@@ -206,6 +238,18 @@ function ExpandedViewComponent({
                 <Text ml={'5px'}>{eventDetails.location}</Text>
               </Flex>
             </Flex>
+            <Button
+              position="absolute"
+              bottom="10px"
+              right="20px"
+              variant="link"
+              color={'white'}
+              size={'xl'}
+              rightIcon={<CopyIcon />}
+              onClick={handleCopyToClipboard}
+            >
+              Share Event
+            </Button>
           </ModalHeader>
           <ModalBody fontFamily={'Lato'}>
             <Stack overflowY="auto" height="300px" spacing={4} width={'100%'}>
