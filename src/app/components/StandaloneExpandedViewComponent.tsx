@@ -241,7 +241,7 @@ function ExpandedViewComponent({
             <Button
               position="absolute"
               bottom="10px"
-              right="10px"
+              right="20px"
               variant="link"
               color={'white'}
               size={'xl'}
