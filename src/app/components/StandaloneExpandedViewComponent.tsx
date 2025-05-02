@@ -221,14 +221,12 @@ function ExpandedViewComponent({
                     Description
                   </FormLabel>
                 </Flex>
-                <Text ml={'3.5%'}>
-                  <MarkdownPreview
-                    className={style.preview}
-                    source={eventDetails.description}
-                    style={{ padding: 16 }}
-                    wrapperElement={{ 'data-color-mode': 'light' }}
-                  />
-                </Text>
+                <MarkdownPreview
+                  className={style.preview}
+                  source={eventDetails.description}
+                  style={{ padding: 16, marginLeft: '3.5%'}}
+                  wrapperElement={{ 'data-color-mode': 'light' }}
+                />
               </Flex>
               {isLargerThan550 ? (
                 <Flex mb={'5%'} justifyContent={'space-around'}>
@@ -268,24 +266,22 @@ function ExpandedViewComponent({
                         Accommodations
                       </FormLabel>
                       {eventDetails.wheelchairAccessible ? (
-                        <Text fontWeight={'light'}>
-                          <MarkdownPreview
-                            className={style.preview}
-                            source={'- Wheelchair Accessible'}
-                            wrapperElement={{ 'data-color-mode': 'light' }}
-                          />
-                        </Text>
+                        <MarkdownPreview
+                          className={style.preview}
+                          style={{ fontWeight: 'light' }}
+                          source={'- Wheelchair Accessible'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
+                        />
                       ) : (
                         <></>
                       )}
                       {eventDetails.spanishSpeakingAccommodation ? (
-                        <Text fontWeight={'light'}>
-                          <MarkdownPreview
-                            className={style.preview}
-                            source={'- Spanish-Speaking'}
-                            wrapperElement={{ 'data-color-mode': 'light' }}
-                          />
-                        </Text>
+                        <MarkdownPreview
+                          className={style.preview}
+                          style={{ fontWeight: 'light' }}
+                          source={'- Spanish-Speaking'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
+                        />
                       ) : (
                         <></>
                       )}
@@ -334,24 +330,22 @@ function ExpandedViewComponent({
                         Accommodations
                       </FormLabel>
                       {eventDetails.wheelchairAccessible ? (
-                        <Text fontWeight={'light'}>
-                          <MarkdownPreview
-                            className={style.preview}
-                            source={'- Wheelchair Accessible'}
-                            wrapperElement={{ 'data-color-mode': 'light' }}
-                          />
-                        </Text>
+                        <MarkdownPreview
+                          className={style.preview}
+                          style={{ fontWeight: 'light' }}
+                          source={'- Wheelchair Accessible'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
+                        />
                       ) : (
                         <></>
                       )}
                       {eventDetails.spanishSpeakingAccommodation ? (
-                        <Text fontWeight={'light'}>
-                          <MarkdownPreview
-                            className={style.preview}
-                            source={'- Spanish-Speaking'}
-                            wrapperElement={{ 'data-color-mode': 'light' }}
-                          />
-                        </Text>
+                        <MarkdownPreview
+                          className={style.preview}
+                          style={{ fontWeight: 'light' }}
+                          source={'- Spanish-Speaking'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
+                        />
                       ) : (
                         <></>
                       )}
@@ -380,7 +374,7 @@ function ExpandedViewComponent({
                         color="white"
                         _hover={{ bg: '#4a9b99' }}
                         fontWeight={'600'}
-                        width={'250px'}
+                        width={'200px'}
                         marginBottom={2}
                       >
                         Edit Event
@@ -391,17 +385,31 @@ function ExpandedViewComponent({
                   {eventDetails.registeredIds
                     .map((oid) => oid.toString())
                     .includes(visitorData._id) ? (
-                    <Button
-                      onClick={onOpen}
-                      bg="#337774"
-                      color="white"
-                      _hover={{ bg: '#4a9b99' }}
-                      fontWeight={'600'}
-                      width={'250px'}
-                      marginBottom={2}
-                    >
-                      Cancel Reservation
-                    </Button>
+                      <>
+                        <Button
+                          onClick={onOpen}
+                          bg="#337774"
+                          color="white"
+                          _hover={{ bg: '#4a9b99' }}
+                          fontWeight={'600'}
+                          width={'200px'}
+                          marginBottom={2}
+                        >
+                          Cancel Reservation
+                        </Button>
+                        <Link href={`/events/${eventDetails._id}/digitalWaiver/1`}>
+                          <Button
+                            bg="#e0af48"
+                            color="black"
+                            _hover={{ bg: '#C19137' }}
+                            fontWeight={'600'}
+                            width={'200px'}
+                            marginBottom={2}
+                          >
+                            View Your Waiver
+                          </Button>
+                        </Link>
+                    </>
                   ) : (
                     <Link href={url}>
                       <Button
@@ -409,7 +417,7 @@ function ExpandedViewComponent({
                         color="black"
                         _hover={{ bg: '#C19137' }}
                         fontWeight={'600'}
-                        width={'250px'}
+                        width={'200px'}
                         marginBottom={2}
                       >
                         Register
@@ -424,7 +432,7 @@ function ExpandedViewComponent({
                     color="black"
                     _hover={{ bg: '#C19137' }}
                     fontWeight={'600'}
-                    width={'250px'}
+                    width={'200px'}
                     marginBottom={2}
                   >
                     Register

@@ -1,5 +1,5 @@
-"use client";
-import React, { useRef, useState, useEffect } from "react";
+'use client';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -14,18 +14,19 @@ import {
   ModalBody,
   useToast,
   Text,
-} from "@chakra-ui/react";
-import styles from "./page.module.css";
-import beaverLogo from "/docs/images/beaver-logo.png";
-import Image from "next/image";
-import { IUser } from "@database/userSchema";
-import { addToRegistered } from "@app/actions/useractions";
-import { getUserDbData } from "app/lib/authentication";
-import { createGuestFromEmail, getUserFromEmail } from "app/actions/userapi";
-import { useRouter } from "next/navigation";
-import { IEvent } from "database/eventSchema";
-import { useEventsAscending } from "app/lib/swrfunctions";
-import "../../../../fonts/fonts.css";
+} from '@chakra-ui/react';
+import styles from './page.module.css';
+import beaverLogo from '/docs/images/beaver-logo.png';
+import Image from 'next/image';
+import { IUser } from '@database/userSchema';
+import { addToRegistered } from '@app/actions/useractions';
+import { getUserDbData } from 'app/lib/authentication';
+import { createGuestFromEmail, getUserFromEmail } from 'app/actions/userapi';
+import { useRouter } from 'next/navigation';
+import { IEvent } from 'database/eventSchema';
+import { useEventsAscending } from 'app/lib/swrfunctions';
+import '../../../../fonts/fonts.css';
+import { ISignedWaiver } from 'database/signedWaiverSchema';
 
 type IParams = {
   params: {
@@ -37,12 +38,12 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const toast = useToast();
   const { mutate } = useEventsAscending();
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
-  const [dependents, setDependents] = useState([""]);
-  const [email, setEmail] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [signature, setSignature] = useState("");
+  const [dependents, setDependents] = useState<string[]>([]);
+  const [email, setEmail] = useState('');
+  const [zipcode, setZipcode] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [signature, setSignature] = useState('');
   const [userData, setUserData] = useState<IUser | null>(null);
   const [loadingUser, setLoadingUser] = useState<boolean>(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,6 +53,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
   const [emailChecked, setEmailChecked] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
+  const [existingWaiver, setExistingWaiver] = useState<ISignedWaiver | null>(null);
 
   // Waiver text
   const waiverText = `1. I am voluntarily joining an activity sponsored by the SLO Beaver Brigade, which may include tours to and from and in and around beaver ponds, as well as litter and brush removal or planting in riverbeds and creekbeds, and related activities.
@@ -72,12 +74,15 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   // User data and dependent functions
   const addDependent = () => {
-    const emptyFieldCount = dependents.filter(
-      (dependent) => dependent === ""
-    ).length;
-    if (emptyFieldCount <= 1) {
-      setDependents([...dependents, ""]);
+    if (dependents.length >= 6) {
+      toast({
+        title: 'You can only add up to 6 dependents on public events.\nNote: For groups larger than 6, please contact us about a private tour.  There is a fee for private tours.',
+        status: 'error',
+        isClosable: true,
+      });
+      return;
     }
+    setDependents([...dependents, '']);
   };
 
   const handleDeleteDependent = (indexToDelete: number) => {
@@ -92,7 +97,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   function handleSkip() {
     setModalOpen(false);
-    router.push("/");
+    router.push('/');
   }
 
   function handleCreateAccount() {
@@ -103,8 +108,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
       firstName: firstName,
       lastName: lastName,
     };
-    sessionStorage.setItem("userData", JSON.stringify(userData));
-    router.push("/signup");
+    sessionStorage.setItem('userData', JSON.stringify(userData));
+    router.push('/signup');
   }
 
   // Submission handler (similar to previous implementation)
@@ -114,120 +119,54 @@ export default function Waiver({ params: { eventId } }: IParams) {
     if (!isScrolledToBottom) {
       //prevent submission if not scrolled to bottom
       toast({
-        title: "Please scroll to the bottom of the waiver before submitting.",
-        status: "error",
+        title: 'Please scroll to the bottom of the waiver before submitting.',
+        status: 'error',
         duration: 3000,
         isClosable: true,
       });
       return;
     }
-      
+
     setEmailChecked(true);
-    const dependentArray = dependents.filter((dependent) => dependent !== "");
 
     const signedWaiver = {
-      dependents: dependentArray,
+      dependents: dependents,
       eventId: eventId,
       dateSigned: new Date(),
       waiverVersion: 1,
     };
 
-    if (userData) {
-      setValidEmail(true);
+    if (existingWaiver) {
       try {
-        const res = await fetch(`/api/waiver`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const res = await fetch(`/api/waiver/${existingWaiver._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            signeeId: userData._id,
-            signeeName: userData.firstName + " " + userData.lastName,
-            ...signedWaiver,
+            ...existingWaiver,
+            dependents: dependents,
+            signeeName: signature,
           }),
         });
-        //if the waiver returns successfully
         if (res.ok) {
-          const responseData = await res.json();
-          const waiverId = responseData._id;
-
-          try {
-            //call to update the user object
-            const res = await addToRegistered(userData._id, eventId, waiverId);
-            if (res) {
-              mutate((events) => {
-                if (events) {
-                  events.map((event) => {
-                    if (event._id == eventId) {
-                      return {
-                        ...event,
-                        registeredIds: [...event.registeredIds, userData._id],
-                      };
-                    }
-                    return event;
-                  });
-                }
-                return events;
-              });
-              
-              //const emailBody = { email: userData.email };
-              // const confirmRes = await fetch(
-              //   `/api/events/confirmation/${eventId}`,
-              //   {
-              //     method: "POST",
-              //     headers: { "Content-Type": "application/json" },
-              //     body: JSON.stringify(emailBody),
-              //   }
-              // );
-
-              //on success, return to the home page
-              router.push("/");
-            } else {
-              console.error("Error adding info to user");
-            }
-          } catch (error) {
-            console.error("Error adding info to user", error);
-          }
-        } else {
-          console.error("Error creating waiver", res.statusText);
+          router.push('/');
         }
-      } catch (error) {
-        console.error("Error creating waiver:", error);
+        else {
+          console.error('Error updating waiver', res.statusText);
+        }
+      }
+      catch (error) {
+        console.error('Error updating waiver:', error);
       }
     } else {
-      //finds the userId associated with the given email
-      const fetchUser = async () => {
-        let user: IUser | null = null;
-        const res = await getUserFromEmail(email);
-        if (res) {
-          user = JSON.parse(res) as IUser;
-        }
-        return user;
-      };
-      let user = await fetchUser();
-
-      //if a user exists for the given email, create a new waiver
-      //returns the waiverId,
-      if (!user) {
-        let userRes = await createGuestFromEmail(
-          email,
-          zipcode,
-          firstName,
-          lastName
-        );
-        if (!userRes) {
-          return;
-        }
-        user = JSON.parse(userRes);
-      }
-
-      if (user && user.role == "guest") {
+      if (userData) {
         setValidEmail(true);
         try {
           const res = await fetch(`/api/waiver`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              signeeId: user._id,
-              signeeName: user.firstName + " " + user.lastName,
+              signeeId: userData._id,
+              signeeName: userData.firstName + ' ' + userData.lastName,
               ...signedWaiver,
             }),
           });
@@ -238,7 +177,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
             try {
               //call to update the user object
-              const res = await addToRegistered(user._id, eventId, waiverId);
+              const res = await addToRegistered(userData._id, eventId, waiverId);
               if (res) {
                 mutate((events) => {
                   if (events) {
@@ -246,7 +185,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                       if (event._id == eventId) {
                         return {
                           ...event,
-                          registeredIds: [...event.registeredIds, user._id],
+                          registeredIds: [...event.registeredIds, userData._id],
                         };
                       }
                       return event;
@@ -255,7 +194,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                   return events;
                 });
 
-                //const emailBody = { email: user.email };
+                //const emailBody = { email: userData.email };
                 // const confirmRes = await fetch(
                 //   `/api/events/confirmation/${eventId}`,
                 //   {
@@ -264,22 +203,110 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 //     body: JSON.stringify(emailBody),
                 //   }
                 // );
-                //on success, open modal prompting user to create an account
-                setModalOpen(true);
+
+                //on success, return to the home page
+                router.push('/');
               } else {
-                console.error("Error adding info to user");
+                console.error('Error adding info to user');
               }
             } catch (error) {
-              console.error("Error adding info to user", error);
+              console.error('Error adding info to user', error);
             }
           } else {
-            console.error("Error creating waiver", res.statusText);
+            console.error('Error creating waiver', res.statusText);
           }
         } catch (error) {
-          console.error("Error creating waiver:", error);
+          console.error('Error creating waiver:', error);
         }
       } else {
-        onOpen();
+        //finds the userId associated with the given email
+        const fetchUser = async () => {
+          let user: IUser | null = null;
+          const res = await getUserFromEmail(email);
+          if (res) {
+            user = JSON.parse(res) as IUser;
+          }
+          return user;
+        };
+        let user = await fetchUser();
+
+        //if a user exists for the given email, create a new waiver
+        //returns the waiverId,
+        if (!user) {
+          let userRes = await createGuestFromEmail(
+            email,
+            zipcode,
+            firstName,
+            lastName
+          );
+          if (!userRes) {
+            return;
+          }
+          user = JSON.parse(userRes);
+        }
+
+        if (user && user.role == 'guest') {
+          setValidEmail(true);
+          try {
+            const res = await fetch(`/api/waiver`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                signeeId: user._id,
+                signeeName: user.firstName + ' ' + user.lastName,
+                ...signedWaiver,
+              }),
+            });
+            //if the waiver returns successfully
+            if (res.ok) {
+              const responseData = await res.json();
+              const waiverId = responseData._id;
+
+              try {
+                //call to update the user object
+                const res = await addToRegistered(user._id, eventId, waiverId);
+                if (res) {
+                  mutate((events) => {
+                    if (events) {
+                      events.map((event) => {
+                        if (event._id == eventId) {
+                          return {
+                            ...event,
+                            registeredIds: [...event.registeredIds, user._id],
+                          };
+                        }
+                        return event;
+                      });
+                    }
+                    return events;
+                  });
+
+                  //const emailBody = { email: user.email };
+                  // const confirmRes = await fetch(
+                  //   `/api/events/confirmation/${eventId}`,
+                  //   {
+                  //     method: "POST",
+                  //     headers: { "Content-Type": "application/json" },
+                  //     body: JSON.stringify(emailBody),
+                  //   }
+                  // );
+                  //on success, open modal prompting user to create an account
+                  setModalOpen(true);
+                } else {
+                  console.error('Error adding info to user');
+                }
+              } catch (error) {
+                console.error('Error adding info to user', error);
+              }
+            } else {
+              console.error('Error creating waiver', res.statusText);
+            }
+          } catch (error) {
+            console.error('Error creating waiver:', error);
+          }
+        } else {
+          onOpen();
+        }
       }
     }
   };
@@ -290,6 +317,27 @@ export default function Waiver({ params: { eventId } }: IParams) {
       let res = await getUserDbData();
       if (res) {
         setUserData(JSON.parse(res));
+        const userData = JSON.parse(res) as IUser;
+        // check if user has already registered for the event
+        if (
+          userData.eventsRegistered.some(
+            (event) => event.eventId.toString() === eventId
+          )
+        ) {
+          const waiverDataRes = await fetch(`/api/waiver/`);
+          if (waiverDataRes.ok) {
+            const waiverData = await waiverDataRes.json();
+            const waiver = waiverData.waivers.find(
+              (waiver: any) =>
+                waiver.eventId === eventId && waiver.signeeId === userData._id
+            );
+            if (waiver) {
+              setDependents([...waiver.dependents]);
+              setSignature(waiver.signeeName);
+              setExistingWaiver(waiver);
+            }
+          }
+        }
       }
       setLoadingUser(false);
     };
@@ -311,28 +359,20 @@ export default function Waiver({ params: { eventId } }: IParams) {
         flexDirection="column"
         justifyContent="flex-start"
         alignItems="center"
-        marginTop={{ base: "2vh", md: "5vh" }}
+        marginTop={{ base: '2vh', md: '5vh' }}
       >
-        <Image
-          src={beaverLogo}
-          alt="beaver"
-        />
+        <Image src={beaverLogo} alt="beaver" />
 
-        <Box
-          w={["90%", "80%"]}
-          h="70%"
-          mt={{ base: 10, md: 15 }}
-          mb={0}
-        >
-            <h1
+        <Box w={['90%', '80%']} h="70%" mt={{ base: 10, md: 15 }} mb={0}>
+          <h1
             style={{
-              fontWeight: "bold",
-              textAlign: "center",
-              fontSize: "2rem",
+              fontWeight: 'bold',
+              textAlign: 'center',
+              fontSize: '2rem',
             }}
-            >
+          >
             Waiver of Liability and Hold Harmless Agreement
-            </h1>
+          </h1>
           <Textarea
             className={styles.scroller}
             resize="none"
@@ -345,9 +385,15 @@ export default function Waiver({ params: { eventId } }: IParams) {
           />
         </Box>
 
-
-        <form onSubmit={handleSubmit} style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-          <Box w={["90%", "80%"]}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box w={['90%', '80%']}>
             {/* User Information Section */}
             {!userData && !loadingUser && (
               <div className="flex flex-col">
@@ -387,10 +433,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               </div>
             )}
 
-            <Box
-              p={4}
-              mt={5}
-            >
+            <Box p={4} mt={5}>
               {signatureText}
             </Box>
 
@@ -398,7 +441,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               type="button"
               onClick={addDependent}
               className={styles.addDependent}
-              style={{ color: "#ECB94A" }}
+              style={{ color: '#ECB94A' }}
             >
               Add Dependent +
             </button>
@@ -406,45 +449,45 @@ export default function Waiver({ params: { eventId } }: IParams) {
             {/* Dependents Section */}
             <table width="100%">
               <tbody>
-                {dependents.map((name, index) => (
-                  <tr key={index}>
-                    <td
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        alignItems: "center",
-                      }}
-                    >
-                      <input
-                        className={styles.dependentTable}
-                        type="text"
-                        value={name}
-                        onChange={(event) =>
-                          handleDependentChange(index, event.target.value)
-                        }
+                {dependents.length > 0 ? (
+                  dependents.map((name, index) => (
+                    <tr key={index}>
+                      <td
                         style={{
-                          display: index === 0 ? "none" : "block",
-                          flex: 1,
+                          display: 'flex',
+                          gap: '10px',
+                          alignItems: 'center',
                         }}
-                        placeholder="Dependent Full Name"
-                      />
-                      {index !== 0 && (
+                      >
+                        <input
+                          className={styles.dependentTable}
+                          type="text"
+                          value={name}
+                          onChange={(event) =>
+                            handleDependentChange(index, event.target.value)
+                          }
+                          style={{
+                            flex: 1,
+                          }}
+                          placeholder="Dependent Full Name"
+                        />
                         <Button
-                          onClick={() => 
-                          handleDeleteDependent(index)}
-                          size={{ base: "xs", md: "sm" }}
+                          onClick={() => handleDeleteDependent(index)}
+                          size={{ base: 'xs', md: 'sm' }}
                           colorScheme="red"
                           variant="outline"
                           style={{
-                            marginTop: "15px"
+                            marginTop: '15px',
                           }}
                         >
                           ×
                         </Button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  null
+                )}
               </tbody>
             </table>
 
@@ -454,26 +497,49 @@ export default function Waiver({ params: { eventId } }: IParams) {
               className={styles.inputSignature}
               type="text"
               placeholder="Signature"
+              value={signature}
               onChange={(e) => setSignature(e.target.value)}
               required
             />
-        </Box>
-        <Button
-          type="submit"
-          mt={8} mb={"3%"}
-          sx={{
-            width: { base: "100%", md: "225px" },
-            height: "40px",
-            backgroundColor: "#337774",
-            color: "white",
-            borderRadius: "10px",
-            "&:hover": {
-              backgroundColor: "#296361",
-            },
-          }}
-        >
-          Submit
-        </Button>
+          </Box>
+            { !existingWaiver ? (
+              <Button
+                type="submit"
+                mt={8}
+                mb={'3%'}
+                sx={{
+                  width: { base: '100%', md: '225px' },
+                  height: '40px',
+                  backgroundColor: '#337774',
+                  color: 'white',
+                  borderRadius: '10px',
+                  '&:hover': {
+                    backgroundColor: '#296361',
+                  },
+                }}
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                mt={8}
+                mb={'3%'}
+                sx={{
+                  width: { base: '100%', md: '225px' },
+                  height: '40px',
+                  backgroundColor: '#337774',
+                  color: 'white',
+                  borderRadius: '10px',
+                  '&:hover': {
+                    backgroundColor: '#296361',
+                  },
+                }}
+              >
+                Update Waiver Info
+              </Button>
+            )
+          }
         </form>
       </Flex>
 
@@ -482,65 +548,65 @@ export default function Waiver({ params: { eventId } }: IParams) {
         onClose={() => {
           setModalOpen(false);
         }}
-        size={{ base: "sm", md: "lg" }}
+        size={{ base: 'sm', md: 'lg' }}
       >
         <ModalOverlay />
-        <ModalContent mt={{ base: "40px", md: "70px" }}>
+        <ModalContent mt={{ base: '40px', md: '70px' }}>
           <ModalHeader>
             <Flex
-              justifyContent={"center"}
-              w={"100%"}
-              mt={{ base: "5%", md: "10%" }}
-              mb={"5%"}
+              justifyContent={'center'}
+              w={'100%'}
+              mt={{ base: '5%', md: '10%' }}
+              mb={'5%'}
             >
               <Image
                 src={beaverLogo}
                 alt="beaver"
                 style={{
-                  marginTop: "10px"
+                  marginTop: '10px',
                 }}
               />
             </Flex>
           </ModalHeader>
-          <ModalBody textAlign={"center"} mb={{ base: "30px", md: "50px" }}>
-            <Text fontSize={{ base: "md", md: "xl" }}>
+          <ModalBody textAlign={'center'} mb={{ base: '30px', md: '50px' }}>
+            <Text fontSize={{ base: 'md', md: 'xl' }}>
               Thank you for signing up for
             </Text>
             <Text
-              fontSize={{ base: "xl", md: "3xl" }}
-              fontWeight={"bold"}
-              mt={{ base: "15px", md: "25px" }}
-              mb={{ base: "30px", md: "50px" }}
+              fontSize={{ base: 'xl', md: '3xl' }}
+              fontWeight={'bold'}
+              mt={{ base: '15px', md: '25px' }}
+              mb={{ base: '30px', md: '50px' }}
             >
               {eventData?.eventName}
             </Text>
-            <Text fontSize={{ base: "sm", md: "lg" }} px={{ base: 5, md: 10 }}>
+            <Text fontSize={{ base: 'sm', md: 'lg' }} px={{ base: 5, md: 10 }}>
               You can create an account to view your upcoming event!
             </Text>
           </ModalBody>
           <ModalFooter
-            justifyContent={"space-around"}
-            mb={{ base: "40px", md: "65px" }}
-            flexDirection={{ base: "column", md: "row" }}
+            justifyContent={'space-around'}
+            mb={{ base: '40px', md: '65px' }}
+            flexDirection={{ base: 'column', md: 'row' }}
             gap={{ base: 3, md: 0 }}
           >
             <Button
-              fontSize={{ base: "sm", md: "md" }}
+              fontSize={{ base: 'sm', md: 'md' }}
               color="#B5B5B5"
               borderColor="gray"
-              w={{ base: "100%", md: "35%" }}
-              variant={"outline"}
+              w={{ base: '100%', md: '35%' }}
+              variant={'outline'}
               onClick={handleSkip}
             >
               Skip
             </Button>
             <Button
-              fontWeight={"bold"}
-              fontSize={{ base: "sm", md: "md" }}
+              fontWeight={'bold'}
+              fontSize={{ base: 'sm', md: 'md' }}
               bg="#337774"
               color="white"
-              _hover={{ bg: "#4a9b99" }}
-              w={{ base: "100%", md: "35%" }}
+              _hover={{ bg: '#4a9b99' }}
+              w={{ base: '100%', md: '35%' }}
               onClick={handleCreateAccount}
             >
               Create Account
