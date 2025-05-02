@@ -10,6 +10,7 @@ import {
   Button,
   useBreakpointValue,
   Image,
+  useToast,
 } from '@chakra-ui/react';
 import { Select } from 'chakra-react-select';
 import { CalendarIcon, TimeIcon } from '@chakra-ui/icons';
@@ -30,6 +31,7 @@ import './fonts/fonts.css';
 import { useEventsAscending } from 'app/lib/swrfunctions';
 import { LockIcon } from '@chakra-ui/icons';
 import ChakraNextImage from './components/ChakraNextImage';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 // logic for letting ts know about css prop
 declare module 'react' {
@@ -82,13 +84,13 @@ export default function Page() {
   `;
 
   // fetching events
-
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+  const toast = useToast();
   const { events, isLoading, isError, mutate } = useEventsAscending();
-
   const [userData, setUserData] = useState<IUser | null>(null);
-
   const { isSignedIn, user, isLoaded } = useUser();
-
   const [parsed, setParsed] = useState<boolean>(false);
   const [userEvents, setUserEvents] = useState<IEvent[]>([]);
   const [unregisteredEvents, setUnregisteredEvents] = useState<IEvent[]>([]);
@@ -353,6 +355,24 @@ export default function Page() {
   ) => {
     event.stopPropagation();
   };
+
+  useEffect(() => {
+    if (id && events) {
+      const eventToOpen = events.find((event) => event._id === id);
+      if (eventToOpen) {
+        setupViewEventModal(eventToOpen);
+      } else {
+        toast({
+          title: 'Event not found',
+          description: 'The event you are looking for does not exist.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push('/');
+      }
+    }
+  }, []);
 
   return (
     <div>
