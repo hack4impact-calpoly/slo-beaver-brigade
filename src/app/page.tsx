@@ -350,7 +350,7 @@ export default function Page() {
     setExpandedViewComponentOpen(!isExpandedViewComponentOpen);
   }
 
-  const handleButtonClickToStopPropogation = (
+  const handleButtonClickToStopPropagation = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
@@ -748,7 +748,7 @@ export default function Page() {
                                   color="black"
                                   _hover={{ bg: '#C19137' }}
                                   fontSize={eventDetailSize}
-                                  onClick={handleButtonClickToStopPropogation}
+                                  onClick={handleButtonClickToStopPropagation}
                                 >
                                   Register
                                 </Button>
