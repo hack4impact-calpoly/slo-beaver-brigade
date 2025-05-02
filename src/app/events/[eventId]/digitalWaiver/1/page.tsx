@@ -53,7 +53,9 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
   const [emailChecked, setEmailChecked] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
-  const [existingWaiver, setExistingWaiver] = useState<ISignedWaiver | null>(null);
+  const [existingWaiver, setExistingWaiver] = useState<ISignedWaiver | null>(
+    null
+  );
 
   // Waiver text
   const waiverText = `1. I am voluntarily joining an activity sponsored by the SLO Beaver Brigade, which may include tours to and from and in and around beaver ponds, as well as litter and brush removal or planting in riverbeds and creekbeds, and related activities.
@@ -76,7 +78,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const addDependent = () => {
     if (dependents.length >= 6) {
       toast({
-        title: 'You can only add up to 6 dependents on public events.\nNote: For groups larger than 6, please contact us about a private tour.  There is a fee for private tours.',
+        title:
+          'You can only add up to 6 dependents on public events.\nNote: For groups larger than 6, please contact us about a private tour.  There is a fee for private tours.',
         status: 'error',
         isClosable: true,
       });
@@ -129,8 +132,12 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
     setEmailChecked(true);
 
+    const filteredDependents = dependents.filter(
+      (dependent) => dependent.trim() !== ''
+    );
+
     const signedWaiver = {
-      dependents: dependents,
+      dependents: filteredDependents,
       eventId: eventId,
       dateSigned: new Date(),
       waiverVersion: 1,
@@ -143,18 +150,16 @@ export default function Waiver({ params: { eventId } }: IParams) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...existingWaiver,
-            dependents: dependents,
+            dependents: filteredDependents,
             signeeName: signature,
           }),
         });
         if (res.ok) {
           router.push('/');
-        }
-        else {
+        } else {
           console.error('Error updating waiver', res.statusText);
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error updating waiver:', error);
       }
     } else {
@@ -177,7 +182,11 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
             try {
               //call to update the user object
-              const res = await addToRegistered(userData._id, eventId, waiverId);
+              const res = await addToRegistered(
+                userData._id,
+                eventId,
+                waiverId
+              );
               if (res) {
                 mutate((events) => {
                   if (events) {
@@ -449,45 +458,43 @@ export default function Waiver({ params: { eventId } }: IParams) {
             {/* Dependents Section */}
             <table width="100%">
               <tbody>
-                {dependents.length > 0 ? (
-                  dependents.map((name, index) => (
-                    <tr key={index}>
-                      <td
-                        style={{
-                          display: 'flex',
-                          gap: '10px',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <input
-                          className={styles.dependentTable}
-                          type="text"
-                          value={name}
-                          onChange={(event) =>
-                            handleDependentChange(index, event.target.value)
-                          }
+                {dependents.length > 0
+                  ? dependents.map((name, index) => (
+                      <tr key={index}>
+                        <td
                           style={{
-                            flex: 1,
-                          }}
-                          placeholder="Dependent Full Name"
-                        />
-                        <Button
-                          onClick={() => handleDeleteDependent(index)}
-                          size={{ base: 'xs', md: 'sm' }}
-                          colorScheme="red"
-                          variant="outline"
-                          style={{
-                            marginTop: '15px',
+                            display: 'flex',
+                            gap: '10px',
+                            alignItems: 'center',
                           }}
                         >
-                          ×
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  null
-                )}
+                          <input
+                            className={styles.dependentTable}
+                            type="text"
+                            value={name}
+                            onChange={(event) =>
+                              handleDependentChange(index, event.target.value)
+                            }
+                            style={{
+                              flex: 1,
+                            }}
+                            placeholder="Dependent Full Name"
+                          />
+                          <Button
+                            onClick={() => handleDeleteDependent(index)}
+                            size={{ base: 'xs', md: 'sm' }}
+                            colorScheme="red"
+                            variant="outline"
+                            style={{
+                              marginTop: '15px',
+                            }}
+                          >
+                            ×
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  : null}
               </tbody>
             </table>
 
@@ -502,44 +509,43 @@ export default function Waiver({ params: { eventId } }: IParams) {
               required
             />
           </Box>
-            { !existingWaiver ? (
-              <Button
-                type="submit"
-                mt={8}
-                mb={'3%'}
-                sx={{
-                  width: { base: '100%', md: '225px' },
-                  height: '40px',
-                  backgroundColor: '#337774',
-                  color: 'white',
-                  borderRadius: '10px',
-                  '&:hover': {
-                    backgroundColor: '#296361',
-                  },
-                }}
-              >
-                Submit
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                mt={8}
-                mb={'3%'}
-                sx={{
-                  width: { base: '100%', md: '225px' },
-                  height: '40px',
-                  backgroundColor: '#337774',
-                  color: 'white',
-                  borderRadius: '10px',
-                  '&:hover': {
-                    backgroundColor: '#296361',
-                  },
-                }}
-              >
-                Update Waiver Info
-              </Button>
-            )
-          }
+          {!existingWaiver ? (
+            <Button
+              type="submit"
+              mt={8}
+              mb={'3%'}
+              sx={{
+                width: { base: '100%', md: '225px' },
+                height: '40px',
+                backgroundColor: '#337774',
+                color: 'white',
+                borderRadius: '10px',
+                '&:hover': {
+                  backgroundColor: '#296361',
+                },
+              }}
+            >
+              Submit
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              mt={8}
+              mb={'3%'}
+              sx={{
+                width: { base: '100%', md: '225px' },
+                height: '40px',
+                backgroundColor: '#337774',
+                color: 'white',
+                borderRadius: '10px',
+                '&:hover': {
+                  backgroundColor: '#296361',
+                },
+              }}
+            >
+              Update Waiver Info
+            </Button>
+          )}
         </form>
       </Flex>
 

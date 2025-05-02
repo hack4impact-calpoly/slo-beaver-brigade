@@ -208,7 +208,7 @@ function ExpandedViewComponent({
             </Flex>
           </ModalHeader>
           <ModalBody fontFamily={'Lato'}>
-            <Stack overflow="scroll" height="300px" spacing={4} width={'100%'}>
+            <Stack overflowY="auto"  height="300px" spacing={4} width={'100%'}>
               <Flex direction={'column'}>
                 <Flex justifyContent={'space-between'}>
                   <FormLabel
@@ -358,11 +358,7 @@ function ExpandedViewComponent({
               mt={['5%', '5%', '2%']}
               display={'flex'}
               flexDirection={['column', 'column', 'row']}
-              justifyContent={
-                visitorData.role === 'admin' || visitorData.role === 'super-admin'
-                  ? 'space-around'
-                  : ['center', 'center', 'end']
-              }
+              justifyContent={ 'space-around' }
               alignItems={['center', 'center', 'flex-start']}
             >
               {signedIn ? (
