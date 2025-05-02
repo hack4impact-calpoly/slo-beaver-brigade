@@ -139,19 +139,19 @@ function ExpandedViewComponent({
     }
   );
 
-  const url = `/events/${eventDetails._id}/digitalWaiver/1`;
+  const url = `/events/${eventDetails._id}/digitalWaiver`;
   return (
     <>
       <Modal isOpen={showModal} onClose={closeExpandedView} size="3xl">
         <ModalOverlay />
-        <ModalContent mt={"5rem"} mb={"1rem"} borderRadius={"20px"}>
-          <ModalHeader 
-              fontWeight="bold" 
-              fontFamily={'Lato'} 
-              position="relative" 
-              color={"white"}
-              textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
-            >
+        <ModalContent mt={'5rem'} mb={'1rem'} borderRadius={'20px'}>
+          <ModalHeader
+            fontWeight="bold"
+            fontFamily={'Lato'}
+            position="relative"
+            color={'white'}
+            textShadow="3px 3px 6px rgba(0, 0, 0, 0.9)"
+          >
             <ChakraNextImage
               src={eventDetails.eventImage || '/beaver-eventcard.jpeg'}
               alt="Event Image"
@@ -161,8 +161,8 @@ function ExpandedViewComponent({
               top="0"
               left="0"
               layout="fill"
-              borderRadius={"20px 20px 0px 0px"}
-              filter="blur(2px) brightness(0.8)" 
+              borderRadius={'20px 20px 0px 0px'}
+              filter="blur(2px) brightness(0.8)"
             />
             <Flex justify={'left'} ml={'5%'}>
               <Text fontSize={['2xl', '2xl', '5xl']} opacity={'85%'}>
@@ -208,7 +208,7 @@ function ExpandedViewComponent({
             </Flex>
           </ModalHeader>
           <ModalBody fontFamily={'Lato'}>
-            <Stack overflowY="auto"  height="300px" spacing={4} width={'100%'}>
+            <Stack overflowY="auto" height="300px" spacing={4} width={'100%'}>
               <Flex direction={'column'}>
                 <Flex justifyContent={'space-between'}>
                   <FormLabel
@@ -224,7 +224,7 @@ function ExpandedViewComponent({
                 <MarkdownPreview
                   className={style.preview}
                   source={eventDetails.description}
-                  style={{ padding: 16, marginLeft: '3.5%'}}
+                  style={{ padding: 16, marginLeft: '3.5%' }}
                   wrapperElement={{ 'data-color-mode': 'light' }}
                 />
               </Flex>
@@ -358,12 +358,13 @@ function ExpandedViewComponent({
               mt={['5%', '5%', '2%']}
               display={'flex'}
               flexDirection={['column', 'column', 'row']}
-              justifyContent={ 'space-around' }
+              justifyContent={'space-around'}
               alignItems={['center', 'center', 'flex-start']}
             >
               {signedIn ? (
                 <>
-                  {(visitorData.role === 'admin' || visitorData.role === 'super-admin')&& (
+                  {(visitorData.role === 'admin' ||
+                    visitorData.role === 'super-admin') && (
                     <Link href={`/admin/events/edit/${editUrl}`}>
                       <Button
                         bg="#337774"
@@ -381,30 +382,30 @@ function ExpandedViewComponent({
                   {eventDetails.registeredIds
                     .map((oid) => oid.toString())
                     .includes(visitorData._id) ? (
-                      <>
+                    <>
+                      <Button
+                        onClick={onOpen}
+                        bg="#337774"
+                        color="white"
+                        _hover={{ bg: '#4a9b99' }}
+                        fontWeight={'600'}
+                        width={'200px'}
+                        marginBottom={2}
+                      >
+                        Cancel Reservation
+                      </Button>
+                      <Link href={`/events/${eventDetails._id}/digitalWaiver`}>
                         <Button
-                          onClick={onOpen}
-                          bg="#337774"
-                          color="white"
-                          _hover={{ bg: '#4a9b99' }}
+                          bg="#e0af48"
+                          color="black"
+                          _hover={{ bg: '#C19137' }}
                           fontWeight={'600'}
                           width={'200px'}
                           marginBottom={2}
                         >
-                          Cancel Reservation
+                          View Your Waiver
                         </Button>
-                        <Link href={`/events/${eventDetails._id}/digitalWaiver/1`}>
-                          <Button
-                            bg="#e0af48"
-                            color="black"
-                            _hover={{ bg: '#C19137' }}
-                            fontWeight={'600'}
-                            width={'200px'}
-                            marginBottom={2}
-                          >
-                            View Your Waiver
-                          </Button>
-                        </Link>
+                      </Link>
                     </>
                   ) : (
                     <Link href={url}>
