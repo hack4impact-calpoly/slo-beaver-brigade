@@ -764,17 +764,19 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                               <LockIcon color='wheat'/>
                             </div></>}
                           <Heading className="flex flex-row justify-start" as="h2" fontSize="xl">
-                            <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
-                              <Button
-                                bg="#e0af48"
-                                color="black"
-                                _hover={{ bg: "#C19137" }}
-                                fontSize={eventDetailSize}
-                                onClick={handleButtonClickToStopPropogation}
-                                >
-                                Register
-                              </Button>
-                            </Link>
+                            {(event.maxHeadcount - event.registeredIds.length > 0 && 
+                              <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
+                                <Button
+                                  bg="#e0af48"
+                                  color="black"
+                                  _hover={{ bg: "#C19137" }}
+                                  fontSize={eventDetailSize}
+                                  onClick={handleButtonClickToStopPropogation}
+                                  >
+                                  Register
+                                </Button>
+                              </Link>
+                            )}
                             <div className="w-full flex justify-end items-center">
                                 <Text
                                 fontSize={eventTimeSize}
