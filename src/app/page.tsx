@@ -786,7 +786,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                                 className="bold-text"
                                 zIndex={2}
                               >
-                                {`${event.maxHeadcount - event.registeredIds.length} Spots Left`}
+                                {`${event.maxHeadcount - event.registeredIds.length} Spot${event.maxHeadcount - event.registeredIds.length === 1 ? "" : "s"} Left`}
                               </Text>
 
                             </div>
