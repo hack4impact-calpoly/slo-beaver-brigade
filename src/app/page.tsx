@@ -752,6 +752,17 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                             my="2"
                             zIndex={2}
                           >
+                            {event.groupsOnly && <>
+                              <div className="flex flex-row items-center justify-end">
+                                <Text fontFamily="Lato"
+                              fontWeight="500"
+                              fontSize='18px'
+                              color="white"
+                              marginRight='1rem'
+                              className="bold-text"
+                              >Invite Only</Text>                                
+                              <LockIcon color='wheat'/>
+                            </div></>}
                           <Heading className="flex flex-row justify-start" as="h2" fontSize="xl">
                             <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
                               <Button
@@ -764,7 +775,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                                 Register
                               </Button>
                             </Link>
-                            <div className="w-full flex flex-column justify-end items-center">
+                            <div className="w-full flex justify-end items-center">
                                 <Text
                                 fontSize={eventTimeSize}
                                 fontFamily="Lato"
@@ -775,15 +786,7 @@ const handleButtonClickToStopPropogation = (event: React.MouseEvent<HTMLButtonEl
                               >
                                 {`${event.maxHeadcount - event.registeredIds.length} Spots Left`}
                               </Text>
-                              {event.groupsOnly && <>
-                                <Text fontFamily="Lato"
-                                fontWeight="500"
-                                fontSize='18px'
-                                color="white"
-                                marginRight='1rem'
-                                className="bold-text"
-                                >Invite Only</Text>
-                                <LockIcon color='wheat'/></>}
+
                             </div>
                             
                           </Heading>
