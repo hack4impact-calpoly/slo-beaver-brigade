@@ -21,6 +21,7 @@ import {
   Textarea,
   SimpleGrid,
   IconButton,
+  StylesProvider,
 } from "@chakra-ui/react";
 import { AddIcon, CheckIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import EventPreviewComponent from "@components/EventCard";
@@ -40,6 +41,7 @@ import { IEventTemplate } from "database/eventTemplateSchema";
 import style from "./create.module.css";
 import "../../../fonts/fonts.css";
 import { set } from "mongoose";
+import ViewGroups from "app/components/ViewGroups";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -798,45 +800,52 @@ export default function Page() {
           </div>
 
             {/* Row 2: Assign Groups and Only Available to Selected Groups */}
-            <div>
-              <FormControl>
-              <FormLabel htmlFor="organization" fontWeight="bold">
-                Assign Groups
-              </FormLabel>
-              <CreatableSelect
-                id="organization"
-                placeholder="Select or create organization"
-                options={groups?.map((group) => ({
-                value: group._id,
-                label: group.group_name,
-                }))}
-                value={groupsSelected.map((group) => ({
-                value: group._id,
-                label: group.group_name,
-                }))}
-                onChange={(selectedOptions) =>
-                setGroupsSelected(
-                  selectedOptions
-                  ? selectedOptions.map((option) => ({
-                    _id: option.value,
-                    group_name: option.label,
-                    groupees: [],
-                    }))
-                  : []
-                )
-                }
-                onCreateOption={handleCreateNewGroup}
-                chakraStyles={{
-                control: (provided) => ({
-                  ...provided,
-                  textAlign: "left",
-                }),
-                }}
-                isMulti
-                isClearable
-                isSearchable
-              />
-              </FormControl>
+            <div className={style.twoThirdsGrid}>
+              <div className={style.leftColumn}>
+                <FormControl>
+                <FormLabel htmlFor="organization" fontWeight="bold">
+                  Assign Groups
+                </FormLabel>
+                <CreatableSelect
+                  id="organization"
+                  placeholder="Select or create organization"
+                  options={groups?.map((group) => ({
+                  value: group._id,
+                  label: group.group_name,
+                  }))}
+                  value={groupsSelected.map((group) => ({
+                  value: group._id,
+                  label: group.group_name,
+                  }))}
+                  onChange={(selectedOptions) =>
+                  setGroupsSelected(
+                    selectedOptions
+                    ? selectedOptions.map((option) => ({
+                      _id: option.value,
+                      group_name: option.label,
+                      groupees: [],
+                      }))
+                    : []
+                  )
+                  }
+                  onCreateOption={handleCreateNewGroup}
+                  chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                  }}
+                  isMulti
+                  isClearable
+                  isSearchable
+                />
+                </FormControl>
+              </div>
+              <div className={style.rightColumn}>
+                <ViewGroups/>
+              </div>
+
+
             </div>
 
           <div className={style.halfGrid}>
