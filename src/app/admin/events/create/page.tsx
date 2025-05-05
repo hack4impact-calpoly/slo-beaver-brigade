@@ -81,7 +81,7 @@ export default function Page() {
   const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
   const [description, setDescription] = useState("");
   const [checkList, setChecklist] = useState<string[]>([]);
-  const [maxHeadcount, setMaxHeadCount] = useState<number>(0);
+  const [maxHeadcount, setMaxHeadCount] = useState<number>();
   const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
@@ -318,7 +318,7 @@ export default function Page() {
         isClosable: true,
       });
       return;
-    } else if (maxHeadcount <= 0) {
+    } else if (maxHeadcount != null && maxHeadcount <= 0) {
       toast({
         title: "Error",
         description: "Headcount must be greater than 0",
@@ -568,7 +568,7 @@ export default function Page() {
     eventType,
     checklist: checkList,
     location,
-    maxHeadcount,
+    maxHeadcount: maxHeadcount ?? 0,
     description,
     wheelchairAccessible: accessibilityAccommodation === "Yes",
     spanishSpeakingAccommodation: spanishSpeaking === "Yes",
