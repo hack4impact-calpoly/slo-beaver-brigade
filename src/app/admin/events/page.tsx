@@ -276,13 +276,6 @@ const EventPreview = () => {
           <CheckboxGroup colorScheme="green" defaultValue={[]}>
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
               <Checkbox
-                value="spanish"
-                colorScheme="blue"
-                onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}
-              >
-                <div className={style.checkboxLabel}>Spanish Speaking</div>
-              </Checkbox>
-              <Checkbox
                 value="wheelchair accessible"
                 colorScheme="blue"
                 onChange={() => setWheelchairAccessible(!wheelchairAccessible)}
@@ -295,6 +288,20 @@ const EventPreview = () => {
                 onChange={() => setGroupOnly(!groupOnly)}
               >
                 <div className={style.checkboxLabel}>Group Only</div>
+              </Checkbox>
+            </Stack>
+          </CheckboxGroup>
+        </div>
+        <div className={style.filterContainer}>
+          <div className={style.filterHeader}>Languages</div>
+          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+              <Checkbox
+                value="spanish"
+                colorScheme="blue"
+                onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}
+              >
+                <div className={style.checkboxLabel}>Spanish</div>
               </Checkbox>
             </Stack>
           </CheckboxGroup>
