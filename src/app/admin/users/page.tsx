@@ -180,7 +180,15 @@ const UserList = () => {
     .sort((a, b) =>
       sortOrder.value === "firstName"
         ? a.firstName.localeCompare(b.firstName)
-        : a.lastName.localeCompare(b.lastName)
+        : sortOrder.value === "lastName"
+        ? a.lastName.localeCompare(b.lastName)
+        : sortOrder.value === "email"
+        ? a.email.localeCompare(b.email) 
+        : sortOrder.value === "totalHours"
+        ? b.totalHoursFormatted.localeCompare(a.totalHoursFormatted)
+        : sortOrder.value === "role" 
+        ? a.role.localeCompare(b.role)
+        : a.firstName.localeCompare(b.firstName)
     ));
   }, [allUsers, searchTerm, sortOrder]);
 
@@ -188,6 +196,9 @@ const UserList = () => {
   const sortOptions = [
     { value: "firstName", label: "First Name" },
     { value: "lastName", label: "Last Name" },
+    { value: "email", label: "Email"},
+    { value: "totalHours", label: "Total Hours"},
+    { value: "role", label: "Role"}
   ];
 
   const removeUser = (userId: string) => {
