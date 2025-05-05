@@ -73,7 +73,7 @@ const editRoleName = (str: string): string => {
 
 const UserList = () => {
   // states
-  const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+  const [allUsers, setUsers] = useState<IUserWithHours[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,7 +115,7 @@ const UserList = () => {
     }
   };
 
-  // fetch customUser from db
+  // fetch allUsers from db
   const fetchUsers = async () => {
    
     if (!users){
@@ -140,7 +140,7 @@ const UserList = () => {
 
       setUsers(usersWithEventNames as IUserWithHours[]);
     } catch (error) {
-      console.error("Error fetching customUser:", error);
+      console.error("Error fetching allUsers:", error);
     } finally {
       setLoading(false);
     }
@@ -171,7 +171,7 @@ const UserList = () => {
   }, [isError, isLoading]);
 
   useEffect(() => {
-    setFilteredUsers(customUser
+    setFilteredUsers(allUsers
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -182,7 +182,7 @@ const UserList = () => {
         ? a.firstName.localeCompare(b.firstName)
         : a.lastName.localeCompare(b.lastName)
     ));
-  }, [customUser]);
+  }, [allUsers, searchTerm, sortOrder]);
 
 
   const sortOptions = [
@@ -191,12 +191,12 @@ const UserList = () => {
   ];
 
   const removeUser = (userId: string) => {
-    const newUsers = customUser.filter((user) => user._id != userId);
+    const newUsers = allUsers.filter((user) => user._id != userId);
     setUsers(newUsers);
   }
 
 
-  const csvData = customUser.map((user) => ({
+  const csvData = allUsers.map((user) => ({
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
