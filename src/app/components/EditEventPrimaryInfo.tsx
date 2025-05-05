@@ -6,6 +6,7 @@ import EditEvent from '@components/EditEvent';
 import editButton from '/docs/images/edit_details.svg'
 import { useEventId } from 'app/lib/swrfunctions';
 import { IGroup } from 'database/groupSchema';
+import MarkdownPreview from '@uiw/react-markdown-preview';
 
 const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
     const [loading, setLoading] = useState(true);
@@ -105,7 +106,13 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                             <Text className={styles.eventField}>Disability Accommodations</Text>
                             <Text className={styles.eventEntry}>{eventData.wheelchairAccessible ? 'Wheelchair Accessible' : 'None'}</Text>
                             <Text className={styles.eventField}>Description</Text>
-                            <Text className={styles.eventEntry}>{eventData.description}</Text>
+                            <Text className={styles.eventEntry}>
+                                <MarkdownPreview 
+                                    source={eventData.description}
+                                    wrapperElement={{'data-color-mode': 'light'}}
+                                >
+                                </MarkdownPreview>
+                            </Text>
                         </Box>
                     </>
                 )}

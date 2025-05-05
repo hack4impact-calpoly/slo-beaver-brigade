@@ -36,6 +36,7 @@ import { CreateTemporaryGroup } from "./ViewGroups";
 import "../fonts/fonts.css";
 import { useRef } from "react";
 import { CheckIcon, EditIcon, AddIcon } from "@chakra-ui/icons";
+import MDEditor from "@uiw/react-md-editor";
 
 const EditEvent = ({
   event,
@@ -94,7 +95,7 @@ const EditEvent = ({
   const handleDateChange = (e: any) => setDate(e.target.value);
   const handleStartChange = (e: any) => setStart(e.target.value);
   const handleEndChange = (e: any) => setEnd(e.target.value);
-  const handleDescChange = (e: any) => setDesc(e.target.value);
+  const handleDescChange = (e: any) => setDesc(e);
 
   const handleVolChange = () => {
     setVol(!vol);
@@ -437,10 +438,10 @@ const EditEvent = ({
                   <FormLabel color="black" fontWeight="bold">
                     Event Description
                   </FormLabel>
-                  <Textarea
-                    placeholder="Event Description"
+                  <MDEditor
                     value={desc}
-                    onChange={handleDescChange}
+                    onChange={(e) => handleDescChange(e)}
+                    data-color-mode="light"
                   />
                 </FormControl>
               </Stack>
