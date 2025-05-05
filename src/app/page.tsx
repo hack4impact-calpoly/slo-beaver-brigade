@@ -735,86 +735,51 @@ export default function Page() {
                             my="2"
                             zIndex={2}
                           >
-<<<<<<< HEAD
-                            {event.groupsOnly && <>
-                              <div className="flex flex-row items-center justify-end">
-                                <Text fontFamily="Lato"
-                              fontWeight="500"
-                              fontSize='18px'
-                              color="white"
-                              marginRight='1rem'
-                              className="bold-text"
-                              >Invite Only</Text>                                
-                              <LockIcon color='wheat'/>
-                            </div></>}
-                          <Heading className="flex flex-row justify-start" as="h2" fontSize="xl">
-                            {(event.maxHeadcount - event.registeredIds.length > 0 && 
-                              <Link href={"/events/" + event._id + "/digitalWaiver/1"}>
-                                <Button
-                                  bg="#e0af48"
-                                  color="black"
-                                  _hover={{ bg: "#C19137" }}
-                                  fontSize={eventDetailSize}
-                                  onClick={handleButtonClickToStopPropogation}
-                                  >
-                                  Register
-                                </Button>
-                              </Link>
-                            )}
-                            <div className="w-full flex justify-end items-center">
-                                <Text
-                                fontSize={eventTimeSize}
-                                fontFamily="Lato"
-                                fontWeight="500"
-                                color="white"
-                                className="bold-text"
-                                zIndex={2}
-                              >
-                                {`${event.maxHeadcount - event.registeredIds.length} Spot${event.maxHeadcount - event.registeredIds.length === 1 ? "" : "s"} Left`}
-                              </Text>
-
-                            </div>
-                            
-                          </Heading>
-                        </Box> 
-=======
-                            <Heading
-                              className="flex flex-row justify-start"
-                              as="h2"
-                              fontSize="xl"
-                            >
-                              <Link
-                                href={'/events/' + event._id + '/digitalWaiver'}
-                              >
-                                <Button
-                                  bg="#e0af48"
-                                  color="black"
-                                  _hover={{ bg: '#C19137' }}
-                                  fontSize={eventDetailSize}
-                                  onClick={handleButtonClickToStopPropagation}
-                                >
-                                  Register
-                                </Button>
-                              </Link>
-                              {event.groupsOnly && (
-                                <div className="w-full flex flex-row justify-end items-center">
-                                  <Text
-                                    fontFamily="Lato"
+                            {event.groupsOnly && 
+                              <>
+                                <div className="flex flex-row items-center justify-end">
+                                  <Text fontFamily="Lato"
                                     fontWeight="500"
-                                    fontSize="18px"
+                                    fontSize='18px'
                                     color="white"
-                                    marginRight="1rem"
+                                    marginRight='1rem'
                                     className="bold-text"
                                   >
                                     Invite Only
-                                  </Text>
-                                  <LockIcon color="wheat" />
-                                </div>
+                                  </Text>                                
+                                  <LockIcon color='wheat'/>
+                               </div>
+                              </>
+                            }
+                            <Heading className="flex flex-row justify-start" as="h2" fontSize="xl">
+                              {(event.maxHeadcount - event.registeredIds.length > 0 && 
+                                <Link href={"/events/" + event._id + "/digitalWaiver"}>
+                                  <Button
+                                    bg="#e0af48"
+                                    color="black"
+                                    _hover={{ bg: "#C19137" }}
+                                    fontSize={eventDetailSize}
+                                    onClick={handleButtonClickToStopPropagation}
+                                    >
+                                    Register
+                                  </Button>
+                                </Link>
                               )}
+                              <div className="w-full flex justify-end items-center">
+                                  <Text
+                                  fontSize={eventTimeSize}
+                                  fontFamily="Lato"
+                                  fontWeight="500"
+                                  color="white"
+                                  className="bold-text"
+                                  zIndex={2}
+                                >
+                                  {`${event.maxHeadcount - event.registeredIds.length} Spot${event.maxHeadcount - event.registeredIds.length === 1 ? "" : "s"} Left`}
+                                </Text>
+                              </div>
                             </Heading>
-                          </Box>
+                          </Box> 
                         </Box>
->>>>>>> 6608d269790b37131fbced4405045c0b4c253b7f
                       </Box>
                     );
                   })
