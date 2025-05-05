@@ -185,7 +185,6 @@ const UserList = () => {
   }, [customUser]);
 
 
-
   const sortOptions = [
     { value: "firstName", label: "First Name" },
     { value: "lastName", label: "Last Name" },
