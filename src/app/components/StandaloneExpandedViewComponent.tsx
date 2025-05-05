@@ -407,8 +407,7 @@ function ExpandedViewComponent({
                       </Button>
                       <Button
                         as="a"
-                        href="/waiver.pdf"
-                        target="_blank"
+                        href={`/events/${eventDetails._id}/digitalWaiver/1?mode=view`}
                         bg="#337774"
                         color="white"
                         _hover={{ bg: '#4a9b99' }}
