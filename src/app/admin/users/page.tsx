@@ -272,6 +272,9 @@ const UserList = () => {
     <div className={style.mainContainer}>
       <div className={style.buttonContainer}>
         <div className={style.innerButtons}>
+          <Text>
+            Order By:
+          </Text>
           <Select
             id="sort-select"
             placeholder="Sort by First or Last Name"
