@@ -63,8 +63,6 @@ useEffect(() => {
     // Renders a card with the log information
     <Card
       className={style.auditPreview}
-      role="button"
-      onClick={handleClick}
       borderRadius="lg"
       borderWidth="1px"
       borderColor="gray.400"
@@ -77,7 +75,11 @@ useEffect(() => {
           </Heading>
           <Text>{formattedDate}</Text>
         </div>
-        <RiArrowRightSLine className={style.auditIcon} />
+        {(log.action).includes("deleted") ? null : (
+          <RiArrowRightSLine className={style.auditIcon}
+          role="button"
+          onClick={handleClick} />
+        )}
       </CardBody>
     </Card>
   );
