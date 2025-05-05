@@ -14,7 +14,8 @@ import {
   Button,
   Wrap,
   WrapItem,
-  Input
+  Input,
+  Checkbox
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
 import Select from "react-select";
@@ -82,6 +83,7 @@ const UserList = () => {
     value: "firstName",
     label: "First Name",
   });
+  const [isReverseSort, setIsReverseSort] = useState(false);
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
   const [page, setPage] = useState(0);
@@ -179,18 +181,28 @@ const UserList = () => {
     )
     .sort((a, b) =>
       sortOrder.value === "firstName"
-        ? a.firstName.localeCompare(b.firstName)
+        ? isReverseSort ?
+        b.firstName.localeCompare(a.firstName)
+        : a.firstName.localeCompare(b.firstName)
         : sortOrder.value === "lastName"
-        ? a.lastName.localeCompare(b.lastName)
+        ? isReverseSort ?
+        b.lastName.localeCompare(a.lastName)
+        : a.lastName.localeCompare(b.lastName)
         : sortOrder.value === "email"
-        ? a.email.localeCompare(b.email) 
+        ? isReverseSort ?
+        b.email.localeCompare(a.email) 
+        : a.email.localeCompare(b.email) 
         : sortOrder.value === "totalHours"
-        ? b.totalHoursFormatted.localeCompare(a.totalHoursFormatted)
+        ? isReverseSort ?
+        a.totalHoursFormatted.localeCompare(b.totalHoursFormatted)
+        : b.totalHoursFormatted.localeCompare(a.totalHoursFormatted)
         : sortOrder.value === "role" 
-        ? a.role.localeCompare(b.role)
+        ? isReverseSort ?
+        b.role.localeCompare(a.role)
+        : a.role.localeCompare(b.role)
         : a.firstName.localeCompare(b.firstName)
     ));
-  }, [allUsers, searchTerm, sortOrder]);
+  }, [allUsers, searchTerm, sortOrder, isReverseSort]);
 
 
   const sortOptions = [
@@ -293,6 +305,9 @@ const UserList = () => {
               }),
             }}
           />
+          <Checkbox onChange={() => setIsReverseSort(!isReverseSort)}>
+            Reversed?
+          </Checkbox>
           <div className={style.searchWrapper}>
             <Input
               type="text"
