@@ -323,15 +323,9 @@ function ExpandedViewComponent({
                   )}
                   <Flex direction={'column'}>
                     <FormLabel color="black" fontWeight="bold" fontSize={'xl'}>
-                      Languages
+                      Event Language
                     </FormLabel>
-                    <Stack spacing={2}>
-                      <MarkdownPreview
-                        className={style.preview}
-                        style={{ fontWeight: 'light' }}
-                        source={'- English'}
-                        wrapperElement={{ 'data-color-mode': 'light' }}
-                      />
+                    <Stack spacing={2}>  
                       {eventDetails.spanishSpeakingAccommodation ? (
                         <MarkdownPreview
                           className={style.preview}
@@ -340,7 +334,12 @@ function ExpandedViewComponent({
                           wrapperElement={{ 'data-color-mode': 'light' }}
                         />
                       ) : (
-                        <></>
+                        <MarkdownPreview
+                        className={style.preview}
+                        style={{ fontWeight: 'light' }}
+                        source={'- English'}
+                        wrapperElement={{ 'data-color-mode': 'light' }}
+                        />
                       )}
                     </Stack>
                   </Flex>
