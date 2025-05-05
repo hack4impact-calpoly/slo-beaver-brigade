@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { IEvent } from '../../../database/eventSchema';
 import { formatDate, formatDuration, timeOfDay } from '../../lib/dates';
-import { eventHours, filterPastEvents, filterEventsByType } from '../../lib/hours';
+import { eventHours, filterPastEvents, filterEventsByType, filterVolunteerEvents } from '../../lib/hours';
 import { getUserDbData } from 'app/lib/authentication';
 import { IUser } from '@database/userSchema';
 import "../../fonts/fonts.css"
@@ -75,7 +75,7 @@ const AttendedEvents = () => {
       throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
     }
     const allEvents: IEvent[] = await eventsResponse.json();
-    const volunteerEvents = filterEventsByType(allEvents, "Volunteer");
+    const volunteerEvents = filterVolunteerEvents(allEvents);
     const csvData = volunteerEvents.map((event: IEvent) => ({
       eventName: event.eventName,
       eventDate: formatDate(event.startTime),

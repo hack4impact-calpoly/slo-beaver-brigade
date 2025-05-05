@@ -28,7 +28,9 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-
+        <head>
+          <link rel="icon" type="image/png" href="/beaver-logo.png"/>
+        </head>
         <body  className={montserrat.className}>
                 <Providers>
                     <NavbarParent/>

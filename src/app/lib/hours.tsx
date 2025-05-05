@@ -166,3 +166,9 @@ export function filterEventsByType(
 ){
   return events.filter(event => event.eventType?.toLowerCase() === eventType.toLowerCase());
 }
+
+export function filterVolunteerEvents(
+  events: IEvent[]
+){
+  return events.filter(event => event.volunteerEvent);
+}

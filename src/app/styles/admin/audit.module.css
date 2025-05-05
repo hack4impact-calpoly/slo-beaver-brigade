@@ -58,3 +58,16 @@
   margin: 10px;
   border: 1px solid grey;
 }
+
+.pageCountContainer {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  padding: 32px;
+}
+
+.pageButton {
+  width: 100px;
+}
