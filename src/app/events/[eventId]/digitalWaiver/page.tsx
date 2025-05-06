@@ -53,20 +53,48 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
   const [emailChecked, setEmailChecked] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
+  const [activeWaiver, setActiveWaiver] = useState<any>(null);
   const [existingWaiver, setExistingWaiver] = useState<ISignedWaiver | null>(
     null
   );
 
-  // Waiver text
-  const waiverText = `1. I am voluntarily joining an activity sponsored by the SLO Beaver Brigade, which may include tours to and from and in and around beaver ponds, as well as litter and brush removal or planting in riverbeds and creekbeds, and related activities.
+  // Fetch active waiver
+  useEffect(() => {
+    const fetchActiveWaiver = async () => {
+      try {
+        const response = await fetch('/api/waiver-versions');
+        const data = await response.json();
+        const active = data.waiverVersions.find((w: any) => w.isActiveWaiver);
+        if (active) {
+          setActiveWaiver(active);
+        } else {
+          toast({
+            title: 'No active waiver found',
+            description: 'Please contact an administrator',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching active waiver:', error);
+        toast({
+          title: 'Error loading waiver',
+          description: 'Please try again later',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    };
 
-   2. I understand that the SLO Beaver Brigade has no duty or responsibility for me or my dependents’ safety or property. I am participating in this activity entirely at my own risk and assume full responsibility for any and all bodily injury, disability, death, or property damage as a result of my participation in a SLO Beaver Brigade event. I recognize that these risks may include hiking, crossing streams or wading through water, falling trees and limbs, poison oak, stinging nettles, thistles and other barbed plants, poisonous insects, snakes including rattlesnakes, ticks, wild animals, inclement weather, wildfires or floods, homeless encampments, sharp objects in and around the riverbed such as barbed wire, unsupervised dogs or horses, ATV riders, dirt bikers or other vehicles, hunters, target shooters, poachers, and any other risks on or around the premises of the activity, known or unknown to me or event organizers and leaders.
+    fetchActiveWaiver();
+  }, []);
 
-   3. I hereby RELEASE, WAIVE, and DISCHARGE the SLO Beaver Brigade, Dr. Emily Fairfax, Audrey Taub, Cooper Lienhart, Kate Montgomery, Fred Frank, Hannah Strauss, landowners, and Beaver Brigade interns/fellows, volunteers, members, sponsors, affiliates and other agents from any and all liability, claims, demands and actions whatsoever, regardless of whether such loss is caused by the acts or failures to act of any party organizing or leading a specific event or activity on behalf of the SLO Beaver Brigade, and I surrender any and all rights to seek compensation for any injury whatsoever sustained during my participation in a SLO Beaver Brigade activity. I agree to INDEMNIFY and HOLD HARMLESS releases against any and all claims, suits, or actions brought by me, my spouse, family, heirs, or anyone else on behalf of me or my dependents, and agree to reimburse all attorney’s fees and related costs that may be incurred by releases due to my participation in SLO Beaver Brigade events or activities.
-
-   4. I hereby grant the SLO Beaver Brigade permission to use my likeness in a photograph, video, or other digital media (“photo”) in any and all of its publications, including web-based publications, without payment or other consideration. I hereby irrevocably authorize the SLO Beaver Brigade to edit, alter, copy, exhibit, publish, or distribute these photos for any lawful purpose. In addition, I waive any right to inspect or approve the finished product wherein my likeness appears. Additionally, I waive any right to royalties or other compensation arising from or related to the use of the photo.`;
-
-  const signatureText = `BY SIGNING THIS AGREEMENT, I ACKNOWLEDGE AND REPRESENT THAT I HAVE READ THIS WAIVER OF LIABILITY AND HOLD HARMLESS AGREEMENT, that I fully understand and consent to the terms of this agreement, and that I am signing it of my own free will. I agree that no oral representations, statements, or inducements apart from this written agreement have been made or implied. I am at least 18 years of age, fully competent, responsible, and legally able to sign this agreement for myself or my dependents.`;
+  // Update the waiver text to use active waiver content
+  const waiverText = activeWaiver?.body || 'Loading waiver...';
+  const acknowledgementText =
+    activeWaiver?.acknowledgement || 'Loading acknowledgement...';
 
   // Scroll check for waiver
   const handleTextareaScroll = (event: React.UIEvent<HTMLElement>) => {
@@ -119,8 +147,18 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!activeWaiver) {
+      toast({
+        title: 'No active waiver found',
+        description: 'Please contact an administrator',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     if (!isScrolledToBottom) {
-      //prevent submission if not scrolled to bottom
       toast({
         title: 'Please scroll to the bottom of the waiver before submitting.',
         status: 'error',
@@ -140,7 +178,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
       dependents: filteredDependents,
       eventId: eventId,
       dateSigned: new Date(),
-      waiverVersion: 1,
+      waiverVersion: activeWaiver.version,
     };
 
     if (existingWaiver) {
@@ -372,7 +410,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
       >
         <Image src={beaverLogo} alt="beaver" />
 
-        <Box w={['90%', '80%']} h="70%" mt={{ base: 10, md: 15 }} mb={0}>
+        <Box w={'80%'} mt={{ base: 10, md: 15 }} mb={0}>
           <h1
             style={{
               fontWeight: 'bold',
@@ -386,7 +424,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
             className={styles.scroller}
             resize="none"
             readOnly
-            height="400px"
+            height="350px"
             whiteSpace="pre-line"
             mt={5}
             value={waiverText}
@@ -400,9 +438,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            width: '100%',
           }}
         >
-          <Box w={['90%', '80%']}>
+          <Box w={'80%'}>
             {/* User Information Section */}
             {!userData && !loadingUser && (
               <div className="flex flex-col">
@@ -442,9 +481,9 @@ export default function Waiver({ params: { eventId } }: IParams) {
               </div>
             )}
 
-            <Box p={4} mt={5}>
-              {signatureText}
-            </Box>
+            <Text p={4} mt={5} w={['100%']} textAlign="left">
+              {acknowledgementText}
+            </Text>
 
             <button
               type="button"
@@ -512,10 +551,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
           {!existingWaiver ? (
             <Button
               type="submit"
-              mt={8}
-              mb={'3%'}
+              mt={6}
+              mb={6}
               sx={{
-                width: { base: '100%', md: '225px' },
+                width: '200px',
                 height: '40px',
                 backgroundColor: '#337774',
                 color: 'white',
@@ -524,6 +563,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
                   backgroundColor: '#296361',
                 },
               }}
+              isDisabled={
+                waiverText === 'Loading waiver...' ||
+                acknowledgementText === 'Loading acknowledgement...'
+              }
             >
               Submit
             </Button>
