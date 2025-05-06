@@ -89,7 +89,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   // Update the waiver text to use active waiver content
   const waiverText = activeWaiver?.body || "Loading waiver...";
-  const signatureText =
+  const acknowledgementText =
     activeWaiver?.acknowledgement || "Loading acknowledgement...";
 
   // Scroll check for waiver
@@ -353,7 +353,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
       >
         <Image src={beaverLogo} alt="beaver" />
 
-        <Box w={["90%", "80%"]} h="70%" mt={{ base: 10, md: 15 }} mb={0}>
+        <Box w={"80%"} mt={{ base: 10, md: 15 }} mb={0}>
           <h1
             style={{
               fontWeight: "bold",
@@ -367,7 +367,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
             className={styles.scroller}
             resize="none"
             readOnly
-            height="400px"
+            height="350px"
             whiteSpace="pre-line"
             mt={5}
             value={waiverText}
@@ -381,9 +381,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            width: "100%",
           }}
         >
-          <Box w={["90%", "80%"]}>
+          <Box w={"80%"}>
             {/* User Information Section */}
             {!userData && !loadingUser && (
               <div className="flex flex-col">
@@ -423,15 +424,15 @@ export default function Waiver({ params: { eventId } }: IParams) {
               </div>
             )}
 
-            <Box p={4} mt={5}>
-              {signatureText}
-            </Box>
+            <Text p={4} mt={5} w={["100%"]} textAlign="left">
+              {acknowledgementText}
+            </Text>
 
             <button
               type="button"
               onClick={addDependent}
               className={styles.addDependent}
-              style={{ color: "#ECB94A" }}
+              style={{ color: "#ECB94A"}}
             >
               Add Dependent +
             </button>
@@ -492,10 +493,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
           </Box>
           <Button
             type="submit"
-            mt={8}
-            mb={"3%"}
+            mt={6}
+            mb={6}
             sx={{
-              width: { base: "100%", md: "225px" },
+              width: "200px" ,
               height: "40px",
               backgroundColor: "#337774",
               color: "white",
@@ -504,6 +505,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 backgroundColor: "#296361",
               },
             }}
+            isDisabled={
+              (waiverText === "Loading waiver..." ||
+                acknowledgementText === "Loading acknowledgement...")
+            }
           >
             Submit
           </Button>

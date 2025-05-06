@@ -47,7 +47,7 @@ export default function WaiverVersions() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
-  const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
+  const [isLargerThan830] = useMediaQuery("(min-width: 830px)");
 
   // Fetch waiver versions
   const { data, error, mutate } = useSWR("/api/waiver-versions", fetcher);
@@ -251,7 +251,7 @@ export default function WaiverVersions() {
   return (
     <Box className={styles.container}>
       <Flex direction="column" w="100%">
-        {isLargerThan800 ? (
+        {isLargerThan830 ? (
           // Hardcoded Sidebar for Larger Screens
           <Flex width="full" justify="space-between" alignItems="flex-start">
             <Box
@@ -280,38 +280,38 @@ export default function WaiverVersions() {
                 </Heading>
                 <Stack spacing={2}>
                   {waiverVersions.map((version: IWaiverVersion) => (
-                    <Box
-                      key={version._id}
-                      p={4}
-                      borderWidth="1px"
-                      borderRadius="md"
-                      cursor="pointer"
-                      onClick={() => handleVersionSelect(version)}
-                      bg={
-                        selectedVersion?._id === version._id
-                          ? "gray.100"
-                          : "white"
+                    <Flex
+                    key={version._id}
+                    align="center"
+                    gap={2}
+                    _hover={{ "& .delete-icon": { opacity: 1 } }}
+                  >
+                    <Button
+                      flex={1}
+                      variant={
+                        selectedVersion?._id === version._id ? "solid" : "ghost"
                       }
-                      position="relative"
+                      colorScheme={
+                        selectedVersion?._id === version._id ? "teal" : "gray"
+                      }
+                      justifyContent="flex-start"
+                      onClick={() => handleVersionSelect(version)}
                     >
-                      <Flex justify="space-between" align="center">
-                        <Text fontWeight="bold">Version {version.version}</Text>
-                        <Flex gap={2}>
-                          {version.isActiveWaiver && (
-                            <Text color="green.500" fontWeight="bold">
-                              Active
-                            </Text>
-                          )}
-                          <IconButton
-                            aria-label="Delete waiver"
-                            icon={<CloseIcon />}
-                            size="sm"
-                            onClick={(e) => handleDeleteClick(e, version)}
-                            isDisabled={version.isActiveWaiver}
-                          />
-                        </Flex>
-                      </Flex>
-                    </Box>
+                      Waiver v{version.version} {version.isActiveWaiver ? "(Active)" : ""}
+                    </Button>
+                    <IconButton
+                      size="xs"
+                      icon={<CloseIcon />}
+                      colorScheme="red"
+                      variant="ghost"
+                      aria-label="Delete waiver"
+                      onClick={(e) => handleDeleteClick(e, version)}
+                      isDisabled={version.isActiveWaiver}
+                      opacity={0}
+                      className="delete-icon"
+                      transition="opacity 0.2s"
+                    />
+                  </Flex>
                   ))}
                   <Button
                     variant={!selectedVersion ? "solid" : "ghost"}
@@ -406,40 +406,38 @@ export default function WaiverVersions() {
                 <DrawerBody>
                   <Stack spacing={2}>
                     {waiverVersions.map((version: IWaiverVersion) => (
-                      <Box
-                        key={version._id}
-                        p={4}
-                        borderWidth="1px"
-                        borderRadius="md"
-                        cursor="pointer"
-                        onClick={() => handleVersionSelect(version)}
-                        bg={
-                          selectedVersion?._id === version._id
-                            ? "gray.100"
-                            : "white"
+                      <Flex
+                      key={version._id}
+                      align="center"
+                      gap={2}
+                      _hover={{ "& .delete-icon": { opacity: 1 } }}
+                    >
+                      <Button
+                        flex={1}
+                        variant={
+                          selectedVersion?._id === version._id ? "solid" : "ghost"
                         }
-                        position="relative"
+                        colorScheme={
+                          selectedVersion?._id === version._id ? "teal" : "gray"
+                        }
+                        justifyContent="flex-start"
+                        onClick={() => handleVersionSelect(version)}
                       >
-                        <Flex justify="space-between" align="center">
-                          <Text fontWeight="bold">
-                            Version {version.version}
-                          </Text>
-                          <Flex gap={2}>
-                            {version.isActiveWaiver && (
-                              <Text color="green.500" fontWeight="bold">
-                                Active
-                              </Text>
-                            )}
-                            <IconButton
-                              aria-label="Delete waiver"
-                              icon={<CloseIcon />}
-                              size="sm"
-                              onClick={(e) => handleDeleteClick(e, version)}
-                              isDisabled={version.isActiveWaiver}
-                            />
-                          </Flex>
-                        </Flex>
-                      </Box>
+                        Waiver v{version.version} {version.isActiveWaiver ? "(Active)" : ""}
+                      </Button>
+                      <IconButton
+                        size="xs"
+                        icon={<CloseIcon />}
+                        colorScheme="red"
+                        variant="ghost"
+                        aria-label="Delete waiver"
+                        onClick={(e) => handleDeleteClick(e, version)}
+                        isDisabled={version.isActiveWaiver}
+                        opacity={0}
+                        className="delete-icon"
+                        transition="opacity 0.2s"
+                      />
+                    </Flex>
                     ))}
                     <Button
                       variant={!selectedVersion ? "solid" : "ghost"}
