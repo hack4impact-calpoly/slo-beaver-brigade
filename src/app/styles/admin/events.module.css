@@ -7,7 +7,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 10px;
   width: 15vw;
 }
 
@@ -77,11 +77,6 @@
   margin-top: 20px;
 }
 
-.filterContainer {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 0px;
-}
 .filterHeader {
   margin-left: 0px;
   font-size: 16px;
@@ -177,14 +172,7 @@
     padding-bottom: 40px;
   }
 
-  .filterContainerTypeAccessibility {
-    flex-direction: column;
-    display: flex;
-    gap: 20px;
-  }
-
-  .filterContainer,
-  .filterContainerTypeAccessibility {
+  .filterContainer{
     margin-top: 0px;
     width: 100%;
     align-items: flex-start;

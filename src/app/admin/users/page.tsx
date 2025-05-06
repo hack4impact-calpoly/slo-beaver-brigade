@@ -84,6 +84,8 @@ const UserList = () => {
   });
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
+  const [page, setPage] = useState(0);
+  const userLimit = 15;
 
   // calculate hours for each event in user schema
   const calculateTotalHours = (events: AttendedEventInfo[]): number => {
@@ -200,6 +202,10 @@ const UserList = () => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
+    zipcode: user.zipcode,
+    receivesNewsletter: user.receiveNewsletter ? "Yes" : "No",
+    age: user.age !== undefined ? user.age : "Unknown",
+    gender: user.gender || "Unknown",
     role: editRoleName(user.role),
     eventsAttended:
       user.eventsAttendedNames.length > 0
@@ -214,6 +220,10 @@ const UserList = () => {
     { label: "Last Name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Phone Number", key: "phoneNumber" },
+    { label: "Zipcode", key: "zipcode"},
+    { label: "Receives Newsletter", key: "receivesNewsletter"},
+    { label: "Age", key: "age"},
+    { label: "Gender", key: "gender"},
     { label: "Role", key: "role" },
     { label: "Events Attended", key: "eventsAttended" },
     { label: "Number of Events Attended", key: "eventsAttendedCount" },
@@ -338,7 +348,7 @@ const UserList = () => {
                     </Td>
                     </Tr>
                 ) : (
-                    filteredUsers.map((user) => (
+                    filteredUsers.slice(page * userLimit, (page+1) * userLimit).map((user) => (
                     
                     <Tr key={user._id}>
                         <Td>{`${user.firstName} ${user.lastName}`}</Td>
@@ -355,6 +365,27 @@ const UserList = () => {
               </Tbody>
             </Table>
           </Box>
+          <div className={style.pageCountContainer}>
+            <Button 
+              className={style.pageButton}
+              isDisabled={page === 0}
+              onClick={() => setPage(page-1)}>
+                Previous
+            </Button>
+            <Text
+              fontSize={['xl', 'xl', '2xl']}
+              fontWeight="light"
+              color="black"
+            >
+              Page {page+1}
+            </Text>
+            <Button
+              className={style.pageButton}
+              isDisabled={(page+1) * userLimit >= filteredUsers.length} 
+              onClick={() => setPage(page+1)}>
+                Next
+            </Button>
+          </div>
       </div>
     </div>
   );

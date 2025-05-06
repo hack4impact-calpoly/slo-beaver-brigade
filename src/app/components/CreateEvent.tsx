@@ -250,7 +250,7 @@ const CreateEvent = () => {
                 isChecked={span}
                 onChange={handleSpanChange}
               >
-                Spanish Speaking Accommodations
+                Spanish Speaking
               </Switch>
             </Stack>
           </ModalBody>

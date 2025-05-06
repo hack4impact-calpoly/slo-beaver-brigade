@@ -70,6 +70,7 @@ export default function Calendar(props: {
         />
         <ExpandedViewComponent
           eventDetails={getEvent}
+          editUrl={getEvent?._id}
           showModal={showExpandedView}
           setShowModal={setShowExpandedView}
         />

@@ -1,11 +1,12 @@
 'use client'
-import { Box, Text, Image, Spinner, UnorderedList, ListItem } from '@chakra-ui/react';
+import { Box, Text, Image, Spinner, UnorderedList, ListItem, background } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react'
 import styles from "../styles/admin/editEvent.module.css";
 import EditEvent from '@components/EditEvent';
 import editButton from '/docs/images/edit_details.svg'
 import { useEventId } from 'app/lib/swrfunctions';
 import { IGroup } from 'database/groupSchema';
+import MarkdownPreview from '@uiw/react-markdown-preview';
 
 const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
     const [loading, setLoading] = useState(true);
@@ -98,12 +99,19 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                             ) : (
                             <Text className={styles.eventEntry}>No items to bring</Text>
                             )}
-                            <Text className={styles.eventField}>Languages</Text>
-                            <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation ? 'English, Spanish' : 'English'}</Text>
+                            <Text className={styles.eventField}>Volunteer Event</Text>
+                            <Text className={styles.eventEntry}>{eventData.volunteerEvent ? "Yes, counts for volunteer hours" : "No, does not count for volunteer hours"}</Text>
+                            <Text className={styles.eventField}>Event Language</Text>
+                            <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation ? 'Spanish' : 'English'}</Text>
                             <Text className={styles.eventField}>Disability Accommodations</Text>
                             <Text className={styles.eventEntry}>{eventData.wheelchairAccessible ? 'Wheelchair Accessible' : 'None'}</Text>
                             <Text className={styles.eventField}>Description</Text>
-                            <Text className={styles.eventEntry}>{eventData.description}</Text>
+                            <MarkdownPreview 
+                                className={styles.eventEntry}
+                                style={{ backgroundColor:'#fbf9f9' }}
+                                source={eventData.description}
+                                wrapperElement={{'data-color-mode': 'light'}}
+                            />
                         </Box>
                     </>
                 )}

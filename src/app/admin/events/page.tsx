@@ -32,7 +32,8 @@ const EventPreview = () => {
     value: "earliest",
     label: "From Earliest",
   });
-  const [spanishSpeakingOnly, setSpanishSpeakingOnly] = useState(false);
+  const [spanishSpeakingEvent, setspanishSpeakingEvent] = useState(true);
+  const [englishSpeakingEvent, setenglishSpeakingEvent] = useState(true);
   const [wheelchairAccessible, setWheelchairAccessible] = useState(false);
   const [groupOnly, setGroupOnly] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
@@ -118,7 +119,8 @@ const EventPreview = () => {
   const filteredEvents =
     events
       ?.filter((event) =>
-        spanishSpeakingOnly ? event.spanishSpeakingAccommodation : true
+        (spanishSpeakingEvent && event.spanishSpeakingAccommodation) ||
+        (englishSpeakingEvent && !event.spanishSpeakingAccommodation)
       )
       .filter((event) =>
         wheelchairAccessible ? event.wheelchairAccessible : true
@@ -271,17 +273,31 @@ const EventPreview = () => {
             </Stack>
           </CheckboxGroup>
         </div>
-        <div className={style.filterContainerTypeAccessibility}>
-          <div className={style.filterHeader}>Accessibility</div>
-          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+        <div className={style.filterContainer}>
+          <div className={style.filterHeader}>Event Language</div>
+            <CheckboxGroup colorScheme="green">
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
               <Checkbox
-                value="spanish"
-                colorScheme="blue"
-                onChange={() => setSpanishSpeakingOnly(!spanishSpeakingOnly)}
+              isChecked={spanishSpeakingEvent}
+              colorScheme="blue"
+              onChange={() => setspanishSpeakingEvent(!spanishSpeakingEvent)}
               >
-                <div className={style.checkboxLabel}>Spanish Speaking</div>
+              <div className={style.checkboxLabel}>Spanish</div>
               </Checkbox>
+              <Checkbox
+              isChecked={englishSpeakingEvent}
+              colorScheme="blue"
+              onChange={() => setenglishSpeakingEvent(!englishSpeakingEvent)}
+              >
+              <div className={style.checkboxLabel}>English</div>
+              </Checkbox>
+            </Stack>
+            </CheckboxGroup>
+        </div>
+        <div className={style.filterContainer}>
+          <div className={style.filterHeader}>Other Filters</div>
+          <CheckboxGroup colorScheme="green" defaultValue={[]}>
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
               <Checkbox
                 value="wheelchair accessible"
                 colorScheme="blue"
