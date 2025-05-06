@@ -51,10 +51,9 @@ export async function GET(request: Request) {
           { groupsOnly: false },
           { groupsOnly: { $exists: false } },
           { groupsAllowed: { $in: userGroupIds } },
-          { registeredIds: { $in: [user._id] } },
-          { attendeeIds: { $in: [user._id] } },
         ],
       })
+        .select("-waiverIds -registeredIds -attendeeIds") // Exclude waiver-related fields
         .sort({ startTime: sort })
         .lean();
 
@@ -104,14 +103,15 @@ export async function POST(req: NextRequest) {
       const groups = await Group.find({
         _id: { $in: event.groupsAllowed },
       }).lean();
-      const groupMemberIds = groups.flatMap((group) => group.groupees);
-
-      // Add group members to registeredIds if they're not already included
-      if (!event.registeredIds) {
-        event.registeredIds = [];
-      }
+      const groupMemberIds = groups.flatMap((group) =>
+        group.groupees.map((id: any) => id.toString())
+      );
+      if (!event.registeredIds) event.registeredIds = [];
       event.registeredIds = Array.from(
-        new Set([...event.registeredIds, ...groupMemberIds])
+        new Set([
+          ...event.registeredIds.map((id: any) => id.toString()),
+          ...groupMemberIds,
+        ])
       );
     }
 
