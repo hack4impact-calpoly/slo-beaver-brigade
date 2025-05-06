@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     // Create log entry for new user creation
     await Log.create({
       user: `${savedUser.firstName} ${savedUser.lastName}`,
-      action: "created account",
+      action: "created user account",
       date: new Date(),
       link: savedUser._id,
     });

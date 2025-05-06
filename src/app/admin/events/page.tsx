@@ -19,10 +19,13 @@ import {
 import Select from "react-select";
 import { useEventsAscending } from "app/lib/swrfunctions";
 import "../../fonts/fonts.css";
+import { useSearchParams } from "next/navigation";
 
 const EventPreview = () => {
+  const searchParams = useSearchParams();
+  const eventId = searchParams.get("eventId");
   //states
-  const { events, isLoading } = useEventsAscending();
+  const { events = [], isLoading } = useEventsAscending();
   const uniqueEventTypes = Array.from(
     new Set(events?.map((e) => e.eventType?.trim()).filter(Boolean))
   );
@@ -108,10 +111,21 @@ const EventPreview = () => {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    if (eventId && events?.length > 0) {
+      const event = events.find((e) => e._id === eventId);
+      if (event) {
+        setSelectedEvent(event);
+        setIsModalOpen(true);
+      }
+    }
+  }, [eventId, events]);
+
   // open standAloneComponent on click
   const handleEventClick = (event: IEvent) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
+    window.history.pushState({}, "", `/admin/events?eventId=${event._id}`);
   };
 
   // filtering events logic

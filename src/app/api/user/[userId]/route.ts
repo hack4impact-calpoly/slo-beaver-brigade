@@ -133,6 +133,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             await Log.create({
                 user: `${user.firstName} ${user.lastName}`,
                 action: action,
+                link: targetUser._id,
                 date: new Date(),
             });
 
