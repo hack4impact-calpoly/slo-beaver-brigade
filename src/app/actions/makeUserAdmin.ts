@@ -33,6 +33,7 @@ export const makeUserAdmin = async (email: string, adminType: string) => {
     await Log.create({
       user: `${curUser.firstName} ${curUser.lastName}`,
       action: `changed ${user.firstName} ${user.lastName} to ${adminType}`,
+      link: user._id,
       date: new Date(),
     });
 

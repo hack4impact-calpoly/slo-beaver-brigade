@@ -33,6 +33,7 @@ const makeAdminUser = async (email: string) => {
     await Log.create({
       user: `${curUser.firstName} ${curUser.lastName}`,
       action: `reverted ${user.firstName} ${user.lastName} to user`,
+      link: user._id,
       date: new Date(),
     });
 

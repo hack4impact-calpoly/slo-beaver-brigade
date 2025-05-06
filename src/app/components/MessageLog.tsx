@@ -17,8 +17,6 @@ const MessageLog: React.FC<MessageLogProps> = ({ log }) => {
     
   const router = useRouter();
   
-
-  
  // Create a state variable to store the formatted date
 const [formattedDate, setFormattedDate] = useState<string>('');
 
@@ -50,14 +48,16 @@ useEffect(() => {
 }, [log.date]);
 
 
-// Handles clicking on a log entry - navigates to either event or user page
-  const handleClick = () => {
-    if (log.link) {
-      router.push(`/events/${log.link}`);
-    } else {
-      router.push(`/users/${log.user}`);
-    }
-  };
+// navigates to either event or user page when clicking an entry
+const handleClick = () => {
+  if ((log.action.toLowerCase().includes('user') || log.action.toLowerCase().includes('admin')) && log.link) {
+    router.push(`/admin/users?userId=${log.link}`);
+  } else if (log.action.toLowerCase().includes('event') && log.link) {
+    router.push(`/admin/events?eventId=${log.link}`);
+  } else {
+    console.error('Invalid log link or action:', log);
+  }
+};
 
   return (
     // Renders a card with the log information

@@ -26,6 +26,7 @@ import ViewGroups from "app/components/ViewGroups";
 import { useUsers } from "app/lib/swrfunctions";
 import "../../fonts/fonts.css";
 import { getUserDbData } from "app/lib/authentication";
+import { useSearchParams } from 'next/navigation';
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;
@@ -72,8 +73,24 @@ const editRoleName = (str: string): string => {
 };
 
 const UserList = () => {
-  // states
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
+  const [selectedUser, setSelectedUser] = useState<IUserWithHours | null>(null);
+  const [showUserDetails, setShowUserDetails] = useState(false);
   const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+
+  useEffect(() => {
+  if (userId && customUser.length > 0) {
+    const user = customUser.find((user) => user._id === userId);
+    if (user) {
+      setSelectedUser(user);
+      setShowUserDetails(true);
+      console.log("showUserDetails:", true);
+    }
+  }
+}, [userId, customUser]);
+
+  // states
   const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
@@ -245,6 +262,12 @@ const UserList = () => {
       </Text>
     )
   }
+
+  const handleCloseModal = () => {
+    setShowUserDetails(false);
+    setSelectedUser(null);
+    window.history.pushState({}, "", "/admin/users");
+  };
   
   return (
     <div className={style.mainContainer}>
@@ -357,7 +380,11 @@ const UserList = () => {
   
                         <Td>{editRoleName(user.role)}</Td>
                         <Td>
-                        <SingleVisitorComponent visitorData={user} removeFunction={removeUser} adminData={adminData}/>
+                        <SingleVisitorComponent
+                          visitorData={user}
+                          removeFunction={removeUser}
+                          adminData={adminData}
+                        />
                         </Td>
                     </Tr>
                     ))
@@ -387,6 +414,17 @@ const UserList = () => {
             </Button>
           </div>
       </div>
+
+      {showUserDetails && selectedUser && (
+      <SingleVisitorComponent
+        visitorData={selectedUser}
+        removeFunction={removeUser}
+        adminData={adminData}
+        isOpen={showUserDetails}
+        onClose={handleCloseModal}
+      />
+    )}
+
     </div>
   );
 };
