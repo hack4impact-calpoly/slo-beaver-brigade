@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -25,17 +25,17 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useMediaQuery,
-} from '@chakra-ui/react';
-import { CloseIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import styles from './page.module.css';
-import { IWaiverVersion } from '@database/waiverVersionsSchema';
-import useSWR from 'swr';
+} from "@chakra-ui/react";
+import { CloseIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import styles from "./page.module.css";
+import { IWaiverVersion } from "@database/waiverVersionsSchema";
+import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function WaiverVersions() {
-  const [waiverContent, setWaiverContent] = useState('');
-  const [acknowledgement, setAcknowledgement] = useState('');
+  const [waiverContent, setWaiverContent] = useState("");
+  const [acknowledgement, setAcknowledgement] = useState("");
   const [selectedVersion, setSelectedVersion] = useState<IWaiverVersion | null>(
     null
   );
@@ -47,12 +47,12 @@ export default function WaiverVersions() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
-  const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
+  const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
 
   // Fetch waiver versions
-  const { data, error, mutate } = useSWR('/api/waiver-versions', fetcher);
+  const { data, error, mutate } = useSWR("/api/waiver-versions", fetcher);
   const waiverVersions = data?.waiverVersions || [];
-  
+
   const handleSave = async () => {
     try {
       const nextVersion = waiverVersions.length + 1;
@@ -209,6 +209,45 @@ export default function WaiverVersions() {
     }
   };
 
+  const handleSetActive = async (version: IWaiverVersion) => {
+    try {
+      const response = await fetch(`/api/waiver-versions/${version._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: version.body,
+          acknowledgement: version.acknowledgement,
+          isActiveWaiver: true,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedWaiver = await response.json();
+        // Update the selected version with the new active state
+        setSelectedVersion(updatedWaiver);
+        toast({
+          title: "Waiver set as active successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        mutate();
+      } else {
+        throw new Error("Failed to set waiver as active");
+      }
+    } catch (error) {
+      toast({
+        title: "Error setting waiver as active",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box className={styles.container}>
       <Flex direction="column" w="100%">
@@ -229,67 +268,68 @@ export default function WaiverVersions() {
               justifyContent="space-between"
             >
               <Box>
-              <Heading
-                as="h1"
-                textTransform="none"
-                textAlign="left"
-                padding="10px"
-                fontSize="20"
-                mb="3"
-              >
-                Waiver Versions
-              </Heading>
-              <Stack spacing={2}>
-                {waiverVersions.map((version: IWaiverVersion) => (
-                  <Flex
-                    key={version._id}
-                    align="center"
-                    gap={2}
-                    _hover={{ "& .delete-icon": { opacity: 1 } }}
-                  >
-                    <Button
-                    flex={1}
-                    variant={
-                      selectedVersion?._id === version._id ? "solid" : "ghost"
-                    }
-                    colorScheme={
-                      selectedVersion?._id === version._id ? "teal" : "gray"
-                    }
-                    justifyContent="flex-start"
-                    onClick={() => handleVersionSelect(version)}
-                    >
-                    Waiver v{version.version}
-                    </Button>
-                    <IconButton
-                    size="xs"
-                    icon={<CloseIcon />}
-                    colorScheme="red"
-                    variant="ghost"
-                    aria-label="Delete waiver"
-                    onClick={(e) => handleDeleteClick(e, version)}
-                    opacity={0}
-                    className="delete-icon"
-                    transition="opacity 0.2s"
-                    />
-                  </Flex>
-                ))}
-                <Button
-                variant={!selectedVersion ? 'solid' : 'ghost'}
-                colorScheme={!selectedVersion ? 'teal' : 'gray'}
-                justifyContent="flex-start"
-                onClick={handleNewWaiver}
-                mt={4}
-                mb={2}
+                <Heading
+                  as="h1"
+                  textTransform="none"
+                  textAlign="left"
+                  padding="10px"
+                  fontSize="20"
+                  mb="3"
                 >
-                + New Waiver
-                </Button>
-              </Stack>
+                  Waiver Versions
+                </Heading>
+                <Stack spacing={2}>
+                  {waiverVersions.map((version: IWaiverVersion) => (
+                    <Box
+                      key={version._id}
+                      p={4}
+                      borderWidth="1px"
+                      borderRadius="md"
+                      cursor="pointer"
+                      onClick={() => handleVersionSelect(version)}
+                      bg={
+                        selectedVersion?._id === version._id
+                          ? "gray.100"
+                          : "white"
+                      }
+                      position="relative"
+                    >
+                      <Flex justify="space-between" align="center">
+                        <Text fontWeight="bold">Version {version.version}</Text>
+                        <Flex gap={2}>
+                          {version.isActiveWaiver && (
+                            <Text color="green.500" fontWeight="bold">
+                              Active
+                            </Text>
+                          )}
+                          <IconButton
+                            aria-label="Delete waiver"
+                            icon={<CloseIcon />}
+                            size="sm"
+                            onClick={(e) => handleDeleteClick(e, version)}
+                            isDisabled={version.isActiveWaiver}
+                          />
+                        </Flex>
+                      </Flex>
+                    </Box>
+                  ))}
+                  <Button
+                    variant={!selectedVersion ? "solid" : "ghost"}
+                    colorScheme={!selectedVersion ? "teal" : "gray"}
+                    justifyContent="flex-start"
+                    onClick={handleNewWaiver}
+                    mt={4}
+                    mb={2}
+                  >
+                    + New Waiver
+                  </Button>
+                </Stack>
               </Box>
             </Box>
 
             {/* Main Content */}
             <Flex
-              direction={'column'}
+              direction={"column"}
               gap={6}
               w="100%"
               bg="#F5F5F5"
@@ -314,10 +354,10 @@ export default function WaiverVersions() {
                   resize="vertical"
                   bg="white"
                   borderColor="gray.300"
-                  _hover={{ borderColor: 'gray.400' }}
+                  _hover={{ borderColor: "gray.400" }}
                   _focus={{
-                    borderColor: 'teal.500',
-                    boxShadow: '0 0 0 1px teal.500',
+                    borderColor: "teal.500",
+                    boxShadow: "0 0 0 1px teal.500",
                   }}
                 />
               </Box>
@@ -338,10 +378,10 @@ export default function WaiverVersions() {
                   resize="vertical"
                   bg="white"
                   borderColor="gray.300"
-                  _hover={{ borderColor: 'gray.400' }}
+                  _hover={{ borderColor: "gray.400" }}
                   _focus={{
-                    borderColor: 'teal.500',
-                    boxShadow: '0 0 0 1px teal.500',
+                    borderColor: "teal.500",
+                    boxShadow: "0 0 0 1px teal.500",
                   }}
                 />
               </Box>
@@ -363,58 +403,61 @@ export default function WaiverVersions() {
               <DrawerContent>
                 <DrawerCloseButton />
                 <DrawerHeader mt={20}>Waiver Versions</DrawerHeader>
-                <DrawerBody >
-                <Stack spacing={2}>
-                  {waiverVersions.map((version: IWaiverVersion) => (
-                      <Flex
-                      key={version._id}
-                      align="center"
-                      gap={2}
-                      _hover={{ "& .delete-icon": { opacity: 1 } }}
-                    >
-                      <Button
-                      flex={1}
-                      variant={
-                        selectedVersion?._id === version._id ? "solid" : "ghost"
-                      }
-                      colorScheme={
-                        selectedVersion?._id === version._id ? "teal" : "gray"
-                      }
-                      justifyContent="flex-start"
-                      onClick={() => handleVersionSelect(version)}
+                <DrawerBody>
+                  <Stack spacing={2}>
+                    {waiverVersions.map((version: IWaiverVersion) => (
+                      <Box
+                        key={version._id}
+                        p={4}
+                        borderWidth="1px"
+                        borderRadius="md"
+                        cursor="pointer"
+                        onClick={() => handleVersionSelect(version)}
+                        bg={
+                          selectedVersion?._id === version._id
+                            ? "gray.100"
+                            : "white"
+                        }
+                        position="relative"
                       >
-                      Waiver v{version.version}
-                      </Button>
-                      <IconButton
-                      size="xs"
-                      icon={<CloseIcon />}
-                      colorScheme="red"
-                      variant="ghost"
-                      aria-label="Delete waiver"
-                      onClick={(e) => handleDeleteClick(e, version)}
-                      opacity={0}
-                      className="delete-icon"
-                      transition="opacity 0.2s"
-                      />
-                    </Flex>
-                  ))}
-                  <Button
-                    variant={!selectedVersion ? 'solid' : 'ghost'}
-                    colorScheme={!selectedVersion ? 'teal' : 'gray'}
-                    justifyContent="flex-start"
-                    onClick={handleNewWaiver}
-                    mt={4}
-                    mb={2}
-                  >
-                    + New Waiver
-                  </Button>
-                </Stack>
+                        <Flex justify="space-between" align="center">
+                          <Text fontWeight="bold">
+                            Version {version.version}
+                          </Text>
+                          <Flex gap={2}>
+                            {version.isActiveWaiver && (
+                              <Text color="green.500" fontWeight="bold">
+                                Active
+                              </Text>
+                            )}
+                            <IconButton
+                              aria-label="Delete waiver"
+                              icon={<CloseIcon />}
+                              size="sm"
+                              onClick={(e) => handleDeleteClick(e, version)}
+                              isDisabled={version.isActiveWaiver}
+                            />
+                          </Flex>
+                        </Flex>
+                      </Box>
+                    ))}
+                    <Button
+                      variant={!selectedVersion ? "solid" : "ghost"}
+                      colorScheme={!selectedVersion ? "teal" : "gray"}
+                      justifyContent="flex-start"
+                      onClick={handleNewWaiver}
+                      mt={4}
+                      mb={2}
+                    >
+                      + New Waiver
+                    </Button>
+                  </Stack>
                 </DrawerBody>
               </DrawerContent>
             </Drawer>
             {/* Main Content */}
             <Flex
-              direction={{ base: 'column', '2xl': 'row' }}
+              direction={{ base: "column", "2xl": "row" }}
               gap={6}
               w="100%"
               padding="0"
@@ -443,10 +486,10 @@ export default function WaiverVersions() {
                   resize="vertical"
                   bg="white"
                   borderColor="gray.300"
-                  _hover={{ borderColor: 'gray.400' }}
+                  _hover={{ borderColor: "gray.400" }}
                   _focus={{
-                    borderColor: 'teal.500',
-                    boxShadow: '0 0 0 1px teal.500',
+                    borderColor: "teal.500",
+                    boxShadow: "0 0 0 1px teal.500",
                   }}
                 />
               </Box>
@@ -467,10 +510,10 @@ export default function WaiverVersions() {
                   resize="vertical"
                   bg="white"
                   borderColor="gray.300"
-                  _hover={{ borderColor: 'gray.400' }}
+                  _hover={{ borderColor: "gray.400" }}
                   _focus={{
-                    borderColor: 'teal.500',
-                    boxShadow: '0 0 0 1px teal.500',
+                    borderColor: "teal.500",
+                    boxShadow: "0 0 0 1px teal.500",
                   }}
                 />
               </Box>
@@ -497,6 +540,14 @@ export default function WaiverVersions() {
             >
               Save Changes
             </Button>
+            <Button
+              colorScheme="blue"
+              size="lg"
+              onClick={() => handleSetActive(selectedVersion)}
+              isDisabled={selectedVersion.isActiveWaiver}
+            >
+              Set as Active
+            </Button>
           </>
         ) : (
           <Button
@@ -510,8 +561,8 @@ export default function WaiverVersions() {
         )}
       </Flex>
 
-       {/* Delete Confirmation Dialog */}
-       <AlertDialog
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
         isOpen={isDeleteDialogOpen}
         leastDestructiveRef={cancelRef}
         onClose={() => setIsDeleteDialogOpen(false)}
