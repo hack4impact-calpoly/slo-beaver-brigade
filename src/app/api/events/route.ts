@@ -1,34 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@database/db';
-import Event, { IEvent } from '@database/eventSchema';
-import Group from '@database/groupSchema';
-import { revalidateTag } from 'next/cache';
-import { SortOrder } from 'mongoose';
-import { cookies } from 'next/headers';
-import { BareBoneIUser } from 'app/components/navbar/NavbarParents';
-import User from 'database/userSchema';
-import { IUser } from 'app/admin/users/page';
-import Log from '@database/logSchema';
-import { getUserDbData } from 'app/lib/authentication';
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@database/db";
+import Event, { IEvent } from "@database/eventSchema";
+import Group from "@database/groupSchema";
+import { revalidateTag } from "next/cache";
+import { SortOrder } from "mongoose";
+import { cookies } from "next/headers";
+import { BareBoneIUser } from "app/components/navbar/NavbarParents";
+import User from "database/userSchema";
+import { IUser } from "app/admin/users/page";
+import Log from "@database/logSchema";
+import { getUserDbData } from "app/lib/authentication";
 
 interface BuggyIUser extends BareBoneIUser {
   id: string;
 }
 export async function GET(request: Request) {
   await connectDB(); // connect to db
-  console.log('GET /api/events');
+  console.log("GET /api/events");
   const { searchParams } = new URL(request.url);
-  const sort_order = searchParams.get('sort');
+  const sort_order = searchParams.get("sort");
   let sort: SortOrder = -1;
 
-  if (sort_order && sort_order == 'asc') {
+  if (sort_order && sort_order == "asc") {
     sort = 1;
   }
   let user = null;
 
   // get current user if applicable
   try {
-    const userCookie = cookies().get('user')?.value;
+    const userCookie = cookies().get("user")?.value;
     if (userCookie) {
       user = JSON.parse(userCookie) as BuggyIUser;
 
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         .lean()
         .orFail()) as IUser;
 
-      if (userDoc.role === 'admin') {
+      if (userDoc.role === "admin") {
         const events = await Event.find().sort({ startTime: sort }).lean();
         return NextResponse.json(events, { status: 200 });
       }
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
       return NextResponse.json(events, { status: 200 });
     }
   } catch (err) {
-    return NextResponse.json('Failed to fetch events: ' + err, {
+    return NextResponse.json("Failed to fetch events: " + err, {
       status: 400,
     });
   }
@@ -99,16 +99,31 @@ export async function POST(req: NextRequest) {
 
   // create new event or return error
   try {
-    const newEvent = new Event(event);
+    // If the event has groupsAllowed, fetch all members from those groups
+    if (event.groupsAllowed && event.groupsAllowed.length > 0) {
+      const groups = await Group.find({
+        _id: { $in: event.groupsAllowed },
+      }).lean();
+      const groupMemberIds = groups.flatMap((group) => group.groupees);
 
+      // Add group members to registeredIds if they're not already included
+      if (!event.registeredIds) {
+        event.registeredIds = [];
+      }
+      event.registeredIds = Array.from(
+        new Set([...event.registeredIds, ...groupMemberIds])
+      );
+    }
+
+    const newEvent = new Event(event);
     const createdEvent = await newEvent.save();
-    revalidateTag('events');
+    revalidateTag("events");
 
     const userRes = await getUserDbData();
     if (userRes) {
       userData = JSON.parse(userRes);
     } else {
-      return NextResponse.json('Could not fetch user data. ', {
+      return NextResponse.json("Could not fetch user data. ", {
         status: 500,
       });
     }
@@ -124,16 +139,16 @@ export async function POST(req: NextRequest) {
       status: 200,
     });
   } catch (err: any) {
-    if (err.name === 'ValidationError') {
+    if (err.name === "ValidationError") {
       // Handle validation errors
       const errors = Object.values(err.errors).map(
         (error: any) => error.message
       );
-      return NextResponse.json('Validation error: ' + errors.join(', '), {
+      return NextResponse.json("Validation error: " + errors.join(", "), {
         status: 400,
       });
     } else {
-      return NextResponse.json('Event not added: ' + err, {
+      return NextResponse.json("Event not added: " + err, {
         status: 400,
       });
     }
