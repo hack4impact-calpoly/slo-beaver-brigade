@@ -672,6 +672,18 @@ export const UserDashboard = ({
                             zIndex={2}
                             fontSize={eventDetailSize}
                           >
+                          <Box
+                            position="relative"
+                            borderWidth="1px"
+                            p="4"
+                            mt="4"
+                            textAlign="left"
+                            h="64"
+                            mx="4"
+                            borderRadius="20px"
+                            className={style.eventBox}
+                            flex="1 0 40%" // Adjust the width as needed
+                          >
                             <Text
                               fontFamily="Lato"
                               fontWeight="500"
@@ -688,10 +700,7 @@ export const UserDashboard = ({
                               className="bold-text"
                               zIndex={2}
                             >
-                              {formatDateTimeRange(
-                                event.startTime,
-                                event.endTime
-                              )}
+                              {formatDateTimeRange(event.startTime, event.endTime)}
                             </Text>
                             <Text
                               fontFamily="Lato"
@@ -701,6 +710,15 @@ export const UserDashboard = ({
                               zIndex={2}
                             >
                               {event.location}
+                            </Text>
+                            <Text
+                              fontFamily="Lato"
+                              fontWeight="500"
+                              color="white"
+                              className="bold-text"
+                              zIndex={2}
+                            >
+                              {`${event.maxHeadcount - event.registeredIds.length} Spots Left`}
                             </Text>
                           </Box>
                           <Box

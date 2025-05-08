@@ -16,6 +16,7 @@ export type IEventTemplate = {
     volunteerEvent: boolean;
     groupsAllowed: string[];
     registeredIds: string[];
+    maxHeadcount: number;
 };
 
 // Mongoose schema
@@ -48,6 +49,7 @@ const eventTemplateSchema = new Schema({
         required: true,
         default: [],
     },
+    maxHeadcount: {type: Number, required: true },
 });
 
 const Event =

@@ -485,7 +485,8 @@ function ExpandedViewComponent({
                   )}
                 </>
               ) : (
-                <Link href={url}>
+                (eventDetails.registeredIds.length < eventDetails.maxHeadcount ? ( 
+                  <Link href={url}>
                   <Button
                     bg="#e0af48"
                     color="black"
@@ -497,6 +498,7 @@ function ExpandedViewComponent({
                     Register
                   </Button>
                 </Link>
+                ) : (<></>))
               )}
             </Flex>
           </ModalBody>
