@@ -637,7 +637,7 @@ const EditEvent = ({
                 isChecked={span}
                 onChange={handleSpanChange}
               >
-                Spanish Speaking Accommodations
+                Event is in Spanish 
               </Switch>
             </Stack>
           </ModalBody>

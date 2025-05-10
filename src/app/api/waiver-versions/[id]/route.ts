@@ -50,7 +50,15 @@ export async function PATCH(
     const updateData = {
       body: body.body,
       acknowledgement: body.acknowledgement,
+      isActiveWaiver: body.isActiveWaiver,
     };
+
+    if (body.isActiveWaiver) {
+      await WaiverVersion.updateMany(
+        { _id: { $ne: id } },
+        { $set: { isActiveWaiver: false } }
+      );
+    }
 
     const updatedWaiverVersion = await WaiverVersion.findByIdAndUpdate(
       id,
@@ -83,14 +91,22 @@ export async function DELETE(
     await connectDB();
     const id = params.id;
 
-    const deletedWaiverVersion = await WaiverVersion.findByIdAndDelete(id);
-
-    if (!deletedWaiverVersion) {
+    const waiverToDelete = await WaiverVersion.findById(id);
+    if (!waiverToDelete) {
       return NextResponse.json(
         { error: "Waiver version not found" },
         { status: 404 }
       );
     }
+
+    if (waiverToDelete.isActiveWaiver) {
+      return NextResponse.json(
+        { error: "Cannot delete the active waiver version" },
+        { status: 400 }
+      );
+    }
+
+    const deletedWaiverVersion = await WaiverVersion.findByIdAndDelete(id);
 
     return NextResponse.json(
       { message: "Waiver version deleted successfully" },

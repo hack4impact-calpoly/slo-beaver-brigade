@@ -6,6 +6,7 @@ export type IWaiverVersion = {
   body: string;
   acknowledgement: string;
   dateCreated: Date;
+  isActiveWaiver: boolean;
 };
 
 const waiverVersionsSchema = new Schema({
@@ -24,6 +25,11 @@ const waiverVersionsSchema = new Schema({
   dateCreated: {
     type: Date,
     default: Date.now,
+  },
+  isActiveWaiver: {
+    type: Boolean,
+    default: false,
+    required: true,
   },
 });
 

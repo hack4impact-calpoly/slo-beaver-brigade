@@ -299,9 +299,8 @@ function ExpandedViewComponent({
                       )}
                     </Stack>
                   </Flex>
-                  {!eventDetails.spanishSpeakingAccommodation &&
-                  !eventDetails.wheelchairAccessible ? null : ( // If neither spanish speaking nor wheelchair accessible, return null
-                    <Stack spacing={2}>
+                  {eventDetails.wheelchairAccessible ? ( // If neither spanish speaking nor wheelchair accessible, return null
+                    <Flex direction={'column'}>
                       <FormLabel
                         color="black"
                         fontWeight="bold"
@@ -309,28 +308,38 @@ function ExpandedViewComponent({
                       >
                         Accommodations
                       </FormLabel>
-                      {eventDetails.wheelchairAccessible ? (
                         <MarkdownPreview
                           className={style.preview}
                           style={{ fontWeight: 'light' }}
                           source={'- Wheelchair Accessible'}
                           wrapperElement={{ 'data-color-mode': 'light' }}
                         />
-                      ) : (
-                        <></>
-                      )}
+                    </Flex>
+                  ) : (
+                    <></>
+                  )}
+                  <Flex direction={'column'}>
+                    <FormLabel color="black" fontWeight="bold" fontSize={'xl'}>
+                      Event Language
+                    </FormLabel>
+                    <Stack spacing={2}>  
                       {eventDetails.spanishSpeakingAccommodation ? (
                         <MarkdownPreview
                           className={style.preview}
                           style={{ fontWeight: 'light' }}
-                          source={'- Spanish-Speaking'}
+                          source={'- Spanish'}
                           wrapperElement={{ 'data-color-mode': 'light' }}
                         />
                       ) : (
-                        <></>
+                        <MarkdownPreview
+                        className={style.preview}
+                        style={{ fontWeight: 'light' }}
+                        source={'- English'}
+                        wrapperElement={{ 'data-color-mode': 'light' }}
+                        />
                       )}
                     </Stack>
-                  )}
+                  </Flex>
                 </Flex>
               ) : (
                 <Flex direction={'column'} ml={'5%'} mb={'10%'} gap={4}>
@@ -363,9 +372,8 @@ function ExpandedViewComponent({
                       )}
                     </Stack>
                   </Flex>
-                  {!eventDetails.spanishSpeakingAccommodation &&
-                  !eventDetails.wheelchairAccessible ? null : (
-                    <Stack spacing={2}>
+                  {eventDetails.wheelchairAccessible ? (
+                    <Stack>
                       <FormLabel
                         color="black"
                         fontWeight="bold"
@@ -373,28 +381,38 @@ function ExpandedViewComponent({
                       >
                         Accommodations
                       </FormLabel>
-                      {eventDetails.wheelchairAccessible ? (
                         <MarkdownPreview
                           className={style.preview}
                           style={{ fontWeight: 'light' }}
                           source={'- Wheelchair Accessible'}
                           wrapperElement={{ 'data-color-mode': 'light' }}
                         />
-                      ) : (
-                        <></>
-                      )}
+                    </Stack>
+                  ) : (
+                    <></>
+                  )}
+                  <Flex direction={'column'}>
+                    <FormLabel color="black" fontWeight="bold" fontSize={'xl'}>
+                      Event Language
+                    </FormLabel>
+                    <Stack spacing={2}>  
                       {eventDetails.spanishSpeakingAccommodation ? (
                         <MarkdownPreview
                           className={style.preview}
                           style={{ fontWeight: 'light' }}
-                          source={'- Spanish-Speaking'}
+                          source={'- Spanish'}
                           wrapperElement={{ 'data-color-mode': 'light' }}
                         />
                       ) : (
-                        <></>
+                        <MarkdownPreview
+                        className={style.preview}
+                        style={{ fontWeight: 'light' }}
+                        source={'- English'}
+                        wrapperElement={{ 'data-color-mode': 'light' }}
+                        />
                       )}
                     </Stack>
-                  )}
+                  </Flex>
                 </Flex>
               )}
             </Stack>
