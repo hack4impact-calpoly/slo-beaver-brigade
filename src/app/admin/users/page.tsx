@@ -78,6 +78,7 @@ const UserList = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchOption, setSearchOption] = useState("name");
   const [adminData, setAdminData] = useState<IUser>();
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
     value: "firstName",
@@ -175,7 +176,15 @@ const UserList = () => {
   useEffect(() => {
     setFilteredUsers(allUsers
     .filter((user) =>
-      `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+      searchTerm === "name" ? `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      )
+      : searchTerm === "email" ? `${user.email.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      )
+      : searchTerm === "role" ? `${user.role.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      ) : `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
       )
     )
@@ -202,7 +211,7 @@ const UserList = () => {
         : a.role.localeCompare(b.role)
         : a.firstName.localeCompare(b.firstName)
     ));
-  }, [allUsers, searchTerm, sortOrder, isReverseSort]);
+  }, [allUsers, searchTerm, sortOrder, isReverseSort, searchOption]);
 
 
   const sortOptions = [
