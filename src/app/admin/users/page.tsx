@@ -341,7 +341,7 @@ const UserList = () => {
           }
           isClearable={false}
           isSearchable={false}
-          value={sortOrder}
+          value={searchOption}
           styles={{
             control: (provided) => ({
               ...provided,
