@@ -78,7 +78,10 @@ const UserList = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchOption, setSearchOption] = useState("name");
+  const [searchOption, setSearchOption] = useState<{ value: string; label: string }>({
+    value: "name",
+    label: "Name"
+  });
   const [adminData, setAdminData] = useState<IUser>();
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
     value: "firstName",
@@ -176,13 +179,13 @@ const UserList = () => {
   useEffect(() => {
     setFilteredUsers(allUsers
     .filter((user) =>
-      searchTerm === "name" ? `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+      searchOption.value === "name" ? `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
       )
-      : searchTerm === "email" ? `${user.email.toLowerCase()}`.includes(
+      : searchOption.value === "email" ? `${user.email.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
       )
-      : searchTerm === "role" ? `${user.role.toLowerCase()}`.includes(
+      : searchOption.value === "role" ? `${user.role.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
       ) : `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -220,6 +223,12 @@ const UserList = () => {
     { value: "email", label: "Email"},
     { value: "totalHours", label: "Total Hours"},
     { value: "role", label: "Role"}
+  ];
+
+  const searchOptions = [
+    { value: "name", label: "Name" },
+    { value: "email", label: "Email" },
+    { value: "role", label: "Role"},
   ];
 
   const removeUser = (userId: string) => {
@@ -286,7 +295,7 @@ const UserList = () => {
           </Text>
           <Select
             id="sort-select"
-            placeholder="Sort by First or Last Name"
+            placeholder="Sort Order"
             options={sortOptions}
             className={style.selectContainer}
             onChange={(selectedOption) =>
@@ -320,6 +329,39 @@ const UserList = () => {
           <Checkbox onChange={() => setIsReverseSort(!isReverseSort)}>
             Reversed?
           </Checkbox>
+          <Select
+          id="search-select"
+          placeholder="Search Term"
+          options={searchOptions}
+          className={style.selectContainer}
+          onChange={(selectedOption) =>
+            setSearchOption(
+              selectedOption || { value: "name", label: "Name" }
+            )
+          }
+          isClearable={false}
+          isSearchable={false}
+          value={sortOrder}
+          styles={{
+            control: (provided) => ({
+              ...provided,
+              borderRadius: "12px",
+              height: "40px",
+            }),
+            singleValue: (provided) => ({
+              ...provided,
+              color: "black",
+            }),
+            option: (provided, state) => ({
+              ...provided,
+              color: state.isSelected ? "white" : "black",
+            }),
+            placeholder: (provided) => ({
+              ...provided,
+              color: "black",
+            }),
+          }}
+          />
           <div className={style.searchWrapper}>
             <Input
               type="text"
