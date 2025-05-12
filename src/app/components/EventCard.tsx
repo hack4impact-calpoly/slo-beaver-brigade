@@ -53,6 +53,10 @@ const EventCard: React.FC<EventPreviewProps> = ({
   const initialImage = isValidUrl(event.eventImage) ? event.eventImage! : '/beaver-eventcard.jpeg';
   const [imageSrc, setImageSrc] = useState<string>(initialImage);
 
+  const handleImageError = () => {
+    setImageSrc('/beaver-eventcard.jpeg');
+  };
+
   const formatDate = (date: Date | string): string => {
     if (!date) return 'Invalid date';
     const options: Intl.DateTimeFormatOptions = {
@@ -105,7 +109,7 @@ const EventCard: React.FC<EventPreviewProps> = ({
           objectFit="cover"
           objectPosition="center"
           className={style.eventImage}
-          onError={() => setImageSrc('/beaver-eventcard.jpeg')}
+          onError={handleImageError}
         />
       </div>
       <div className={style.eventTitle}>
