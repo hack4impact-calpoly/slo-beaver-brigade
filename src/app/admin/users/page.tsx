@@ -365,7 +365,7 @@ const UserList = () => {
           <div className={style.searchWrapper}>
             <Input
               type="text"
-              placeholder="Search Users"
+              placeholder={`Search ${searchOption.label}`}
               border="1.5px solid #337774"
               _hover={{ borderColor: '#337774' }}
               focusBorderColor="#337774"
