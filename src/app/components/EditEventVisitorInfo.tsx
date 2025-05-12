@@ -1,6 +1,13 @@
 'use client';
 
-import { Box, Spinner, Checkbox } from '@chakra-ui/react';
+import { Box, Spinner, Checkbox, useDisclosure, Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Text 
+} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/admin/editEvent.module.css';
 import { IEvent } from '@database/eventSchema';
@@ -36,6 +43,18 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [showAdminActions, setShowAdminActions] = useState(false);
   const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
   const [waivers, setWaivers] = useState<ISignedWaiver[]>([]);
+  const [selectedWaiver, setSelectedWaiver] = useState<ISignedWaiver | null>(null);
+  const {
+    isOpen: isWaiverModalOpen,
+    onOpen: openWaiverModal,
+    onClose: closeWaiverModal,
+  } = useDisclosure();
+
+  const openWaiver = (userId: string) => {
+    const waiver = waivers.find(w => w.signeeId === userId);
+    setSelectedWaiver(waiver ?? null);
+    openWaiverModal();
+  }
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -395,6 +414,26 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
             </div>
           )}
         </>
+      )}
+      {selectedWaiver && (
+        <div>
+          <Modal isOpen={isWaiverModalOpen} onClose={closeWaiverModal}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Signed Waiver</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Text>
+                  <strong>Name:</strong> {selectedWaiver.signeeName}
+                </Text>
+                <Text>
+                  <strong>Date Signed:</strong>{" "}
+                  {new Date(selectedWaiver.dateSigned).toLocaleDateString()}
+                </Text>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </div>
       )}
     </Box>
   );
