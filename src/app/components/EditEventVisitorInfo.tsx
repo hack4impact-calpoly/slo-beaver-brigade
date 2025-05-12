@@ -35,6 +35,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const { eventData, isLoading, isError } = useEventId(eventId);
   const [showAdminActions, setShowAdminActions] = useState(false);
   const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
+  const [waivers, setWaivers] = useState<ISignedWaiver[]>([]);
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -136,10 +137,11 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         try {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
-            const waivers = await waiverResponse.json();
+            const fetchedWaivers = await waiverResponse.json();
+            setWaivers(fetchedWaivers);
 
             debugger;
-            waivers.forEach((waiver: ISignedWaiver) => {
+            fetchedWaivers.forEach((waiver: ISignedWaiver) => {
               if (!visitors[waiver.signeeId]) {
                 visitors[waiver.signeeId] = {
                   parent: placeholderUser,
@@ -343,10 +345,24 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                               {group.parent.email ? group.parent.email : 'N/A'}
                             </td>
                             <td className={styles.detailsColumn}>
-                              <SingleVisitorComponent
-                                visitorData={group.parent}
-                              />
-                            </td>
+                              <div className={styles.linkGroup}>
+                                {waivers.some(w => w.signeeId === group.parent._id) ? (
+                                  <span
+                                    style={{
+                                      color: '#2b6cb0',
+                                      cursor: 'pointer',
+                                      textDecoration: 'underline',
+                                    }}
+                                    onClick={() => openWaiverForUser(group.parent._id)}
+                                  >
+                                    Signed
+                                  </span>
+                                ) : (
+                                  <span>Unsigned</span>
+                                )}
+                                <SingleVisitorComponent visitorData={group.parent} />
+                              </div>
+                          </td>
                           </tr>
                         )}
                         {group.dependents

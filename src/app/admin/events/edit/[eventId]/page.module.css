@@ -156,8 +156,22 @@
     text-decoration-line: underline;
 }
 
+.waiverColumn {
+    width: 120px;
+    text-align: left;
+    padding-right: 10px;
+}
+
+.linkGroup {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    white-space: nowrap;
+  }
+
 .visitorTable {
-    table-layout: fixed;
+    width: 100%;
+    table-layout: auto;
 }
 
 .visitorInfoSmallHeader {
