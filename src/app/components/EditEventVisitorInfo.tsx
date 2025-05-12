@@ -16,6 +16,7 @@ import { ISignedWaiver } from 'database/signedWaiverSchema';
 import { removeAttendee, removeRegistered } from 'app/actions/serveractions';
 import { addAttendee } from 'app/actions/useractions';
 import SingleVisitorComponent from './SingleVisitorComponent';
+import SingleVistorWaiver from './SingleVisitorWaiver';
 import { useEventId } from 'app/lib/swrfunctions';
 
 const placeholderUser: IUser = {
@@ -415,26 +416,11 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           )}
         </>
       )}
-      {selectedWaiver && (
-        <div>
-          <Modal isOpen={isWaiverModalOpen} onClose={closeWaiverModal}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Signed Waiver</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Text>
-                  <strong>Name:</strong> {selectedWaiver.signeeName}
-                </Text>
-                <Text>
-                  <strong>Date Signed:</strong>{" "}
-                  {new Date(selectedWaiver.dateSigned).toLocaleDateString()}
-                </Text>
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-        </div>
-      )}
+      <SingleVistorWaiver
+        isOpen={isWaiverModalOpen}
+        onClose={closeWaiverModal}
+        waiver={selectedWaiver}
+      />
     </Box>
   );
 };
