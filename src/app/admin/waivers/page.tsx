@@ -170,6 +170,11 @@ export default function WaiverVersions() {
     setIsDeleteDialogOpen(true);
   };
 
+  const getWaiverName = (version: IWaiverVersion) => {
+    const waiverDate = new Date(version.dateCreated);
+    return `Waiver ${waiverDate.getMonth()}/${waiverDate.getDate()}/${waiverDate.getFullYear()%100}`;
+  };  
+
   const handleDelete = async () => {
     if (!waiverToDelete) return;
 
@@ -256,7 +261,7 @@ export default function WaiverVersions() {
           <Flex width="full" justify="space-between" alignItems="flex-start">
             <Box
               width="30%"
-              maxWidth="250px"
+              maxWidth="300px"
               p={[5, 5, 5, 5]}
               bg="#F5F5F5"
               borderTopLeftRadius="md"
@@ -297,7 +302,7 @@ export default function WaiverVersions() {
                       justifyContent="flex-start"
                       onClick={() => handleVersionSelect(version)}
                     >
-                      Waiver v{version.version} {version.isActiveWaiver ? "(Active)" : ""}
+                      {getWaiverName(version)} {version.isActiveWaiver ? "(Active)" : ""}
                     </Button>
                     <IconButton
                       size="xs"
@@ -423,7 +428,7 @@ export default function WaiverVersions() {
                         justifyContent="flex-start"
                         onClick={() => handleVersionSelect(version)}
                       >
-                        Waiver v{version.version} {version.isActiveWaiver ? "(Active)" : ""}
+                        {getWaiverName(version)} {version.isActiveWaiver ? "(Active)" : ""}
                       </Button>
                       <IconButton
                         size="xs"
@@ -572,7 +577,7 @@ export default function WaiverVersions() {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete Waiver v{waiverToDelete?.version}?
+              Are you sure you want to delete {waiverToDelete?.version && getWaiverName(waiverToDelete)}?
               This action cannot be undone.
             </AlertDialogBody>
 
