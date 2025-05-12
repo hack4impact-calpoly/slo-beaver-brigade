@@ -19,6 +19,11 @@
   gap: 36px;
 }
 
+.filterButtons {
+  display: flex;
+  flex-direction: row;
+}
+
 .auditPreview {
   width: 100%;
   margin: auto;
@@ -70,4 +75,17 @@
 
 .pageButton {
   width: 100px;
+}
+
+@media (max-width: 1050px) {
+  .auditPage {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 850px) {
+  .filtering {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
