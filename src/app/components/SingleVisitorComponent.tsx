@@ -115,7 +115,7 @@ function SingleVisitorComponent({ visitorData, removeFunction, adminData}: Singl
   return (
     <>
       <div className={styles.link}>
-        <Text onClick={onOpen}>Details</Text>
+        <Text onClick={onOpen} cursor="pointer">Details</Text>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

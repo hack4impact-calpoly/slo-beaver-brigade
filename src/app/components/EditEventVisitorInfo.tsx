@@ -346,20 +346,20 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                             </td>
                             <td className={styles.detailsColumn}>
                               <div className={styles.linkGroup}>
+                                <div className={styles.link}>
                                 {waivers.some(w => w.signeeId === group.parent._id) ? (
                                   <span
                                     style={{
-                                      color: '#2b6cb0',
-                                      cursor: 'pointer',
-                                      textDecoration: 'underline',
+                                      cursor: 'pointer'
                                     }}
-                                    onClick={() => openWaiverForUser(group.parent._id)}
+                                    onClick={() => openWaiver(group.parent._id)}
                                   >
                                     Signed
                                   </span>
                                 ) : (
                                   <span>Unsigned</span>
                                 )}
+                                </div>
                                 <SingleVisitorComponent visitorData={group.parent} />
                               </div>
                           </td>
