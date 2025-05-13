@@ -403,7 +403,7 @@ export default function WaiverVersions() {
             >
               View Waiver Versions
             </Button>
-            <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+            <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="sm">
               <DrawerOverlay />
               <DrawerContent>
                 <DrawerCloseButton />
@@ -415,6 +415,7 @@ export default function WaiverVersions() {
                       key={version._id}
                       align="center"
                       gap={2}
+                      width="375px"
                       _hover={{ "& .delete-icon": { opacity: 1 } }}
                     >
                       <Button
