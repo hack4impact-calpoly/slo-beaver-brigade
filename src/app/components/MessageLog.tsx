@@ -55,7 +55,7 @@ const handleClick = () => {
   } else if (log.action.toLowerCase().includes('event') && log.link) {
     router.push(`/admin/events?eventId=${log.link}`);
   } else {
-    console.error('Invalid log link or action:', log);
+    console.error('Invalid log link or action:'); // Log the error, but exclude log info for privacy
   }
 };
 
