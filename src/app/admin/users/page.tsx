@@ -384,6 +384,8 @@ const UserList = () => {
                           visitorData={user}
                           removeFunction={removeUser}
                           adminData={adminData}
+                          isOpen={showUserDetails}
+                          onClose={handleCloseModal}
                         />
                         </Td>
                     </Tr>
