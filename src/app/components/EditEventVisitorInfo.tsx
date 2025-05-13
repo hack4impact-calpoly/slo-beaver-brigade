@@ -13,6 +13,7 @@ import styles from '../styles/admin/editEvent.module.css';
 import { IEvent } from '@database/eventSchema';
 import { IUser } from '@database/userSchema';
 import { ISignedWaiver } from 'database/signedWaiverSchema';
+import { IWaiverVersion } from '@database/waiverVersionsSchema';
 import { removeAttendee, removeRegistered } from 'app/actions/serveractions';
 import { addAttendee } from 'app/actions/useractions';
 import SingleVisitorComponent from './SingleVisitorComponent';
@@ -44,6 +45,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [showAdminActions, setShowAdminActions] = useState(false);
   const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
   const [waivers, setWaivers] = useState<ISignedWaiver[]>([]);
+  const [waiverVersions, setWaiverVersions] = useState<IWaiverVersion[]>([]);
   const [selectedWaiver, setSelectedWaiver] = useState<ISignedWaiver | null>(null);
   const {
     isOpen: isWaiverModalOpen,
@@ -51,11 +53,23 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     onClose: closeWaiverModal,
   } = useDisclosure();
 
-  const openWaiver = (userId: string) => {
+  const openWaiver = async (userId: string) => { 
     const waiver = waivers.find(w => w.signeeId === userId);
     setSelectedWaiver(waiver ?? null);
+    if (waiver) {
+      try {
+        console.log(waiver.waiverVersion);
+        const res = await fetch(`/api/waiver-versions`);
+        if (res.ok) {
+          const versionData = await res.json();
+          setWaiverVersions(versionData.waiverVersions);
+        }
+      } catch (err) {
+        console.error('Error fetching waiver version:', err);
+      }
+    }
     openWaiverModal();
-  }
+};
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -420,6 +434,9 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         isOpen={isWaiverModalOpen}
         onClose={closeWaiverModal}
         waiver={selectedWaiver}
+        waiverVersion={
+          waiverVersions?.find(v => v.version === selectedWaiver?.waiverVersion) || null
+        }
       />
     </Box>
   );
