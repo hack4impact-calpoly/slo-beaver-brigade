@@ -100,7 +100,7 @@ const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
                             <Text className={styles.eventEntry}>No items to bring</Text>
                             )}
                             <Text className={styles.eventField}>Volunteer Event</Text>
-                            <Text className={styles.eventEntry}>{eventData.volunteerEvent ? "Yes, counts for volunteer hours" : "No"}</Text>
+                            <Text className={styles.eventEntry}>{eventData.volunteerEvent ? "Yes, counts for volunteer hours" : "No, does not count for volunteer hours"}</Text>
                             <Text className={styles.eventField}>Event Language</Text>
                             <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation ? 'Spanish' : 'English'}</Text>
                             <Text className={styles.eventField}>Disability Accommodations</Text>
