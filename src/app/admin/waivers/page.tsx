@@ -95,7 +95,7 @@ export default function WaiverVersions() {
 
   const handleUpdateWaiver = async () => {
     if (!selectedVersion) return;
-
+    console.log(selectedVersion.dateCreated);
     try {
       console.log("Updating waiver with data:", {
         body: waiverContent,
@@ -172,7 +172,7 @@ export default function WaiverVersions() {
 
   const getWaiverName = (version: IWaiverVersion) => {
     const waiverDate = new Date(version.dateCreated);
-    return `Waiver ${waiverDate.getMonth()}/${waiverDate.getDate()}/${waiverDate.getFullYear()%100}`;
+    return `Waiver ${waiverDate.getMonth()+1}/${waiverDate.getDate()}/${waiverDate.getFullYear()%100} - ${waiverDate.getHours()}:${waiverDate.getMinutes()}:${waiverDate.getSeconds()}`;
   };  
 
   const handleDelete = async () => {
@@ -260,8 +260,8 @@ export default function WaiverVersions() {
           // Hardcoded Sidebar for Larger Screens
           <Flex width="full" justify="space-between" alignItems="flex-start">
             <Box
-              width="30%"
-              maxWidth="300px"
+              width="40%"
+              maxWidth="375px"
               p={[5, 5, 5, 5]}
               bg="#F5F5F5"
               borderTopLeftRadius="md"
