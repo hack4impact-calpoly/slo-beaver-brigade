@@ -70,20 +70,22 @@ const AuditPage = () => {
             >
               Filter:
             </Text>
-            <Input
-              placeholder="Filter by user"
-              value={userFilter}
-              onChange={(e) => setUserFilter(e.target.value)}
-              width="200px"
-              ml={4}
-            />
-            <Input
-              placeholder="Filter by action"
-              value={actionFilter}
-              onChange={(e) => setActionFilter(e.target.value)}
-              width="200px"
-              ml={4}
-            />
+            <div className={style.filterButtons}>
+              <Input
+                placeholder="Filter by user"
+                value={userFilter}
+                onChange={(e) => setUserFilter(e.target.value)}
+                width="200px"
+                ml={4}
+              />
+              <Input
+                placeholder="Filter by action"
+                value={actionFilter}
+                onChange={(e) => setActionFilter(e.target.value)}
+                width="200px"
+                ml={4}
+              />
+            </div>
             <Button onClick={fetchLogs} ml={4}>
               Refresh Logs
             </Button>
