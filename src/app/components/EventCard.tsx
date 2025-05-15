@@ -118,10 +118,10 @@ const EventCard: React.FC<EventPreviewProps> = ({
             <Text ml={'5px'}>{event.location}</Text>
           </Flex>
         </div>
-        <div className={style.visitorCount}>
-          <h2>{event.registeredIds.length}</h2>
-          <h3>{event.registeredIds.length === 1 ? ' Visitor' : ' Visitors'}</h3>
-        </div>
+       <div className={style.visitorCount}>
+         <h2>{`${event.registeredIds.length} / ${event.maxHeadcount}`}</h2>
+         <h3>Visitors</h3>
+       </div>
       </div>
     </div>
   );

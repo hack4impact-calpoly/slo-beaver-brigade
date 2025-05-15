@@ -21,6 +21,7 @@ import {
   Textarea,
   SimpleGrid,
   IconButton,
+  StylesProvider,
 } from "@chakra-ui/react";
 import { AddIcon, CheckIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import EventPreviewComponent from "@components/EventCard";
@@ -40,6 +41,7 @@ import { IEventTemplate } from "database/eventTemplateSchema";
 import style from "./create.module.css";
 import "../../../fonts/fonts.css";
 import { set } from "mongoose";
+import ViewGroups from "app/components/ViewGroups";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {
@@ -79,6 +81,7 @@ export default function Page() {
   const [onlyGroups, setOnlyGroups] = useState<boolean>(false);
   const [description, setDescription] = useState("");
   const [checkList, setChecklist] = useState<string[]>([]);
+  const [maxHeadcount, setMaxHeadCount] = useState<number>();
   const [activeDate, setActiveDate] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
@@ -204,6 +207,7 @@ export default function Page() {
       location,
       description,
       checklist: checkList,
+      maxHeadcount,
       groupsOnly: onlyGroups,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: spanishSpeaking === "Yes",
@@ -314,6 +318,15 @@ export default function Page() {
         isClosable: true,
       });
       return;
+    } else if (maxHeadcount != null && maxHeadcount <= 0) {
+      toast({
+        title: "Error",
+        description: "Headcount must be greater than 0",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+      return;
     }
 
     const file = fileInputRef?.current?.files?.[0] ?? null;
@@ -345,6 +358,7 @@ export default function Page() {
       checklist: checkList,
       location,
       description,
+      maxHeadcount,
       wheelchairAccessible: accessibilityAccommodation === "Yes",
       spanishSpeakingAccommodation: spanishSpeaking === "Yes",
       startTime: eventStart,
@@ -554,6 +568,7 @@ export default function Page() {
     eventType,
     checklist: checkList,
     location,
+    maxHeadcount: maxHeadcount ?? 0,
     description,
     wheelchairAccessible: accessibilityAccommodation === "Yes",
     spanishSpeakingAccommodation: spanishSpeaking === "Yes",
@@ -691,17 +706,36 @@ export default function Page() {
             />
           </FormControl>
 
-          <FormControl isRequired>
-            <FormLabel htmlFor="location" fontWeight="bold">
-              Location
-            </FormLabel>
-            <Input
-              id="location"
-              placeholder="Enter event location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </FormControl>
+          <div className={style.twoThirdsGrid}>
+            <div className={style.leftColumn}>
+              <FormControl isRequired>
+                <FormLabel htmlFor="location" fontWeight="bold">
+                  Location
+                </FormLabel>
+                <Input
+                  id="location"
+                  placeholder="Enter event location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </FormControl>
+            </div>
+
+            <div className={style.rightColumn}> 
+            <FormControl isRequired>
+                <FormLabel htmlFor="headcount" fontWeight="bold">
+                  Headcount
+                </FormLabel>
+                <Input
+                  id="headcount"
+                  type="number"
+                  placeholder="Enter max volunteers"
+                  value={maxHeadcount}
+                  onChange={(e) => setMaxHeadCount(e.target.value === '' ? 0 : Number(e.target.value))}
+                />
+              </FormControl>
+            </div>
+          </div>
 
           <div className={style.twoThirdsGrid}>
             {/* Row 1: Event Type and Volunteer Hours */}
@@ -766,45 +800,52 @@ export default function Page() {
           </div>
 
             {/* Row 2: Assign Groups and Only Available to Selected Groups */}
-            <div>
-              <FormControl>
-              <FormLabel htmlFor="organization" fontWeight="bold">
-                Assign Groups
-              </FormLabel>
-              <CreatableSelect
-                id="organization"
-                placeholder="Select or create organization"
-                options={groups?.map((group) => ({
-                value: group._id,
-                label: group.group_name,
-                }))}
-                value={groupsSelected.map((group) => ({
-                value: group._id,
-                label: group.group_name,
-                }))}
-                onChange={(selectedOptions) =>
-                setGroupsSelected(
-                  selectedOptions
-                  ? selectedOptions.map((option) => ({
-                    _id: option.value,
-                    group_name: option.label,
-                    groupees: [],
-                    }))
-                  : []
-                )
-                }
-                onCreateOption={handleCreateNewGroup}
-                chakraStyles={{
-                control: (provided) => ({
-                  ...provided,
-                  textAlign: "left",
-                }),
-                }}
-                isMulti
-                isClearable
-                isSearchable
-              />
-              </FormControl>
+            <div className={style.twoThirdsGrid}>
+              <div className={style.leftColumn}>
+                <FormControl>
+                <FormLabel htmlFor="organization" fontWeight="bold">
+                  Assign Groups
+                </FormLabel>
+                <CreatableSelect
+                  id="organization"
+                  placeholder="Select or create organization"
+                  options={groups?.map((group) => ({
+                  value: group._id,
+                  label: group.group_name,
+                  }))}
+                  value={groupsSelected.map((group) => ({
+                  value: group._id,
+                  label: group.group_name,
+                  }))}
+                  onChange={(selectedOptions) =>
+                  setGroupsSelected(
+                    selectedOptions
+                    ? selectedOptions.map((option) => ({
+                      _id: option.value,
+                      group_name: option.label,
+                      groupees: [],
+                      }))
+                    : []
+                  )
+                  }
+                  onCreateOption={handleCreateNewGroup}
+                  chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                  }}
+                  isMulti
+                  isClearable
+                  isSearchable
+                />
+                </FormControl>
+              </div>
+              <div className={style.rightColumn}>
+                <ViewGroups/>
+              </div>
+
+
             </div>
 
           <div className={style.halfGrid}>
