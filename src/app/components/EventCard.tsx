@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import style from '@styles/admin/eventCard.module.css';
 import { IEvent } from '@database/eventSchema';
@@ -40,6 +40,23 @@ const EventCard: React.FC<EventPreviewProps> = ({
   groupName,
   onClick,
 }) => {
+  const isValidUrl = (url: string | null): boolean => {
+    if (!url) return false;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const initialImage = isValidUrl(event.eventImage) ? event.eventImage! : '/beaver-eventcard.jpeg';
+  const [imageSrc, setImageSrc] = useState<string>(initialImage);
+
+  const handleImageError = () => {
+    setImageSrc('/beaver-eventcard.jpeg');
+  };
+
   const formatDate = (date: Date | string): string => {
     if (!date) return 'Invalid date';
     const options: Intl.DateTimeFormatOptions = {
@@ -82,18 +99,17 @@ const EventCard: React.FC<EventPreviewProps> = ({
     return `${formattedStartTime} - ${formattedEndTime}`;
   };
 
-  const backgroundImage = event.eventImage || '/beaver-eventcard.jpeg';
-
   return (
     <div className={style.eventCard} onClick={onClick}>
       <div className={style.imageWrapper}>
         <Image
-          src={backgroundImage}
+          src={imageSrc}
           alt="Event cover"
           layout="fill"
           objectFit="cover"
           objectPosition="center"
           className={style.eventImage}
+          onError={handleImageError}
         />
       </div>
       <div className={style.eventTitle}>
