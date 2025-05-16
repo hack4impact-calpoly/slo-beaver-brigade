@@ -1,14 +1,23 @@
 'use client';
 
-import { Box, Spinner, Checkbox } from '@chakra-ui/react';
+import { Box, Spinner, Checkbox, useDisclosure, Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Text 
+} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/admin/editEvent.module.css';
 import { IEvent } from '@database/eventSchema';
 import { IUser } from '@database/userSchema';
 import { ISignedWaiver } from 'database/signedWaiverSchema';
+import { IWaiverVersion } from '@database/waiverVersionsSchema';
 import { removeAttendee, removeRegistered } from 'app/actions/serveractions';
 import { addAttendee } from 'app/actions/useractions';
 import SingleVisitorComponent from './SingleVisitorComponent';
+import SingleVistorWaiver from './SingleVisitorWaiver';
 import { useEventId } from 'app/lib/swrfunctions';
 
 const placeholderUser: IUser = {
@@ -35,6 +44,32 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const { eventData, isLoading, isError } = useEventId(eventId);
   const [showAdminActions, setShowAdminActions] = useState(false);
   const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
+  const [waivers, setWaivers] = useState<ISignedWaiver[]>([]);
+  const [waiverVersions, setWaiverVersions] = useState<IWaiverVersion[]>([]);
+  const [selectedWaiver, setSelectedWaiver] = useState<ISignedWaiver | null>(null);
+  const {
+    isOpen: isWaiverModalOpen,
+    onOpen: openWaiverModal,
+    onClose: closeWaiverModal,
+  } = useDisclosure();
+
+  const openWaiver = async (userId: string) => { 
+    const waiver = waivers.find(w => w.signeeId === userId);
+    setSelectedWaiver(waiver ?? null);
+    if (waiver) {
+      try {
+        console.log(waiver.waiverVersion);
+        const res = await fetch(`/api/waiver-versions`);
+        if (res.ok) {
+          const versionData = await res.json();
+          setWaiverVersions(versionData.waiverVersions);
+        }
+      } catch (err) {
+        console.error('Error fetching waiver version:', err);
+      }
+    }
+    openWaiverModal();
+};
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -136,10 +171,11 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         try {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
-            const waivers = await waiverResponse.json();
+            const fetchedWaivers = await waiverResponse.json();
+            setWaivers(fetchedWaivers);
 
             debugger;
-            waivers.forEach((waiver: ISignedWaiver) => {
+            fetchedWaivers.forEach((waiver: ISignedWaiver) => {
               if (!visitors[waiver.signeeId]) {
                 visitors[waiver.signeeId] = {
                   parent: placeholderUser,
@@ -343,10 +379,24 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                               {group.parent.email ? group.parent.email : 'N/A'}
                             </td>
                             <td className={styles.detailsColumn}>
-                              <SingleVisitorComponent
-                                visitorData={group.parent}
-                              />
-                            </td>
+                              <div className={styles.linkGroup}>
+                                <div className={styles.link}>
+                                {waivers.some(w => w.signeeId === group.parent._id) ? (
+                                  <span
+                                    style={{
+                                      cursor: 'pointer'
+                                    }}
+                                    onClick={() => openWaiver(group.parent._id)}
+                                  >
+                                    Signed
+                                  </span>
+                                ) : (
+                                  <span>Unsigned</span>
+                                )}
+                                </div>
+                                <SingleVisitorComponent visitorData={group.parent} />
+                              </div>
+                          </td>
                           </tr>
                         )}
                         {group.dependents
@@ -380,6 +430,14 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           )}
         </>
       )}
+      <SingleVistorWaiver
+        isOpen={isWaiverModalOpen}
+        onClose={closeWaiverModal}
+        waiver={selectedWaiver}
+        waiverVersion={
+          waiverVersions?.find(v => v.version === selectedWaiver?.waiverVersion) || null
+        }
+      />
     </Box>
   );
 };
