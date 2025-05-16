@@ -106,12 +106,6 @@
 }
 
 @media (max-width: 1200px) {
-  .mainContainer {
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-  }
-
   .eventsList {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -140,6 +134,12 @@
 }
 
 @media (max-width: 768px) {
+  .mainContainer {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
   .sidebar {
     width: 100%;
     margin-left: 0;
