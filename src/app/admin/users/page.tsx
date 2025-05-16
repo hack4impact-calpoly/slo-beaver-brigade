@@ -14,7 +14,8 @@ import {
   Button,
   Wrap,
   WrapItem,
-  Input
+  Input,
+  Checkbox
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
 import Select from "react-select";
@@ -73,15 +74,20 @@ const editRoleName = (str: string): string => {
 
 const UserList = () => {
   // states
-  const [customUser, setUsers] = useState<IUserWithHours[]>([]);
+  const [allUsers, setUsers] = useState<IUserWithHours[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchOption, setSearchOption] = useState<{ value: string; label: string }>({
+    value: "name",
+    label: "Name"
+  });
   const [adminData, setAdminData] = useState<IUser>();
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
     value: "firstName",
     label: "First Name",
   });
+  const [isReverseSort, setIsReverseSort] = useState(false);
   const [loading, setLoading] = useState(true);
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
   const [page, setPage] = useState(0);
@@ -115,7 +121,7 @@ const UserList = () => {
     }
   };
 
-  // fetch customUser from db
+  // fetch allUsers from db
   const fetchUsers = async () => {
    
     if (!users){
@@ -140,7 +146,7 @@ const UserList = () => {
 
       setUsers(usersWithEventNames as IUserWithHours[]);
     } catch (error) {
-      console.error("Error fetching customUser:", error);
+      console.error("Error fetching allUsers:", error);
     } finally {
       setLoading(false);
     }
@@ -171,33 +177,67 @@ const UserList = () => {
   }, [isError, isLoading]);
 
   useEffect(() => {
-    setFilteredUsers(customUser
+    setFilteredUsers(allUsers
     .filter((user) =>
-      `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+      searchOption.value === "name" ? `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      )
+      : searchOption.value === "email" ? `${user.email.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      )
+      : searchOption.value === "role" ? `${user.role.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      ) : `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
       )
     )
     .sort((a, b) =>
       sortOrder.value === "firstName"
-        ? a.firstName.localeCompare(b.firstName)
+        ? isReverseSort ?
+        b.firstName.localeCompare(a.firstName)
+        : a.firstName.localeCompare(b.firstName)
+        : sortOrder.value === "lastName"
+        ? isReverseSort ?
+        b.lastName.localeCompare(a.lastName)
         : a.lastName.localeCompare(b.lastName)
+        : sortOrder.value === "email"
+        ? isReverseSort ?
+        b.email.localeCompare(a.email) 
+        : a.email.localeCompare(b.email) 
+        : sortOrder.value === "totalHours"
+        ? isReverseSort ?
+        a.totalHoursFormatted.localeCompare(b.totalHoursFormatted)
+        : b.totalHoursFormatted.localeCompare(a.totalHoursFormatted)
+        : sortOrder.value === "role" 
+        ? isReverseSort ?
+        b.role.localeCompare(a.role)
+        : a.role.localeCompare(b.role)
+        : a.firstName.localeCompare(b.firstName)
     ));
-  }, [customUser]);
-
+  }, [allUsers, searchTerm, sortOrder, isReverseSort, searchOption]);
 
 
   const sortOptions = [
     { value: "firstName", label: "First Name" },
     { value: "lastName", label: "Last Name" },
+    { value: "email", label: "Email"},
+    { value: "totalHours", label: "Total Hours"},
+    { value: "role", label: "Role"}
+  ];
+
+  const searchOptions = [
+    { value: "name", label: "Name" },
+    { value: "email", label: "Email" },
+    { value: "role", label: "Role"},
   ];
 
   const removeUser = (userId: string) => {
-    const newUsers = customUser.filter((user) => user._id != userId);
+    const newUsers = allUsers.filter((user) => user._id != userId);
     setUsers(newUsers);
   }
 
 
-  const csvData = customUser.map((user) => ({
+  const csvData = allUsers.map((user) => ({
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -250,9 +290,12 @@ const UserList = () => {
     <div className={style.mainContainer}>
       <div className={style.buttonContainer}>
         <div className={style.innerButtons}>
+          <Text>
+            Order By:
+          </Text>
           <Select
             id="sort-select"
-            placeholder="Sort by First or Last Name"
+            placeholder="Sort Order"
             options={sortOptions}
             className={style.selectContainer}
             onChange={(selectedOption) =>
@@ -283,10 +326,46 @@ const UserList = () => {
               }),
             }}
           />
+          <Checkbox onChange={() => setIsReverseSort(!isReverseSort)}>
+            Reversed?
+          </Checkbox>
+          <Select
+          id="search-select"
+          placeholder="Search Term"
+          options={searchOptions}
+          className={style.selectContainer}
+          onChange={(selectedOption) =>
+            setSearchOption(
+              selectedOption || { value: "name", label: "Name" }
+            )
+          }
+          isClearable={false}
+          isSearchable={false}
+          value={searchOption}
+          styles={{
+            control: (provided) => ({
+              ...provided,
+              borderRadius: "12px",
+              height: "40px",
+            }),
+            singleValue: (provided) => ({
+              ...provided,
+              color: "black",
+            }),
+            option: (provided, state) => ({
+              ...provided,
+              color: state.isSelected ? "white" : "black",
+            }),
+            placeholder: (provided) => ({
+              ...provided,
+              color: "black",
+            }),
+          }}
+          />
           <div className={style.searchWrapper}>
             <Input
               type="text"
-              placeholder="Search Users"
+              placeholder={`Search ${searchOption.label}`}
               border="1.5px solid #337774"
               _hover={{ borderColor: '#337774' }}
               focusBorderColor="#337774"
