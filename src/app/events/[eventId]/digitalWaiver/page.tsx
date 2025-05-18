@@ -39,6 +39,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const { mutate } = useEventsAscending();
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
   const [dependents, setDependents] = useState<string[]>([]);
+  const [guests, setGuests] = useState<string[]>([]);
   const [email, setEmail] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -116,6 +117,19 @@ export default function Waiver({ params: { eventId } }: IParams) {
     setDependents([...dependents, '']);
   };
 
+  const addGuest = () => {
+    if (guests.length >= 6) {
+      toast({
+        title:
+          'You can only add up to 5 guests per registee.',
+        status: 'error',
+        isClosable: true,
+      });
+      return;
+    }
+    setGuests([...guests, '']);
+  }
+
   const handleDeleteDependent = (indexToDelete: number) => {
     setDependents(dependents.filter((_, index) => index !== indexToDelete));
   };
@@ -124,6 +138,16 @@ export default function Waiver({ params: { eventId } }: IParams) {
     const newDependents = [...dependents];
     newDependents[index] = value;
     setDependents(newDependents);
+  };
+
+  const handleDeleteGuest = (indexToDelete: number) => {
+    setGuests(guests.filter((_, index) => index !== indexToDelete));
+  };
+
+  const handleGuestChange = (index: number, value: string) => {
+    const newGuests = [...guests];
+    newGuests[index] = value;
+    setGuests(newGuests);
   };
 
   function handleSkip() {
@@ -174,8 +198,13 @@ export default function Waiver({ params: { eventId } }: IParams) {
       (dependent) => dependent.trim() !== ''
     );
 
+    const filteredGuests = guests.filter(
+      (guest) => guest.trim() != ''
+    )
+
     const signedWaiver = {
       dependents: filteredDependents,
+      guests: filteredGuests,
       eventId: eventId,
       dateSigned: new Date(),
       waiverVersion: activeWaiver.version,
@@ -189,6 +218,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
           body: JSON.stringify({
             ...existingWaiver,
             dependents: filteredDependents,
+            guests: filteredGuests,
             signeeName: signature,
           }),
         });
@@ -494,6 +524,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               Add Dependent +
             </button>
 
+
             {/* Dependents Section */}
             <table width="100%">
               <tbody>
@@ -521,6 +552,57 @@ export default function Waiver({ params: { eventId } }: IParams) {
                           />
                           <Button
                             onClick={() => handleDeleteDependent(index)}
+                            size={{ base: 'xs', md: 'sm' }}
+                            colorScheme="red"
+                            variant="outline"
+                            style={{
+                              marginTop: '15px',
+                            }}
+                          >
+                            ×
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  : null}
+              </tbody>
+            </table>
+
+            <button
+              type="button"
+              onClick={addGuest}
+              className={styles.addDependent}
+              style={{ color: '#ECB94A' }}>
+                Add Guest +
+            </button>
+
+            {/* Guests Section */}
+            <table width="100%">
+              <tbody>
+                {guests.length > 0
+                  ? guests.map((name, index) => (
+                      <tr key={index}>
+                        <td
+                          style={{
+                            display: 'flex',
+                            gap: '10px',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <input
+                            className={styles.dependentTable}
+                            type="text"
+                            value={name}
+                            onChange={(event) =>
+                              handleGuestChange(index, event.target.value)
+                            }
+                            style={{
+                              flex: 1,
+                            }}
+                            placeholder="Guest Full Name"
+                          />
+                          <Button
+                            onClick={() => handleDeleteGuest(index)}
                             size={{ base: 'xs', md: 'sm' }}
                             colorScheme="red"
                             variant="outline"
