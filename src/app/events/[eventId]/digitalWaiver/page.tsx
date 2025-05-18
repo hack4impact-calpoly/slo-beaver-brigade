@@ -573,7 +573,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
               onClick={addGuest}
               className={styles.addDependent}
               style={{ color: '#ECB94A' }}>
-                Add Guest +
+                Add Party Member +
             </button>
 
             {/* Guests Section */}
@@ -599,7 +599,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
                             style={{
                               flex: 1,
                             }}
-                            placeholder="Guest Full Name"
+                            placeholder="Party Member Full Name"
                           />
                           <Button
                             onClick={() => handleDeleteGuest(index)}
