@@ -1,14 +1,28 @@
 'use client';
 
-import { Box, Spinner, Checkbox } from '@chakra-ui/react';
+import {
+  Box,
+  Spinner,
+  Checkbox,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Text,
+} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/admin/editEvent.module.css';
 import { IEvent } from '@database/eventSchema';
 import { IUser } from '@database/userSchema';
 import { ISignedWaiver } from 'database/signedWaiverSchema';
+import { IWaiverVersion } from '@database/waiverVersionsSchema';
 import { removeAttendee, removeRegistered } from 'app/actions/serveractions';
 import { addAttendee } from 'app/actions/useractions';
 import SingleVisitorComponent from './SingleVisitorComponent';
+import SingleVistorWaiver from './SingleVisitorWaiver';
 import { useEventId } from 'app/lib/swrfunctions';
 
 const placeholderUser: IUser = {
@@ -35,6 +49,34 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const { eventData, isLoading, isError } = useEventId(eventId);
   const [showAdminActions, setShowAdminActions] = useState(false);
   const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
+  const [waivers, setWaivers] = useState<ISignedWaiver[]>([]);
+  const [waiverVersions, setWaiverVersions] = useState<IWaiverVersion[]>([]);
+  const [selectedWaiver, setSelectedWaiver] = useState<ISignedWaiver | null>(
+    null
+  );
+  const {
+    isOpen: isWaiverModalOpen,
+    onOpen: openWaiverModal,
+    onClose: closeWaiverModal,
+  } = useDisclosure();
+
+  const openWaiver = async (userId: string) => {
+    const waiver = waivers.find((w) => w.signeeId === userId);
+    setSelectedWaiver(waiver ?? null);
+    if (waiver) {
+      try {
+        console.log(waiver.waiverVersion);
+        const res = await fetch(`/api/waiver-versions`);
+        if (res.ok) {
+          const versionData = await res.json();
+          setWaiverVersions(versionData.waiverVersions);
+        }
+      } catch (err) {
+        console.error('Error fetching waiver version:', err);
+      }
+    }
+    openWaiverModal();
+  };
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
@@ -75,13 +117,13 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     setShowAdminActions(false);
   };
 
-  async function handleMarkSelectVisitors(){
+  async function handleMarkSelectVisitors() {
     //no functionality yet
     for (const visitor of selectedVisitors) {
       await addAttendee(visitor._id.toString(), eventId.toString());
     }
     setShowAdminActions(false);
-  };
+  }
 
   async function handleRemoveSelectedAttendees() {
     for (const visitor of selectedVisitors) {
@@ -118,7 +160,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     }
   }
-  
+
   useEffect(() => {
     if (isLoading) {
       return;
@@ -136,10 +178,11 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
         try {
           const waiverResponse = await fetch(`/api/waiver/${eventId}`);
           if (waiverResponse.ok) {
-            const waivers = await waiverResponse.json();
+            const fetchedWaivers = await waiverResponse.json();
+            setWaivers(fetchedWaivers);
 
             debugger;
-            waivers.forEach((waiver: ISignedWaiver) => {
+            fetchedWaivers.forEach((waiver: ISignedWaiver) => {
               if (!visitors[waiver.signeeId]) {
                 visitors[waiver.signeeId] = {
                   parent: placeholderUser,
@@ -249,13 +292,14 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
               }, 0)}
               )
             </div>
-            <button 
+            <button
               onClick={() => setShowAdminActions(!showAdminActions)}
-              className={styles.manageVisitorText}>
-              {(showAdminActions) ? "Hide Admin Actions" : "Show Admin Actions"}
+              className={styles.manageVisitorText}
+            >
+              {showAdminActions ? 'Hide Admin Actions' : 'Show Admin Actions'}
             </button>
           </div>
-          {showAdminActions && 
+          {showAdminActions && (
             <div className={styles.manageVisitorContainer}>
               <div className={styles.manageVisitorRow}>
                 <button
@@ -301,7 +345,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 </button>
               </div>
             </div>
-          }
+          )}
           {Object.keys(visitorData).length === 0 ? (
             <div className={styles.noVisitorsMessage}>
               No visitors registered for this event.
@@ -309,6 +353,15 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           ) : (
             <div className={styles.tableContainer}>
               <table className={styles.visitorTable}>
+                <thead>
+                  <tr className={styles.visitorRow}>
+                    <th className={styles.checkBox}></th>
+                    <th className={styles.nameColumn}>Name</th>
+                    <th className={styles.emailColumn}>Email</th>
+                    <th className={styles.detailsColumn}>Waiver Status</th>
+                    <th className={styles.detailsColumn}>Details</th>
+                  </tr>
+                </thead>
                 <tbody>
                   {sortedVisitorEntries.map(
                     ([parentId, group], parentIndex) => (
@@ -343,9 +396,28 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                               {group.parent.email ? group.parent.email : 'N/A'}
                             </td>
                             <td className={styles.detailsColumn}>
-                              <SingleVisitorComponent
-                                visitorData={group.parent}
-                              />
+                                {waivers.some(
+                                  (w) => w.signeeId === group.parent._id
+                                ) ? (
+                                  <span
+                                    className={styles.link}
+                                    style={{
+                                      cursor: 'pointer',
+                                    }}
+                                    onClick={() => openWaiver(group.parent._id)}
+                                  >
+                                    Signed
+                                  </span>
+                                ) : (
+                                  <p>Unsigned</p>
+                                )}
+                            </td>
+                            <td className={styles.detailsColumn}>
+                              <div className={styles.linkGroup}>
+                                <SingleVisitorComponent
+                                  visitorData={group.parent}
+                                />
+                              </div>
                             </td>
                           </tr>
                         )}
@@ -380,6 +452,16 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           )}
         </>
       )}
+      <SingleVistorWaiver
+        isOpen={isWaiverModalOpen}
+        onClose={closeWaiverModal}
+        waiver={selectedWaiver}
+        waiverVersion={
+          waiverVersions?.find(
+            (v) => v.version === selectedWaiver?.waiverVersion
+          ) || null
+        }
+      />
     </Box>
   );
 };

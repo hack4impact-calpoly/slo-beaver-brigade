@@ -23,10 +23,10 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
       <EditEventHeader eventId={eventId} />
       <Flex
         className={styles.temp}
-        direction={{ base: "column", md: "row" }}
+        direction={{ base: "column", xl: "row" }}
         justify="space-between"
       >
-        <Box className={styles.leftColumn} w={{ base: "100%", md: "38%" }}>
+        <Box className={styles.leftColumn} w={{ base: "100%", xl: "38%" }}>
           <EditEventVisitorInfo eventId={eventId} />
           <Box className={styles.imageContainer}>
             <img
@@ -35,7 +35,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
             ></img>
           </Box>
         </Box>
-        <Box className={styles.rightColumn} w={{ base: "100%", md: "58%" }}>
+        <Box className={styles.rightColumn} w={{ base: "100%", xl: "58%" }}>
           <EditEventPrimaryInfo eventId={eventId} />
         </Box>
       </Flex>
