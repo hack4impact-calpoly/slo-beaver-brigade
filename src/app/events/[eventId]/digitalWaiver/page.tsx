@@ -118,7 +118,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   };
 
   const addGuest = () => {
-    if (guests.length >= 6) {
+    if (guests.length >= 5) {
       toast({
         title:
           'You can only add up to 5 guests per registee.',
@@ -410,6 +410,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
             );
             if (waiver) {
               setDependents([...waiver.dependents]);
+              setGuests([...waiver.guests])
               setSignature(waiver.signeeName);
               setExistingWaiver(waiver);
             }
