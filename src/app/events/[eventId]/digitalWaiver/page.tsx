@@ -53,6 +53,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
   const [emailChecked, setEmailChecked] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
+  const [hasSigned, setHasSigned] = useState(false);
   const [activeWaiver, setActiveWaiver] = useState<any>(null);
   const [existingWaiver, setExistingWaiver] = useState<ISignedWaiver | null>(
     null
@@ -60,6 +61,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   // Fetch active waiver
   useEffect(() => {
+
     const fetchActiveWaiver = async () => {
       try {
         const response = await fetch('/api/waiver-versions');
@@ -88,7 +90,36 @@ export default function Waiver({ params: { eventId } }: IParams) {
       }
     };
 
-    fetchActiveWaiver();
+    const fetchSignedWaiver = async () => {
+      try {
+        const response = await fetch(`/api/waiver/${eventId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await response.json();
+        const existing = data.signedWaivers.find((w: any) => w.signeeId === userData?._id)
+
+        if (existing) {
+          setExistingWaiver(existing);
+        }
+
+      } catch (error) {
+        console.error('Error fetching signed waiver:', error);
+        toast({
+          title: 'Error loading waiver',
+          description: 'Please try again later',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+    
+    if (hasSigned) {
+      fetchSignedWaiver();
+    } else {
+      fetchActiveWaiver();
+    }
   }, []);
 
   // Update the waiver text to use active waiver content
