@@ -616,144 +616,136 @@ export const UserDashboard = ({
           <Box mt={7} px={6}>
             {unregisteredEvents.length > 0 ? (
               <Slider {...unregisteredEventSettings}>
-                {unregisteredEvents.length > 0 ? (
-                  unregisteredEvents.map((event) => {
-                    const backgroundImage = fallbackBackgroundImage(
-                      event.eventImage,
-                      '/beaver-eventcard.jpeg'
-                    );
-                    return (
+                {unregisteredEvents.map((event) => {
+                  const backgroundImage = fallbackBackgroundImage(
+                    event.eventImage,
+                    '/beaver-eventcard.jpeg'
+                  );
+                  return (
+                    <Box
+                      key={event._id}
+                      textAlign="center"
+                      px="0"
+                      mb="4"
+                      onClick={() => setupViewEventModal(event)}
+                    >
                       <Box
-                        key={event._id}
-                        textAlign="center"
-                        px="0"
-                        mb="4"
-                        onClick={() => setupViewEventModal(event)}
+                        style={{
+                          background: backgroundImage,
+                          backgroundSize: 'cover',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'left 40%',
+                        }}
+                        position="relative"
+                        borderWidth="1px"
+                        p="4"
+                        mt="4"
+                        textAlign="left"
+                        h="64"
+                        mx="4"
+                        borderRadius="20px"
+                        className={style.eventBox}
+                        flex="1 0 40%"
                       >
-                        <Box
-                          key={event._id}
-                          style={{
-                            //backgroundImage: `url(${event.imageUrl || '/default-event-image.jpg'})`,
-                            background: backgroundImage,
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'left 40%',
-                          }}
+                        <Heading
+                          as="h1"
+                          size="3xl"
+                          mb="1"
                           position="relative"
-                          borderWidth="1px"
-                          p="4"
-                          mt="4"
-                          textAlign="left"
-                          h="64"
-                          mx="4"
-                          borderRadius="20px"
-                          className={style.eventBox}
-                          flex="1 0 40%" // Adjust the width as needed
+                          zIndex={2}
                         >
-                          <Heading
-                            as="h1"
-                            size="3xl"
-                            mb="1"
-                            position={'relative'}
+                          <Text
+                            fontSize={eventNameSize}
+                            fontWeight="custom"
+                            color="white"
+                            className="bold-text"
                             zIndex={2}
                           >
-                            <Text
-                              fontSize={eventNameSize}
-                              fontWeight="custom"
-                              color="white"
-                              className="bold-text"
-                              zIndex={2}
-                            >
-                              {event.eventName}
-                            </Text>
-                          </Heading>
-                          <Box
-                            position={'relative'}
-                            zIndex={2}
-                            fontSize={eventDetailSize}
-                          >
-                          <Box
-                            position="relative"
-                            borderWidth="1px"
-                            p="4"
-                            mt="4"
-                            textAlign="left"
-                            h="64"
-                            mx="4"
-                            borderRadius="20px"
-                            className={style.eventBox}
-                            flex="1 0 40%" // Adjust the width as needed
-                          >
-                            <Text
-                              fontFamily="Lato"
-                              fontWeight="500"
-                              color="white"
-                              className="bold-text"
-                              zIndex={2}
-                            >
-                              {formatDate(event.startTime)}
-                            </Text>
-                            <Text
-                              fontFamily="Lato"
-                              fontWeight="500"
-                              color="white"
-                              className="bold-text"
-                              zIndex={2}
-                            >
-                              {formatDateTimeRange(event.startTime, event.endTime)}
-                            </Text>
-                            <Text
-                              fontFamily="Lato"
-                              fontWeight="500"
-                              color="white"
-                              className="bold-text"
-                              zIndex={2}
-                            >
-                              {event.location}
-                            </Text>
-                            <Text
-                              fontFamily="Lato"
-                              fontWeight="500"
-                              color="white"
-                              className="bold-text"
-                              zIndex={2}
-                            >
-                              {`${event.maxHeadcount - event.registeredIds.length} Spots Left`}
-                            </Text>
-                          </Box>
-                          <Box
-                            position="absolute"
-                            bottom="0"
-                            left="0"
-                            right="0"
-                            p={2}
-                            mx="2"
-                            my="2"
+                            {event.eventName}
+                          </Text>
+                        </Heading>
+                        <Box
+                          position="relative"
+                          zIndex={2}
+                          fontSize={eventDetailSize}
+                        >
+                          <Text
+                            fontFamily="Lato"
+                            fontWeight="500"
+                            color="white"
+                            className="bold-text"
                             zIndex={2}
                           >
-                            <Heading as="h2" fontSize="xl">
-                              <Link
-                                href={'/events/' + event._id + '/digitalWaiver'}
+                            {formatDate(event.startTime)}
+                          </Text>
+                          <Text
+                            fontFamily="Lato"
+                            fontWeight="500"
+                            color="white"
+                            className="bold-text"
+                            zIndex={2}
+                          >
+                            {formatDateTimeRange(
+                              event.startTime,
+                              event.endTime
+                            )}
+                          </Text>
+                          <Text
+                            fontFamily="Lato"
+                            fontWeight="500"
+                            color="white"
+                            className="bold-text"
+                            zIndex={2}
+                          >
+                            {event.location}
+                          </Text>
+                          <Text
+                            fontFamily="Lato"
+                            fontWeight="500"
+                            color="white"
+                            className="bold-text"
+                            zIndex={2}
+                          >
+                            {`${event.maxHeadcount - event.registeredIds.length} Spots Left`}
+                          </Text>
+                        </Box>
+                        <Box
+                          position="absolute"
+                          bottom="0"
+                          left="0"
+                          right="0"
+                          p={2}
+                          mx="2"
+                          my="2"
+                          zIndex={2}
+                        >
+                          <Heading as="h2" fontSize="xl">
+                            <Link
+                              href={'/events/' + event._id + '/digitalWaiver'}
+                            >
+                              <Button
+                                bg="#e0af48"
+                                color="black"
+                                _hover={{ bg: '#C19137' }}
+                                fontSize={eventDetailSize}
+                                mt={14}
+                                onClick={handleButtonClickToStopPropogation}
                               >
-                                <Button
-                                  bg="#e0af48"
-                                  color="black"
-                                  _hover={{ bg: '#C19137' }}
-                                  fontSize={eventDetailSize}
-                                  mt={14}
-                                  onClick={handleButtonClickToStopPropogation}
-                                >
-                                  Register
-                                </Button>
-                              </Link>
-                            </Heading>
-                          </Box>
+                                Register
+                              </Button>
+                            </Link>
+                          </Heading>
                         </Box>
                       </Box>
-                    );
-                  })
-                ) : (
-                  <UnregisteredEventPlaceholder />
+                    </Box>
+                  );
+                })}
+                {/* Render placeholders if needed */}
+                {Array.from(
+                  { length: Math.max(2 - unregisteredEvents.length, 0) },
+                  (_, i) => (
+                    <UnregisteredEventPlaceholder key={`placeholder-${i}`} />
+                  )
                 )}
                 {unregisteredEvents.length < 2 &&
                   (window.innerWidth <= 600
