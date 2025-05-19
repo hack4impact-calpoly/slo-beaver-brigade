@@ -34,14 +34,14 @@ interface SingleVisitorComponentProps {
   visitorData: IUser;
   adminData?: IUser;
   removeFunction?: (userId: string) => void;
-  isOpen?: boolean;
-  onClose?: () => void;
 }
 
-function SingleVisitorComponent({ visitorData, removeFunction, adminData, isOpen = false, onClose = () => {} }: SingleVisitorComponentProps) {
+function SingleVisitorComponent({ visitorData, removeFunction, adminData}: SingleVisitorComponentProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(visitorData.role);
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -106,8 +106,17 @@ function SingleVisitorComponent({ visitorData, removeFunction, adminData, isOpen
     }
   }
 
+  const closeFromChild = () => {
+    onClose();
+  };
+
+
+
   return (
     <>
+      <div className={styles.link}>
+        <Text onClick={onOpen}>Details</Text>
+      </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
@@ -234,12 +243,7 @@ function SingleVisitorComponent({ visitorData, removeFunction, adminData, isOpen
                     )}
                   </>
                 )}
-              <DeleteConfirmation
-                userData={visitorData}
-                isSelf={false}
-                removeFunction={removeFunction}
-                closeFromChild={onClose}
-              />
+              <DeleteConfirmation closeFromChild={closeFromChild} userData={visitorData} isSelf={false} removeFunction={removeFunction}> </DeleteConfirmation>
             </Flex>
           </ModalBody>
         </ModalContent>
