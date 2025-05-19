@@ -6,6 +6,7 @@ export type ISignedWaiver = {
     signeeId: string;
     signeeName: string;
     dependents: string[];
+    guests: string[];
     eventId: string;
     dateSigned: Date;
     waiverVersion: number;
@@ -21,6 +22,11 @@ const signedWaiverSchema = new Schema({
         required: true,
     },
     dependents: {
+        type: [String],
+        default: [],
+        required: false,
+    },
+    guests: {
         type: [String],
         default: [],
         required: false,
