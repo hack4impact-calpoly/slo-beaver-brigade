@@ -95,7 +95,7 @@ export default function WaiverVersions() {
 
   const handleUpdateWaiver = async () => {
     if (!selectedVersion) return;
-
+    console.log(selectedVersion.dateCreated);
     try {
       console.log("Updating waiver with data:", {
         body: waiverContent,
@@ -169,6 +169,11 @@ export default function WaiverVersions() {
     setWaiverToDelete(version);
     setIsDeleteDialogOpen(true);
   };
+
+  const getWaiverName = (version: IWaiverVersion) => {
+    const waiverDate = new Date(version.dateCreated);
+    return `Waiver ${waiverDate.getMonth()+1}/${waiverDate.getDate()}/${waiverDate.getFullYear()%100} - ${waiverDate.getHours()}:${waiverDate.getMinutes()}:${waiverDate.getSeconds()}`;
+  };  
 
   const handleDelete = async () => {
     if (!waiverToDelete) return;
@@ -255,8 +260,8 @@ export default function WaiverVersions() {
           // Hardcoded Sidebar for Larger Screens
           <Flex width="full" justify="space-between" alignItems="flex-start">
             <Box
-              width="30%"
-              maxWidth="250px"
+              width="40%"
+              maxWidth="375px"
               p={[5, 5, 5, 5]}
               bg="#F5F5F5"
               borderTopLeftRadius="md"
@@ -297,7 +302,7 @@ export default function WaiverVersions() {
                       justifyContent="flex-start"
                       onClick={() => handleVersionSelect(version)}
                     >
-                      Waiver v{version.version} {version.isActiveWaiver ? "(Active)" : ""}
+                      {getWaiverName(version)} {version.isActiveWaiver ? "(Active)" : ""}
                     </Button>
                     <IconButton
                       size="xs"
@@ -398,7 +403,7 @@ export default function WaiverVersions() {
             >
               View Waiver Versions
             </Button>
-            <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+            <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="sm">
               <DrawerOverlay />
               <DrawerContent>
                 <DrawerCloseButton />
@@ -410,6 +415,7 @@ export default function WaiverVersions() {
                       key={version._id}
                       align="center"
                       gap={2}
+                      width="375px"
                       _hover={{ "& .delete-icon": { opacity: 1 } }}
                     >
                       <Button
@@ -423,7 +429,7 @@ export default function WaiverVersions() {
                         justifyContent="flex-start"
                         onClick={() => handleVersionSelect(version)}
                       >
-                        Waiver v{version.version} {version.isActiveWaiver ? "(Active)" : ""}
+                        {getWaiverName(version)} {version.isActiveWaiver ? "(Active)" : ""}
                       </Button>
                       <IconButton
                         size="xs"
@@ -572,7 +578,7 @@ export default function WaiverVersions() {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete Waiver v{waiverToDelete?.version}?
+              Are you sure you want to delete {waiverToDelete?.version && getWaiverName(waiverToDelete)}?
               This action cannot be undone.
             </AlertDialogBody>
 
