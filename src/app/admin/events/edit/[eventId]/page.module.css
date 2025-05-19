@@ -154,10 +154,34 @@
 
 .detailsColumn:hover {
     text-decoration-line: underline;
+    
 }
 
+.waiverColumn {
+    padding: 1.5% 0% 1.5% 3%;
+    text-align: left;
+    width: 20%;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 3%;
+}
+
+.waiverColumn:hover {
+    text-decoration-line: underline;
+}
+
+.linkGroup {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    white-space: nowrap;
+  }
+
 .visitorTable {
-    table-layout: fixed;
+    width: 100%;
+    table-layout: auto;
 }
 
 .visitorInfoSmallHeader {
