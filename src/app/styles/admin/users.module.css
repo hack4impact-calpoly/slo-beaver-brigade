@@ -6,13 +6,13 @@
 
 .tableContainer {
     font-weight: bold;
-    margin: 0 13%;
+    margin: 0 5%;
     overflow: auto;
 }
 
 .buttonContainer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     margin: 0 10% 25px;
 }
 
@@ -21,6 +21,27 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.orderByContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+}
+
+.searchContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
 }
 
 .yellowButton {
@@ -91,10 +112,10 @@
     width: 100px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1500px) {
     .buttonContainer {
         align-items: center;
-        flex-direction: column-reverse;
+        flex-direction: column;
         gap: 20px;
     }
 
@@ -102,7 +123,26 @@
         padding: 8px 20px;   
     }
 
+    .searchBar {
+        width: 150px;
+        height: 37px;
+        padding: 5px 10px 5px 20px;
+    }
 
+    .searchWrapper {
+        width: 170px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .inputContainer {
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 1000px) {
     .tableContainer {
         font-size: 0.7rem;
         height: 600px;
@@ -118,23 +158,24 @@
     .tableContainer th {
         padding: 8px;
     }
-
-    .searchBar {
-        width: 150px;
-        height: 37px;
-        padding: 5px 10px 5px 20px;
-    }
-
-    .searchWrapper {
-        width: 170px;
-        margin: -20px;
-    }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 600px) {
     .innerButtons {
-        align-items: center;
-        flex-direction: column-reverse;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .inputContainer {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .searchContainer {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .orderByContainer {
+        flex-direction: column;
         gap: 10px;
     }
 
@@ -149,10 +190,10 @@
     .searchWrapper {
         margin: 0px;
     }
+
     .searchBar {
         width: 145px;
     }
-    
 
     .selectContainer {
         margin-top: 10px;
