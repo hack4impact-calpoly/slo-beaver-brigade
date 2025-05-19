@@ -407,9 +407,10 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                                 {guest.firstName} {guest.lastName}
                               </td>
                               <td className={styles.emailColumn}>
-                                {guest.email}
+                                Guest - Has not signed
                               </td>
-                              <td className={styles.detailsColumn}></td>
+                              <td className={styles.detailsColumn}>
+                              </td>
                             </tr>
                           ))}
                       </React.Fragment>
