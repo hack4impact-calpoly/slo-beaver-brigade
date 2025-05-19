@@ -239,17 +239,13 @@
 
 .detailsColumn {
   padding: 1.5% 0% 1.5% 3%;
-  text-align: left;
+  text-align: center;
   width: 20%;
   font-size: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 3%;
-}
-
-.detailsColumn:hover {
-  text-decoration-line: underline;
 }
 
 .tableContainer {
@@ -290,8 +286,8 @@
 
 .fieldInfo {
   text-align: left;
-  margin: 3% 5% 3% 5%;
-  font-size: 14px;
+  margin: 20px;
+  font-size: 15px;
   font-family: "Lato";
 
 }
@@ -383,8 +379,12 @@
 }
 
 .link {
-  color: gray;
   text-decoration: underline;
+}
+
+.link:hover {
+  cursor: pointer;
+  color: #337774;
 }
 
 .parentContainer {
