@@ -34,18 +34,26 @@ interface SingleVisitorComponentProps {
   visitorData: IUser;
   adminData?: IUser;
   removeFunction?: (userId: string) => void;
+  open?: boolean;
 }
 
 function SingleVisitorComponent({
   visitorData,
   removeFunction,
   adminData,
+  open = false,
 }: SingleVisitorComponentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isClosed, setIsClosed] = useState(false);
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(visitorData.role);
+
+  useEffect(() => {
+    if (open) {
+      onOpen();
+    }
+  }, [open, onOpen]);
 
   useEffect(() => {
     if (isOpen) {

@@ -134,6 +134,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 user: `${user.firstName} ${user.lastName}`,
                 action: action,
                 date: new Date(),
+                link: targetUser._id,
             });
 
             return NextResponse.json("User updated: " + targetUserId, { status: 200 });
