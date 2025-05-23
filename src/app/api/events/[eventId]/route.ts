@@ -59,7 +59,7 @@ export async function DELETE(req: NextRequest, { params }: IParams) {
             user: `${userData.firstName} ${userData.lastName}`,
             action: `deleted event ${event.eventName}`,
             date: new Date(),
-            link: eventId,
+            link: null, // no link for deleted events
         });
 
         revalidateTag("events");
@@ -166,6 +166,20 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             event.groupsOnly = groupsOnly;
         }
         await event.save();
+
+        // audit log upon event update
+        const userRes = await getUserDbData();
+        let userData: IUser;
+        if (userRes) {
+            userData = JSON.parse(userRes);
+            await Log.create({
+                user: `${userData.firstName} ${userData.lastName}`,
+                action: `edited event ${event.eventName}`,
+                date: new Date(),
+                link: eventId,
+            });
+        }
+
         revalidateTag("events");
         return NextResponse.json("Event updated: " + event, { status: 200 });
     } catch (err) {
