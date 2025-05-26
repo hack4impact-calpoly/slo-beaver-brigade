@@ -92,15 +92,21 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
     const fetchSignedWaiver = async () => {
       try {
-        const response = await fetch(`/api/waiver/${eventId}`, {
+        const signedWaiverResponse = await fetch(`/api/waiver/${eventId}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
-        const data = await response.json();
-        const existing = data.signedWaivers.find((w: any) => w.signeeId === userData?._id)
+        const signedWaiverData = await signedWaiverResponse.json();
+        const waiverVersionsResponse = await fetch('/api/waiver-versions');
+        const waiverVersionsData = await waiverVersionsResponse.json();
 
-        if (existing) {
-          setExistingWaiver(existing);
+        const existing = signedWaiverData.find((w: any) => w.signeeId === userData?._id);
+        const existingSignedWaiver = waiverVersionsData.waiverVersions.find((w: any) => w.version === existing.waiverVersion);
+
+
+
+        if (existingSignedWaiver) {
+          setActiveWaiver(existingSignedWaiver);
         }
 
       } catch (error) {
@@ -115,12 +121,12 @@ export default function Waiver({ params: { eventId } }: IParams) {
       }
     }
     
-    if (hasSigned) {
+    if (userData && eventData?.registeredIds.includes(userData._id)) {
       fetchSignedWaiver();
     } else {
       fetchActiveWaiver();
     }
-  }, []);
+  }, [eventData, userData]);
 
   // Update the waiver text to use active waiver content
   const waiverText = activeWaiver?.body || 'Loading waiver...';
