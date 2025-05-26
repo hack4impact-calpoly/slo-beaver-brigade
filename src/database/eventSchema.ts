@@ -7,6 +7,7 @@ export type IEvent = {
     eventType: string | null;
     groupsOnly?: boolean;
     location: string;
+    isOpen: true
     description: string;
     checklist: string[];
     wheelchairAccessible: boolean;
@@ -32,6 +33,7 @@ const eventSchema = new Schema({
     checklist: { type: [String], required: false, default: [] },
     groupsOnly: { type: Boolean, required: false, default: false },
     wheelchairAccessible: { type: Boolean, required: false, default: false },
+    isOpen: {type: Boolean, required: true, default: true},
     spanishSpeakingAccommodation: {
         type: Boolean,
         required: false,
