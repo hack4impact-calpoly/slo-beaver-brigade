@@ -44,7 +44,7 @@ const placeholderUser: IUser = {
 const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [loading, setLoading] = useState(true);
   const [visitorData, setVisitorData] = useState<{
-    [key: string]: { parent: IUser; dependents: IUser[]; guests: IUser[]};
+    [key: string]: { parent: IUser; dependents: string[]; partyMembers: { name: string; hasSigned: Boolean }[]};
   }>({});
   const { eventData, isLoading, isError } = useEventId(eventId);
   const [showAdminActions, setShowAdminActions] = useState(false);
@@ -80,9 +80,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
 
   const emailLink = () => {
     const emails = Object.values(visitorData)
-      .flatMap((group) =>
-        [group.parent, ...group.dependents].map((visitor) => visitor.email)
-      )
+      .map((group) => group.parent.email)
       .filter((email) => !!email);
     const subject = encodeURIComponent(eventData?.eventName + ' Update');
     return `mailto:${emails.join(',')}?subject=${subject}`;
@@ -171,7 +169,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
     const fetchVisitorData = async () => {
       if (eventData.eventName !== '') {
         const visitors: {
-          [key: string]: { parent: IUser; dependents: IUser[]; guests: IUser[]};
+          [key: string]: { parent: IUser; dependents: string[]; partyMembers: { name: string; hasSigned: Boolean }[]};
         } = {};
 
         // Fetch waivers for the event
@@ -187,45 +185,21 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                 visitors[waiver.signeeId] = {
                   parent: placeholderUser,
                   dependents: [],
-                  guests: [],
+                  partyMembers: [],
                 };
               }
-              waiver.dependents.forEach((dependent) => {
-                visitors[waiver.signeeId].dependents.push({
-                  _id: `${dependent} Dependent`,
-                  groupId: null,
-                  email: '',
-                  firstName: dependent,
-                  lastName: '',
-                  phoneNumber: '',
-                  age: -1,
-                  gender: '',
-                  role: 'guest',
-                  eventsAttended: [],
-                  eventsRegistered: [],
-                  receiveNewsletter: false,
-                  zipcode: '',
-                });
+              waiver.dependents?.forEach((dependent) => {
+                visitors[waiver.signeeId].dependents.push(dependent);
               });
-              waiver.guests.forEach((guest) => {
-                visitors[waiver.signeeId].guests.push({
-                  _id: `${guest} Party Member`,
-                  groupId: null,
-                  email: '',
-                  firstName: guest,
-                  lastName: '',
-                  phoneNumber: '',
-                  age: -1,
-                  gender: '',
-                  role: 'guest',
-                  eventsAttended: [],
-                  eventsRegistered: [],
-                  receiveNewsletter: false,
-                  zipcode: '',
-                });
+              waiver.partyMembers?.forEach((partyMember) => {
+                visitors[waiver.signeeId].partyMembers.push(
+                  {
+                    name: partyMember.name,
+                    hasSigned: partyMember.hasSigned,   
+                 }
+                );
               });
-            }
-          );
+            });
           } else {
             console.error('Error fetching waivers:');
             setLoading(false);
@@ -249,7 +223,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                   const user = await response.json();
 
                   if (!visitors[user._id]) {
-                    visitors[user._id] = { parent: user, dependents: [], guests: []};
+                    visitors[user._id] = { parent: user, dependents: [], partyMembers: []};
                   } else {
                     visitors[user._id].parent = user;
                   }
@@ -268,6 +242,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           )
         );
         setVisitorData(sortedVisitors);
+        console.log('Visitor data:', sortedVisitors);
         setLoading(false);
       }
     };
@@ -440,9 +415,36 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                             </td>
                           </tr>
                         )}
+                        {group.partyMembers
+                        .sort((a, b) =>
+                          a.name.localeCompare(b.name)
+                        )
+                        .map((partyMember, index) => (
+                          <tr
+                            className={`${styles.visitorRow} ${styles.dependentRow}`}
+                            key={`${parentIndex}-${index}`}
+                          >
+                            <td className={styles.checkBox}></td>
+                            <td
+                              className={styles.nameColumn}
+                              style={{ paddingLeft: '25px' }}
+                            >
+                              {partyMember.name}
+                            </td>
+                            <td className={styles.emailColumn}>
+                              Party Member
+                            </td>
+                              <td className={styles.detailsColumn}>
+                              {partyMember.hasSigned ? 'Signed' : 'Unsigned'}
+                              </td>
+                            <td className={styles.detailsColumn}>
+                              Manage
+                            </td>
+                          </tr>
+                        ))}
                         {group.dependents
                           .sort((a, b) =>
-                            a.firstName.localeCompare(b.firstName)
+                            a.localeCompare(b)
                           )
                           .map((dependent, index) => (
                             <tr
@@ -454,34 +456,16 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                                 className={styles.nameColumn}
                                 style={{ paddingLeft: '25px' }}
                               >
-                                {dependent.firstName} {dependent.lastName}
+                                {dependent}
                               </td>
                               <td className={styles.emailColumn}>
-                                {dependent.email}
-                              </td>
-                              <td className={styles.detailsColumn}></td>
-                            </tr>
-                          ))}
-                          {group.guests
-                          .sort((a, b) =>
-                            a.firstName.localeCompare(b.firstName)
-                          )
-                          .map((guest, index) => (
-                            <tr
-                              className={`${styles.visitorRow} ${styles.dependentRow}`}
-                              key={`${parentIndex}-${index}`}
-                            >
-                              <td className={styles.checkBox}></td>
-                              <td
-                                className={styles.nameColumn}
-                                style={{ paddingLeft: '25px' }}
-                              >
-                                {guest.firstName} {guest.lastName}
-                              </td>
-                              <td className={styles.emailColumn}>
-                                Guest - Has not signed
+                                Dependent
                               </td>
                               <td className={styles.detailsColumn}>
+                                N/A
+                              </td>
+                              <td className={styles.detailsColumn}>
+                                Manage
                               </td>
                             </tr>
                           ))}
