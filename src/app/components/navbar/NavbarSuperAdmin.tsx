@@ -90,7 +90,7 @@ export default function Navbar(props: { name: string }) {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/admin/waivers" onClick={handleHideNavbar}>
+                  <Link href="/super-admin/waivers" onClick={handleHideNavbar}>
                     Waivers
                   </Link>
                 </li>
