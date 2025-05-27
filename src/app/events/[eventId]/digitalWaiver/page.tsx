@@ -19,6 +19,7 @@ import styles from './page.module.css';
 import beaverLogo from '/docs/images/beaver-logo.png';
 import Image from 'next/image';
 import { IUser } from '@database/userSchema';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import { addToRegistered } from '@app/actions/useractions';
 import { getUserDbData } from 'app/lib/authentication';
 import { createGuestFromEmail, getUserFromEmail } from 'app/actions/userapi';
@@ -105,10 +106,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   // User data and dependent functions
   const addDependent = () => {
-    if (dependents.length >= 6) {
+    if (dependents.length + guests.length >= 6) {
       toast({
         title:
-          'You can only add up to 6 dependents on public events.\nNote: For groups larger than 6, please contact us about a private tour.  There is a fee for private tours.',
+          'You can only add up to 6 party members on public events.\nNote: For groups larger than 6, please contact us about a private tour.  There is a fee for private tours.',
         status: 'error',
         isClosable: true,
       });
@@ -118,10 +119,10 @@ export default function Waiver({ params: { eventId } }: IParams) {
   };
 
   const addGuest = () => {
-    if (guests.length >= 5) {
+    if (dependents.length + guests.length >= 6) {
       toast({
         title:
-          'You can only add up to 5 guests per registee.',
+          'You can only add up to 6 party members on public events.\nNote: For groups larger than 6, please contact us about a private tour.  There is a fee for private tours.',
         status: 'error',
         isClosable: true,
       });
@@ -516,68 +517,15 @@ export default function Waiver({ params: { eventId } }: IParams) {
               {acknowledgementText}
             </Text>
 
-            <button
-              type="button"
-              onClick={addDependent}
-              className={styles.addDependent}
-              style={{ color: '#ECB94A' }}
-            >
-              Add Dependent +
-            </button>
-
-
-            {/* Dependents Section */}
-            <table width="100%">
-              <tbody>
-                {dependents.length > 0
-                  ? dependents.map((name, index) => (
-                      <tr key={index}>
-                        <td
-                          style={{
-                            display: 'flex',
-                            gap: '10px',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <input
-                            className={styles.dependentTable}
-                            type="text"
-                            value={name}
-                            onChange={(event) =>
-                              handleDependentChange(index, event.target.value)
-                            }
-                            style={{
-                              flex: 1,
-                            }}
-                            placeholder="Dependent Full Name"
-                          />
-                          <Button
-                            onClick={() => handleDeleteDependent(index)}
-                            size={{ base: 'xs', md: 'sm' }}
-                            colorScheme="red"
-                            variant="outline"
-                            style={{
-                              marginTop: '15px',
-                            }}
-                          >
-                            ×
-                          </Button>
-                        </td>
-                      </tr>
-                    ))
-                  : null}
-              </tbody>
-            </table>
-
+            {/* Party Members Section */}
             <button
               type="button"
               onClick={addGuest}
               className={styles.addDependent}
               style={{ color: '#ECB94A' }}>
-                Add Party Member +
+                Add Adult Party Member + 
             </button>
 
-            {/* Guests Section */}
             <table width="100%">
               <tbody>
                 {guests.length > 0
@@ -604,14 +552,68 @@ export default function Waiver({ params: { eventId } }: IParams) {
                           />
                           <Button
                             onClick={() => handleDeleteGuest(index)}
-                            size={{ base: 'xs', md: 'sm' }}
                             colorScheme="red"
                             variant="outline"
                             style={{
                               marginTop: '15px',
+                              height: '47px',
+                              width: '47px',
                             }}
                           >
-                            ×
+                            <XMarkIcon style={{ width: '20px', height: '20px'}} />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  : null}
+              </tbody>
+            </table>
+
+            {/* Dependents Section */}
+            <button
+              type="button"
+              onClick={addDependent}
+              className={styles.addDependent}
+              style={{ color: '#ECB94A' }}
+            >
+              Add Dependent Party Member +
+            </button>
+
+            <table width="100%">
+              <tbody>
+                {dependents.length > 0
+                  ? dependents.map((name, index) => (
+                      <tr key={index}>
+                        <td
+                          style={{
+                            display: 'flex',
+                            gap: '10px',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <input
+                            className={styles.dependentTable}
+                            type="text"
+                            value={name}
+                            onChange={(event) =>
+                              handleDependentChange(index, event.target.value)
+                            }
+                            style={{
+                              flex: 1,
+                            }}
+                            placeholder="Dependent Full Name"
+                          />
+                          <Button
+                            onClick={() => handleDeleteDependent(index)}
+                            colorScheme="red"
+                            variant="outline"
+                            style={{
+                              marginTop: '15px',
+                              height: '47px',
+                              width: '47px',
+                            }}
+                          >
+                            <XMarkIcon style={{ width: '20px', height: '20px'}} />
                           </Button>
                         </td>
                       </tr>
