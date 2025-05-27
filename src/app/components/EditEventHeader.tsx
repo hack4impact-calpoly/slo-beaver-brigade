@@ -81,10 +81,10 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
     return(
         <Box className = {styles.header}>
             <button className={`${styles.backButton} ${styles.headerButton}`} onClick={() => router.back()}>Back</button>
-            <div className={styles.rightButtons}>
+            <Box className={styles.rightButtons}>
                 {eventData?.isOpen && <button className={`${styles.headerStopButton} ${styles.headerButton}`} onClick={endRegistration}>Stop Registration</button>}
                 <DeleteEvent eventName={eventData?.eventName || "Error."} onDelete={handleDelete}/>
-            </div>
+            </Box>
             
         </Box>
     );
