@@ -5,6 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import connectDB from "@database/db";
 import User, {IUser} from "@database/userSchema";
 import NavbarAdmin from "./NavbarAdmin";
+import NavbarSuperAdmin from "./NavbarSuperAdmin"
 import { getUserDataFromEmail, getUserDbData } from "app/lib/authentication";
 import { getBareBoneUser } from "app/actions/cookieactions";
 import { cookies } from "next/headers";
@@ -68,11 +69,14 @@ export default async function NavbarParent() {
     if (user){
 
         const name = `Hi ${user?.firstName}!`;
-        if (user?.role == "admin" || user?.role == "super-admin"){
-        return <NavbarAdmin name={name}></NavbarAdmin>
+        if (user?.role == "super-admin"){
+            return <NavbarSuperAdmin name={name}/>
+        }
+        else if (user?.role == "admin"){
+            return <NavbarAdmin name={name}/>
         }
         else{
-            return <Navbar name={name}></Navbar>
+            return <Navbar name={name}/>
         }
     }
     else{
@@ -85,8 +89,11 @@ export default async function NavbarParent() {
                 await fetch(getBaseUrl() + "/api/user/cookies", {method: "POST", body: userRes})
                 const tempUser = JSON.parse(userRes) as IUser
                 if (tempUser){
-                    if (tempUser?.role == "admin" || tempUser?.role == "super-admin"){
-                        return <NavbarAdmin name={`Hi ${tempUser.firstName}!`}></NavbarAdmin>
+                    if (tempUser?.role == "super-admin"){
+                        return <NavbarSuperAdmin name={`Hi ${tempUser.firstName}!`}/>
+                        }
+                    else if (tempUser?.role == "admin"){
+                        return <NavbarAdmin name={`Hi ${tempUser.firstName}`}/>
                         }
                     else{
                         return <Navbar name={`Hi ${tempUser.firstName}`}/>

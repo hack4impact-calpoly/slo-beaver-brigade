@@ -89,6 +89,11 @@ export default function Navbar(props: { name: string }) {
                     Audit Log
                   </Link>
                 </li>
+                <li>
+                  <Link href="/super-admin/waivers" onClick={handleHideNavbar}>
+                    Waivers
+                  </Link>
+                </li>
               </>
             )}
           </ul>
