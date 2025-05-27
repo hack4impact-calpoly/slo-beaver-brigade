@@ -7,7 +7,7 @@ export type IEvent = {
     eventType: string | null;
     groupsOnly?: boolean;
     location: string;
-    isOpen: true
+    isOpen: boolean;
     description: string;
     checklist: string[];
     wheelchairAccessible: boolean;
