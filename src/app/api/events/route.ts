@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         .lean()
         .orFail()) as IUser;
 
-      if (userDoc.role === 'admin') {
+      if (userDoc.role === 'admin' || userDoc.role === 'super-admin') {
         const events = await Event.find().sort({ startTime: sort }).lean();
         return NextResponse.json(events, { status: 200 });
       }
