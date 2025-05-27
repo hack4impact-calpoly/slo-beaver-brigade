@@ -59,6 +59,20 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
     }
 
     const endRegistration = async () => {
+        try {
+            const response = await fetch(`/api/events/${eventId}`, {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    isOpen: false
+                }),
+            });
+
+        } catch (error) {
+            console.error('Error ending registration:', error);
+        }
 
 
     }
@@ -68,7 +82,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         <Box className = {styles.header}>
             <button className={`${styles.backButton} ${styles.headerButton}`} onClick={() => router.back()}>Back</button>
             <div className={styles.rightButtons}>
-                <button className={`${styles.headerStopButton} ${styles.headerButton}`} onClick={endRegistration}>Stop Registration</button>
+                {eventData?.isOpen && <button className={`${styles.headerStopButton} ${styles.headerButton}`} onClick={endRegistration}>Stop Registration</button>}
                 <DeleteEvent eventName={eventData?.eventName || "Error."} onDelete={handleDelete}/>
             </div>
             
