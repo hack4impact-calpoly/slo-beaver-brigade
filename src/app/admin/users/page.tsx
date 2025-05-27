@@ -69,9 +69,9 @@ const formatHours = (hours: number): string => {
 };
 
 const editRoleName = (str: string): string => {
-  return str === 'super-admin'
-    ? 'Super Admin'
-    : str.charAt(0).toUpperCase() + str.slice(1);
+  if (!str) return 'Unknown Role';
+  if (str == 'super-admin') return 'Super Admin';
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 const UserList = () => {
@@ -445,7 +445,6 @@ const UserList = () => {
                       <Td>{`${user.firstName} ${user.lastName}`}</Td>
                       <Td>{user.email}</Td>
                       <Td>{user.totalHoursFormatted}</Td>
-
                       <Td>{editRoleName(user.role)}</Td>
                       <Td>
                         <SingleVisitorComponent
