@@ -53,6 +53,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
   const [eventData, setEventData] = useState<IEvent | null>(null);
   const [emailChecked, setEmailChecked] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
+  const [hasSigned, setHasSigned] = useState(false);
   const [activeWaiver, setActiveWaiver] = useState<any>(null);
   const [existingWaiver, setExistingWaiver] = useState<ISignedWaiver | null>(
     null
@@ -60,6 +61,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
 
   // Fetch active waiver
   useEffect(() => {
+
     const fetchActiveWaiver = async () => {
       try {
         const response = await fetch('/api/waiver-versions');
@@ -88,8 +90,43 @@ export default function Waiver({ params: { eventId } }: IParams) {
       }
     };
 
-    fetchActiveWaiver();
-  }, []);
+    const fetchSignedWaiver = async () => {
+      try {
+        const signedWaiverResponse = await fetch(`/api/waiver/${eventId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const signedWaiverData = await signedWaiverResponse.json();
+        const waiverVersionsResponse = await fetch('/api/waiver-versions');
+        const waiverVersionsData = await waiverVersionsResponse.json();
+
+        const existing = signedWaiverData.find((w: any) => w.signeeId === userData?._id);
+        const existingSignedWaiver = waiverVersionsData.waiverVersions.find((w: any) => w.version === existing.waiverVersion);
+
+
+
+        if (existingSignedWaiver) {
+          setActiveWaiver(existingSignedWaiver);
+        }
+
+      } catch (error) {
+        console.error('Error fetching signed waiver:', error);
+        toast({
+          title: 'Error loading waiver',
+          description: 'Please try again later',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+    
+    if (userData && eventData?.registeredIds.includes(userData._id)) {
+      fetchSignedWaiver();
+    } else {
+      fetchActiveWaiver();
+    }
+  }, [eventData, userData]);
 
   // Update the waiver text to use active waiver content
   const waiverText = activeWaiver?.body || 'Loading waiver...';
