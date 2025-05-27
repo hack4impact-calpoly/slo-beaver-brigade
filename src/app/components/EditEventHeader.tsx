@@ -58,11 +58,20 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         
     }
 
+    const endRegistration = async () => {
+
+
+    }
+
 
     return(
         <Box className = {styles.header}>
-             <button className={`${styles.backButton} ${styles.headerButton}`} onClick={() => router.back()}>Back</button>
-            <DeleteEvent eventName={eventData?.eventName || "Error."} onDelete={handleDelete}/>
+            <button className={`${styles.backButton} ${styles.headerButton}`} onClick={() => router.back()}>Back</button>
+            <div className={styles.rightButtons}>
+                <button className={`${styles.headerStopButton} ${styles.headerButton}`} onClick={endRegistration}>Stop Registration</button>
+                <DeleteEvent eventName={eventData?.eventName || "Error."} onDelete={handleDelete}/>
+            </div>
+            
         </Box>
     );
 }
