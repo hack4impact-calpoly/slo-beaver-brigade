@@ -649,7 +649,7 @@ export default function Page() {
             {unregisteredEvents.length > 0 ? (
               <Slider {...unregisteredEventSettings}>
                 {unregisteredEvents.length > 0 ? (
-                  unregisteredEvents.map((event) => {
+                  unregisteredEvents.filter((event) => event.isOpen).map((event) => {
                     return (
                       <Box
                         key={event._id}
