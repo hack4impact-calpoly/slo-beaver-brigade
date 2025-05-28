@@ -5,7 +5,8 @@ import { Box, Card, Badge, Text, Button, Flex,
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalCloseButton, useDisclosure} from '@chakra-ui/react';
+    ModalCloseButton, useDisclosure,
+    useToast} from '@chakra-ui/react';
 import React, {useState, useEffect} from 'react'
 import styles from "../styles/admin/editEvent.module.css";
 import { IEvent } from '@database/eventSchema';
@@ -15,6 +16,7 @@ import { mutate } from 'swr';
 
 const EditEventHeader = ({ eventId }: { eventId: string }) => {
     const router = useRouter();
+    const toast = useToast();
     const {eventData, isLoading, isError} = useEventId(eventId);
     const [registrationOpen, setRegistrationOpen] = useState(eventData?.isOpen);
     console.log(registrationOpen);
@@ -70,6 +72,15 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
                     isOpen: !registrationOpen
                 }),
             });
+            toast({
+                title: `Registration ${!registrationOpen ? "Opened" : "Closed"}`,
+                description: `This event's registration status is now ${!registrationOpen ? "opened" : "closed"}`,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            })
+
+
             setRegistrationOpen(!registrationOpen);
 
         } catch (error) {
