@@ -103,7 +103,6 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
 
     try {
         const event = await Event.findById(eventId).orFail();
-        console.log(event);
         if (req.body) {
             const {
                 eventName,
