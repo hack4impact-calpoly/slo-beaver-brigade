@@ -6,6 +6,7 @@ import { revalidateTag } from "next/cache";
 import Log from "@database/logSchema";
 import { IUser } from "@database/userSchema";
 import { getUserDbData } from "app/lib/authentication";
+import { isMotionComponent } from "framer-motion";
 
 type IParams = {
     params: {
@@ -102,6 +103,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
 
     try {
         const event = await Event.findById(eventId).orFail();
+        console.log(event);
         if (req.body) {
             const {
                 eventName,
@@ -119,6 +121,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 attendeeIds,
                 groupsOnly,
                 checklist,
+                isOpen
             }: IEvent = await req.json();
             if (checklist !== undefined) {
                 event.checklist = checklist;
@@ -163,6 +166,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (attendeeIds){
                 event.attendeeIds = attendeeIds;
             }
+            event.isOpen = isOpen;
             event.groupsOnly = groupsOnly;
         }
         await event.save();
