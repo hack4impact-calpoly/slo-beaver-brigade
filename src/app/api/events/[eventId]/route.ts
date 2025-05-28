@@ -6,7 +6,6 @@ import { revalidateTag } from "next/cache";
 import Log from "@database/logSchema";
 import { IUser } from "@database/userSchema";
 import { getUserDbData } from "app/lib/authentication";
-import { isMotionComponent } from "framer-motion";
 
 type IParams = {
     params: {
