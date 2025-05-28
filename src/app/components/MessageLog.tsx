@@ -54,9 +54,9 @@ useEffect(() => {
   const handleClick = () => {
     if (log.link){
       if (log.action.includes("event")) {
-      router.push(`/admin/events/${log.link}`);
+      router.push(`/admin/events/?id=${log.link}`);
       } else {
-      router.push(`/admin/users/${log.link}`);
+      router.push(`/admin/users/?userId=${log.link}`);
       }
     }
   };

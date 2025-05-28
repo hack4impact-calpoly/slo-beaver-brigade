@@ -10,11 +10,10 @@ import {
   Td,
   useBreakpointValue,
   Text,
-  Spacer,
   Button,
-  Wrap,
-  WrapItem,
-  Input
+  Input,
+  Checkbox,
+  useToast,
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
 import Select from "react-select";
@@ -27,6 +26,7 @@ import { useUsers } from "app/lib/swrfunctions";
 import "../../fonts/fonts.css";
 import { getUserDbData } from "app/lib/authentication";
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export interface EventInfo {
   eventId: Schema.Types.ObjectId;
@@ -75,26 +75,16 @@ const editRoleName = (str: string): string => {
 };
 
 const UserList = () => {
+  // states
   const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
+  const id = searchParams.get("userId");
   const [selectedUser, setSelectedUser] = useState<IUserWithHours | null>(null);
   const [showUserDetails, setShowUserDetails] = useState(false);
-  const [customUser, setUsers] = useState<IUserWithHours[]>([]);
-
-  useEffect(() => {
-  if (userId && customUser.length > 0) {
-    const user = customUser.find((user) => user._id === userId);
-    if (user) {
-      setSelectedUser(user);
-      setShowUserDetails(true);
-      console.log("showUserDetails:", true);
-    }
-  }
-}, [userId, customUser]);
-
-  // states
+  const [allUsers, setUsers] = useState<IUserWithHours[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<IUserWithHours[]>([]);
   const {users, isLoading, isError} = useUsers()
+  const router = useRouter();
+  const toast = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [adminData, setAdminData] = useState<IUser>();
   const [sortOrder, setSortOrder] = useState<{ value: string; label: string }>({
@@ -105,6 +95,26 @@ const UserList = () => {
   const tableSize = useBreakpointValue({ base: "sm", md: "md" });
   const [page, setPage] = useState(0);
   const userLimit = 15;
+
+  useEffect(() => {
+    if (id && allUsers && allUsers.length > 0) {
+      const user = allUsers.find((user) => user._id === id);
+      if (user) {
+        setSelectedUser(user);
+        setShowUserDetails(true);
+        console.log("showUserDetails:", true);
+      } else {
+        toast({
+          title: 'user not found',
+          description: 'The user you are looking for does not exist.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push('/admin/users');
+      }
+    }
+  }, [id, allUsers]);
 
   // calculate hours for each event in user schema
   const calculateTotalHours = (events: AttendedEventInfo[]): number => {
@@ -134,14 +144,12 @@ const UserList = () => {
     }
   };
 
-  // fetch customUser from db
+  // fetch allUsers from db
   const fetchUsers = async () => {
-   
     if (!users){
         return
     }
     try {
-
       const usersWithEventNames = await Promise.all(
         users.map(async (user: IUser) => {
           const eventsAttendedNames = await Promise.all(
@@ -159,7 +167,7 @@ const UserList = () => {
 
       setUsers(usersWithEventNames as IUserWithHours[]);
     } catch (error) {
-      console.error("Error fetching customUser:", error);
+      console.error("Error fetching allUsers:", error);
     } finally {
       setLoading(false);
     }
@@ -190,7 +198,7 @@ const UserList = () => {
   }, [isError, isLoading]);
 
   useEffect(() => {
-    setFilteredUsers(customUser
+    setFilteredUsers(allUsers
     .filter((user) =>
       `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
         searchTerm.toLowerCase()
@@ -201,7 +209,7 @@ const UserList = () => {
         ? a.firstName.localeCompare(b.firstName)
         : a.lastName.localeCompare(b.lastName)
     ));
-  }, [customUser]);
+  }, [allUsers]);
 
 
 
@@ -211,12 +219,12 @@ const UserList = () => {
   ];
 
   const removeUser = (userId: string) => {
-    const newUsers = customUser.filter((user) => user._id != userId);
+    const newUsers = allUsers.filter((user) => user._id != userId);
     setUsers(newUsers);
   }
 
 
-  const csvData = customUser.map((user) => ({
+  const csvData = allUsers.map((user) => ({
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -381,14 +389,15 @@ const UserList = () => {
                       <Td>{user.totalHoursFormatted}</Td>
                       <Td>{editRoleName(user.role)}</Td>
                       <Td>
-                        <SingleVisitorComponent
-                          visitorData={user}
-                          removeFunction={removeUser}
-                          adminData={adminData}
-                          open={showUserDetails}
-                          // onClose={handleCloseModal}
-                        />
-                        </Td>
+                        <div className={style.link}>
+                          <Text onClick={() => {
+                            setSelectedUser(user);
+                            setShowUserDetails(true);
+                          }} cursor="pointer">
+                            Details
+                          </Text>
+                        </div>
+                      </Td>
                     </Tr>
                     ))
                 )}
@@ -418,12 +427,13 @@ const UserList = () => {
           </div>
       </div>
 
-      {showUserDetails && selectedUser && (
+      {selectedUser && (
       <SingleVisitorComponent
         visitorData={selectedUser}
         removeFunction={removeUser}
         adminData={adminData}
-        open={showUserDetails}
+        showModal={showUserDetails}
+        setShowModal={setShowUserDetails}
         // onClose={handleCloseModal}
       />
     )}

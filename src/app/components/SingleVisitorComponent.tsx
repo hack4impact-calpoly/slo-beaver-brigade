@@ -28,20 +28,21 @@ import { eventIndividualHours } from '.././lib/hours';
 import { makeUserAdmin } from '../actions/makeUserAdmin';
 import makeAdminUser from '../actions/makeAdminUser';
 import DeleteConfirmation from './DeleteConfirmation';
-import { PiKeyReturnLight } from 'react-icons/pi';
 
 interface SingleVisitorComponentProps {
   visitorData: IUser;
   adminData?: IUser;
   removeFunction?: (userId: string) => void;
-  open?: boolean;
+  showModal: boolean;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function SingleVisitorComponent({
   visitorData,
   removeFunction,
+  showModal,
+  setShowModal,
   adminData,
-  open = false,
 }: SingleVisitorComponentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isClosed, setIsClosed] = useState(false);
@@ -49,11 +50,9 @@ function SingleVisitorComponent({
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(visitorData.role);
 
-  useEffect(() => {
-    if (open) {
-      onOpen();
-    }
-  }, [open, onOpen]);
+  function closeExpandedView() {
+    setShowModal(false);
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -123,12 +122,7 @@ function SingleVisitorComponent({
 
   return (
     <>
-      <div className={styles.link}>
-        <Text onClick={onOpen} cursor="pointer">
-          Details
-        </Text>
-      </div>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={showModal} onClose={closeExpandedView}>
         <ModalOverlay />
         <ModalContent
           style={{ width: "60vw", height: "50vh", overflow: "auto" }}

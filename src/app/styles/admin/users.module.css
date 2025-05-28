@@ -112,6 +112,15 @@
     width: 100px;
 }
 
+.link {
+  text-decoration: underline;
+}
+
+.link:hover {
+  cursor: pointer;
+  color: #337774;
+}
+
 @media (max-width: 1500px) {
     .buttonContainer {
         align-items: center;
