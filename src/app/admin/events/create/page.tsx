@@ -32,7 +32,7 @@ import { Select, CreatableSelect } from "chakra-react-select";
 import MDEditor from "@uiw/react-md-editor";
 import ImageSelector from "app/components/ImageSelector";
 import { useEventsAscending, useGroups } from "app/lib/swrfunctions";
-import { CreateTemporaryGroup } from "app/components/ViewGroups";
+import ViewGroups from 'app/components/ViewGroups';
 import { IGroup } from "database/groupSchema";
 import { IEvent } from "database/eventSchema";
 import { IEventTemplate } from "database/eventTemplateSchema";
@@ -766,45 +766,50 @@ export default function Page() {
           </div>
 
             {/* Row 2: Assign Groups and Only Available to Selected Groups */}
-            <div>
-              <FormControl>
-              <FormLabel htmlFor="organization" fontWeight="bold">
-                Assign Groups
-              </FormLabel>
-              <CreatableSelect
-                id="organization"
-                placeholder="Select or create organization"
-                options={groups?.map((group) => ({
-                value: group._id,
-                label: group.group_name,
-                }))}
-                value={groupsSelected.map((group) => ({
-                value: group._id,
-                label: group.group_name,
-                }))}
-                onChange={(selectedOptions) =>
-                setGroupsSelected(
-                  selectedOptions
-                  ? selectedOptions.map((option) => ({
-                    _id: option.value,
-                    group_name: option.label,
-                    groupees: [],
-                    }))
-                  : []
-                )
-                }
-                onCreateOption={handleCreateNewGroup}
-                chakraStyles={{
-                control: (provided) => ({
-                  ...provided,
-                  textAlign: "left",
-                }),
-                }}
-                isMulti
-                isClearable
-                isSearchable
-              />
-              </FormControl>
+            <div className={style.oneTenthGrid}>
+              <div className={style.leftTenths}>
+                <FormControl>
+                <FormLabel htmlFor="organization" fontWeight="bold">
+                  Assign Groups
+                </FormLabel>
+                <CreatableSelect
+                  id="organization"
+                  placeholder="Select or create organization"
+                  options={groups?.map((group) => ({
+                  value: group._id,
+                  label: group.group_name,
+                  }))}
+                  value={groupsSelected.map((group) => ({
+                  value: group._id,
+                  label: group.group_name,
+                  }))}
+                  onChange={(selectedOptions) =>
+                  setGroupsSelected(
+                    selectedOptions
+                    ? selectedOptions.map((option) => ({
+                      _id: option.value,
+                      group_name: option.label,
+                      groupees: [],
+                      }))
+                    : []
+                  )
+                  }
+                  onCreateOption={handleCreateNewGroup}
+                  chakraStyles={{
+                  control: (provided) => ({
+                    ...provided,
+                    textAlign: "left",
+                  }),
+                  }}
+                  isMulti
+                  isClearable
+                  isSearchable
+                />
+                </FormControl>
+              </div>
+              <div className={style.righthTenths}>
+                <ViewGroups/>
+              </div>
             </div>
 
           <div className={style.halfGrid}>
