@@ -754,7 +754,7 @@ export default function Page() {
                                     fontWeight="500"
                                     fontSize="18px"
                                     color="white"
-                                    marginRight="1rem"
+                                    marginRight="5%"
                                     className="bold-text"
                                   >
                                     Invite Only

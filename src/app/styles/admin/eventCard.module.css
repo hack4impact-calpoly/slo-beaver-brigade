@@ -51,6 +51,11 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
+  .eventName{
+    max-height: 75px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
    .bottomRow {
     display: flex;
     flex-direction: row;
@@ -83,6 +88,12 @@
     margin-right:8px;
     z-index: 2;
     align-content:"left-bottom";
+  }
+
+  .location{
+    max-height: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
    @media (max-width: 1200px) {
