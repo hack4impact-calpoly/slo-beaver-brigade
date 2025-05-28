@@ -99,7 +99,7 @@
   margin-right: 10px;
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1350px) {
   .nav_elements ul a {
     font-size: 14px;
   }
@@ -118,7 +118,7 @@
   }
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1230px) {
   .nav_elements ul li {
     font-size: 14px;
     margin-right: 10px;
@@ -129,7 +129,7 @@
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1150px) {
   .nav_elements ul li {
     margin-right: 10px;
     margin-left: 10px;
@@ -140,7 +140,7 @@
   }
 }
 
-@media (max-width: 1050px) {
+@media (max-width: 1100px) {
   .menu_icon {
     display: block;
     cursor: pointer;
