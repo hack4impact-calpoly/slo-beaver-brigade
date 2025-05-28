@@ -35,6 +35,20 @@
   color: #337774;
 }
 
+.headerStopButton {
+  border: 2px solid #337774;
+  color: #337774;
+}
+
+.headerOpenButton {
+  background-color: #e0af48;
+  border: 2px solid black
+}
+
+.headerOpenButton:hover {
+  background-color: #C19137;
+}
+
 .saveButton {
   border: 2px solid #ffffff;
   color: #ffffff;
@@ -46,6 +60,11 @@
 }
 
 .backButton:hover {
+  background-color: #e6f7f6;
+  color: black;
+}
+
+.headerStopButton:hover {
   background-color: #e6f7f6;
   color: black;
 }
@@ -422,4 +441,9 @@
     flex-direction: column-reverse;
     gap: 10px;
   }
+}
+
+.rightButtons {
+  display: flex;
+  gap: 10px;
 }

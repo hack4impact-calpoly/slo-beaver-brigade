@@ -31,6 +31,11 @@ interface EventPreviewProps {
   const formattedStart = start.toLocaleTimeString("en-US", options);
   const formattedEnd = end.toLocaleTimeString("en-US", options);
 
+  // Check if the start and end times are in the same hour
+  // If they are, we can format them differently to save space on small windows
+  if (formattedStart[-2] === formattedEnd[-2]) {
+    return `${formattedStart.slice(0, -3)} - ${formattedEnd}`;
+  }
 
   return `${formattedStart} - ${formattedEnd}`;
  };
@@ -113,7 +118,9 @@ const EventCard: React.FC<EventPreviewProps> = ({
         />
       </div>
       <div className={style.eventTitle}>
-        <h2>{event.eventName}</h2>
+        <h2 className={style.eventName}>
+          {event.eventName}
+        </h2>
       </div>
       <div className={style.bottomRow}>
         <div className={style.eventInfo}>
@@ -131,7 +138,7 @@ const EventCard: React.FC<EventPreviewProps> = ({
             <Box mt={'5px'}>
               <PiMapPinFill />
             </Box>
-            <Text ml={'5px'}>{event.location}</Text>
+            <Text className={style.location} ml={'5px'}>{event.location}</Text>
           </Flex>
         </div>
         <div className={style.visitorCount}>
