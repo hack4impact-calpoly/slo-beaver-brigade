@@ -15,8 +15,9 @@ import { mutate } from 'swr';
 
 const EditEventHeader = ({ eventId }: { eventId: string }) => {
     const router = useRouter();
-
-    const {eventData, isLoading, isError} = useEventId(eventId)
+    const {eventData, isLoading, isError} = useEventId(eventId);
+    const [registrationOpen, setRegistrationOpen] = useState(eventData?.isOpen);
+    console.log(registrationOpen);
 
     function DeleteEvent({eventName, onDelete}: {eventName: string, onDelete: () => void}){
         const { isOpen, onOpen, onClose } = useDisclosure() 
@@ -58,7 +59,7 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         
     }
 
-    const endRegistration = async () => {
+    const changeRegistrationStatus = async () => {
         try {
             const response = await fetch(`/api/events/${eventId}`, {
                 method: 'PATCH',
@@ -66,9 +67,10 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    isOpen: false
+                    isOpen: !registrationOpen
                 }),
             });
+            setRegistrationOpen(!registrationOpen);
 
         } catch (error) {
             console.error('Error ending registration:', error);
@@ -82,7 +84,8 @@ const EditEventHeader = ({ eventId }: { eventId: string }) => {
         <Box className = {styles.header}>
             <button className={`${styles.backButton} ${styles.headerButton}`} onClick={() => router.back()}>Back</button>
             <Box className={styles.rightButtons}>
-                {eventData?.isOpen && <button className={`${styles.headerStopButton} ${styles.headerButton}`} onClick={endRegistration}>Stop Registration</button>}
+                {registrationOpen && <button className={`${styles.headerStopButton} ${styles.headerButton}`} onClick={changeRegistrationStatus}>Stop Registration</button>}
+                {!registrationOpen && <button className={`${styles.headerOpenButton} ${styles.headerButton}`} onClick={changeRegistrationStatus}>Open Registration</button>}
                 <DeleteEvent eventName={eventData?.eventName || "Error."} onDelete={handleDelete}/>
             </Box>
             

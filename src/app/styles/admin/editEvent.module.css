@@ -40,6 +40,15 @@
   color: #337774;
 }
 
+.headerOpenButton {
+  background-color: #e0af48;
+  border: 2px solid black
+}
+
+.headerOpenButton:hover {
+  background-color: #C19137;
+}
+
 .saveButton {
   border: 2px solid #ffffff;
   color: #ffffff;
