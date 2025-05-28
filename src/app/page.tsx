@@ -28,7 +28,7 @@ import { IUser } from '@database/userSchema';
 import { IEvent } from '@database/eventSchema';
 import ExpandedViewComponent from './components/StandaloneExpandedViewComponent';
 import './fonts/fonts.css';
-import { useEventsAscending } from 'app/lib/swrfunctions';
+import { useEventsAscending, useEventTypes } from 'app/lib/swrfunctions';
 import { LockIcon } from '@chakra-ui/icons';
 import ChakraNextImage from './components/ChakraNextImage';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -229,20 +229,14 @@ export default function Page() {
     }
     setEventsLoading(false);
   }, [events, user, selectedEventType, parsed, isLoaded, isSignedIn, userData]); // Include selectedEventType in the dependency array
+  const { eventTypes: fetchedEventTypes, isLoading: eventTypesLoading } =
+    useEventTypes();
 
   useEffect(() => {
-    const fetchEventTypes = async () => {
-      try {
-        const response = await fetch('/api/events/bytype/eventType');
-        const data: string[] = await response.json();
-        setEventTypes(data);
-      } catch (error) {
-        console.error('Error fetching event types:', error);
-      }
-    };
-
-    fetchEventTypes();
-  }, []);
+    if (fetchedEventTypes) {
+      setEventTypes(fetchedEventTypes);
+    }
+  }, [fetchedEventTypes]);
 
   useEffect(() => {
     // Handler to call on window resize
