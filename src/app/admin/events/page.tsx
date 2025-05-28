@@ -17,7 +17,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import Select from "react-select";
-import { useEventsAscending } from "app/lib/swrfunctions";
+import { useEventsAscending, useEventTypes } from "app/lib/swrfunctions";
 import "../../fonts/fonts.css";
 
 const EventPreview = () => {
@@ -45,23 +45,14 @@ const EventPreview = () => {
   const [maxHeadcount, setMaxHeadcount] = useState<number | null>(null);
   const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>([]);
   const [eventTypes, setEventTypes] = useState<string[]>([]);
+  const { eventTypes: fetchedEventTypes, isLoading: eventTypesLoading } =
+    useEventTypes();
 
   useEffect(() => {
-    const fetchEventTypes = async () => {
-      try {
-        const response = await fetch("/api/events/bytype/eventType");
-        const data: string[] = await response.json();
-        const uniqueEventTypes = Array.from(
-          new Set([...data, "Volunteer", "Beaver Walk", "Pond Clean Up"])
-        );
-        setEventTypes(uniqueEventTypes);
-      } catch (error) {
-        console.error("Error fetching event types:", error);
-      }
-    };
-
-    fetchEventTypes();
-  }, []);
+    if (fetchedEventTypes) {
+      setEventTypes(fetchedEventTypes);
+    }
+  }, [fetchedEventTypes]);
 
   // get string for some group based on id
   const fetchGroupName = async (groupId: string): Promise<string> => {
@@ -118,9 +109,10 @@ const EventPreview = () => {
   // filtering events logic
   const filteredEvents =
     events
-      ?.filter((event) =>
-        (spanishSpeakingEvent && event.spanishSpeakingAccommodation) ||
-        (englishSpeakingEvent && !event.spanishSpeakingAccommodation)
+      ?.filter(
+        (event) =>
+          (spanishSpeakingEvent && event.spanishSpeakingAccommodation) ||
+          (englishSpeakingEvent && !event.spanishSpeakingAccommodation)
       )
       .filter((event) =>
         wheelchairAccessible ? event.wheelchairAccessible : true
@@ -275,24 +267,24 @@ const EventPreview = () => {
         </div>
         <div className={style.filterContainer}>
           <div className={style.filterHeader}>Event Language</div>
-            <CheckboxGroup colorScheme="green">
+          <CheckboxGroup colorScheme="green">
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
               <Checkbox
-              isChecked={spanishSpeakingEvent}
-              colorScheme="blue"
-              onChange={() => setspanishSpeakingEvent(!spanishSpeakingEvent)}
+                isChecked={spanishSpeakingEvent}
+                colorScheme="blue"
+                onChange={() => setspanishSpeakingEvent(!spanishSpeakingEvent)}
               >
-              <div className={style.checkboxLabel}>Spanish</div>
+                <div className={style.checkboxLabel}>Spanish</div>
               </Checkbox>
               <Checkbox
-              isChecked={englishSpeakingEvent}
-              colorScheme="blue"
-              onChange={() => setenglishSpeakingEvent(!englishSpeakingEvent)}
+                isChecked={englishSpeakingEvent}
+                colorScheme="blue"
+                onChange={() => setenglishSpeakingEvent(!englishSpeakingEvent)}
               >
-              <div className={style.checkboxLabel}>English</div>
+                <div className={style.checkboxLabel}>English</div>
               </Checkbox>
             </Stack>
-            </CheckboxGroup>
+          </CheckboxGroup>
         </div>
         <div className={style.filterContainer}>
           <div className={style.filterHeader}>Other Filters</div>

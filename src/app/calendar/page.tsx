@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Calendar from "app/components/calendar/Calendar";
 import { IEvent } from "@database/eventSchema";
@@ -21,50 +21,48 @@ import {
 } from "@chakra-ui/react";
 import { Calendarify } from "app/lib/calendar";
 import { EmailRSSComponent } from "app/components/EmailComponent";
-import { useEventsAscending } from "app/lib/swrfunctions";
-import "../fonts/fonts.css"
+import { useEventsAscending, useEventTypes } from "app/lib/swrfunctions";
+import "../fonts/fonts.css";
 
 export default function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const {events, isLoading} = useEventsAscending()
-  const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([])
+  const { events, isLoading } = useEventsAscending();
+  const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
   const [eventTypes, setEventTypes] = useState<string[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
+  const { eventTypes: fetchedEventTypes, isLoading: eventTypesLoading } =
+    useEventTypes();
 
   useEffect(() => {
-    const fetchEventTypes = async () => {
-      try {
-        const response = await fetch("/api/events/bytype/eventType");
-        const data: string[] = await response.json();
-        const uniqueEventTypes = Array.from(
-          new Set([...data, "Volunteer", "Beaver Walk", "Pond Clean Up"])
-        );
-        setEventTypes(uniqueEventTypes);
-      } catch (error) {
-        console.error("Error fetching event types:", error);
-      }
-    };
-
-    fetchEventTypes();
-  }, []);
+    if (fetchedEventTypes) {
+      setEventTypes(fetchedEventTypes);
+    }
+  }, [fetchedEventTypes]);
 
   useEffect(() => {
     if (isLoading) return;
     if (!events) return;
 
     const eventTypes = selectedFilters.filter(
-      (filter) => filter !== "spanishSpeakingAccommodation" && filter !== "wheelchairAccessible"
+      (filter) =>
+        filter !== "spanishSpeakingAccommodation" &&
+        filter !== "wheelchairAccessible"
     );
     const accessibilityFilters = selectedFilters.filter(
-      (filter) => filter === "spanishSpeakingAccommodation" || filter === "wheelchairAccessible"
+      (filter) =>
+        filter === "spanishSpeakingAccommodation" ||
+        filter === "wheelchairAccessible"
     );
 
     const filtered = events.filter((event) => {
-      const matchesType = eventTypes.length === 0 || eventTypes.includes(event.eventType || "");
+      const matchesType =
+        eventTypes.length === 0 || eventTypes.includes(event.eventType || "");
       const matchesAccessibility = accessibilityFilters.every((filter) => {
-        if (filter === "spanishSpeakingAccommodation") return event.spanishSpeakingAccommodation;
-        if (filter === "wheelchairAccessible") return event.wheelchairAccessible;
+        if (filter === "spanishSpeakingAccommodation")
+          return event.spanishSpeakingAccommodation;
+        if (filter === "wheelchairAccessible")
+          return event.wheelchairAccessible;
         return true;
       });
       return matchesType && matchesAccessibility;
@@ -112,9 +110,17 @@ export default function Page() {
                     setSelectedFilters(values.map((value) => String(value)))
                   }
                 >
-                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                  <Stack
+                    spacing={[1, 5]}
+                    direction={["column", "column"]}
+                    ml="5"
+                  >
                     {eventTypes.map((eventType) => (
-                      <Checkbox key={eventType} value={eventType} colorScheme="teal">
+                      <Checkbox
+                        key={eventType}
+                        value={eventType}
+                        colorScheme="teal"
+                      >
                         {eventType}
                       </Checkbox>
                     ))}
@@ -138,7 +144,11 @@ export default function Page() {
                     setSelectedFilters(values.map((value) => String(value)))
                   }
                 >
-                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                  <Stack
+                    spacing={[1, 5]}
+                    direction={["column", "column"]}
+                    ml="5"
+                  >
                     <Checkbox value="spanishSpeakingAccommodation">
                       Spanish Speaking
                     </Checkbox>
@@ -154,14 +164,14 @@ export default function Page() {
                 alignItems="center"
                 mb="5"
               >
-                <EmailRSSComponent calendarURL="/api/events/calendar"/>
+                <EmailRSSComponent calendarURL="/api/events/calendar" />
               </Box>
             </Box>
-  
+
             <Box
               flex="2"
               padding="0"
-              mt="2%" 
+              mt="2%"
               mr="1%"
               ml="1%"
               bg="#F5F5F5"
@@ -170,25 +180,24 @@ export default function Page() {
               boxShadow="sm"
               h="775px"
             >
-              <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
+              <Calendar
+                events={calEvent || []}
+                admin={false}
+                dbevents={filteredEvents}
+              />
             </Box>
           </Flex>
         ) : (
-          <Flex 
-            width="full" 
-            direction="column" 
-            mb="4" 
-            alignItems="stretch"
-          >
-            <Button 
-              onClick={onOpen} 
-              colorScheme="teal" 
+          <Flex width="full" direction="column" mb="4" alignItems="stretch">
+            <Button
+              onClick={onOpen}
+              colorScheme="teal"
               variant="outline"
               mb="4"
             >
               View Filters
             </Button>
-            
+
             <Box
               bg="#F5F5F5"
               borderRadius="md"
@@ -196,19 +205,24 @@ export default function Page() {
               boxShadow="sm"
               width="full"
             >
-              <Calendar events={calEvent || []} admin={false} dbevents={filteredEvents} />
+              <Calendar
+                events={calEvent || []}
+                admin={false}
+                dbevents={filteredEvents}
+              />
             </Box>
           </Flex>
         )}
-  
+
         <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
           <DrawerOverlay />
           <DrawerContent mt="60px">
-            <DrawerCloseButton/>
-            <DrawerBody 
+            <DrawerCloseButton />
+            <DrawerBody
               display="flex"
               flexDirection="column"
-              justifyContent="space-between">
+              justifyContent="space-between"
+            >
               <Box>
                 <Heading
                   as="h1"
@@ -227,9 +241,17 @@ export default function Page() {
                     setSelectedFilters(values.map((value) => String(value)))
                   }
                 >
-                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                  <Stack
+                    spacing={[1, 5]}
+                    direction={["column", "column"]}
+                    ml="5"
+                  >
                     {eventTypes.map((eventType) => (
-                      <Checkbox key={eventType} value={eventType} colorScheme="teal">
+                      <Checkbox
+                        key={eventType}
+                        value={eventType}
+                        colorScheme="teal"
+                      >
                         {eventType}
                       </Checkbox>
                     ))}
@@ -253,7 +275,11 @@ export default function Page() {
                     setSelectedFilters(values.map((value) => String(value)))
                   }
                 >
-                  <Stack spacing={[1, 5]} direction={["column", "column"]} ml="5">
+                  <Stack
+                    spacing={[1, 5]}
+                    direction={["column", "column"]}
+                    ml="5"
+                  >
                     <Checkbox value="spanishSpeakingAccommodation">
                       Spanish Speaking
                     </Checkbox>
@@ -263,14 +289,8 @@ export default function Page() {
                   </Stack>
                 </CheckboxGroup>
               </Box>
-              <Box 
-                padding="0"
-                mt="2%" 
-                mr="1%"
-                ml="1%"
-                p="5"
-              >
-                <EmailRSSComponent calendarURL="/api/events/calendar"/>
+              <Box padding="0" mt="2%" mr="1%" ml="1%" p="5">
+                <EmailRSSComponent calendarURL="/api/events/calendar" />
               </Box>
             </DrawerBody>
           </DrawerContent>
