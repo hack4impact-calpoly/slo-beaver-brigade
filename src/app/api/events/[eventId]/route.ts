@@ -119,6 +119,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 attendeeIds,
                 groupsOnly,
                 checklist,
+                isOpen
             }: IEvent = await req.json();
             if (checklist !== undefined) {
                 event.checklist = checklist;
@@ -163,6 +164,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
             if (attendeeIds){
                 event.attendeeIds = attendeeIds;
             }
+            event.isOpen = isOpen;
             event.groupsOnly = groupsOnly;
         }
         await event.save();

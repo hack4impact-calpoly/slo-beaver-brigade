@@ -470,34 +470,37 @@ function ExpandedViewComponent({
                       </Link>
                     </>
                   ) : (
-                    <Link href={url}>
-                      <Button
-                        bg="#e0af48"
+                    eventDetails.isOpen &&
+                      (<Link href={url}>
+                        <Button
+                         bg="#e0af48"
                         color="black"
                         _hover={{ bg: '#C19137' }}
                         fontWeight={'600'}
                         width={'200px'}
                         marginBottom={2}
-                      >
-                        Register
+                        >
+                      Register
                       </Button>
-                    </Link>
-                  )}
+                      </Link>)
+                    )}
                 </>
               ) : (
-                <Link href={url}>
-                  <Button
-                    bg="#e0af48"
-                    color="black"
-                    _hover={{ bg: '#C19137' }}
-                    fontWeight={'600'}
-                    width={'200px'}
-                    marginBottom={2}
-                  >
-                    Register
-                  </Button>
-                </Link>
-              )}
+              eventDetails.isOpen &&
+                  (<Link href={url}>
+                    <Button
+                      bg="#e0af48"
+                      color="black"
+                      _hover={{ bg: '#C19137' }}
+                      fontWeight={'600'}
+                      width={'200px'}
+                      marginBottom={2}
+                    >
+                      Register
+                    </Button>
+                  </Link>)
+                )
+              }
             </Flex>
           </ModalBody>
         </ModalContent>
