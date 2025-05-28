@@ -1,10 +1,9 @@
-'use client'
-import { IEvent } from "database/eventSchema";
-import { IGroup } from "database/groupSchema";
-import { IUser } from "database/userSchema";
-import { ILog } from "database/logSchema";
-import useSWR, { MutatorCallback } from "swr";
-
+'use client';
+import { IEvent } from 'database/eventSchema';
+import { IGroup } from 'database/groupSchema';
+import { IUser } from 'database/userSchema';
+import { ILog } from 'database/logSchema';
+import useSWR, { MutatorCallback } from 'swr';
 
 export interface SWRResponse<Data, Error> {
   data?: Data;
@@ -20,7 +19,7 @@ export interface SWRResponse<Data, Error> {
 export function useEventsAscending() {
   // revalidates every 10 minutes
   const { data, error, isLoading, mutate } = useSWR<IEvent[]>(
-    "/api/events?sort=asc"
+    '/api/events?sort=asc'
   );
 
   return {
@@ -33,7 +32,7 @@ export function useEventsAscending() {
 
 export function useGroups() {
   // revalidates every 10 minutes
-  const { data, error, isLoading, mutate } = useSWR<IGroup[]>("/api/groups");
+  const { data, error, isLoading, mutate } = useSWR<IGroup[]>('/api/groups');
 
   return {
     groups: data,
@@ -45,7 +44,7 @@ export function useGroups() {
 
 export function useUsers() {
   // revalidates every 10 minutes
-  const { data, error, isLoading, mutate } = useSWR<IUser[]>("/api/user");
+  const { data, error, isLoading, mutate } = useSWR<IUser[]>('/api/user');
 
   return {
     users: data,
@@ -78,7 +77,7 @@ export function useEventId(id: string) {
 
 export function useLogs() {
   // revalidates every 10 minutes
-  const { data, error, isLoading, mutate } = useSWR<ILog[]>("/api/logs");
+  const { data, error, isLoading, mutate } = useSWR<ILog[]>('/api/logs');
 
   return {
     logs: data,
@@ -90,12 +89,12 @@ export function useLogs() {
 
 export function useEventTypes() {
   const { data, error, isLoading } = useSWR<string[]>(
-    "/api/events/bytype/eventType",
+    '/api/events/bytype/eventType',
     async (url: string) => {
       const response = await fetch(url);
       const data: string[] = await response.json();
       return Array.from(
-        new Set([...data, "Volunteer", "Beaver Walk", "Pond Clean Up"])
+        new Set([...data, 'Volunteer', 'Beaver Walk', 'Pond Clean Up'])
       );
     }
   );

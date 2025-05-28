@@ -1,8 +1,8 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Calendar from "app/components/calendar/Calendar";
-import { IEvent } from "@database/eventSchema";
-import style from "@styles/calendar/eventpage.module.css";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Calendar from 'app/components/calendar/Calendar';
+import { IEvent } from '@database/eventSchema';
+import style from '@styles/calendar/eventpage.module.css';
 import {
   Box,
   Heading,
@@ -18,11 +18,11 @@ import {
   DrawerCloseButton,
   Button,
   useDisclosure,
-} from "@chakra-ui/react";
-import { Calendarify } from "app/lib/calendar";
-import { EmailRSSComponent } from "app/components/EmailComponent";
-import { useEventsAscending, useEventTypes } from "app/lib/swrfunctions";
-import "../fonts/fonts.css";
+} from '@chakra-ui/react';
+import { Calendarify } from 'app/lib/calendar';
+import { EmailRSSComponent } from 'app/components/EmailComponent';
+import { useEventsAscending, useEventTypes } from 'app/lib/swrfunctions';
+import '../fonts/fonts.css';
 
 export default function Page() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -30,7 +30,7 @@ export default function Page() {
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
   const [eventTypes, setEventTypes] = useState<string[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
+  const [isLargerThan800] = useMediaQuery('(min-width: 800px)');
   const { eventTypes: fetchedEventTypes, isLoading: eventTypesLoading } =
     useEventTypes();
 
@@ -46,22 +46,22 @@ export default function Page() {
 
     const eventTypes = selectedFilters.filter(
       (filter) =>
-        filter !== "spanishSpeakingAccommodation" &&
-        filter !== "wheelchairAccessible"
+        filter !== 'spanishSpeakingAccommodation' &&
+        filter !== 'wheelchairAccessible'
     );
     const accessibilityFilters = selectedFilters.filter(
       (filter) =>
-        filter === "spanishSpeakingAccommodation" ||
-        filter === "wheelchairAccessible"
+        filter === 'spanishSpeakingAccommodation' ||
+        filter === 'wheelchairAccessible'
     );
 
     const filtered = events.filter((event) => {
       const matchesType =
-        eventTypes.length === 0 || eventTypes.includes(event.eventType || "");
+        eventTypes.length === 0 || eventTypes.includes(event.eventType || '');
       const matchesAccessibility = accessibilityFilters.every((filter) => {
-        if (filter === "spanishSpeakingAccommodation")
+        if (filter === 'spanishSpeakingAccommodation')
           return event.spanishSpeakingAccommodation;
-        if (filter === "wheelchairAccessible")
+        if (filter === 'wheelchairAccessible')
           return event.wheelchairAccessible;
         return true;
       });
@@ -112,7 +112,7 @@ export default function Page() {
                 >
                   <Stack
                     spacing={[1, 5]}
-                    direction={["column", "column"]}
+                    direction={['column', 'column']}
                     ml="5"
                   >
                     {eventTypes.map((eventType) => (
@@ -146,7 +146,7 @@ export default function Page() {
                 >
                   <Stack
                     spacing={[1, 5]}
-                    direction={["column", "column"]}
+                    direction={['column', 'column']}
                     ml="5"
                   >
                     <Checkbox value="spanishSpeakingAccommodation">
@@ -164,7 +164,9 @@ export default function Page() {
                 alignItems="center"
                 mb="5"
               >
-                <EmailRSSComponent calendarURL="/api/events/calendar" />
+                {
+                  //<EmailRSSComponent calendarURL="/api/events/calendar" />
+                }
               </Box>
             </Box>
 
@@ -243,7 +245,7 @@ export default function Page() {
                 >
                   <Stack
                     spacing={[1, 5]}
-                    direction={["column", "column"]}
+                    direction={['column', 'column']}
                     ml="5"
                   >
                     {eventTypes.map((eventType) => (
@@ -277,7 +279,7 @@ export default function Page() {
                 >
                   <Stack
                     spacing={[1, 5]}
-                    direction={["column", "column"]}
+                    direction={['column', 'column']}
                     ml="5"
                   >
                     <Checkbox value="spanishSpeakingAccommodation">
@@ -290,7 +292,9 @@ export default function Page() {
                 </CheckboxGroup>
               </Box>
               <Box padding="0" mt="2%" mr="1%" ml="1%" p="5">
-                <EmailRSSComponent calendarURL="/api/events/calendar" />
+                {
+                  //<EmailRSSComponent calendarURL="/api/events/calendar" />
+                }
               </Box>
             </DrawerBody>
           </DrawerContent>

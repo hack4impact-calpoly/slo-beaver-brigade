@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Divider,
@@ -11,30 +11,30 @@ import {
   useBreakpointValue,
   Image,
   useToast,
-} from "@chakra-ui/react";
-import { Select } from "chakra-react-select";
-import { CalendarIcon, TimeIcon } from "@chakra-ui/icons";
-import { PiMapPinFill } from "react-icons/pi";
-import Slider from "react-slick";
-import { useUser } from "@clerk/nextjs";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { css } from "@emotion/react";
-import "@emotion/react";
-import Link from "next/link";
-import style from "@styles/userdashboard/dashboard.module.css";
-import { getUserDataFromEmail } from "@app/lib/authentication";
-import { IUser } from "@database/userSchema";
-import { IEvent } from "@database/eventSchema";
-import ExpandedViewComponent from "./components/StandaloneExpandedViewComponent";
-import "./fonts/fonts.css";
-import { useEventsAscending, useEventTypes } from "app/lib/swrfunctions";
-import { LockIcon } from "@chakra-ui/icons";
-import ChakraNextImage from "./components/ChakraNextImage";
-import { useRouter, useSearchParams } from "next/navigation";
+} from '@chakra-ui/react';
+import { Select } from 'chakra-react-select';
+import { CalendarIcon, TimeIcon } from '@chakra-ui/icons';
+import { PiMapPinFill } from 'react-icons/pi';
+import Slider from 'react-slick';
+import { useUser } from '@clerk/nextjs';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import { css } from '@emotion/react';
+import '@emotion/react';
+import Link from 'next/link';
+import style from '@styles/userdashboard/dashboard.module.css';
+import { getUserDataFromEmail } from '@app/lib/authentication';
+import { IUser } from '@database/userSchema';
+import { IEvent } from '@database/eventSchema';
+import ExpandedViewComponent from './components/StandaloneExpandedViewComponent';
+import './fonts/fonts.css';
+import { useEventsAscending, useEventTypes } from 'app/lib/swrfunctions';
+import { LockIcon } from '@chakra-ui/icons';
+import ChakraNextImage from './components/ChakraNextImage';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 // logic for letting ts know about css prop
-declare module "react" {
+declare module 'react' {
   interface Attributes {
     css?: any;
   }
@@ -86,7 +86,7 @@ export default function Page() {
   // fetching events
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams.get('id');
   const toast = useToast();
   const { events, isLoading, isError, mutate } = useEventsAscending();
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -99,7 +99,7 @@ export default function Page() {
   const [showEventList, setShowEventList] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
-  const [selectedEventType, setSelectedEventType] = useState("");
+  const [selectedEventType, setSelectedEventType] = useState('');
   const [isExpandedViewComponentOpen, setExpandedViewComponentOpen] =
     useState(false);
   const [eventForExpandedViewComponent, setEventForExpandedViewComponent] =
@@ -107,16 +107,16 @@ export default function Page() {
 
   // breakpoint for different viewport size
   const eventNameSize = useBreakpointValue({
-    base: "lg",
-    md: "2xl",
-    lg: "3xl",
+    base: 'lg',
+    md: '2xl',
+    lg: '3xl',
   });
   const eventDetailSize = useBreakpointValue({
-    base: "md",
-    md: "lg",
-    lg: "xl",
+    base: 'md',
+    md: 'lg',
+    lg: 'xl',
   });
-  const eventTimeSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
+  const eventTimeSize = useBreakpointValue({ base: 'sm', md: 'md', lg: 'lg' });
 
   const sortFuncGroups = (a: IEvent, b: IEvent) => {
     if (a.groupsOnly) {
@@ -137,11 +137,11 @@ export default function Page() {
     }
 
     const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
     };
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString('en-US', options);
   };
 
   // convert date into xx:xx XM - xx:xx XM
@@ -155,12 +155,12 @@ export default function Page() {
     }
 
     const options: Intl.DateTimeFormatOptions = {
-      hour: "numeric", // "numeric" or "2-digit"
-      minute: "numeric", // "numeric" or "2-digit"
+      hour: 'numeric', // "numeric" or "2-digit"
+      minute: 'numeric', // "numeric" or "2-digit"
     };
 
-    const formattedStart = start.toLocaleTimeString("en-US", options);
-    const formattedEnd = end.toLocaleTimeString("en-US", options);
+    const formattedStart = start.toLocaleTimeString('en-US', options);
+    const formattedEnd = end.toLocaleTimeString('en-US', options);
 
     return `${formattedStart} - ${formattedEnd}`;
   };
@@ -246,13 +246,13 @@ export default function Page() {
     };
 
     // Add event listener
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     // Call handler right away so state gets updated with initial window size
     handleResize();
 
     // Remove event listener on cleanup
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []); // Empty array ensures that effect is only run on mount and unmount
 
   // settings for slider
@@ -357,13 +357,13 @@ export default function Page() {
         setupViewEventModal(eventToOpen);
       } else {
         toast({
-          title: "Event not found",
-          description: "The event you are looking for does not exist.",
-          status: "error",
+          title: 'Event not found',
+          description: 'The event you are looking for does not exist.',
+          status: 'error',
           duration: 5000,
           isClosable: true,
         });
-        router.push("/");
+        router.push('/');
       }
     }
   }, []);
@@ -381,7 +381,7 @@ export default function Page() {
           <Stack spacing={2} px="10" mb={6}>
             <Flex alignItems="center" justifyContent="space-between">
               <Text
-                fontSize={["xl", "xl", "2xl"]}
+                fontSize={['xl', 'xl', '2xl']}
                 fontWeight="light"
                 color="black"
                 mb={3}
@@ -399,7 +399,7 @@ export default function Page() {
             />
             {!allDataLoaded ? (
               <Text
-                fontSize={["xl", "xl", "2xl"]}
+                fontSize={['xl', 'xl', '2xl']}
                 fontWeight="400"
                 color="black"
                 textAlign="center"
@@ -409,12 +409,12 @@ export default function Page() {
               </Text>
             ) : !isSignedIn ? (
               <Flex
-                flexDirection={"column"}
-                alignItems={"center"}
-                justifyContent={"center"}
+                flexDirection={'column'}
+                alignItems={'center'}
+                justifyContent={'center'}
               >
                 <Text
-                  fontSize={["l", "l", "xl"]}
+                  fontSize={['l', 'l', 'xl']}
                   fontWeight="600"
                   color="black"
                   textAlign="center"
@@ -423,7 +423,7 @@ export default function Page() {
                   Create an account or sign in to see your upcoming events!
                 </Text>
                 <Box
-                  flexDirection={["column", "column", "row"]} // for breakpoints of 0px, 480px, and 768px
+                  flexDirection={['column', 'column', 'row']} // for breakpoints of 0px, 480px, and 768px
                   alignItems="center"
                   justifyContent="center"
                   display="flex"
@@ -434,7 +434,7 @@ export default function Page() {
                       w={[40, 40, 160]} // button width for breakpoints of 0px, 480px, and 768px
                       bg="#e0af48"
                       color="black"
-                      _hover={{ bg: "#C19137" }}
+                      _hover={{ bg: '#C19137' }}
                       fontFamily="Lato"
                       mt="4"
                       mr="4"
@@ -448,7 +448,7 @@ export default function Page() {
                       w={[40, 40, 160]} // button width for breakpoints of 0px, 480px, ad 768px
                       bg="#337774"
                       color="white"
-                      _hover={{ bg: "#4a9b99" }}
+                      _hover={{ bg: '#4a9b99' }}
                       fontFamily="Lato"
                       mt="4"
                       mr="4"
@@ -461,7 +461,7 @@ export default function Page() {
               </Flex>
             ) : userEvents.length === 0 ? (
               <Text
-                fontSize={["xl", "xl", "2xl"]}
+                fontSize={['xl', 'xl', '2xl']}
                 fontWeight="bold"
                 color="black"
                 textAlign="center"
@@ -495,7 +495,7 @@ export default function Page() {
                           className={style.registeredEventBox}
                         >
                           <ChakraNextImage
-                            src={event.eventImage || "/beaver-eventcard.jpeg"}
+                            src={event.eventImage || '/beaver-eventcard.jpeg'}
                             alt="Event Image"
                             objectFit="cover"
                             position="absolute"
@@ -503,7 +503,7 @@ export default function Page() {
                             top="0"
                             left="0"
                             layout="fill"
-                            borderRadius={"20px"}
+                            borderRadius={'20px'}
                           />
                           <Box
                             className={style.eventDetailsContainer}
@@ -515,7 +515,7 @@ export default function Page() {
                               as="h1"
                               size="2xl"
                               zIndex={2}
-                              position={"relative"}
+                              position={'relative'}
                             >
                               <Text
                                 fontSize={eventNameSize}
@@ -530,14 +530,14 @@ export default function Page() {
                             </Heading>
                             <Box>
                               <Flex className={style.eventDetails}>
-                                <CalendarIcon mt={"5px"} />
-                                <Text ml={"5px"}>
+                                <CalendarIcon mt={'5px'} />
+                                <Text ml={'5px'}>
                                   {formatDate(event.startTime)}
                                 </Text>
                               </Flex>
                               <Flex className={style.eventDetails}>
-                                <TimeIcon mt={"5px"} />
-                                <Text ml={"5px"}>
+                                <TimeIcon mt={'5px'} />
+                                <Text ml={'5px'}>
                                   {formatDateTimeRange(
                                     event.startTime,
                                     event.endTime
@@ -545,10 +545,10 @@ export default function Page() {
                                 </Text>
                               </Flex>
                               <Flex className={style.eventDetails}>
-                                <Box mt={"5px"}>
+                                <Box mt={'5px'}>
                                   <PiMapPinFill />
                                 </Box>
-                                <Text ml={"5px"}>{event.location}</Text>
+                                <Text ml={'5px'}>{event.location}</Text>
                               </Flex>
                             </Box>
                           </Box>
@@ -584,7 +584,7 @@ export default function Page() {
           <Box px="10" mb={6}>
             <Flex alignItems="center" justifyContent="space-between" mt={6}>
               <Text
-                fontSize={["xl", "xl", "2xl"]}
+                fontSize={['xl', 'xl', '2xl']}
                 fontWeight="light"
                 color="black"
                 mb={3}
@@ -595,7 +595,7 @@ export default function Page() {
               <Select
                 id="event-type"
                 placeholder="Event Type"
-                size={["sm", "sm", "md"]}
+                size={['sm', 'sm', 'md']}
                 options={eventTypes.map((type) => ({
                   value: type,
                   label: type,
@@ -619,7 +619,7 @@ export default function Page() {
             />
             {!allDataLoaded ? (
               <Text
-                fontSize={["xl", "xl", "2xl"]}
+                fontSize={['xl', 'xl', '2xl']}
                 fontWeight="400"
                 color="black"
                 textAlign="center"
@@ -629,7 +629,7 @@ export default function Page() {
               </Text>
             ) : userData && unregisteredEvents.length === 0 ? (
               <Text
-                fontSize={["xl", "xl", "2xl"]}
+                fontSize={['xl', 'xl', '2xl']}
                 fontWeight="bold"
                 color="black"
                 textAlign="center"
@@ -666,7 +666,7 @@ export default function Page() {
                           flex="1 0 40%" // Adjust the width as needed
                         >
                           <ChakraNextImage
-                            src={event.eventImage || "/beaver-eventcard.jpeg"}
+                            src={event.eventImage || '/beaver-eventcard.jpeg'}
                             alt="Event Image"
                             objectFit="cover"
                             position="absolute"
@@ -674,14 +674,14 @@ export default function Page() {
                             top="0"
                             left="0"
                             layout="fill"
-                            borderRadius={"20px"}
+                            borderRadius={'20px'}
                           />
                           <Box className={style.eventDetailsContainer}>
                             <Heading
                               as="h1"
                               size="2xl"
                               zIndex={2}
-                              position={"relative"}
+                              position={'relative'}
                               mb={1}
                             >
                               <Text
@@ -697,14 +697,14 @@ export default function Page() {
                             </Heading>
                             <Box>
                               <Flex className={style.eventDetails}>
-                                <CalendarIcon mt={"5px"} />
-                                <Text ml={"5px"}>
+                                <CalendarIcon mt={'5px'} />
+                                <Text ml={'5px'}>
                                   {formatDate(event.startTime)}
                                 </Text>
                               </Flex>
                               <Flex className={style.eventDetails}>
-                                <TimeIcon mt={"5px"} />
-                                <Text ml={"5px"}>
+                                <TimeIcon mt={'5px'} />
+                                <Text ml={'5px'}>
                                   {formatDateTimeRange(
                                     event.startTime,
                                     event.endTime
@@ -712,10 +712,10 @@ export default function Page() {
                                 </Text>
                               </Flex>
                               <Flex className={style.eventDetails}>
-                                <Box mt={"5px"}>
+                                <Box mt={'5px'}>
                                   <PiMapPinFill />
                                 </Box>
-                                <Text ml={"5px"}>{event.location}</Text>
+                                <Text ml={'5px'}>{event.location}</Text>
                               </Flex>
                             </Box>
                           </Box>
@@ -735,12 +735,12 @@ export default function Page() {
                               fontSize="xl"
                             >
                               <Link
-                                href={"/events/" + event._id + "/digitalWaiver"}
+                                href={'/events/' + event._id + '/digitalWaiver'}
                               >
                                 <Button
                                   bg="#e0af48"
                                   color="black"
-                                  _hover={{ bg: "#C19137" }}
+                                  _hover={{ bg: '#C19137' }}
                                   fontSize={eventDetailSize}
                                   onClick={handleButtonClickToStopPropagation}
                                 >
