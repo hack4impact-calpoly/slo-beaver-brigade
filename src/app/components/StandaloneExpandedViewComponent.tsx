@@ -438,7 +438,7 @@ function ExpandedViewComponent({
                         width={'200px'}
                         marginBottom={2}
                       >
-                        Edit Event
+                        Manage Event
                       </Button>
                     </Link>
                   )}
