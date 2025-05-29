@@ -12,7 +12,6 @@ import {
   Text,
   Button,
   Input,
-  Checkbox,
   useToast,
 } from "@chakra-ui/react";
 import style from "@styles/admin/users.module.css";
