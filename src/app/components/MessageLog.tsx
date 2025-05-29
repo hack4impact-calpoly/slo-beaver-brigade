@@ -52,10 +52,12 @@ useEffect(() => {
 
 // Handles clicking on a log entry - navigates to either event or user page
   const handleClick = () => {
-    if (log.link) {
-      router.push(`/events/${log.link}`);
-    } else {
-      router.push(`/users/${log.user}`);
+    if (log.link){
+      if (log.action.includes("event")) {
+      router.push(`/admin/events/?id=${log.link}`);
+      } else {
+      router.push(`/admin/users/?userId=${log.link}`);
+      }
     }
   };
 

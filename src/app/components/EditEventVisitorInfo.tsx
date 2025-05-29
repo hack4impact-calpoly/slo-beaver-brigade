@@ -5,17 +5,10 @@ import {
   Spinner,
   Checkbox,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
   Text,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/admin/editEvent.module.css';
-import { IEvent } from '@database/eventSchema';
 import { IUser } from '@database/userSchema';
 import { ISignedWaiver } from 'database/signedWaiverSchema';
 import { IWaiverVersion } from '@database/waiverVersionsSchema';
@@ -51,6 +44,8 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
   const [selectedVisitors, setSelectedVisitors] = useState<IUser[]>([]);
   const [waivers, setWaivers] = useState<ISignedWaiver[]>([]);
   const [waiverVersions, setWaiverVersions] = useState<IWaiverVersion[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedVisitor, setSelectedVisitor] = useState<IUser | null>(null);
   const [selectedWaiver, setSelectedWaiver] = useState<ISignedWaiver | null>(
     null
   );
@@ -253,7 +248,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     };
     fetchVisitorData();
-  }, [isLoading]);
+  }, [isLoading, visitorData]);
 
   async function handleCheck(checked: boolean, visitor: IUser) {
     if (checked) {
@@ -413,11 +408,28 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                                 )}
                             </td>
                             <td className={styles.detailsColumn}>
-                              <div className={styles.linkGroup}>
-                                <SingleVisitorComponent
-                                  visitorData={group.parent}
-                                />
-                              </div>
+                                <Text 
+                                  className={styles.link}
+                                  onClick={() => {
+                                    setSelectedVisitor(group.parent);
+                                    setShowModal(true);
+                                  }} cursor="pointer">
+                                    Details
+                                </Text>
+                                {selectedVisitor &&
+                                  <SingleVisitorComponent
+                                    visitorData={selectedVisitor}
+                                    removeFunction={(userId: string) => {
+                                      setSelectedVisitors((prev) =>
+                                        prev.filter((user) => user._id.toString() !== userId)
+                                      );
+                                      setShowModal(false);
+                                    }}
+                                    adminData={undefined}
+                                    showModal={showModal}
+                                    setShowModal={setShowModal}
+                                  />
+                                }
                             </td>
                           </tr>
                         )}

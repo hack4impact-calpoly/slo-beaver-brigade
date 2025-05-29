@@ -3,23 +3,22 @@ import React, { useEffect, useState } from 'react';
 import style from '@styles/admin/events.module.css';
 import EventPreviewComponent from '@components/EventCard';
 import ExpandedTest from '@components/StandaloneExpandedViewComponent';
-import { ObjectId } from 'mongoose';
 import { MagnifyingGlassIcon } from '@heroicons/react/16/solid';
 import Link from 'next/link';
-import { getEvents } from 'app/actions/eventsactions';
 import { IEvent } from '@database/eventSchema';
 import {
   Checkbox,
   CheckboxGroup,
   Stack,
   Text,
-  Box,
   Input,
-  SimpleGrid,
+  useToast,
 } from '@chakra-ui/react';
 import Select from 'react-select';
 import { useEventsAscending, useEventTypes } from 'app/lib/swrfunctions';
 import '../../fonts/fonts.css';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { mutate } from 'swr';
 
 const EventPreview = () => {
   //states
@@ -46,8 +45,34 @@ const EventPreview = () => {
   const [maxHeadcount, setMaxHeadcount] = useState<number | null>(null);
   const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>([]);
   const [eventTypes, setEventTypes] = useState<string[]>([]);
+  const toast = useToast();
   const { eventTypes: fetchedEventTypes, isLoading: eventTypesLoading } =
     useEventTypes();
+
+// Get eventId from URL params
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+
+  // Open modal if eventId is in the URL and events are loaded
+  useEffect(() => {
+    if (id && events && events.length > 0) {
+      const eventToOpen = events.find((event) => event._id === id);
+      if (eventToOpen) {
+        setSelectedEvent(eventToOpen);
+        setIsModalOpen(true);
+      } else {
+        toast({
+          title: 'Event not found',
+          description: 'The event you are looking for does not exist.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push('/admin/events');
+      }
+    }
+  }, [id, events]);
 
   useEffect(() => {
     if (fetchedEventTypes) {
@@ -98,6 +123,7 @@ const EventPreview = () => {
       setLoading(false);
     };
 
+    mutate(events);
     fetchEvents();
   }, []);
 

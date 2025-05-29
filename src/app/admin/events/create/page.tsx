@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Button,
-  Checkbox,
   Menu,
   MenuButton,
   MenuList,
@@ -18,8 +17,6 @@ import {
   Text,
   Flex,
   Stack,
-  Textarea,
-  SimpleGrid,
   IconButton,
 } from "@chakra-ui/react";
 import { AddIcon, CheckIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
@@ -39,7 +36,6 @@ import { IEventTemplate } from "database/eventTemplateSchema";
 // import { IEvent } from "database/eventTemplateSchema";
 import style from "./create.module.css";
 import "../../../fonts/fonts.css";
-import { set } from "mongoose";
 
 // Define a type for groups to resolve '_id' does not exist on type 'never'
 type Group = {

@@ -134,6 +134,7 @@ export async function PATCH(req: NextRequest, { params }: IParams) {
                 user: `${user.firstName} ${user.lastName}`,
                 action: action,
                 date: new Date(),
+                link: targetUser._id,
             });
 
             return NextResponse.json("User updated: " + targetUserId, { status: 200 });
@@ -182,32 +183,15 @@ export async function DELETE(req: NextRequest, {params}: IParams) {
         await Group.updateMany({groupees: userId}, 
             {$pull: {groupees: userId}});
         
-
-        // Update events - set attendee ID to be null
+        // Remove userId from attendeeIds and registeredIds arrays in events
         await Event.updateMany(
-            {attendeeIds: userId},  // Find documents where userId exists in attendeeIds
-            { 
-                $set: { 
-                    attendeeIds: 
-                        // Directly replace all elements with `null`
-                        await Event.aggregate([{ $match: { attendeeIds: userId }}])
-                }
-            }
+            { attendeeIds: userId },
+            { $pull: { attendeeIds: userId } }
         );
-
-        // Update events - set attendee ID to be null
         await Event.updateMany(
-            {registeredIds: userId},  // Find documents where userId exists in attendeeIds
-            { 
-                $set: { 
-                    attendeeIds: 
-                        // Directly replace all elements with `null`
-                        await Event.aggregate([{ $match: { registeredIds: userId }}])
-                }
-            }
+            { registeredIds: userId },
+            { $pull: { registeredIds: userId } }
         );
-
-        
 
         // Log deletion to admin log
         await Log.create({
