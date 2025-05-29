@@ -104,7 +104,7 @@ const UserList = () => {
         console.log("showUserDetails:", true);
       } else {
         toast({
-          title: 'user not found',
+          title: 'User not found',
           description: 'The user you are looking for does not exist.',
           status: 'error',
           duration: 5000,
