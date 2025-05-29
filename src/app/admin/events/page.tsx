@@ -236,7 +236,7 @@ const EventPreview = () => {
           </div>
         </div>
         <div className={style.filterGroupContainer}>
-          <div className={style.filterHeader}>Events Timeframe</div>
+          <div className={style.filterHeader}>Event Timeframe</div>
           <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
               {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
