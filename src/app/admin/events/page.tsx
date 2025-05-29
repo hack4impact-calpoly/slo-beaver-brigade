@@ -331,7 +331,6 @@ const EventPreview = () => {
               borderColor="#337774"
               borderWidth="1.5px"
               _hover={{ borderColor: "#337774" }}
-              className={style.headcountInput}
             />
             <Input
               type="number"
@@ -346,7 +345,6 @@ const EventPreview = () => {
               borderColor="#337774"
               borderWidth="1.5px"
               _hover={{ borderColor: "#337774" }}
-              className={style.headcountInput}
             />
           </Stack>
         </div>
