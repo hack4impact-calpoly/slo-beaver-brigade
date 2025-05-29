@@ -144,8 +144,10 @@ function ExpandedViewComponent({
 
   const url = `/events/${eventDetails._id}/digitalWaiver`;
 
-  function handleCopyToClipboard(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-    if (eventDetails){
+  function handleCopyToClipboard(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): void {
+    if (eventDetails) {
       event.preventDefault();
       const eventUrl = `${window.location.origin}/?id=${eventDetails._id}`;
       navigator.clipboard.writeText(eventUrl).then(
@@ -222,20 +224,20 @@ function ExpandedViewComponent({
               ml={'5%'}
             >
               <Flex>
-                <CalendarIcon mt={'5px'} />
-                <Text ml={'5px'}>{formattedDate}</Text>
+                <CalendarIcon mt={'2px'} />
+                <Text ml={'6px'}>{formattedDate}</Text>
               </Flex>
               <Flex>
-                <TimeIcon mt={'5px'} />
-                <Text ml={'5px'}>
+                <TimeIcon mt={'2px'} />
+                <Text ml={'6px'}>
                   {formattedStartTime} - {formattedEndTime}
                 </Text>
               </Flex>
               <Flex>
-                <Box mt={'5px'}>
+                <Box mt={'2px'}>
                   <PiMapPinFill />
                 </Box>
-                <Text ml={'5px'}>{eventDetails.location}</Text>
+                <Text ml={'6px'}>{eventDetails.location}</Text>
               </Flex>
             </Flex>
             <Button
@@ -308,12 +310,12 @@ function ExpandedViewComponent({
                       >
                         Accommodations
                       </FormLabel>
-                        <MarkdownPreview
-                          className={style.preview}
-                          style={{ fontWeight: 'light' }}
-                          source={'- Wheelchair Accessible'}
-                          wrapperElement={{ 'data-color-mode': 'light' }}
-                        />
+                      <MarkdownPreview
+                        className={style.preview}
+                        style={{ fontWeight: 'light' }}
+                        source={'- Wheelchair Accessible'}
+                        wrapperElement={{ 'data-color-mode': 'light' }}
+                      />
                     </Flex>
                   ) : (
                     <></>
@@ -322,7 +324,7 @@ function ExpandedViewComponent({
                     <FormLabel color="black" fontWeight="bold" fontSize={'xl'}>
                       Event Language
                     </FormLabel>
-                    <Stack spacing={2}>  
+                    <Stack spacing={2}>
                       {eventDetails.spanishSpeakingAccommodation ? (
                         <MarkdownPreview
                           className={style.preview}
@@ -332,10 +334,10 @@ function ExpandedViewComponent({
                         />
                       ) : (
                         <MarkdownPreview
-                        className={style.preview}
-                        style={{ fontWeight: 'light' }}
-                        source={'- English'}
-                        wrapperElement={{ 'data-color-mode': 'light' }}
+                          className={style.preview}
+                          style={{ fontWeight: 'light' }}
+                          source={'- English'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
                         />
                       )}
                     </Stack>
@@ -381,12 +383,12 @@ function ExpandedViewComponent({
                       >
                         Accommodations
                       </FormLabel>
-                        <MarkdownPreview
-                          className={style.preview}
-                          style={{ fontWeight: 'light' }}
-                          source={'- Wheelchair Accessible'}
-                          wrapperElement={{ 'data-color-mode': 'light' }}
-                        />
+                      <MarkdownPreview
+                        className={style.preview}
+                        style={{ fontWeight: 'light' }}
+                        source={'- Wheelchair Accessible'}
+                        wrapperElement={{ 'data-color-mode': 'light' }}
+                      />
                     </Stack>
                   ) : (
                     <></>
@@ -395,7 +397,7 @@ function ExpandedViewComponent({
                     <FormLabel color="black" fontWeight="bold" fontSize={'xl'}>
                       Event Language
                     </FormLabel>
-                    <Stack spacing={2}>  
+                    <Stack spacing={2}>
                       {eventDetails.spanishSpeakingAccommodation ? (
                         <MarkdownPreview
                           className={style.preview}
@@ -405,10 +407,10 @@ function ExpandedViewComponent({
                         />
                       ) : (
                         <MarkdownPreview
-                        className={style.preview}
-                        style={{ fontWeight: 'light' }}
-                        source={'- English'}
-                        wrapperElement={{ 'data-color-mode': 'light' }}
+                          className={style.preview}
+                          style={{ fontWeight: 'light' }}
+                          source={'- English'}
+                          wrapperElement={{ 'data-color-mode': 'light' }}
                         />
                       )}
                     </Stack>
@@ -470,24 +472,25 @@ function ExpandedViewComponent({
                       </Link>
                     </>
                   ) : (
-                    eventDetails.isOpen &&
-                      (<Link href={url}>
+                    eventDetails.isOpen && (
+                      <Link href={url}>
                         <Button
-                         bg="#e0af48"
-                        color="black"
-                        _hover={{ bg: '#C19137' }}
-                        fontWeight={'600'}
-                        width={'200px'}
-                        marginBottom={2}
+                          bg="#e0af48"
+                          color="black"
+                          _hover={{ bg: '#C19137' }}
+                          fontWeight={'600'}
+                          width={'200px'}
+                          marginBottom={2}
                         >
-                      Register
-                      </Button>
-                      </Link>)
-                    )}
+                          Register
+                        </Button>
+                      </Link>
+                    )
+                  )}
                 </>
               ) : (
-              eventDetails.isOpen &&
-                  (<Link href={url}>
+                eventDetails.isOpen && (
+                  <Link href={url}>
                     <Button
                       bg="#e0af48"
                       color="black"
@@ -498,9 +501,9 @@ function ExpandedViewComponent({
                     >
                       Register
                     </Button>
-                  </Link>)
+                  </Link>
                 )
-              }
+              )}
             </Flex>
           </ModalBody>
         </ModalContent>

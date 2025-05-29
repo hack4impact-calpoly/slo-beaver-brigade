@@ -13,8 +13,8 @@ interface EventPreviewProps {
   onClick: () => void;
 }
 
- // convert date into xx:xx XM - xx:xx XM
- const formatDateTimeRange = (start: Date, end: Date) => {
+// convert date into xx:xx XM - xx:xx XM
+const formatDateTimeRange = (start: Date, end: Date) => {
   if (!(start instanceof Date)) {
     start = new Date(start); // Convert to Date object if not already
   }
@@ -24,12 +24,12 @@ interface EventPreviewProps {
   }
 
   const options: Intl.DateTimeFormatOptions = {
-    hour: "numeric", // "numeric" or "2-digit"
-    minute: "numeric", // "numeric" or "2-digit"
+    hour: 'numeric', // "numeric" or "2-digit"
+    minute: 'numeric', // "numeric" or "2-digit"
   };
 
-  const formattedStart = start.toLocaleTimeString("en-US", options);
-  const formattedEnd = end.toLocaleTimeString("en-US", options);
+  const formattedStart = start.toLocaleTimeString('en-US', options);
+  const formattedEnd = end.toLocaleTimeString('en-US', options);
 
   // Check if the start and end times are in the same hour
   // If they are, we can format them differently to save space on small windows
@@ -38,7 +38,7 @@ interface EventPreviewProps {
   }
 
   return `${formattedStart} - ${formattedEnd}`;
- };
+};
 
 const EventCard: React.FC<EventPreviewProps> = ({
   event,
@@ -67,8 +67,7 @@ const EventCard: React.FC<EventPreviewProps> = ({
     } else {
       setImageSrc(event.eventImage!);
     }
-  }
-  , [event.eventImage]);
+  }, [event.eventImage]);
 
   const formatDate = (date: Date | string): string => {
     if (!date) return 'Invalid date';
@@ -126,27 +125,27 @@ const EventCard: React.FC<EventPreviewProps> = ({
         />
       </div>
       <div className={style.eventTitle}>
-        <h2 className={style.eventName}>
-          {event.eventName}
-        </h2>
+        <h2 className={style.eventName}>{event.eventName}</h2>
       </div>
       <div className={style.bottomRow}>
         <div className={style.eventInfo}>
           <Flex className={style.eventDetails}>
-            <CalendarIcon mt={'5px'} />
-            <Text ml={'5px'}>{formatDate(event.startTime)}</Text>
+            <CalendarIcon mt={'2px'} />
+            <Text ml={'6px'}>{formatDate(event.startTime)}</Text>
           </Flex>
           <Flex className={style.eventDetails}>
-            <TimeIcon mt={'5px'} />
-            <Text ml={'5px'}>
+            <TimeIcon mt={'2px'} />
+            <Text ml={'6px'}>
               {formatDateTimeRange(event.startTime, event.endTime)}
             </Text>
           </Flex>
           <Flex className={style.eventDetails}>
-            <Box mt={'5px'}>
+            <Box mt={'2px'}>
               <PiMapPinFill />
             </Box>
-            <Text className={style.location} ml={'5px'}>{event.location}</Text>
+            <Text className={style.location} ml={'8px'}>
+              {event.location}
+            </Text>
           </Flex>
         </div>
         <div className={style.visitorCount}>

@@ -530,14 +530,14 @@ export default function Page() {
                             </Heading>
                             <Box>
                               <Flex className={style.eventDetails}>
-                                <CalendarIcon mt={'5px'} />
-                                <Text ml={'5px'}>
+                                <CalendarIcon mt={'2px'} />
+                                <Text ml={'6px'}>
                                   {formatDate(event.startTime)}
                                 </Text>
                               </Flex>
                               <Flex className={style.eventDetails}>
-                                <TimeIcon mt={'5px'} />
-                                <Text ml={'5px'}>
+                                <TimeIcon mt={'2px'} />
+                                <Text ml={'6px'}>
                                   {formatDateTimeRange(
                                     event.startTime,
                                     event.endTime
@@ -545,10 +545,10 @@ export default function Page() {
                                 </Text>
                               </Flex>
                               <Flex className={style.eventDetails}>
-                                <Box mt={'5px'}>
+                                <Box mt={'2px'}>
                                   <PiMapPinFill />
                                 </Box>
-                                <Text ml={'5px'}>{event.location}</Text>
+                                <Text ml={'6px'}>{event.location}</Text>
                               </Flex>
                             </Box>
                           </Box>
@@ -643,131 +643,135 @@ export default function Page() {
             {unregisteredEvents.length > 0 ? (
               <Slider {...unregisteredEventSettings}>
                 {unregisteredEvents.length > 0 ? (
-                  unregisteredEvents.filter((event) => event.isOpen).map((event) => {
-                    return (
-                      <Box
-                        key={event._id}
-                        textAlign="center"
-                        px="0"
-                        mb="4"
-                        onClick={() => setupViewEventModal(event)}
-                      >
+                  unregisteredEvents
+                    .filter((event) => event.isOpen)
+                    .map((event) => {
+                      return (
                         <Box
                           key={event._id}
-                          position="relative"
-                          borderWidth="1px"
-                          p="4"
-                          mt="4"
-                          textAlign="left"
-                          h="64"
-                          mx="4"
-                          borderRadius="20px"
-                          className={style.eventBox}
-                          flex="1 0 40%" // Adjust the width as needed
+                          textAlign="center"
+                          px="0"
+                          mb="4"
+                          onClick={() => setupViewEventModal(event)}
                         >
-                          <ChakraNextImage
-                            src={event.eventImage || '/beaver-eventcard.jpeg'}
-                            alt="Event Image"
-                            objectFit="cover"
-                            position="absolute"
-                            zIndex="-1"
-                            top="0"
-                            left="0"
-                            layout="fill"
-                            borderRadius={'20px'}
-                          />
-                          <Box className={style.eventDetailsContainer}>
-                            <Heading
-                              as="h1"
-                              size="2xl"
-                              zIndex={2}
-                              position={'relative'}
-                              mb={1}
-                            >
-                              <Text
-                                fontSize={eventNameSize}
-                                fontWeight="800"
-                                color="white"
-                                className="bold-text"
-                                mx={2}
+                          <Box
+                            key={event._id}
+                            position="relative"
+                            borderWidth="1px"
+                            p="4"
+                            mt="4"
+                            textAlign="left"
+                            h="64"
+                            mx="4"
+                            borderRadius="20px"
+                            className={style.eventBox}
+                            flex="1 0 40%" // Adjust the width as needed
+                          >
+                            <ChakraNextImage
+                              src={event.eventImage || '/beaver-eventcard.jpeg'}
+                              alt="Event Image"
+                              objectFit="cover"
+                              position="absolute"
+                              zIndex="-1"
+                              top="0"
+                              left="0"
+                              layout="fill"
+                              borderRadius={'20px'}
+                            />
+                            <Box className={style.eventDetailsContainer}>
+                              <Heading
+                                as="h1"
+                                size="2xl"
                                 zIndex={2}
+                                position={'relative'}
+                                mb={1}
                               >
-                                {event.eventName}
-                              </Text>
-                            </Heading>
-                            <Box>
-                              <Flex className={style.eventDetails}>
-                                <CalendarIcon mt={'5px'} />
-                                <Text ml={'5px'}>
-                                  {formatDate(event.startTime)}
+                                <Text
+                                  fontSize={eventNameSize}
+                                  fontWeight="800"
+                                  color="white"
+                                  className="bold-text"
+                                  mx={2}
+                                  zIndex={2}
+                                >
+                                  {event.eventName}
                                 </Text>
-                              </Flex>
-                              <Flex className={style.eventDetails}>
-                                <TimeIcon mt={'5px'} />
-                                <Text ml={'5px'}>
-                                  {formatDateTimeRange(
-                                    event.startTime,
-                                    event.endTime
-                                  )}
-                                </Text>
-                              </Flex>
-                              <Flex className={style.eventDetails}>
-                                <Box mt={'5px'}>
-                                  <PiMapPinFill />
-                                </Box>
-                                <Text ml={'5px'}>{event.location}</Text>
-                              </Flex>
+                              </Heading>
+                              <Box>
+                                <Flex className={style.eventDetails}>
+                                  <CalendarIcon mt={'2px'} />
+                                  <Text ml={'6px'}>
+                                    {formatDate(event.startTime)}
+                                  </Text>
+                                </Flex>
+                                <Flex className={style.eventDetails}>
+                                  <TimeIcon mt={'2px'} />
+                                  <Text ml={'6px'}>
+                                    {formatDateTimeRange(
+                                      event.startTime,
+                                      event.endTime
+                                    )}
+                                  </Text>
+                                </Flex>
+                                <Flex className={style.eventDetails}>
+                                  <Box mt={'2px'}>
+                                    <PiMapPinFill />
+                                  </Box>
+                                  <Text ml={'6px'}>{event.location}</Text>
+                                </Flex>
+                              </Box>
+                            </Box>
+                            <Box
+                              position="absolute"
+                              bottom="0"
+                              left="0"
+                              right="0"
+                              p={2}
+                              mx="16px"
+                              my="2"
+                              zIndex={2}
+                            >
+                              <Heading
+                                className="flex flex-row justify-start"
+                                as="h2"
+                                fontSize="xl"
+                              >
+                                <Link
+                                  href={
+                                    '/events/' + event._id + '/digitalWaiver'
+                                  }
+                                >
+                                  <Button
+                                    bg="#e0af48"
+                                    color="black"
+                                    _hover={{ bg: '#C19137' }}
+                                    fontSize={eventDetailSize}
+                                    onClick={handleButtonClickToStopPropagation}
+                                  >
+                                    Register
+                                  </Button>
+                                </Link>
+                                {event.groupsOnly && (
+                                  <div className="w-full flex flex-row justify-end items-center">
+                                    <Text
+                                      fontFamily="Lato"
+                                      fontWeight="500"
+                                      fontSize="18px"
+                                      color="white"
+                                      marginRight="5%"
+                                      className="bold-text"
+                                    >
+                                      Invite Only
+                                    </Text>
+                                    <LockIcon color="wheat" />
+                                  </div>
+                                )}
+                              </Heading>
                             </Box>
                           </Box>
-                          <Box
-                            position="absolute"
-                            bottom="0"
-                            left="0"
-                            right="0"
-                            p={2}
-                            mx="16px"
-                            my="2"
-                            zIndex={2}
-                          >
-                            <Heading
-                              className="flex flex-row justify-start"
-                              as="h2"
-                              fontSize="xl"
-                            >
-                              <Link
-                                href={'/events/' + event._id + '/digitalWaiver'}
-                              >
-                                <Button
-                                  bg="#e0af48"
-                                  color="black"
-                                  _hover={{ bg: '#C19137' }}
-                                  fontSize={eventDetailSize}
-                                  onClick={handleButtonClickToStopPropagation}
-                                >
-                                  Register
-                                </Button>
-                              </Link>
-                              {event.groupsOnly && (
-                                <div className="w-full flex flex-row justify-end items-center">
-                                  <Text
-                                    fontFamily="Lato"
-                                    fontWeight="500"
-                                    fontSize="18px"
-                                    color="white"
-                                    marginRight="5%"
-                                    className="bold-text"
-                                  >
-                                    Invite Only
-                                  </Text>
-                                  <LockIcon color="wheat" />
-                                </div>
-                              )}
-                            </Heading>
-                          </Box>
                         </Box>
-                      </Box>
-                    );
-                  })
+                      );
+                    })
                 ) : (
                   <UnregisteredEventPlaceholder />
                 )}

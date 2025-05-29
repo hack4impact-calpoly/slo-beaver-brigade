@@ -550,7 +550,7 @@ export default function Page() {
     eventImage: imagePreview,
     eventType,
     checklist: checkList,
-    location,
+    location: location !== "" ? location : "TBD",
     description,
     isOpen: true,
     wheelchairAccessible: accessibilityAccommodation === "Yes",
