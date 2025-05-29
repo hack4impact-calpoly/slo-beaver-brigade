@@ -51,6 +51,7 @@ export default function Page() {
   const [eventName, setEventName] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<IEventTemplate | null>(null);
   const [templates, setTemplates] = useState<IEventTemplate[]>([]);
+  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState("");
   const [eventTypes, setEventTypes] = useState<string[]>([]);
