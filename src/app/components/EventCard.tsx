@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useState, useEffect } from 'react';
 import Image from 'next/image';
 import style from '@styles/admin/eventCard.module.css';
 import { IEvent } from '@database/eventSchema';
@@ -55,12 +55,20 @@ const EventCard: React.FC<EventPreviewProps> = ({
     }
   };
 
-  const initialImage = isValidUrl(event.eventImage) ? event.eventImage! : '/beaver-eventcard.jpeg';
-  const [imageSrc, setImageSrc] = useState<string>(initialImage);
+  const [imageSrc, setImageSrc] = useState<string>('/beaver-eventcard.jpeg');
 
   const handleImageError = () => {
     setImageSrc('/beaver-eventcard.jpeg');
   };
+
+  useEffect(() => {
+    if (!isValidUrl(event.eventImage)) {
+      setImageSrc('/beaver-eventcard.jpeg');
+    } else {
+      setImageSrc(event.eventImage!);
+    }
+  }
+  , [event.eventImage]);
 
   const formatDate = (date: Date | string): string => {
     if (!date) return 'Invalid date';
