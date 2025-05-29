@@ -189,6 +189,10 @@
   cursor: pointer;
 }
 
+.visitorTable {
+  width: 100%;
+}
+
 .topBlock {
   display: flex;
   flex-direction: row;
@@ -250,7 +254,7 @@
 .emailColumn {
   padding: 1.5% 3% 5% 3%;
   text-align: left;
-  width: 50%;
+  width: 45%;
   font-size: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -273,8 +277,8 @@
   height: auto;
   padding-top: 10px;
   padding-bottom: 10px;
-  max-width: 800px; 
-  margin: 0 auto;
+  font-size: 0.7rem;
+  width: 100%;
 }
 
 .boldText {
@@ -395,12 +399,6 @@
 .spinner {
   align-self: right;
   margin: 5px 10px 5px 10px;
-}
-
-.tableContainer {
-  font-size: 0.7rem;
-  margin-right:auto;
-  margin-left:0px;
 }
 
 .link {

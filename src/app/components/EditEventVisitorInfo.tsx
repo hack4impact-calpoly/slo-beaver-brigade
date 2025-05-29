@@ -248,7 +248,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     };
     fetchVisitorData();
-  }, [isLoading]);
+  }, [isLoading, eventData]);
 
   async function handleCheck(checked: boolean, visitor: IUser) {
     if (checked) {
@@ -354,6 +354,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                     <th className={styles.nameColumn}>Name</th>
                     <th className={styles.emailColumn}>Email</th>
                     <th className={styles.detailsColumn}>Waiver Status</th>
+                    <th className={styles.detailsColumn}>Attendance</th>
                     <th className={styles.detailsColumn}>Details</th>
                   </tr>
                 </thead>
@@ -406,6 +407,19 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                                 ) : (
                                   <p>Unsigned</p>
                                 )}
+                            </td>
+                            <td className={styles.nameColumn}>
+                              {group.parent.eventsAttended.some(
+                                (attended: any) => attended.eventId === eventId
+                              ) ? (
+                                <Text textAlign={'center'}>
+                                  Checked In
+                                </Text>
+                              ) : (
+                                <Text textAlign={'center'}>
+                                  Not Checked In
+                                </Text>
+                              )}
                             </td>
                             <td className={styles.detailsColumn}>
                                 <Text 
