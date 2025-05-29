@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Box,
-  Spinner,
-  Checkbox,
-  useDisclosure,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Spinner, Checkbox, useDisclosure, Text } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/admin/editEvent.module.css';
 import { IUser } from '@database/userSchema';
@@ -110,6 +104,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     }
     setShowAdminActions(false);
+    setLoading(true);
   };
 
   async function handleMarkSelectVisitors() {
@@ -118,6 +113,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       await addAttendee(visitor._id.toString(), eventId.toString());
     }
     setShowAdminActions(false);
+    setLoading(true);
   }
 
   async function handleRemoveSelectedAttendees() {
@@ -152,6 +148,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           eventId.toString()
         );
         setShowAdminActions(false);
+        setLoading(true);
       }
     }
   }
@@ -248,7 +245,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     };
     fetchVisitorData();
-  }, [isLoading, eventData]);
+  }, [isLoading, loading]);
 
   async function handleCheck(checked: boolean, visitor: IUser) {
     if (checked) {
@@ -392,58 +389,58 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                               {group.parent.email ? group.parent.email : 'N/A'}
                             </td>
                             <td className={styles.detailsColumn}>
-                                {waivers.some(
-                                  (w) => w.signeeId === group.parent._id
-                                ) ? (
-                                  <span
-                                    className={styles.link}
-                                    style={{
-                                      cursor: 'pointer',
-                                    }}
-                                    onClick={() => openWaiver(group.parent._id)}
-                                  >
-                                    Signed
-                                  </span>
-                                ) : (
-                                  <p>Unsigned</p>
-                                )}
+                              {waivers.some(
+                                (w) => w.signeeId === group.parent._id
+                              ) ? (
+                                <span
+                                  className={styles.link}
+                                  style={{
+                                    cursor: 'pointer',
+                                  }}
+                                  onClick={() => openWaiver(group.parent._id)}
+                                >
+                                  Signed
+                                </span>
+                              ) : (
+                                <p>Unsigned</p>
+                              )}
                             </td>
                             <td className={styles.nameColumn}>
                               {group.parent.eventsAttended.some(
                                 (attended: any) => attended.eventId === eventId
                               ) ? (
-                                <Text textAlign={'center'}>
-                                  Checked In
-                                </Text>
+                                <Text textAlign={'center'}>Checked In</Text>
                               ) : (
-                                <Text textAlign={'center'}>
-                                  Not Checked In
-                                </Text>
+                                <Text textAlign={'center'}>Not Checked In</Text>
                               )}
                             </td>
                             <td className={styles.detailsColumn}>
-                                <Text 
-                                  className={styles.link}
-                                  onClick={() => {
-                                    setSelectedVisitor(group.parent);
-                                    setShowModal(true);
-                                  }} cursor="pointer">
-                                    Details
-                                </Text>
-                                {selectedVisitor &&
-                                  <SingleVisitorComponent
-                                    visitorData={selectedVisitor}
-                                    removeFunction={(userId: string) => {
-                                      setSelectedVisitors((prev) =>
-                                        prev.filter((user) => user._id.toString() !== userId)
-                                      );
-                                      setShowModal(false);
-                                    }}
-                                    adminData={undefined}
-                                    showModal={showModal}
-                                    setShowModal={setShowModal}
-                                  />
-                                }
+                              <Text
+                                className={styles.link}
+                                onClick={() => {
+                                  setSelectedVisitor(group.parent);
+                                  setShowModal(true);
+                                }}
+                                cursor="pointer"
+                              >
+                                Details
+                              </Text>
+                              {selectedVisitor && (
+                                <SingleVisitorComponent
+                                  visitorData={selectedVisitor}
+                                  removeFunction={(userId: string) => {
+                                    setSelectedVisitors((prev) =>
+                                      prev.filter(
+                                        (user) => user._id.toString() !== userId
+                                      )
+                                    );
+                                    setShowModal(false);
+                                  }}
+                                  adminData={undefined}
+                                  showModal={showModal}
+                                  setShowModal={setShowModal}
+                                />
+                              )}
                             </td>
                           </tr>
                         )}
@@ -478,16 +475,18 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
           )}
         </>
       )}
-      <SingleVistorWaiver
-        isOpen={isWaiverModalOpen}
-        onClose={closeWaiverModal}
-        waiver={selectedWaiver}
-        waiverVersion={
-          waiverVersions?.find(
-            (v) => v.version === selectedWaiver?.waiverVersion
-          ) || null
-        }
-      />
+      {selectedWaiver && (
+        <SingleVistorWaiver
+          isOpen={isWaiverModalOpen}
+          onClose={closeWaiverModal}
+          waiver={selectedWaiver}
+          waiverVersion={
+            waiverVersions?.find(
+              (v) => v.version === selectedWaiver?.waiverVersion
+            ) || null
+          }
+        />
+      )}
     </Box>
   );
 };
