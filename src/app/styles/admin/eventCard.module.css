@@ -1,7 +1,6 @@
 .eventCard {
   border-radius: 8px;
   padding: 20px;
-  transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -12,15 +11,14 @@
   position: relative;
   overflow: hidden; /* Ensure the image fits within the card */
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-  transition: transform 0.3s ease, background 1s linear 0.2s;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.8));
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.7));
+  transition: box-shadow 0.3s ease;
   border-radius: 8px;
 }
 .eventCard:hover {
-  transform: translateY(-5px);
-  transition: background 1s linear 0.2s;
   background: radial-gradient(circle, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.7));
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
   cursor: pointer;
 }
 .eventCard h2 {
