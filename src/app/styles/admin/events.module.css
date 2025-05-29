@@ -108,7 +108,7 @@
 @media (max-width: 1200px) {
   .eventsList {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 35px;
     padding: 0;
     list-style: none;
@@ -116,6 +116,13 @@
 
   .cardContainer {
     width: auto;
+    padding-right: 10%;
+  }
+
+  .filterHeader{
+    text-align: center;
+    max-width: 125px;
+    overflow-wrap: break-word;
   }
 
   .sidebar {
@@ -174,12 +181,14 @@
 
   .filterContainer{
     margin-top: 0px;
-    width: 100%;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .filterHeader {
-    margin-top: 0px;
+    margin-top: 5px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .searchWrapper {

@@ -236,7 +236,7 @@ const EventPreview = () => {
           </div>
         </div>
         <div className={style.filterGroupContainer}>
-          <div className={style.filterHeader}>Event Timeframe</div>
+          <div className={style.filterHeader}>Events Timeframe</div>
           <CheckboxGroup colorScheme="green" defaultValue={["true"]}>
             <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
               {/** isChecked property does not work inside of CheckBoxGroup. Instead, set defaultValue == value */}
@@ -276,7 +276,7 @@ const EventPreview = () => {
         <div className={style.filterContainer}>
           <div className={style.filterHeader}>Event Language</div>
             <CheckboxGroup colorScheme="green">
-            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5" align={["center", "center", "flex-start"]}>
               <Checkbox
               isChecked={spanishSpeakingEvent}
               colorScheme="blue"
@@ -297,7 +297,7 @@ const EventPreview = () => {
         <div className={style.filterContainer}>
           <div className={style.filterHeader}>Other Filters</div>
           <CheckboxGroup colorScheme="green" defaultValue={[]}>
-            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5">
+            <Stack spacing={[1, 5]} direction={["column", "column"]} ml="1.5" align={["center", "center", "flex-start"]}>
               <Checkbox
                 value="wheelchair accessible"
                 colorScheme="blue"
@@ -331,6 +331,7 @@ const EventPreview = () => {
               borderColor="#337774"
               borderWidth="1.5px"
               _hover={{ borderColor: "#337774" }}
+              className={style.headcountInput}
             />
             <Input
               type="number"
@@ -345,6 +346,7 @@ const EventPreview = () => {
               borderColor="#337774"
               borderWidth="1.5px"
               _hover={{ borderColor: "#337774" }}
+              className={style.headcountInput}
             />
           </Stack>
         </div>
