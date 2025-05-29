@@ -36,6 +36,12 @@
     background-size: cover;
 }
 
+.eventIamge {
+    width: 3%;
+    height: 3%;
+    object-fit: cover;
+}
+
 .imageContainer img {
     width: 100%;
     height: 100%;
