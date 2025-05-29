@@ -70,13 +70,14 @@ export default function Waiver({ params: { eventId } }: IParams) {
         if (active) {
           setActiveWaiver(active);
         } else {
-          toast({
+
+            toast({
             title: 'No active waiver found',
             description: 'Please contact an administrator',
             status: 'error',
             duration: 5000,
             isClosable: true,
-          });
+            });
         }
       } catch (error) {
         console.error('Error fetching active waiver:', error);
@@ -201,6 +202,7 @@ export default function Waiver({ params: { eventId } }: IParams) {
         status: 'error',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
       return;
     }
@@ -287,7 +289,6 @@ export default function Waiver({ params: { eventId } }: IParams) {
                 //     body: JSON.stringify(emailBody),
                 //   }
                 // );
-
                 //on success, return to the home page
                 router.push('/');
               } else {

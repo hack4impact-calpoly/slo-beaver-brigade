@@ -13,7 +13,7 @@
 .buttonContainer {
     display: flex;
     justify-content: space-between;
-    margin: 0 10% 25px;
+    margin: 0 5% 30px 5%;
 }
 
 .innerButtons {
@@ -45,13 +45,12 @@
 }
 
 .yellowButton {
-    padding: 8px 20px;
+    padding: 10.5px 20px;
     background-color: #e0af48;
     border: none;
     border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
-    margin-left: 20px;
     white-space: nowrap;
 }
 
@@ -66,9 +65,12 @@
     cursor: pointer;
 }
 
-.viewGroupsContainer{
-    margin-left: 20px;
+.rightButtons{
+    display: flex;
+    flex-direction: row;
     align-content: center;
+    align-items: center;
+    gap: 20px;
 }
 
 .searchBar {
@@ -126,10 +128,6 @@
         align-items: center;
         flex-direction: column;
         gap: 20px;
-    }
-
-    .yellowButton {
-        padding: 8px 20px;   
     }
 
     .searchBar {
@@ -192,16 +190,16 @@
         margin: 0;
     }
 
-    .viewGroupsContainer {
-        margin: 0;
-    }
-
     .searchWrapper {
         margin: 0px;
     }
 
     .searchBar {
         width: 145px;
+    }
+
+    .rightButtons {
+        flex-direction: column;
     }
 
     .selectContainer {

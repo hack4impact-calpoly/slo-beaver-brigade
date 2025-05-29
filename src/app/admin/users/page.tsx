@@ -107,7 +107,7 @@ const UserList = () => {
           title: 'User not found',
           description: 'The user you are looking for does not exist.',
           status: 'error',
-          duration: 5000,
+          duration: 1000,
           isClosable: true,
         });
         router.push('/admin/users');
@@ -340,19 +340,23 @@ const UserList = () => {
             />
           </div>
         </div>
-          <div className={style.viewGroupsContainer}>
+        <div className={style.rightButtons}>
+          <div>
             <ViewGroups/>
           </div>
-          <CSVLink
-            data={csvData}
-            headers={headers}
-            filename="user-data.csv"
-            className={style.yellowButton}
-            target="_blank"
-          >
-            Export to CSV
-          </CSVLink>
-        </div> 
+          <div>
+            <CSVLink
+              data={csvData}
+              headers={headers}
+              filename="user-data.csv"
+              className={style.yellowButton}
+              target="_blank"
+            >
+              Export to CSV
+            </CSVLink>
+          </div>
+        </div>
+      </div> 
       <div className={style.tableContainer}>
         {/* {isLoading && !users  && !isError && <div>Loading...</div>}
         {isError && <div>Error occurred.</div>}
