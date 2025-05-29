@@ -18,6 +18,7 @@ import Select from 'react-select';
 import { useEventsAscending, useEventTypes } from 'app/lib/swrfunctions';
 import '../../fonts/fonts.css';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { mutate } from 'swr';
 
 const EventPreview = () => {
   //states
@@ -122,6 +123,7 @@ const EventPreview = () => {
       setLoading(false);
     };
 
+    mutate(events);
     fetchEvents();
   }, []);
 
