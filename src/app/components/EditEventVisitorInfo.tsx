@@ -248,7 +248,7 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
       }
     };
     fetchVisitorData();
-  }, [isLoading]);
+  }, [isLoading, visitorData]);
 
   async function handleCheck(checked: boolean, visitor: IUser) {
     if (checked) {
@@ -419,7 +419,12 @@ const EditEventVisitorInfo = ({ eventId }: { eventId: string }) => {
                                 {selectedVisitor &&
                                   <SingleVisitorComponent
                                     visitorData={selectedVisitor}
-                                    removeFunction={undefined}
+                                    removeFunction={(userId: string) => {
+                                      setSelectedVisitors((prev) =>
+                                        prev.filter((user) => user._id.toString() !== userId)
+                                      );
+                                      setShowModal(false);
+                                    }}
                                     adminData={undefined}
                                     showModal={showModal}
                                     setShowModal={setShowModal}
