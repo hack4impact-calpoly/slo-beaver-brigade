@@ -1,126 +1,168 @@
-'use client'
-import { Box, Text, Image, Spinner, UnorderedList, ListItem, background } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react'
-import styles from "../styles/admin/editEvent.module.css";
+'use client';
+import {
+  Box,
+  Text,
+  Image,
+  Spinner,
+  UnorderedList,
+  ListItem,
+  background,
+} from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import styles from '../styles/admin/editEvent.module.css';
 import EditEvent from '@components/EditEvent';
-import editButton from '/docs/images/edit_details.svg'
+import editButton from '/docs/images/edit_details.svg';
 import { useEventId } from 'app/lib/swrfunctions';
 import { IGroup } from 'database/groupSchema';
 import MarkdownPreview from '@uiw/react-markdown-preview';
 
 const EditEventPrimaryInfo = ({ eventId }: { eventId: string }) => {
-    const [loading, setLoading] = useState(true);
-    const { eventData, isLoading, isError, mutate } = useEventId(eventId)
+  const [loading, setLoading] = useState(true);
+  const { eventData, isLoading, isError, mutate } = useEventId(eventId);
 
+  const [groupData, setGroupData] = useState<IGroup[]>([]);
 
-    const [groupData, setGroupData] = useState<IGroup[]>([])
+  //finds the host organization
+  //this defines whether or not it is loading, because it is the last thing to be fetched
+  useEffect(() => {
+    // Check if necessary data is available and hasn't already been fetched
+    if (isLoading || !eventData || groupData.length > 1) return;
 
+    const fetchGroupData = async () => {
+      if (eventData.eventName && eventData.groupsAllowed.length !== 0) {
+        const groupDataArray = await Promise.all(
+          eventData.groupsAllowed.map(async (groupId) => {
+            const response = await fetch(`/api/groups/${groupId}`);
+            return response.json();
+          })
+        );
 
-    //finds the host organization
-    //this defines whether or not it is loading, because it is the last thing to be fetched
-    useEffect(() => {
-        // Check if necessary data is available and hasn't already been fetched
-        if (isLoading || !eventData || groupData.length > 1) return;
+        setGroupData(groupDataArray);
+      }
+      setLoading(false);
+    };
 
+    fetchGroupData();
+  }, [eventData?.groupsAllowed]); // Only depend on groupsAllowed
 
-
-        const fetchGroupData = async () => {
-            if (eventData.eventName && eventData.groupsAllowed.length !== 0) {
-                const groupDataArray = await Promise.all(
-                    eventData.groupsAllowed.map(async (groupId) => {
-                        const response = await fetch(`/api/groups/${groupId}`);
-                        return response.json();
-                    })
-                );
-
-                setGroupData(groupDataArray);
-
-            }
-            setLoading(false);
-        };
-
-        fetchGroupData();
-    }, [eventData?.groupsAllowed]); // Only depend on groupsAllowed
-
-
-    return (
-
-        <Box className={styles.eventInformation} pb="5">
-            {isLoading || !eventData || loading ? (
-                <div className={styles.visitorHeadingLoading}>
-                    <Text style={{ width: '50%' }}>Primary Information</Text>
-                    <Spinner className={styles.spinner} speed="0.8s" thickness="3px" />
-                </div>
-            ) :
-                (
-                    <>
-                        <Box className={styles.visitorHeading}>
-                            <Text style={{ width: '50%' }}>Primary Information</Text>
-                            <Box className={styles.editEvent}>
-                                {eventData?.description === '' ?
-                                    <Text className={styles.originalEditText}>Edit Event Details</Text> : <EditEvent event={eventData} initialGroups={groupData} mutate={mutate} />}
-                            </Box>
-                            <Image src={editButton.src} alt="editButton" className={styles.editButton} />
-                        </Box>
-                        <Box className={styles.topBlock}>
-                            <Box className={styles.leftBlock}>
-                                <Text className={styles.eventField}>Event Name</Text>
-                                <Text className={styles.eventEntry}>{eventData.eventName}</Text>
-                                <Text className={styles.eventField}>Event Location</Text>
-                                <Text className={styles.eventEntry}>{eventData.location}</Text>
-                                <Text className={styles.eventField}>Event Type</Text>
-                                <Text className={styles.eventEntry}>{eventData.eventType}</Text>
-                            </Box>
-                            <Box className={styles.rightBlock}>
-                                <Text className={styles.eventField}>Event Date</Text>
-                                <Text className={styles.eventEntry}>{eventData.startTime.toLocaleDateString('en-US')}</Text>
-                                <Text className={styles.eventField}>Event Start Time</Text>
-                                <Text className={styles.eventEntry}>{(eventData.startTime.getHours() % 12 || 12).toString()}:
-                                    {eventData.startTime.getMinutes().toString().padStart(2, '0')} {eventData.startTime.getHours() >= 12 ? 'PM' : 'AM'}</Text>
-                                <Text className={styles.eventField}>Event End Time</Text>
-                                <Text className={styles.eventEntry}>{(eventData.endTime.getHours() % 12 || 12).toString()}:
-                                    {eventData.endTime.getMinutes().toString().padStart(2, '0')} {eventData.endTime.getHours() >= 12 ? 'PM' : 'AM'}</Text>
-                            </Box>
-                        </Box>
-                        <Box className={styles.bottomBlock}>
-                            <Text className={styles.eventField}>Groups</Text>
-                            {(groupData && groupData.length >= 1) ? groupData.map(group => {
-                                return <Text key={group._id} className={styles.eventEntry}>{group.group_name}</Text>
-                            }) : <Text className={styles.eventEntry}>None</Text>}
-                            <Text className={styles.eventField}>Items to Bring</Text>
-                            {Array.isArray(eventData.checklist) && eventData.checklist.length > 0 ? (
-                            <UnorderedList className={styles.eventEntry}>
-                            {
-                            eventData.checklist.map((item, index) => (
-                                <ListItem key={index}>{item}</ListItem>
-                            ))
-                            }
-                            </UnorderedList>
-                            ) : (
-                            <Text className={styles.eventEntry}>No items to bring</Text>
-                            )}
-                            <Text className={styles.eventField}>Volunteer Event</Text>
-                            <Text className={styles.eventEntry}>{eventData.volunteerEvent ? "Yes, counts for volunteer hours" : "No, does not count for volunteer hours"}</Text>
-                            <Text className={styles.eventField}>Group Only</Text>
-                            <Text className={styles.eventEntry}>{eventData.groupsOnly ? "Yes, only the selected groups can participate" : "No, anyone can participate"}</Text>
-                            <Text className={styles.eventField}>Event Language</Text>
-                            <Text className={styles.eventEntry}>{eventData.spanishSpeakingAccommodation ? 'Spanish' : 'English'}</Text>
-                            <Text className={styles.eventField}>Disability Accommodations</Text>
-                            <Text className={styles.eventEntry}>{eventData.wheelchairAccessible ? 'Wheelchair Accessible' : 'None'}</Text>
-                            <Text className={styles.eventField}>Description</Text>
-                            <MarkdownPreview 
-                                className={styles.eventEntry}
-                                style={{ backgroundColor:'#fbf9f9' }}
-                                source={eventData.description}
-                                wrapperElement={{'data-color-mode': 'light'}}
-                            />
-                        </Box>
-                    </>
-                )}
-        </Box>
-    )
-
-}
-
+  return (
+    <Box className={styles.eventInformation} pb="5">
+      {isLoading || !eventData || loading ? (
+        <div className={styles.visitorHeadingLoading}>
+          <Text style={{ width: '50%' }}>Primary Information</Text>
+          <Spinner className={styles.spinner} speed="0.8s" thickness="3px" />
+        </div>
+      ) : (
+        <>
+          <Box className={styles.visitorHeading}>
+            <Text style={{ width: '50%' }}>Primary Information</Text>
+            <Box className={styles.editEvent}>
+              {eventData?.description === '' ? (
+                <Text className={styles.originalEditText}>
+                  Edit Event Details
+                </Text>
+              ) : (
+                <EditEvent
+                  event={eventData}
+                  initialGroups={groupData}
+                  mutate={mutate}
+                />
+              )}
+            </Box>
+            <Image
+              src={editButton.src}
+              alt="editButton"
+              className={styles.editButton}
+            />
+          </Box>
+          <Box className={styles.topBlock}>
+            <Box className={styles.leftBlock}>
+              <Text className={styles.eventField}>Event Name</Text>
+              <Text className={styles.eventEntry}>{eventData.eventName}</Text>
+              <Text className={styles.eventField}>Event Location</Text>
+              <Text className={styles.eventEntry}>{eventData.location}</Text>
+              <Text className={styles.eventField}>Event Type</Text>
+              <Text className={styles.eventEntry}>{eventData.eventType}</Text>
+              <Text className={styles.eventField}>Volunteer Event</Text>
+              <Text className={styles.eventEntry}>
+                {eventData.volunteerEvent
+                  ? 'Yes, counts for volunteer hours'
+                  : 'No, does not count for volunteer hours'}
+              </Text>
+              <Text className={styles.eventField}>Group Only</Text>
+              <Text className={styles.eventEntry}>
+                {eventData.groupsOnly
+                  ? 'Yes, only the selected groups can participate'
+                  : 'No, anyone can participate'}
+              </Text>
+              <Text className={styles.eventField}>Groups</Text>
+              {groupData && groupData.length >= 1 ? (
+                groupData.map((group) => {
+                  return (
+                    <Text key={group._id} className={styles.eventEntry}>
+                      {group.group_name}
+                    </Text>
+                  );
+                })
+              ) : (
+                <Text className={styles.eventEntry}>None</Text>
+              )}
+            </Box>
+            <Box className={styles.rightBlock}>
+              <Text className={styles.eventField}>Event Date</Text>
+              <Text className={styles.eventEntry}>
+                {eventData.startTime.toLocaleDateString('en-US')}
+              </Text>
+              <Text className={styles.eventField}>Event Start Time</Text>
+              <Text className={styles.eventEntry}>
+                {(eventData.startTime.getHours() % 12 || 12).toString()}:
+                {eventData.startTime.getMinutes().toString().padStart(2, '0')}{' '}
+                {eventData.startTime.getHours() >= 12 ? 'PM' : 'AM'}
+              </Text>
+              <Text className={styles.eventField}>Event End Time</Text>
+              <Text className={styles.eventEntry}>
+                {(eventData.endTime.getHours() % 12 || 12).toString()}:
+                {eventData.endTime.getMinutes().toString().padStart(2, '0')}{' '}
+                {eventData.endTime.getHours() >= 12 ? 'PM' : 'AM'}
+              </Text>
+              <Text className={styles.eventField}>Event Language</Text>
+              <Text className={styles.eventEntry}>
+                {eventData.spanishSpeakingAccommodation ? 'Spanish' : 'English'}
+              </Text>
+              <Text className={styles.eventField}>
+                Disability Accommodations
+              </Text>
+              <Text className={styles.eventEntry}>
+                {eventData.wheelchairAccessible
+                  ? 'Wheelchair Accessible'
+                  : 'None'}
+              </Text>
+              <Text className={styles.eventField}>Items to Bring</Text>
+              {Array.isArray(eventData.checklist) &&
+              eventData.checklist.length > 0 ? (
+                <UnorderedList className={styles.eventEntry}>
+                  {eventData.checklist.map((item, index) => (
+                    <ListItem key={index}>{item}</ListItem>
+                  ))}
+                </UnorderedList>
+              ) : (
+                <Text className={styles.eventEntry}>No items to bring</Text>
+              )}
+            </Box>
+          </Box>
+          <Box className={styles.bottomBlock}>
+            <Text className={styles.eventField}>Description</Text>
+            <MarkdownPreview
+              className={styles.eventEntry}
+              style={{ backgroundColor: '#fbf9f9' }}
+              source={eventData.description}
+              wrapperElement={{ 'data-color-mode': 'light' }}
+            />
+          </Box>
+        </>
+      )}
+    </Box>
+  );
+};
 
 export default EditEventPrimaryInfo;

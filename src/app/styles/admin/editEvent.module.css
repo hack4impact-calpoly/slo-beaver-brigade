@@ -191,6 +191,7 @@
 
 .topBlock {
   display: flex;
+  flex-direction: row;
 }
 
 .leftBlock {
@@ -318,7 +319,6 @@
   width: 45%;
   height: 100%;
   font-size: 17px;
-  margin-left: 50px;
   text-align: right;
   display: flex;
   align-items: center;
@@ -367,6 +367,12 @@
   border-radius: 7px;
   font-family: "Lato";
   font-weight: bold;
+}
+
+.rightButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .deleteButton {
@@ -436,14 +442,28 @@
   }
 }
 
+@media (max-width: 600px) {
+  .topBlock {
+    flex-direction: column;
+    padding: 0px 20px;
+  }
+  .bottomBlock {
+    padding: 0px 20px;
+  }
+  .header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .rightButtons {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
 @media (max-width: 300px) {
   .cancelOrDelete {
     flex-direction: column-reverse;
     gap: 10px;
   }
-}
-
-.rightButtons {
-  display: flex;
-  gap: 10px;
 }

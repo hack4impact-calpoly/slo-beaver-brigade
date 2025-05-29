@@ -38,7 +38,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
         direction={{ base: "column", xl: "row" }}
         justify="space-between"
       >
-        <Box className={styles.leftColumn} w={{ base: "100%", xl: "38%" }}>
+        <Box className={styles.leftColumn} w={{ base: "100%", xl: "45%" }}>
           <EditEventVisitorInfo eventId={eventId} />
           <Box className={styles.imageContainer}>
             <Image
@@ -51,7 +51,7 @@ export default function EditEventsPage({ params: { eventId } }: IParams) {
             />
           </Box>
         </Box>
-        <Box className={styles.rightColumn} w={{ base: "100%", xl: "58%" }}>
+        <Box className={styles.rightColumn} w={{ base: "100%", xl: "50%" }}>
           <EditEventPrimaryInfo eventId={eventId} />
         </Box>
       </Flex>
