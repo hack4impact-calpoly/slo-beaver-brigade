@@ -20,7 +20,7 @@ type IParams = {
 export default function EditEventsPage({ params: { eventId } }: IParams) {
   const {eventData, isLoading, isError, mutate} = useEventId(eventId)
   
-  const [imageSrc, setImageSrc] = useState<string>('/beaver-eventcard.jpeg');
+  const [imageSrc, setImageSrc] = useState<string>(eventData?.eventImage || '/beaver-eventcard.jpeg');
 
   const handleImageError = () => {
     setImageSrc('/beaver-eventcard.jpeg');
