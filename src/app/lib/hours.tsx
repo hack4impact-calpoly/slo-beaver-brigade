@@ -134,7 +134,7 @@ export function filterUserSignedUpEvents(
   const filteredEvents = events.filter(
     (event: any) =>
       event.attendeeIds.includes(userId) &&
-      event.eventType == 'Volunteer' &&
+      event.volunteerEvent &&
       new Date(event.startTime) >= new Date(startDateTime) &&
       new Date(event.endTime) <= new Date(endDateTime)
         &&
