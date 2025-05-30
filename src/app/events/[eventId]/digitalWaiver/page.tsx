@@ -200,9 +200,8 @@ export default function Waiver({ params: { eventId } }: IParams) {
       toast({
         title: 'Please scroll to the bottom of the waiver before submitting.',
         status: 'error',
-        duration: 3000,
+        duration: 1000,
         isClosable: true,
-        position: 'top',
       });
       return;
     }
